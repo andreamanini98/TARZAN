@@ -2,6 +2,10 @@
 /cmake-build-*/
 .idea/
 
+# Created directories.
+/output/
+/debug/
+
 # Compiled object files.
 *.o
 *.obj

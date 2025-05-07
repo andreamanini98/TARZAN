@@ -1,0 +1,17 @@
+@PACKAGE_INIT@
+
+
+# Include macro for finding dependencies.
+include(CMakeFindDependencyMacro)
+
+
+# Find Boost library.
+find_dependency(Boost 1.88.0 REQUIRED system filesystem)
+
+
+# Import the targets.
+include("${CMAKE_CURRENT_LIST_DIR}/TARZANTargets.cmake")
+
+
+# Make sure all required components were found.
+check_required_components(TARZAN)
