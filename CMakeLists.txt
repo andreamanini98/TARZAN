@@ -96,7 +96,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables)
 
 
 # Define the library executable files.
-set(LIBRARY_EXECUTABLES ExecutableFile.cpp)
+set(LIBRARY_EXECUTABLES executableFile.cpp)
 
 
 # Create executables.
@@ -129,8 +129,8 @@ include(CMakePackageConfigHelpers)
 
 
 # Install library.
-install(TARGETS TARZAN                             # Install target, the one created with add_library().
-        EXPORT TARZANTargets                       # Generates and installs a CMake file to import targets into another project.
+install(TARGETS TARZAN       # Install target, the one created with add_library().
+        EXPORT TARZANTargets # Generates and installs a CMake file to import targets into another project.
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}       # For shared libraries.
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}       # For .a files.
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}       # For executables.
@@ -169,6 +169,10 @@ install(FILES
         ${CMAKE_CURRENT_BINARY_DIR}/TARZANConfig.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/TARZANConfigVersion.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/TARZAN)
+
+
+# Add executable permissions to install_library.sh script.
+execute_process(COMMAND chmod 777 ${CMAKE_CURRENT_SOURCE_DIR}/install_library.sh)
 
 
 ####################################################
