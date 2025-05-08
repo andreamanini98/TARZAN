@@ -1,3 +1,15 @@
+####################################################
+###   How to use the library in other projects   ###
+####################################################
+
+# (1) Add these lines to the CMakeLists.txt file in the new project if the library has been installed in the default path:
+# find_package(TARZAN REQUIRED)
+# target_link_libraries(new_project_name PRIVATE TARZAN::TARZAN)
+
+# (2) Include the library in your files as follows:
+# #include "TARZAN/file_where_to_include_the_library"
+
+
 # Setting the minimum required version for cmake.
 cmake_minimum_required(VERSION 3.31)
 
@@ -173,15 +185,3 @@ install(FILES
 
 # Add permissions to the install_library.sh script.
 execute_process(COMMAND chmod 777 ${CMAKE_CURRENT_SOURCE_DIR}/install_library.sh)
-
-
-####################################################
-###   How to use the library in other projects   ###
-####################################################
-
-# (1) Add these lines to the CMakeLists.txt file in the new project if the library has been installed in the default path:
-# find_package(TARZAN REQUIRED)
-# target_link_libraries(new_project_name PRIVATE TARZAN::TARZAN)
-
-# (2) Include the library in your files as follows:
-# #include "TARZAN/file_where_to_include_the_library"
