@@ -171,7 +171,7 @@ install(FILES
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/TARZAN)
 
 
-# Add executable permissions to install_library.sh script.
+# Add permissions to the install_library.sh script.
 execute_process(COMMAND chmod 777 ${CMAKE_CURRENT_SOURCE_DIR}/install_library.sh)
 
 
