@@ -5,7 +5,31 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <filesystem>
 
+#include <fstream>
+#include <string>
+#include <iostream>
+
+std::string readFromFile(const std::string& relativePath) {
+    // Fixed path starting from the project root
+    std::string fullPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/timed-automata-definitions/" + relativePath; // Adjust the number of "../" as needed
+
+    std::ifstream file(fullPath);
+    if (!file.is_open()) {
+        std::cerr << "Attempted to open: " << fullPath << std::endl;
+        throw std::runtime_error("Failed to open file: " + relativePath);
+    }
+
+    std::string content{
+        std::istreambuf_iterator<char>(file),
+        std::istreambuf_iterator<char>()
+    };
+
+    file.close();
+    return content;
+}
 
 int main()
 {
@@ -19,114 +43,114 @@ int main()
 
     // TESTING GUARD
 
-    ast::guard guardia;
-    auto const &guard_parse_rule = timed_automaton::guard();
-    std::string guard_string = "clock, op, 3";
-    iterator_type iter2 = guard_string.begin();
-    iterator_type const end2 = guard_string.end();
-
-    bool guardr = x3::phrase_parse(iter2, end2, guard_parse_rule, space, guardia);
-
-    if (guardr && iter2 == end2)
-    {
-        std::cout << "-------------------------\n";
-        std::cout << "Guard parsing succeeded\n";
-        std::cout << "Clock: " << guardia.clock << "\n";
-        std::cout << "Operator: " << guardia.guardOperator << "\n";
-        std::cout << "Constant: " << guardia.comparingConstant << "\n";
-        std::cout << "-------------------------\n";
-    } else
-    {
-        std::cout << "-------------------------\n";
-        std::cout << "Guard parsing failed\n";
-        if (iter2 != end2)
-        {
-            std::cout << "Failed at: '" << *iter2 << "' (char code: " << static_cast<int>(*iter2) << ")" << std::endl;
-            // Print a bit of context
-            std::cout << "Context: \"";
-            for (auto c_iter = iter2; c_iter != end2 && std::distance(iter2, c_iter) < 20; ++c_iter)
-            {
-                std::cout << *c_iter;
-            }
-            std::cout << "...\"" << std::endl;
-        } else
-        {
-            std::cout << "Failed but all input consumed. Possible syntax error." << std::endl;
-        }
-        std::cout << "-------------------------\n";
-    }
+   // ast::guard guardia;
+   // auto const &guard_parse_rule = timed_automaton::guard();
+   // std::string guard_string = "clock, op, 3";
+   // iterator_type iter2 = guard_string.begin();
+   // iterator_type const end2 = guard_string.end();
+   //
+   // bool guardr = x3::phrase_parse(iter2, end2, guard_parse_rule, space, guardia);
+   //
+   // if (guardr && iter2 == end2)
+   // {
+   //     std::cout << "-------------------------\n";
+   //     std::cout << "Guard parsing succeeded\n";
+   //     std::cout << "Clock: " << guardia.clock << "\n";
+   //     std::cout << "Operator: " << guardia.guardOperator << "\n";
+   //     std::cout << "Constant: " << guardia.comparingConstant << "\n";
+   //     std::cout << "-------------------------\n";
+   // } else
+   // {
+   //     std::cout << "-------------------------\n";
+   //     std::cout << "Guard parsing failed\n";
+   //     if (iter2 != end2)
+   //     {
+   //         std::cout << "Failed at: '" << *iter2 << "' (char code: " << static_cast<int>(*iter2) << ")" << std::endl;
+   //         // Print a bit of context
+   //         std::cout << "Context: \"";
+   //         for (auto c_iter = iter2; c_iter != end2 && std::distance(iter2, c_iter) < 20; ++c_iter)
+   //         {
+   //             std::cout << *c_iter;
+   //         }
+   //         std::cout << "...\"" << std::endl;
+   //     } else
+   //     {
+   //         std::cout << "Failed but all input consumed. Possible syntax error." << std::endl;
+   //     }
+   //     std::cout << "-------------------------\n";
+   // }
 
 
     // TESTING TRANSITION
 
-    ast::transition trans;
-    auto const &transition_parse_rule = timed_automaton::transition();
-    std::string transition_string = "transition ( string1, string2, (clock, op, 5), (str, list), string )";
-    iterator_type trans_iter = transition_string.begin();
-    iterator_type const trans_end = transition_string.end();
-
-    bool trans_result = x3::phrase_parse(trans_iter, trans_end, transition_parse_rule, space, trans);
-
-    if (trans_result && trans_iter == trans_end)
-    {
-        std::cout << "-------------------------\n";
-        std::cout << "Transition parsing succeeded\n";
-        std::cout << "Starting Location: " << trans.startingLocation << "\n";
-        std::cout << "Action: " << trans.action << "\n";
-
-        // Print clock guards
-        std::cout << "Clock Guards:\n";
-        for (size_t i = 0; i < trans.clockGuard.size(); ++i)
-        {
-            std::cout << "  Guard " << (i + 1) << ":\n";
-            std::cout << "    Clock: " << trans.clockGuard[i].clock << "\n";
-            std::cout << "    Operator: " << trans.clockGuard[i].guardOperator << "\n";
-            std::cout << "    Constant: " << trans.clockGuard[i].comparingConstant << "\n";
-        }
-
-        // Print clocks to reset
-        std::cout << "Clocks to Reset: ";
-        for (size_t i = 0; i < trans.clocksToReset.size(); ++i)
-        {
-            std::cout << trans.clocksToReset[i];
-            if (i < trans.clocksToReset.size() - 1)
-            {
-                std::cout << ", ";
-            }
-        }
-        std::cout << "\n";
-
-        std::cout << "Target Location: " << trans.targetLocation << "\n";
-        std::cout << "-------------------------\n";
-    } else
-    {
-        std::cout << "-------------------------\n";
-        std::cout << "Transition parsing failed\n";
-        if (trans_iter != trans_end)
-        {
-            std::cout << "Failed at: '" << *trans_iter << "' (char code: " << static_cast<int>(*trans_iter) << ")" <<
-                    std::endl;
-            // Print a bit of context
-            std::cout << "Context: \"";
-            for (auto c_iter = trans_iter; c_iter != trans_end && std::distance(trans_iter, c_iter) < 20; ++c_iter)
-            {
-                std::cout << *c_iter;
-            }
-            std::cout << "...\"" << std::endl;
-        } else
-        {
-            std::cout << "Parsing incomplete - input consumed but parsing failed." << std::endl;
-        }
-        std::cout << "-------------------------\n";
-    }
+    // ast::transition trans;
+    // auto const &transition_parse_rule = timed_automaton::transition();
+    // std::string transition_string = "transition ( string1, string2, (clock, op, 5), (str, list), string )";
+    // iterator_type trans_iter = transition_string.begin();
+    // iterator_type const trans_end = transition_string.end();
+    //
+    // bool trans_result = x3::phrase_parse(trans_iter, trans_end, transition_parse_rule, space, trans);
+    //
+    // if (trans_result && trans_iter == trans_end)
+    // {
+    //     std::cout << "-------------------------\n";
+    //     std::cout << "Transition parsing succeeded\n";
+    //     std::cout << "Starting Location: " << trans.startingLocation << "\n";
+    //     std::cout << "Action: " << trans.action << "\n";
+    //
+    //     // Print clock guards
+    //     std::cout << "Clock Guards:\n";
+    //     for (size_t i = 0; i < trans.clockGuard.size(); ++i)
+    //     {
+    //         std::cout << "  Guard " << (i + 1) << ":\n";
+    //         std::cout << "    Clock: " << trans.clockGuard[i].clock << "\n";
+    //         std::cout << "    Operator: " << trans.clockGuard[i].guardOperator << "\n";
+    //         std::cout << "    Constant: " << trans.clockGuard[i].comparingConstant << "\n";
+    //     }
+    //
+    //     // Print clocks to reset
+    //     std::cout << "Clocks to Reset: ";
+    //     for (size_t i = 0; i < trans.clocksToReset.size(); ++i)
+    //     {
+    //         std::cout << trans.clocksToReset[i];
+    //         if (i < trans.clocksToReset.size() - 1)
+    //         {
+    //             std::cout << ", ";
+    //         }
+    //     }
+    //     std::cout << "\n";
+    //
+    //     std::cout << "Target Location: " << trans.targetLocation << "\n";
+    //     std::cout << "-------------------------\n";
+    // } else
+    // {
+    //     std::cout << "-------------------------\n";
+    //     std::cout << "Transition parsing failed\n";
+    //     if (trans_iter != trans_end)
+    //     {
+    //         std::cout << "Failed at: '" << *trans_iter << "' (char code: " << static_cast<int>(*trans_iter) << ")" <<
+    //                 std::endl;
+    //         // Print a bit of context
+    //         std::cout << "Context: \"";
+    //         for (auto c_iter = trans_iter; c_iter != trans_end && std::distance(trans_iter, c_iter) < 20; ++c_iter)
+    //         {
+    //             std::cout << *c_iter;
+    //         }
+    //         std::cout << "...\"" << std::endl;
+    //     } else
+    //     {
+    //         std::cout << "Parsing incomplete - input consumed but parsing failed." << std::endl;
+    //     }
+    //     std::cout << "-------------------------\n";
+    // }
 
 
     // TESTING TIMED AUTOMATON
 
     ast::timedAutomaton ta;
 
-    std::string newstr =
-            "create automaton { clock, x, r, t, y, list ; action, a, b, c, list ; loc0, loc1 , loc2, loc3 ; transition ( string1, string2, (clock, op, 5), (str, list), string ), transition ( rrrr, eeee, (rr, ee, 5), (s, l), ng ) ; }";
+    std::string newstr = readFromFile("ta0.txt");
+    std::cout << newstr << std::endl;
     iterator_type iter = newstr.begin();
     iterator_type const end = newstr.end();
 
@@ -149,6 +173,7 @@ int main()
 
         std::cout << "-------------------------\n";
         std::cout << "Parsing succeeded\n";
+        std::cout << "ta name: " << ta.name << std::endl;
         if (!ta.clocks.empty())
         {
             // Check if clocks is not empty before accessing

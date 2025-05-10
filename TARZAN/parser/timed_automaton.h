@@ -3,7 +3,6 @@
 
 #include "TARZAN/parser/ast.h"
 
-
 #include <boost/spirit/home/x3.hpp>
 
 namespace timed_automaton {

@@ -23,66 +23,55 @@ namespace timed_automaton {
         constexpr x3::rule<transition_class, ast::transition> transition_rule = "transition_rule";
         constexpr x3::rule<timedAutomaton_class, ast::timedAutomaton> timedAutomaton_rule = "timedAutomaton_rule";
 
-        //TODO: enhance the grammar, for example enclose the parts of a timed automaton in braces. something like
-        //TODO: can we make already similar to json?
-        /*
-         * create automaton automaton_name
-         * {
-         *     clocks
-         *     {
-         *         x, y, z;
-         *     }
-         *
-         *     actions
-         *     {
-         *         a, b, c;
-         *     }
-         *
-         *     locations
-         *     {
-         *         q0, q1, q2, q3;
-         *     }
-         *
-         *     transitions
-         *     {
-         *     <start, action, [(x, op, 4), (y, op, 5)], [x, y, z], target>,
-         *     <start2, action2, [(x2, op2, 4), (y2, op2, 5)], [x2, y2, z2], target2>;
-         *     }
-         * }
-         */
-
-        // you may need to back parentheses in the guard definition, try to mimic the above grammar, and then
         //TODO: extend it to account for arenas.
 
-        constexpr auto parser_string = lexeme[+x3::alnum];
+        inline auto literal = lexeme[+char_("a-zA-Z0-9_")];
 
-        constexpr auto guard_rule_def =
-                parser_string >> lit(',')
-                >> parser_string >> lit(',')
-                >> int_;
+        // TODO: since this depends on the order of the operands, change the comparison_op into a symbol table
+        inline auto comp_op = lexeme[x3::string("<=") | x3::string(">=") | x3::string("<") | x3::string(">") | x3::string("=")];
 
-        constexpr auto transition_rule_def =
-                lit("transition")
-                >> lit('(')
-                >> parser_string >> lit(',')
-                >> parser_string >> lit(',')
-                >> lit('(')
+
+        inline auto guard_rule_def =
+                lit('(')
+                >> literal >> lit(',')
+                >> comp_op >> lit(',') // This should be enhanced to only capture correct operands like <, <=, etc
+                >> int_
+                >> lit(')');
+
+        inline auto transition_rule_def =
+                lit('<')
+                >> literal >> lit(',')
+                >> literal >> lit(',')
+                >> lit('[')
                 >> (guard_rule % ',')
-                >> lit(')') >> lit(',')
-                >> lit('(')
-                >> (parser_string % ',')
-                >> lit(')') >> lit(',')
-                >> parser_string
-                >> ')';
+                >> lit(']') >> lit(',')
+                >> lit('[')
+                >> (literal % ',')
+                >> lit(']') >> lit(',')
+                >> literal
+                >> lit('>');
 
-        constexpr auto timedAutomaton_rule_def =
+        inline auto timedAutomaton_rule_def =
                 lit("create")
                 >> lit("automaton")
+                >> literal
                 >> lit('{')
-                >> (parser_string % ',') >> lit(';')
-                >> (parser_string % ',') >> lit(';')
-                >> (parser_string % ',') >> lit(';')
+                >> lit("clocks")
+                >> lit('{')
+                >> (literal % ',') >> lit(';')
+                >> lit('}')
+                >> lit("actions")
+                >> lit('{')
+                >> (literal % ',') >> lit(';')
+                >> lit('}')
+                >> lit("locations")
+                >> lit('{')
+                >> (literal % ',') >> lit(';')
+                >> lit('}')
+                >> lit("transitions")
+                >> lit('{')
                 >> (transition_rule % ',') >> lit(';')
+                >> lit('}')
                 >> lit('}');
 
         BOOST_SPIRIT_DEFINE(guard_rule, transition_rule, timedAutomaton_rule);

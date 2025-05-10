@@ -6,6 +6,8 @@
 
 //TODO: adapt this to arenas (and if necessary to other timed automata specific elements).
 
+// TODO: try to insert to_string functions here to print these structs.
+
 namespace ast {
     struct guard {
         std::string clock;
@@ -22,6 +24,7 @@ namespace ast {
     };
 
     struct timedAutomaton {
+        std::string name;
         std::vector<std::string> clocks;
         std::vector<std::string> actions;
         std::vector<std::string> locations;
