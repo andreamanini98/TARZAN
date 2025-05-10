@@ -73,11 +73,18 @@ endif ()
 
 
 # Define the library source files.
-set(LIBRARY_SOURCES TARZAN/src/library.cpp)
+set(LIBRARY_SOURCES TARZAN/src/library.cpp TARZAN/parser/timed_automaton.cpp)
 
 
 # Add library
 add_library(TARZAN STATIC ${LIBRARY_SOURCES})
+
+
+# Linking libraries to library sources.
+target_link_libraries(TARZAN PRIVATE
+        Boost::headers
+        Boost::system
+        Boost::filesystem)
 
 
 # Setup include directories for the library.
