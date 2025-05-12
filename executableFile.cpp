@@ -137,9 +137,32 @@ int main()
                     std::cout << std::endl;
                     for (size_t j = 0; j < trans.clockGuard.size(); ++j)
                     {
-                        std::cout << "      " << trans.clockGuard[j].clock << " "
-                                << trans.clockGuard[j].guardOperator << " "
-                                << trans.clockGuard[j].comparingConstant;
+                        std::cout << "      " << trans.clockGuard[j].clock << " ";
+
+                        // Convert enum to operator string
+                        switch (trans.clockGuard[j].guardOperator)
+                        {
+                            case ast::comp_op::LT:
+                                std::cout << "<";
+                                break;
+                            case ast::comp_op::LE:
+                                std::cout << "<=";
+                                break;
+                            case ast::comp_op::EQ:
+                                std::cout << "=";
+                                break;
+                            case ast::comp_op::GE:
+                                std::cout << ">=";
+                                break;
+                            case ast::comp_op::GT:
+                                std::cout << ">";
+                                break;
+                            default:
+                                std::cout << "?"; // Unknown operator
+                                break;
+                        }
+
+                        std::cout << " " << trans.clockGuard[j].comparingConstant;
                         if (j < trans.clockGuard.size() - 1)
                         {
                             std::cout << ",";
@@ -280,62 +303,73 @@ int main()
         }
 
         // Display transitions
-        if (!arena.transitions.empty())
-        {
-            std::cout << "Got transitions: " << std::endl;
-            for (size_t i = 0; i < arena.transitions.size(); ++i)
-            {
-                const auto &trans = arena.transitions[i];
-                std::cout << "  Transition " << (i + 1) << ":" << std::endl;
-                std::cout << "    From: " << trans.startingLocation << std::endl;
-                std::cout << "    Action: " << trans.action << std::endl;
+        if (!arena.transitions.empty()) {
+    std::cout << "Got transitions: " << std::endl;
+    for (size_t i = 0; i < arena.transitions.size(); ++i) {
+        const auto &trans = arena.transitions[i];
+        std::cout << "  Transition " << (i + 1) << ":" << std::endl;
+        std::cout << "    From: " << trans.startingLocation << std::endl;
+        std::cout << "    Action: " << trans.action << std::endl;
 
-                // Print clock guards
-                std::cout << "    Clock Guards: ";
-                if (trans.clockGuard.empty())
-                {
-                    std::cout << "(none)";
-                } else
-                {
-                    std::cout << std::endl;
-                    for (size_t j = 0; j < trans.clockGuard.size(); ++j)
-                    {
-                        std::cout << "      " << trans.clockGuard[j].clock << " "
-                                << trans.clockGuard[j].guardOperator << " "
-                                << trans.clockGuard[j].comparingConstant;
-                        if (j < trans.clockGuard.size() - 1)
-                        {
-                            std::cout << ",";
-                        }
-                        std::cout << std::endl;
-                    }
+        // Print clock guards
+        std::cout << "    Clock Guards: ";
+        if (trans.clockGuard.empty()) {
+            std::cout << "(none)";
+        } else {
+            std::cout << std::endl;
+            for (size_t j = 0; j < trans.clockGuard.size(); ++j) {
+                std::cout << "      " << trans.clockGuard[j].clock << " ";
+
+                // Convert enum to operator string
+                switch (trans.clockGuard[j].guardOperator) {
+                    case ast::comp_op::LT:
+                        std::cout << "<";
+                        break;
+                    case ast::comp_op::LE:
+                        std::cout << "<=";
+                        break;
+                    case ast::comp_op::EQ:
+                        std::cout << "=";
+                        break;
+                    case ast::comp_op::GE:
+                        std::cout << ">=";
+                        break;
+                    case ast::comp_op::GT:
+                        std::cout << ">";
+                        break;
+                    default:
+                        std::cout << "?"; // Unknown operator
+                        break;
                 }
 
-                // Print clocks to reset
-                std::cout << "    Clocks to Reset: ";
-                if (trans.clocksToReset.empty())
-                {
-                    std::cout << "(none)";
-                } else
-                {
-                    for (size_t j = 0; j < trans.clocksToReset.size(); ++j)
-                    {
-                        std::cout << trans.clocksToReset[j];
-                        if (j < trans.clocksToReset.size() - 1)
-                        {
-                            std::cout << ", ";
-                        }
-                    }
+                std::cout << " " << trans.clockGuard[j].comparingConstant;
+                if (j < trans.clockGuard.size() - 1) {
+                    std::cout << ",";
                 }
                 std::cout << std::endl;
+            }
+        }
 
-                std::cout << "    To: " << trans.targetLocation << std::endl;
-                if (i < arena.transitions.size() - 1)
-                {
-                    std::cout << std::endl;
+        // Print clocks to reset
+        std::cout << "    Clocks to Reset: ";
+        if (trans.clocksToReset.empty()) {
+            std::cout << "(none)";
+        } else {
+            for (size_t j = 0; j < trans.clocksToReset.size(); ++j) {
+                std::cout << trans.clocksToReset[j];
+                if (j < trans.clocksToReset.size() - 1) {
+                    std::cout << ", ";
                 }
             }
-        } else
+        }
+        std::cout << std::endl;
+
+        std::cout << "    To: " << trans.targetLocation << std::endl;
+        if (i < arena.transitions.size() - 1) {
+            std::cout << std::endl;
+        }
+    }
+} else
         {
             std::cout << "got: (no transitions parsed)" << std::endl;
         }

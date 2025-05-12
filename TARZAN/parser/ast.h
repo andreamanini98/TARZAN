@@ -10,9 +10,12 @@
 // TODO: try to insert to_string functions here to print these structs.
 
 namespace ast {
+    // Enumeration containing comparison operators used in guards.
+    enum comp_op { LT, LE, EQ, GE, GT };
+
     struct guard {
         std::string clock;
-        std::string guardOperator;
+        comp_op guardOperator;
         int comparingConstant;
     };
 

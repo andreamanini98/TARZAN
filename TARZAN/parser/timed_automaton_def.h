@@ -9,6 +9,19 @@
 #include "TARZAN/parser/timed_automaton.h"
 
 namespace timed_automaton {
+    inline struct comparison_op : boost::spirit::x3::symbols<ast::comp_op> {
+        comparison_op()
+        {
+            auto &self = add
+                    ("<", ast::comp_op::LT)
+                    ("<=", ast::comp_op::LE)
+                    ("=", ast::comp_op::EQ)
+                    (">=", ast::comp_op::GE)
+                    (">", ast::comp_op::GT);
+            (void) self;
+        }
+    } comparison_op;
+
     namespace parser {
         namespace x3 = boost::spirit::x3;
         namespace ascii = x3::ascii;
@@ -32,11 +45,8 @@ namespace timed_automaton {
         constexpr x3::rule<timedAutomaton_class, ast::timedAutomaton> timedAutomaton_rule = "timedAutomaton_rule";
         constexpr x3::rule<timedArena_class, ast::timedArena> timedArena_rule = "timedArena_rule";
 
-        inline auto literal = lexeme[+char_("a-zA-Z0-9_")];
-
-        // TODO: since this depends on the order of the operands, change the comparison_op into a symbol table
-        inline auto comp_op = lexeme[x3::string("<=") | x3::string(">=") | x3::string("<") | x3::string(">") |
-                                     x3::string("=")];
+        inline auto literal =
+                lexeme[+char_("a-zA-Z0-9_")];
 
         inline auto loc_pair_rule_def =
                 literal
@@ -61,7 +71,7 @@ namespace timed_automaton {
         inline auto guard_rule_def =
                 lit('(')
                 >> literal >> lit(',')
-                >> comp_op >> lit(',')
+                >> comparison_op >> lit(',')
                 >> int_
                 >> lit(')');
 
@@ -124,8 +134,11 @@ namespace timed_automaton {
                 >> lit('}')
                 >> lit('}');
 
-        BOOST_SPIRIT_DEFINE(loc_pair_rule, loc_map_rule,
-                            arena_loc_rule, arena_loc_pair_rule, arena_loc_map_rule,
+        BOOST_SPIRIT_DEFINE(loc_pair_rule,
+                            loc_map_rule,
+                            arena_loc_rule,
+                            arena_loc_pair_rule,
+                            arena_loc_map_rule,
                             guard_rule,
                             transition_rule,
                             timedAutomaton_rule,
