@@ -11,4 +11,6 @@ BOOST_FUSION_ADAPT_STRUCT(ast::transition, startingLocation, action, clockGuard,
 
 BOOST_FUSION_ADAPT_STRUCT(ast::timedAutomaton, name, clocks, actions, locations, transitions)
 
+BOOST_FUSION_ADAPT_STRUCT(ast::timedArena, name, clocks, actions, locations, transitions)
+
 #endif //AST_ADAPTED_H

@@ -23,9 +23,14 @@ namespace timed_automaton {
         constexpr x3::rule<loc_pair_class, ast::loc_pair> loc_pair_rule = "loc_pair_rule";
         constexpr x3::rule<loc_map_class, ast::loc_map> loc_map_rule = "loc_map_rule";
 
+        constexpr x3::rule<arena_loc_class, ast::arena_loc> arena_loc_rule = "arena_loc_rule";
+        constexpr x3::rule<arena_loc_pair_class, ast::arena_loc_pair> arena_loc_pair_rule = "arena_loc_pair_rule";
+        constexpr x3::rule<arena_loc_map_class, ast::arena_loc_map> arena_loc_map_rule = "arena_loc_map_rule";
+
         constexpr x3::rule<guard_class, ast::guard> guard_rule = "guard_rule";
         constexpr x3::rule<transition_class, ast::transition> transition_rule = "transition_rule";
         constexpr x3::rule<timedAutomaton_class, ast::timedAutomaton> timedAutomaton_rule = "timedAutomaton_rule";
+        constexpr x3::rule<timedArena_class, ast::timedArena> timedArena_rule = "timedArena_rule";
 
         inline auto literal = lexeme[+char_("a-zA-Z0-9_")];
 
@@ -40,10 +45,23 @@ namespace timed_automaton {
         inline auto loc_map_rule_def =
                 loc_pair_rule % ',';
 
+        inline auto arena_loc_rule_def =
+                lit('<')
+                >> lit("player") >> lit(':') >> (x3::char_('c') | x3::char_('e'))
+                >> -(lit(',') >> lit("initial") >> lit(':') >> bool_)
+                >> lit('>');
+
+        inline auto arena_loc_pair_rule_def =
+                literal
+                >> arena_loc_rule;
+
+        inline auto arena_loc_map_rule_def =
+                arena_loc_pair_rule % ',';
+
         inline auto guard_rule_def =
                 lit('(')
                 >> literal >> lit(',')
-                >> comp_op >> lit(',') // This should be enhanced to only capture correct operands like <, <=, etc
+                >> comp_op >> lit(',')
                 >> int_
                 >> lit(')');
 
@@ -83,7 +101,35 @@ namespace timed_automaton {
                 >> lit('}')
                 >> lit('}');
 
-        BOOST_SPIRIT_DEFINE(loc_pair_rule, loc_map_rule, guard_rule, transition_rule, timedAutomaton_rule);
+        inline auto timedArena_rule_def =
+                lit("create")
+                >> lit("arena")
+                >> literal
+                >> lit('{')
+                >> lit("clocks")
+                >> lit('{')
+                >> (literal % ',') >> lit(';')
+                >> lit('}')
+                >> lit("actions")
+                >> lit('{')
+                >> (literal % ',') >> lit(';')
+                >> lit('}')
+                >> lit("locations")
+                >> lit('{')
+                >> arena_loc_map_rule >> lit(';')
+                >> lit('}')
+                >> lit("transitions")
+                >> lit('{')
+                >> (transition_rule % ',') >> lit(';')
+                >> lit('}')
+                >> lit('}');
+
+        BOOST_SPIRIT_DEFINE(loc_pair_rule, loc_map_rule,
+                            arena_loc_rule, arena_loc_pair_rule, arena_loc_map_rule,
+                            guard_rule,
+                            transition_rule,
+                            timedAutomaton_rule,
+                            timedArena_rule);
     }
 
 
@@ -102,6 +148,12 @@ namespace timed_automaton {
     parser::timedAutomaton_type timedAutomaton()
     {
         return parser::timedAutomaton_rule;
+    }
+
+
+    parser::timedArena_type timedArena()
+    {
+        return parser::timedArena_rule;
     }
 }
 
