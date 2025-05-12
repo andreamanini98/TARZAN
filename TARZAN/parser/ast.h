@@ -1,21 +1,24 @@
 #ifndef AST_H
 #define AST_H
 
+#include "TARZAN/parser/comparison_op_enum.h"
+
 #include <boost/optional.hpp>
 
 #include <iostream>
 #include <vector>
 #include <map>
 
-// TODO: try to insert to_string functions here to print these structs.
+// TODO: insert to_string functions here (or in another header) to print these structs.
+
+// TODO: Use these to print in the executable and, if possible (but I don't think so) in the on_success handler.
+
+// TODO: comment the code
 
 namespace ast {
-    // Enumeration containing comparison operators used in guards.
-    enum comp_op { LT, LE, EQ, GE, GT };
-
     struct guard {
         std::string clock;
-        comp_op guardOperator;
+        comparison_op guardOperator;
         int comparingConstant;
     };
 

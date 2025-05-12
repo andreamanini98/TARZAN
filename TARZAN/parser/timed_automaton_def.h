@@ -7,20 +7,21 @@
 #include "TARZAN/parser/ast.h"
 #include "TARZAN/parser/ast_adapted.h"
 #include "TARZAN/parser/timed_automaton.h"
+#include "TARZAN/parser/parser_on_success_handler.h"
 
 namespace timed_automaton {
-    inline struct comparison_op : boost::spirit::x3::symbols<ast::comp_op> {
-        comparison_op()
+    inline struct comp_op : boost::spirit::x3::symbols<comparison_op> {
+        comp_op()
         {
             auto &self = add
-                    ("<", ast::comp_op::LT)
-                    ("<=", ast::comp_op::LE)
-                    ("=", ast::comp_op::EQ)
-                    (">=", ast::comp_op::GE)
-                    (">", ast::comp_op::GT);
+                    ("<", LT)
+                    ("<=", LE)
+                    ("=", EQ)
+                    (">=", GE)
+                    (">", GT);
             (void) self;
         }
-    } comparison_op;
+    } comp_op;
 
     namespace parser {
         namespace x3 = boost::spirit::x3;
@@ -71,7 +72,7 @@ namespace timed_automaton {
         inline auto guard_rule_def =
                 lit('(')
                 >> literal >> lit(',')
-                >> comparison_op >> lit(',')
+                >> comp_op >> lit(',')
                 >> int_
                 >> lit(')');
 
