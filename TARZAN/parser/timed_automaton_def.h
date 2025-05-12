@@ -1,6 +1,7 @@
 #ifndef TIMED_AUTOMATON_DEF_H
 #define TIMED_AUTOMATON_DEF_H
 
+#include <boost/fusion/adapted/std_pair.hpp>
 #include <boost/spirit/home/x3.hpp>
 
 #include "TARZAN/parser/ast.h"
@@ -19,17 +20,25 @@ namespace timed_automaton {
         using ascii::char_;
         using x3::bool_;
 
+        constexpr x3::rule<loc_pair_class, ast::loc_pair> loc_pair_rule = "loc_pair_rule";
+        constexpr x3::rule<loc_map_class, ast::loc_map> loc_map_rule = "loc_map_rule";
+
         constexpr x3::rule<guard_class, ast::guard> guard_rule = "guard_rule";
         constexpr x3::rule<transition_class, ast::transition> transition_rule = "transition_rule";
         constexpr x3::rule<timedAutomaton_class, ast::timedAutomaton> timedAutomaton_rule = "timedAutomaton_rule";
 
-        //TODO: extend it to account for arenas.
-
         inline auto literal = lexeme[+char_("a-zA-Z0-9_")];
 
         // TODO: since this depends on the order of the operands, change the comparison_op into a symbol table
-        inline auto comp_op = lexeme[x3::string("<=") | x3::string(">=") | x3::string("<") | x3::string(">") | x3::string("=")];
+        inline auto comp_op = lexeme[x3::string("<=") | x3::string(">=") | x3::string("<") | x3::string(">") |
+                                     x3::string("=")];
 
+        inline auto loc_pair_rule_def =
+                literal
+                >> -(lit('<') >> lit("initial") >> lit(':') >> bool_ >> lit('>'));
+
+        inline auto loc_map_rule_def =
+                loc_pair_rule % ',';
 
         inline auto guard_rule_def =
                 lit('(')
@@ -39,7 +48,7 @@ namespace timed_automaton {
                 >> lit(')');
 
         inline auto transition_rule_def =
-                lit('<')
+                lit('(')
                 >> literal >> lit(',')
                 >> literal >> lit(',')
                 >> lit('[')
@@ -49,7 +58,7 @@ namespace timed_automaton {
                 >> (literal % ',')
                 >> lit(']') >> lit(',')
                 >> literal
-                >> lit('>');
+                >> lit(')');
 
         inline auto timedAutomaton_rule_def =
                 lit("create")
@@ -66,7 +75,7 @@ namespace timed_automaton {
                 >> lit('}')
                 >> lit("locations")
                 >> lit('{')
-                >> (literal % ',') >> lit(';')
+                >> loc_map_rule >> lit(';')
                 >> lit('}')
                 >> lit("transitions")
                 >> lit('{')
@@ -74,7 +83,7 @@ namespace timed_automaton {
                 >> lit('}')
                 >> lit('}');
 
-        BOOST_SPIRIT_DEFINE(guard_rule, transition_rule, timedAutomaton_rule);
+        BOOST_SPIRIT_DEFINE(loc_pair_rule, loc_map_rule, guard_rule, transition_rule, timedAutomaton_rule);
     }
 
 

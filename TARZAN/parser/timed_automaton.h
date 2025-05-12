@@ -10,6 +10,9 @@ namespace timed_automaton {
         namespace x3 = boost::spirit::x3;
 
         // Tags for the rules.
+        struct loc_pair_class;
+        struct loc_map_class;
+
         struct guard_class;
         struct transition_class;
         struct timedAutomaton_class;
