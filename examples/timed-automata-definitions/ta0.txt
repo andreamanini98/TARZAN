@@ -1,0 +1,27 @@
+create automaton taTA_0
+{
+    clocks
+    {
+        x, y, z;
+    }
+
+    actions
+    {
+        a, b, c;
+    }
+
+    locations
+    {
+        q0 <initial: true>,
+        q1 <initial: false>,
+        q2 <initial: true>,
+        q3,
+        q4 <initial:true>;
+    }
+
+    transitions
+    {
+        (start, action, [(x, <, 4), (y, =, 5)], [x, y, z], target),
+        (start2, action2, [(x2, >=, 4), (y2, <=, 5)], [x2, y2, z2], target2);
+    }
+}

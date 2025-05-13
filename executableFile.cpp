@@ -10,7 +10,7 @@
 std::string readFromFile(const std::string &relativePath)
 {
     // Fixed path starting from the project root
-    std::string fullPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/timed-automata-definitions/" + relativePath;
+    std::string fullPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/examples/timed-automata-definitions/" + relativePath;
     // Adjust the number of "../" as needed
 
     std::ifstream file(fullPath);

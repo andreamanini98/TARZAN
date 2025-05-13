@@ -322,5 +322,4 @@ namespace timed_automaton::parser {
     };
 } // namespace timed_automaton::parser
 
-
 #endif //PARSER_ON_SUCCESS_HANDLERS_H

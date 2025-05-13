@@ -1,0 +1,27 @@
+create arena arena_0
+{
+    clocks
+    {
+        x, y, z;
+    }
+
+    actions
+    {
+        a, b, c;
+    }
+
+    locations
+    {
+        q0 <player: c, initial: true>,
+        q1 <player: e, initial: false>,
+        q2 <player: c>,
+        q3 <player: e>,
+        q4 <player: c, initial: true>;
+    }
+
+    transitions
+    {
+        (start, action, [(x, <, 4), (y, =, 5)], [x, y, z], target),
+        (start2, action2, [(x2, >=, 4), (y2, <=, 5)], [x2, y2, z2], target2);
+    }
+}
