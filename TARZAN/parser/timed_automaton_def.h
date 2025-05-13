@@ -7,7 +7,7 @@
 #include "TARZAN/parser/ast.h"
 #include "TARZAN/parser/ast_adapted.h"
 #include "TARZAN/parser/timed_automaton.h"
-#include "TARZAN/parser/parser_on_success_handler.h"
+#include "TARZAN/parser/rules_classes.h"
 
 namespace timed_automaton {
     inline struct comp_op : boost::spirit::x3::symbols<comparison_op> {
