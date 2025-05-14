@@ -3,8 +3,6 @@
 
 #include "TARZAN/parser/comparison_op_enum.h"
 
-#include <boost/optional.hpp>
-
 #include <iostream>
 #include <vector>
 #include <map>
@@ -31,8 +29,8 @@ namespace ast {
     };
 
     // Defining the map to hold Timed Automata locations.
-    using loc_pair = std::pair<std::string, boost::optional<bool>>;
-    using loc_map = std::map<std::string, boost::optional<bool>>;
+    using loc_pair = std::pair<std::string, std::optional<bool>>;
+    using loc_map = std::map<std::string, std::optional<bool>>;
 
     struct timedAutomaton {
         std::string name;
@@ -43,7 +41,7 @@ namespace ast {
     };
 
     // Defining the map to hold Timed Arenas locations.
-    using arena_loc = std::pair<char, boost::optional<bool>>;
+    using arena_loc = std::pair<char, std::optional<bool>>;
     using arena_loc_pair = std::pair<std::string, arena_loc>;
     using arena_loc_map = std::map<std::string, arena_loc>;
 

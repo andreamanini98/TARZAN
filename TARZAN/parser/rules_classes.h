@@ -10,7 +10,7 @@ namespace timed_automaton::parser {
         static void on_success(Iterator const &first, Iterator const &last, T &, Context const &)
         {
             const std::string input(first, last);
-            std::cout << "[PARSER] Matched : " << input << std::endl;
+            std::cout << "[PARSER] Matched:\n" << input << std::endl;
         }
     };
 
