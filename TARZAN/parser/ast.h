@@ -13,7 +13,7 @@
 
 // TODO: comment the code
 
-namespace ast {
+namespace timed_automaton::ast {
     struct guard {
         std::string clock;
         comparison_op guardOperator;

@@ -1,10 +1,13 @@
 #include "TARZAN/parser/ast.h"
 #include "TARZAN/parser/timed_automaton.h"
+#include "TARZAN/parser/error_handler.h"
+#include "TARZAN/parser/config.h"
 
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <filesystem>
+#include <sstream>
 
 
 std::string readFromFile(const std::string &relativePath)
@@ -30,91 +33,106 @@ std::string readFromFile(const std::string &relativePath)
 }
 
 
-int main()
+std::string parse(std::string const &source)
 {
-    // TODO: clear this mess and make it suitable for testing the parsing of only a timed automaton.
-    // maybe override to_string for timedAutomaton struct.
+    std::stringstream out;
 
+    using timed_automaton::parser::iterator_type;
+    iterator_type iter(source.begin());
+    iterator_type const end(source.end());
+
+    // Our AST
+    timed_automaton::ast::timedArena ast;
+
+    // Our error handler
+    using boost::spirit::x3::with;
+    using timed_automaton::parser::error_handler_type;
+    using timed_automaton::parser::error_handler_tag;
+    // TODO: replace with the path of the file under parsing.
+    error_handler_type error_handler(iter, end, out, "/Users"); // Our error handler
+
+    // Our parser
+    auto const parser =
+            // we pass our error handler to the parser so we can access
+            // it later on in our on_error and on_success handlers
+            with<error_handler_tag>(std::ref(error_handler))
+            [
+                timed_automaton::timedArena()
+            ];
+
+    // Go forth and parse!
     using boost::spirit::x3::ascii::space;
-    using iterator_type = std::string::const_iterator;
-    namespace x3 = boost::spirit::x3;
+    bool success = phrase_parse(iter, end, parser, space, ast);
 
-
-    // TESTING TIMED AUTOMATON
-
-    ast::timedAutomaton ta;
-
-    std::string newstr = readFromFile("ta0.txt");
-    std::cout << newstr << std::endl;
-    iterator_type iter = newstr.begin();
-    iterator_type const end = newstr.end();
-
-    // Make sure iter is pointing to 'c'
-    if (iter != end)
+    if (success)
     {
-        std::cout << "Full parser input starts with: '" << *iter << "'" << std::endl;
-    }
-
-    // Crucially, get the rule from the global namespace function
-    auto const &automaton_parser_rule = timed_automaton::timedAutomaton(); // Correct way to get the rule
-
-    bool r = x3::phrase_parse(iter, end, automaton_parser_rule, space, ta);
-
-    if (r && iter == end)
-    {
-        std::cout << "-------------------------\n";
-        std::cout << "Parsing succeeded\n";
-        std::cout << "ta name: " << ta.name << std::endl;
-    } else
-    {
-        std::cout << "-------------------------\n";
-        std::cout << "Parsing failed\n";
         if (iter != end)
         {
-            // TODO: can we print where we are when parsing?
-            std::cout << "Failed at: '" << *iter << "' (char code: " << static_cast<int>(*iter) << ")" << std::endl;
-            // Print a bit of context
-            std::cout << "Context: \"";
-            for (auto c_iter = iter; c_iter != end && std::distance(iter, c_iter) < 20; ++c_iter)
-            {
-                std::cout << *c_iter;
-            }
-            std::cout << "...\"" << std::endl;
+            error_handler(iter, "Error! Expecting end of input here: ");
         } else
-        {
-            std::cout << "Failed at end of input, but not all input consumed." << std::endl;
-        }
-        std::cout << "-------------------------\n";
-    }
+            std::cerr << "SUCCESSful parsing" << std::endl;
+    } else
+        std::cerr << "Wrong parsing" << std::endl;
+
+    return out.str();
+};
 
 
-    // TESTING ARENA
+int main()
+{
+    std::cout << parse(readFromFile("arena0.txt")) << std::endl;
 
-    ast::timedArena arena;
-
-    std::string tarstr = readFromFile("arena0.txt");
-    std::cout << newstr << std::endl;
-    iterator_type iter2 = tarstr.begin();
-    iterator_type const end2 = tarstr.end();
-
-    // Make sure iter is pointing to 'c'
-    if (iter2 != end2)
-    {
-        std::cout << "Full parser input starts with: '" << *iter2 << "'" << std::endl;
-    }
-
-    // Crucially, get the rule from the global namespace function
-    auto const &timed_arena_parser_rule = timed_automaton::timedArena(); // Correct way to get the rule
-
-    bool r2 = x3::phrase_parse(iter2, end2, timed_arena_parser_rule, space, arena);
-
-    if (r2 && iter2 == end2)
-    {
-        std::cout << "-------------------------\n";
-        std::cout << "Arena parsing succeeded\n";
-        std::cout << "arena name: " << arena.name << std::endl;
-    }
-
+    // using boost::spirit::x3::ascii::space;
+    // using iterator_type = std::string::const_iterator;
+    // namespace x3 = boost::spirit::x3;
+    //
+    //
+    // // TESTING TIMED AUTOMATON
+    //
+    // timed_automaton::ast::timedAutomaton ta;
+    //
+    // std::string newstr = readFromFile("ta0.txt");
+    // std::cout << newstr << std::endl;
+    // iterator_type iter = newstr.begin();
+    // iterator_type const end = newstr.end();
+    //
+    // // Make sure iter is pointing to 'c'
+    // if (iter != end)
+    // {
+    //     std::cout << "Full parser input starts with: '" << *iter << "'" << std::endl;
+    // }
+    //
+    // // Crucially, get the rule from the global namespace function
+    // auto const &automaton_parser_rule = timed_automaton::timedAutomaton(); // Correct way to get the rule
+    //
+    // bool r = x3::phrase_parse(iter, end, automaton_parser_rule, space, ta);
+    //
+    // if (r && iter == end)
+    // {
+    //     std::cout << "-------------------------\n";
+    //     std::cout << "Parsing succeeded\n";
+    //     std::cout << "ta name: " << ta.name << std::endl;
+    // } else
+    // {
+    //     std::cout << "-------------------------\n";
+    //     std::cout << "Parsing failed\n";
+    //     if (iter != end)
+    //     {
+    //         // TODO: can we print where we are when parsing?
+    //         std::cout << "Failed at: '" << *iter << "' (char code: " << static_cast<int>(*iter) << ")" << std::endl;
+    //         // Print a bit of context
+    //         std::cout << "Context: \"";
+    //         for (auto c_iter = iter; c_iter != end && std::distance(iter, c_iter) < 20; ++c_iter)
+    //         {
+    //             std::cout << *c_iter;
+    //         }
+    //         std::cout << "...\"" << std::endl;
+    //     } else
+    //     {
+    //         std::cout << "Failed at end of input, but not all input consumed." << std::endl;
+    //     }
+    //     std::cout << "-------------------------\n";
+    // }
 
     return 0;
 }

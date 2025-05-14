@@ -2,8 +2,8 @@
 #include "TARZAN/parser/config.h"
 
 namespace timed_automaton::parser {
-    using ::parser::iterator_type;
-    using ::parser::context_type;
+    using parser::iterator_type;
+    using parser::context_type;
 
     BOOST_SPIRIT_INSTANTIATE(guard_type, iterator_type, context_type);
 

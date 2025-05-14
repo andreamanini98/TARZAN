@@ -6,8 +6,8 @@
 
 #include "TARZAN/parser/ast.h"
 #include "TARZAN/parser/ast_adapted.h"
+#include "TARZAN/parser/error_handler.h"
 #include "TARZAN/parser/timed_automaton.h"
-#include "TARZAN/parser/rules_classes.h"
 
 namespace timed_automaton {
     inline struct comp_op : boost::spirit::x3::symbols<comparison_op> {
@@ -51,89 +51,89 @@ namespace timed_automaton {
 
         inline auto loc_pair_rule_def =
                 literal
-                >> -(lit('<') >> lit("initial") >> lit(':') >> bool_ >> lit('>'));
+                > -(lit('<') > lit("initial") > lit(':') > bool_ > lit('>'));
 
         inline auto loc_map_rule_def =
                 loc_pair_rule % ',';
 
         inline auto arena_loc_rule_def =
                 lit('<')
-                >> lit("player") >> lit(':') >> (x3::char_('c') | x3::char_('e'))
-                >> -(lit(',') >> lit("initial") >> lit(':') >> bool_)
-                >> lit('>');
+                > lit("player") > lit(':') > (x3::char_('c') | x3::char_('e'))
+                > -(lit(',') > lit("initial") > lit(':') > bool_)
+                > lit('>');
 
         inline auto arena_loc_pair_rule_def =
                 literal
-                >> arena_loc_rule;
+                > arena_loc_rule;
 
         inline auto arena_loc_map_rule_def =
                 arena_loc_pair_rule % ',';
 
         inline auto guard_rule_def =
                 lit('(')
-                >> literal >> lit(',')
-                >> comp_op >> lit(',')
-                >> int_
-                >> lit(')');
+                > literal > lit(',')
+                > comp_op > lit(',')
+                > int_
+                > lit(')');
 
         inline auto transition_rule_def =
                 lit('(')
-                >> literal >> lit(',')
-                >> literal >> lit(',')
-                >> lit('[')
-                >> (guard_rule % ',')
-                >> lit(']') >> lit(',')
-                >> lit('[')
-                >> (literal % ',')
-                >> lit(']') >> lit(',')
-                >> literal
-                >> lit(')');
+                > literal > lit(',')
+                > literal > lit(',')
+                > lit('[')
+                > guard_rule % ','
+                > lit(']') > lit(',')
+                > lit('[')
+                > literal % ','
+                > lit(']') > lit(',')
+                > literal
+                > lit(')');
 
         inline auto timedAutomaton_rule_def =
                 lit("create")
-                >> lit("automaton")
-                >> literal
-                >> lit('{')
-                >> lit("clocks")
-                >> lit('{')
-                >> (literal % ',') >> lit(';')
-                >> lit('}')
-                >> lit("actions")
-                >> lit('{')
-                >> (literal % ',') >> lit(';')
-                >> lit('}')
-                >> lit("locations")
-                >> lit('{')
-                >> loc_map_rule >> lit(';')
-                >> lit('}')
-                >> lit("transitions")
-                >> lit('{')
-                >> (transition_rule % ',') >> lit(';')
-                >> lit('}')
-                >> lit('}');
+                > lit("automaton")
+                > literal
+                > lit('{')
+                > lit("clocks")
+                > lit('{')
+                > literal % ',' > lit(';')
+                > lit('}')
+                > lit("actions")
+                > lit('{')
+                > literal % ',' > lit(';')
+                > lit('}')
+                > lit("locations")
+                > lit('{')
+                > loc_map_rule > lit(';')
+                > lit('}')
+                > lit("transitions")
+                > lit('{')
+                > transition_rule % ',' > lit(';')
+                > lit('}')
+                > lit('}');
 
         inline auto timedArena_rule_def =
                 lit("create")
-                >> lit("arena")
-                >> literal
-                >> lit('{')
-                >> lit("clocks")
-                >> lit('{')
-                >> (literal % ',') >> lit(';')
-                >> lit('}')
-                >> lit("actions")
-                >> lit('{')
-                >> (literal % ',') >> lit(';')
-                >> lit('}')
-                >> lit("locations")
-                >> lit('{')
-                >> arena_loc_map_rule >> lit(';')
-                >> lit('}')
-                >> lit("transitions")
-                >> lit('{')
-                >> (transition_rule % ',') >> lit(';')
-                >> lit('}')
-                >> lit('}');
+                > lit("arena")
+                > literal
+                > lit('{')
+                > lit("clocks")
+                > lit('{')
+                > literal % ',' > lit(';')
+                > lit('}')
+                > lit("actions")
+                > lit('{')
+                > literal % ',' > lit(';')
+                > lit('}')
+                > lit("locations")
+                > lit('{')
+                > arena_loc_map_rule > lit(';')
+                > lit('}')
+                > lit("transitions")
+                > lit('{')
+                > transition_rule % ',' > lit(';')
+                > lit('}')
+                > lit('}');
 
         BOOST_SPIRIT_DEFINE(loc_pair_rule,
                             loc_map_rule,
@@ -144,9 +144,37 @@ namespace timed_automaton {
                             transition_rule,
                             timedAutomaton_rule,
                             timedArena_rule);
+
+        // struct loc_pair_class : error_handler_base {
+        // };
+        //
+        // struct loc_map_class : error_handler_base {
+        // };
+        //
+        // struct arena_loc_class : error_handler_base {
+        // };
+        //
+        // struct arena_loc_pair_class : error_handler_base {
+        // };
+        //
+        // struct arena_loc_map_class : error_handler_base {
+        // };
+        //
+        // struct guard_class : error_handler_base {
+        // };
+        //
+        // struct transition_class : error_handler_base {
+        // };
+
+        struct timedAutomaton_class : error_handler_base {
+        };
+
+        struct timedArena_class : error_handler_base {
+        };
     }
+}
 
-
+namespace timed_automaton {
     parser::guard_type guard()
     {
         return parser::guard_rule;

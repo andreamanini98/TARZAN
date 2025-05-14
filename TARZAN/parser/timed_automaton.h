@@ -2,13 +2,23 @@
 #define TIMED_AUTOMATON_H
 
 #include "TARZAN/parser/ast.h"
-#include "TARZAN/parser/rules_classes.h"
+// #include "TARZAN/parser/rules_classes.h"
 
 #include <boost/spirit/home/x3.hpp>
 
 namespace timed_automaton {
     namespace parser {
         namespace x3 = boost::spirit::x3;
+
+        struct loc_pair_class;
+        struct loc_map_class;
+        struct arena_loc_class;
+        struct arena_loc_pair_class;
+        struct arena_loc_map_class;
+        struct guard_class;
+        struct transition_class;
+        struct timedAutomaton_class;
+        struct timedArena_class;
 
         using guard_type = x3::rule<guard_class, ast::guard>;
         using transition_type = x3::rule<transition_class, ast::transition>;
