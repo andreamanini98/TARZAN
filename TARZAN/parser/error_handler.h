@@ -32,7 +32,7 @@ namespace timed_automaton::parser {
     {
         const std::string which = x.which();
 
-        std::string message = "Error! Expecting: " + which + " here:";
+        std::string message = "[PARSER] Error! Expecting: " + which + " here:";
         auto &error_handler = x3::get<error_handler_tag>(context).get();
         error_handler(x.where(), message);
 

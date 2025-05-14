@@ -8,6 +8,7 @@
 #include "TARZAN/parser/ast_adapted.h"
 #include "TARZAN/parser/error_handler.h"
 #include "TARZAN/parser/timed_automaton.h"
+#include "TARZAN/parser/success_handler.h"
 
 namespace timed_automaton {
     inline struct comp_op : boost::spirit::x3::symbols<comparison_op> {
@@ -145,31 +146,31 @@ namespace timed_automaton {
                             timedAutomaton_rule,
                             timedArena_rule);
 
-        // struct loc_pair_class : error_handler_base {
-        // };
-        //
-        // struct loc_map_class : error_handler_base {
-        // };
-        //
-        // struct arena_loc_class : error_handler_base {
-        // };
-        //
-        // struct arena_loc_pair_class : error_handler_base {
-        // };
-        //
-        // struct arena_loc_map_class : error_handler_base {
-        // };
-        //
-        // struct guard_class : error_handler_base {
-        // };
-        //
-        // struct transition_class : error_handler_base {
-        // };
-
-        struct timedAutomaton_class : error_handler_base {
+        struct loc_pair_class : success_handler {
         };
 
-        struct timedArena_class : error_handler_base {
+        struct loc_map_class : success_handler {
+        };
+
+        struct arena_loc_class : success_handler {
+        };
+
+        struct arena_loc_pair_class : success_handler {
+        };
+
+        struct arena_loc_map_class : success_handler {
+        };
+
+        struct guard_class : success_handler {
+        };
+
+        struct transition_class : success_handler {
+        };
+
+        struct timedAutomaton_class : error_handler_base, success_handler {
+        };
+
+        struct timedArena_class : error_handler_base, success_handler {
         };
     }
 }
