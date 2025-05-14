@@ -8,7 +8,7 @@ enum comparison_op { LT, LE, EQ, GE, GT };
 
 
 // Operator to convert comp_op to string
-inline std::string to_string(const comparison_op op)
+inline std::string comparison_op_to_string(const comparison_op op)
 {
     switch (op)
     {
@@ -25,8 +25,7 @@ inline std::string to_string(const comparison_op op)
 // Stream operator for convenient printing
 inline std::ostream &operator<<(std::ostream &os, const comparison_op op)
 {
-    os << to_string(op);
-    return os;
+    return os << comparison_op_to_string(op);
 }
 
 #endif //COMPARISON_OP_ENUM_H

@@ -33,7 +33,9 @@ std::string readFromFile(const std::string &relativePath)
 }
 
 
-std::string parse(std::string const &source)
+// TODO: this parse function is ok, you can enhance this and make it a library function.
+// TODO: then, you create another fot the arena, maybe you can reuse some code
+timed_automaton::ast::timedArena parse_Arena(std::string const &source)
 {
     std::stringstream out;
 
@@ -74,13 +76,15 @@ std::string parse(std::string const &source)
     } else
         std::cerr << "Wrong parsing" << std::endl;
 
-    return out.str();
+    return ast;
 };
 
 
 int main()
 {
-    std::cout << parse(readFromFile("arena0.txt")) << std::endl;
+    timed_automaton::ast::timedArena arena = parse_Arena(readFromFile("arena0.txt"));
+    std::cout << "\n\n\n PARSED ARENA \n" << std::endl;
+    std::cout << arena << std::endl;
 
     // using boost::spirit::x3::ascii::space;
     // using iterator_type = std::string::const_iterator;

@@ -17,7 +17,7 @@ struct success_handler {
 
         std::cout << "[PARSER] Successful match!" << std::endl;
         std::cout << "Rule: " << name << std::endl;
-        std::cout << input << std::endl;
+        std::cout << "Parsed input:\n" << input << std::endl;
     }
 };
 
