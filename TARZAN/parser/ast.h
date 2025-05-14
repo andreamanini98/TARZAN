@@ -11,17 +11,16 @@
 // TODO: comment the code
 
 namespace timed_automaton::ast {
-    // TODO: this should be called "clock constraint"
-    struct guard {
+    struct clockConstraint {
         std::string clock;
-        comparison_op guardOperator; // TODO: also this must be called clock constraint operator
+        comparison_op constraintOperator;
         int comparingConstant;
 
 
         std::string to_string() const
         {
             std::ostringstream oss;
-            oss << clock << " " << guardOperator << " " << comparingConstant;
+            oss << clock << " " << constraintOperator << " " << comparingConstant;
             return oss.str();
         }
     };
@@ -30,7 +29,7 @@ namespace timed_automaton::ast {
     struct transition {
         std::string startingLocation;
         std::string action;
-        std::vector<guard> clockGuard; // TODO; maybe find a better name, a 'guard' should be called a clock constraint
+        std::vector<clockConstraint> clockGuard;
         std::vector<std::string> clocksToReset;
         std::string targetLocation;
 
@@ -38,13 +37,10 @@ namespace timed_automaton::ast {
         std::string to_string() const
         {
             std::ostringstream oss;
-            oss << "(" << startingLocation << ", " << action << ", " << "[";
-            // TODO: rename also here to clock constraint
-            oss << join_elements(clockGuard, " and ");
-            oss << "], [";
-            oss << join_elements(clocksToReset, ", "), // TODO: rename also here to clock constraint
-                    oss << "], ";
-            oss << targetLocation << ")";
+            oss << "(" << startingLocation << ", " << action << ", "
+                    << "[" << join_elements(clockGuard, " and ") << "],"
+                    << "[" << join_elements(clocksToReset, ", ") << "], "
+                    << targetLocation << ")";
             return oss.str();
         }
     };
@@ -78,7 +74,7 @@ namespace timed_automaton::ast {
                     oss << "null_opt";
                 oss << std::endl;
             }
-            oss << "Transitions: " << join_elements(transitions, "\n") << std::endl;
+            oss << "Transitions:\n" << join_elements(transitions, "\n") << std::endl;
             return oss.str();
         }
     };
@@ -121,7 +117,7 @@ namespace timed_automaton::ast {
 }
 
 
-inline std::ostream &operator<<(std::ostream &os, const timed_automaton::ast::guard &g)
+inline std::ostream &operator<<(std::ostream &os, const timed_automaton::ast::clockConstraint &g)
 {
     return os << g.to_string();
 }

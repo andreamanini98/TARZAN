@@ -5,7 +5,7 @@
 
 #include <boost/fusion/include/adapt_struct.hpp>
 
-BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::guard, clock, guardOperator, comparingConstant)
+BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::clockConstraint, clock, constraintOperator, comparingConstant)
 
 BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::transition, startingLocation, action, clockGuard, clocksToReset, targetLocation)
 

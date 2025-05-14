@@ -2,7 +2,6 @@
 #define TIMED_AUTOMATON_H
 
 #include "TARZAN/parser/ast.h"
-// #include "TARZAN/parser/rules_classes.h"
 
 #include <boost/spirit/home/x3.hpp>
 
@@ -15,20 +14,20 @@ namespace timed_automaton {
         struct arena_loc_class;
         struct arena_loc_pair_class;
         struct arena_loc_map_class;
-        struct guard_class;
+        struct clockConstraint_class;
         struct transition_class;
         struct timedAutomaton_class;
         struct timedArena_class;
 
-        using guard_type = x3::rule<guard_class, ast::guard>;
+        using clockConstraint_type = x3::rule<clockConstraint_class, ast::clockConstraint>;
         using transition_type = x3::rule<transition_class, ast::transition>;
         using timedAutomaton_type = x3::rule<timedAutomaton_class, ast::timedAutomaton>;
         using timedArena_type = x3::rule<timedArena_class, ast::timedArena>;
 
-        BOOST_SPIRIT_DECLARE(guard_type, transition_type, timedAutomaton_type, timedArena_type);
+        BOOST_SPIRIT_DECLARE(clockConstraint_type, transition_type, timedAutomaton_type, timedArena_type);
     }
 
-    parser::guard_type guard();
+    parser::clockConstraint_type clockConstraint();
 
     parser::transition_type transition();
 

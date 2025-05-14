@@ -42,7 +42,7 @@ namespace timed_automaton {
         constexpr x3::rule<arena_loc_pair_class, ast::arena_loc_pair> arena_loc_pair_rule = "arena_loc_pair_rule";
         constexpr x3::rule<arena_loc_map_class, ast::arena_loc_map> arena_loc_map_rule = "arena_loc_map_rule";
 
-        constexpr x3::rule<guard_class, ast::guard> guard_rule = "guard_rule";
+        constexpr x3::rule<clockConstraint_class, ast::clockConstraint> clockConstraint_rule = " clockConstraint_rule";
         constexpr x3::rule<transition_class, ast::transition> transition_rule = "transition_rule";
         constexpr x3::rule<timedAutomaton_class, ast::timedAutomaton> timedAutomaton_rule = "timedAutomaton_rule";
         constexpr x3::rule<timedArena_class, ast::timedArena> timedArena_rule = "timedArena_rule";
@@ -70,7 +70,7 @@ namespace timed_automaton {
         inline auto arena_loc_map_rule_def =
                 arena_loc_pair_rule % ',';
 
-        inline auto guard_rule_def =
+        inline auto clockConstraint_rule_def =
                 lit('(')
                 > literal > lit(',')
                 > comp_op > lit(',')
@@ -82,7 +82,7 @@ namespace timed_automaton {
                 > literal > lit(',')
                 > literal > lit(',')
                 > lit('[')
-                > guard_rule % ','
+                > clockConstraint_rule % ','
                 > lit(']') > lit(',')
                 > lit('[')
                 > literal % ','
@@ -141,7 +141,7 @@ namespace timed_automaton {
                             arena_loc_rule,
                             arena_loc_pair_rule,
                             arena_loc_map_rule,
-                            guard_rule,
+                            clockConstraint_rule,
                             transition_rule,
                             timedAutomaton_rule,
                             timedArena_rule);
@@ -161,7 +161,7 @@ namespace timed_automaton {
         struct arena_loc_map_class : success_handler {
         };
 
-        struct guard_class : success_handler {
+        struct clockConstraint_class : success_handler {
         };
 
         struct transition_class : success_handler {
@@ -176,9 +176,9 @@ namespace timed_automaton {
 }
 
 namespace timed_automaton {
-    parser::guard_type guard()
+    parser::clockConstraint_type clockConstraint()
     {
-        return parser::guard_rule;
+        return parser::clockConstraint_rule;
     }
 
 
