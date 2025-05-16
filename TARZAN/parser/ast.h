@@ -48,7 +48,7 @@ namespace timed_automaton::ast {
 
     // Defining the map to hold Timed Automata locations.
     using loc_pair = std::pair<std::string, std::optional<bool>>;
-    using loc_map = std::map<std::string, std::optional<bool>>;
+    using loc_map = std::unordered_map<std::string, std::optional<bool>>;
 
     struct timedAutomaton {
         std::string name;
@@ -83,7 +83,7 @@ namespace timed_automaton::ast {
     // Defining the map to hold Timed Arenas locations.
     using arena_loc = std::pair<char, std::optional<bool>>;
     using arena_loc_pair = std::pair<std::string, arena_loc>;
-    using arena_loc_map = std::map<std::string, arena_loc>;
+    using arena_loc_map = std::unordered_map<std::string, arena_loc>;
 
     struct timedArena {
         std::string name;
