@@ -17,7 +17,7 @@ namespace timed_automaton::ast {
         int comparingConstant;
 
 
-        std::string to_string() const
+        [[nodiscard]] std::string to_string() const
         {
             std::ostringstream oss;
             oss << clock << " " << constraintOperator << " " << comparingConstant;
@@ -34,7 +34,7 @@ namespace timed_automaton::ast {
         std::string targetLocation;
 
 
-        std::string to_string() const
+        [[nodiscard]] std::string to_string() const
         {
             std::ostringstream oss;
             oss << "(" << startingLocation << ", " << action << ", "
@@ -58,7 +58,7 @@ namespace timed_automaton::ast {
         std::vector<transition> transitions;
 
 
-        std::string to_string() const
+        [[nodiscard]] std::string to_string() const
         {
             std::ostringstream oss;
             oss << "Timed Automaton " << name << std::endl;
@@ -93,7 +93,7 @@ namespace timed_automaton::ast {
         std::vector<transition> transitions;
 
 
-        std::string to_string() const
+        [[nodiscard]] std::string to_string() const
         {
             std::ostringstream oss;
             oss << "Timed Arena " << name << std::endl;
