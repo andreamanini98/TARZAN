@@ -1,7 +1,7 @@
-#include "TARZAN/parser/ast.h"
-#include "TARZAN/parser/timed_automaton.h"
-#include "TARZAN/parser/error_handler.h"
-#include "TARZAN/parser/config.h"
+#include "parser/ast.h"
+#include "parser/timed_automaton.h"
+#include "parser/error_handler.h"
+#include "parser/config.h"
 
 #include <iostream>
 #include <string>
@@ -10,10 +10,21 @@
 #include <sstream>
 
 
+/// This is a doxygen comment
+///
+/// Long comment
+/// ~~~.cpp
+/// int x = 5; // comment
+/// ~~~
+/// @param relativePath: the path of the file to read.
+/// @returns a string of the read file.
+/// @note test note
+/// @attention attention test
+/// @warning warning test
 std::string readFromFile(const std::string &relativePath)
 {
     // Fixed path starting from the project root
-    std::string fullPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/examples/timed-automata-definitions/" + relativePath;
+    std::string fullPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/" + relativePath;
     // Adjust the number of "../" as needed
 
     std::ifstream file(fullPath);

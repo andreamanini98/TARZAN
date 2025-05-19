@@ -5,6 +5,9 @@
 # Created directories.
 /output/
 /debug/
+/doc/
+/build/
+/executables/
 
 # Compiled object files.
 *.o
