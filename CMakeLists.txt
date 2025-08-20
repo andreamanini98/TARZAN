@@ -59,6 +59,8 @@ endif ()
 
 
 # Find Boost libraries.
+# TODO: delete the line below (keep only find_package(Boost 1.89.0 REQUIRED system filesystem) when they fix the 1.89 build bug)
+set(BOOST_ROOT "/Users/echo/Desktop/boostinstall")
 find_package(Boost 1.88.0 REQUIRED system filesystem)
 
 
