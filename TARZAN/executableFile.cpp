@@ -6,46 +6,44 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <filesystem>
 #include <sstream>
 
+// TODO: move this parsing function into the library.h and library.cpp files.
 
-/// This is a doxygen comment
-///
-/// Long comment
-/// ~~~.cpp
-/// int x = 5; // comment
-/// ~~~
-/// @param relativePath: the path of the file to read.
-/// @returns a string of the read file.
-/// @note test note
-/// @attention attention test
-/// @warning warning test
-std::string readFromFile(const std::string &relativePath)
+
+/** This is a doxygen comment
+*
+* Long comment
+* ~~~.cpp
+* int x = 5; // comment
+* ~~~
+* @param absolutePath: the absolute path in which the file to read is located.
+* @param fileName the name of the file to read.
+* @returns a string of the read file.
+* @note test note
+* @attention attention test
+* @warning warning test
+**/
+std::string readFromFile(const std::string &absolutePath, const std::string &fileName)
 {
-    // Fixed path starting from the project root
-    std::string fullPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/" + relativePath;
-    // Adjust the number of "../" as needed
+    const std::string fullPath = absolutePath + fileName;
 
     std::ifstream file(fullPath);
     if (!file.is_open())
     {
         std::cerr << "Attempted to open: " << fullPath << std::endl;
-        throw std::runtime_error("Failed to open file: " + relativePath);
+        throw std::runtime_error("Failed to open file: " + fileName);
     }
 
-    std::string content{
-        std::istreambuf_iterator<char>(file),
-        std::istreambuf_iterator<char>()
-    };
+    std::string content{ std::istreambuf_iterator(file), std::istreambuf_iterator<char>() };
 
     file.close();
     return content;
 }
 
 
-// TODO: with this parse function the error handling works again, investigate why
-std::string parse(std::string const &source)
+// TODO: make this return the arena (or the automaton).
+std::string parseTimedArena(std::string const &source, std::string const &absolutePath)
 {
     std::stringstream out;
 
@@ -53,36 +51,30 @@ std::string parse(std::string const &source)
     iterator_type iter(source.begin());
     iterator_type const end(source.end());
 
-    // Our AST
+    // Our AST.
     timed_automaton::ast::timedArena ast;
 
-    // Our error handler
+    // Our error handler.
     using boost::spirit::x3::with;
     using timed_automaton::parser::error_handler_type;
     using timed_automaton::parser::error_handler_tag;
-    // TODO: replace with the path of the file under parsing.
-    error_handler_type error_handler(iter, end, out, "/Users"); // Our error handler
+    error_handler_type error_handler(iter, end, out, absolutePath);
 
-    // Our parser
-    auto const parser =
-            // we pass our error handler to the parser so we can access
-            // it later on in our on_error and on_success handlers
-            with<error_handler_tag>(std::ref(error_handler))
-            [
-                timed_automaton::timedArena()
-            ];
+    // Our parser.
+    // We pass our error handler to the parser so we can access it later on in our on_error and on_success handlers.
+    auto const parser = with<error_handler_tag>(std::ref(error_handler))[timed_automaton::timedArena()];
 
-    // Go forth and parse!
+    // Now we parse.
     using boost::spirit::x3::ascii::space;
+    // ReSharper disable once CppTooWideScope
     bool success = phrase_parse(iter, end, parser, space, ast);
 
     if (success)
     {
         if (iter != end)
-        {
             error_handler(iter, "Error! Expecting end of input here: ");
-        } else
-            std::cerr << "SUCCESSful parsing" << std::endl;
+        else
+            std::cerr << "SUCCESSFUL parsing" << std::endl;
     } else
         std::cerr << "Wrong parsing" << std::endl;
 
@@ -92,59 +84,9 @@ std::string parse(std::string const &source)
 
 int main()
 {
-    std::cout << parse(readFromFile("arena0.txt")) << std::endl;
-
-    // using boost::spirit::x3::ascii::space;
-    // using iterator_type = std::string::const_iterator;
-    // namespace x3 = boost::spirit::x3;
-    //
-    //
-    // // TESTING TIMED AUTOMATON
-    //
-    // timed_automaton::ast::timedAutomaton ta;
-    //
-    // std::string newstr = readFromFile("ta0.txt");
-    // std::cout << newstr << std::endl;
-    // iterator_type iter = newstr.begin();
-    // iterator_type const end = newstr.end();
-    //
-    // // Make sure iter is pointing to 'c'
-    // if (iter != end)
-    // {
-    //     std::cout << "Full parser input starts with: '" << *iter << "'" << std::endl;
-    // }
-    //
-    // // Crucially, get the rule from the global namespace function
-    // auto const &automaton_parser_rule = timed_automaton::timedAutomaton(); // Correct way to get the rule
-    //
-    // bool r = x3::phrase_parse(iter, end, automaton_parser_rule, space, ta);
-    //
-    // if (r && iter == end)
-    // {
-    //     std::cout << "-------------------------\n";
-    //     std::cout << "Parsing succeeded\n";
-    //     std::cout << "ta name: " << ta.name << std::endl;
-    // } else
-    // {
-    //     std::cout << "-------------------------\n";
-    //     std::cout << "Parsing failed\n";
-    //     if (iter != end)
-    //     {
-    //         // TODO: can we print where we are when parsing?
-    //         std::cout << "Failed at: '" << *iter << "' (char code: " << static_cast<int>(*iter) << ")" << std::endl;
-    //         // Print a bit of context
-    //         std::cout << "Context: \"";
-    //         for (auto c_iter = iter; c_iter != end && std::distance(iter, c_iter) < 20; ++c_iter)
-    //         {
-    //             std::cout << *c_iter;
-    //         }
-    //         std::cout << "...\"" << std::endl;
-    //     } else
-    //     {
-    //         std::cout << "Failed at end of input, but not all input consumed." << std::endl;
-    //     }
-    //     std::cout << "-------------------------\n";
-    // }
+    const std::string absolutePath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+    const std::string fileName = "arena0.txt";
+    std::cout << parseTimedArena(readFromFile(absolutePath, fileName), absolutePath + fileName) << std::endl;
 
     return 0;
 }

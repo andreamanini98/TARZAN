@@ -38,7 +38,7 @@ namespace timed_automaton::ast {
         {
             std::ostringstream oss;
             oss << "(" << startingLocation << ", " << action << ", "
-                    << "[" << join_elements(clockGuard, " and ") << "],"
+                    << "[" << join_elements(clockGuard, " and ") << "], "
                     << "[" << join_elements(clocksToReset, ", ") << "], "
                     << targetLocation << ")";
             return oss.str();
@@ -49,6 +49,7 @@ namespace timed_automaton::ast {
     // Defining the map to hold Timed Automata locations.
     using loc_pair = std::pair<std::string, std::optional<bool>>;
     using loc_map = std::unordered_map<std::string, std::optional<bool>>;
+
 
     struct timedAutomaton {
         std::string name;
@@ -84,6 +85,7 @@ namespace timed_automaton::ast {
     using arena_loc = std::pair<char, std::optional<bool>>;
     using arena_loc_pair = std::pair<std::string, arena_loc>;
     using arena_loc_map = std::unordered_map<std::string, arena_loc>;
+
 
     struct timedArena {
         std::string name;

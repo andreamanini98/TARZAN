@@ -7,7 +7,7 @@
 #include <type_traits>
 
 /**
- * Creates an std::string with elements of a container joined by a delimiter
+ * @brief Creates an std::string with elements of a container joined by a delimiter
  *
  * @tparam Container Type of the container (must be iterable)
  * @tparam Converter Type of the conversion function

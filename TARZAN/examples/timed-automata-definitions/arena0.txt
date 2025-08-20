@@ -21,7 +21,7 @@ create arena arena_0
 
     transitions
     {
-        (start, action, [(x, <, 4), (y, =, 5)], [x, y, z], target,
+        (start, action, [(x, <, 4), (y, =, 5)], [x, y, z], target),
         (start2, action2, [(x2, >=, 4), (y2, <=, 5)], [x2, y2, z2], target2);
     }
 }
