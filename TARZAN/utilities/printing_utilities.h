@@ -3,11 +3,11 @@
 
 #include <sstream>
 #include <string>
-#include <concepts>
 #include <type_traits>
 
+
 /**
- * @brief Creates an std::string with elements of a container joined by a delimiter
+ * @brief Creates a std::string with elements of a container joined by a delimiter.
  *
  * @tparam Container Type of the container (must be iterable)
  * @tparam Converter Type of the conversion function
@@ -17,9 +17,7 @@
  * @return std::string with the joined elements
  */
 template<typename Container, typename Converter = std::nullptr_t>
-std::string join_elements(const Container &container,
-                          const std::string &delimiter,
-                          Converter converter = nullptr)
+std::string join_elements(const Container &container, const std::string &delimiter, Converter converter = nullptr)
 {
     std::ostringstream oss;
 
@@ -32,13 +30,13 @@ std::string join_elements(const Container &container,
 
         if constexpr (std::is_same_v<Converter, std::nullptr_t>)
         {
-            // If no converter provided, try to use to_string() method or direct insertion
+            // If no converter provided, try to use to_string() method or direct insertion.
             if constexpr (requires { element.to_string(); })
                 oss << element.to_string();
             else
                 oss << element;
         } else
-        // Use the provided converter function
+        // Use the provided converter function.
             oss << converter(element);
     }
     return oss.str();
