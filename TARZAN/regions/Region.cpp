@@ -9,8 +9,15 @@ std::string Region::toString() const
     oss << "Region {\n";
     oss << "  q: " << q << "\n";
     oss << "  h: [";
-    for (const auto &i: h)
-        oss << "  " << i;
+    if (h != nullptr)
+    {
+        const int *it = h;
+        for (int i = 0; i < x0.size(); i++)
+        {
+            oss << "  " << *it;
+            it++;
+        }
+    }
     oss << "  ]\n";
     oss << "  bounded: [\n";
     for (const auto &i: bounded)

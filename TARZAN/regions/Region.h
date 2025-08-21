@@ -9,12 +9,13 @@
 //       delle locations (controller o environment), ma occorre guardare nella rappresentazione dell'arena. Al limite aggiungi un Bool.
 
 
-class Region {
+class Region
+{
     // The location of the region. TODO: magari una stringa è più semplice da gestire? Ti evita tutto l'encoding delle locations, ma dovrebbe richiedere più bit.
     int q{};
 
     // The integer values of clocks.
-    std::vector<int> h{};
+    int *h{};
 
     // A vector of bitsets keeping track of the fractional order of bounded clocks.
     std::vector<boost::dynamic_bitset<>> bounded;
@@ -32,16 +33,16 @@ public:
      *
      * @param numClocks the number of Timed Automaton clocks from which the region is derived.
      */
-    explicit Region(const size_t numClocks)
+    explicit Region(const int numClocks)
     {
-        h.resize(numClocks);
+        h = static_cast<int *>(malloc(sizeof(numClocks)));
         x0.resize(numClocks);
         x0.flip();
     }
 
 
     Region(const int q,
-           const std::vector<int> &h,
+           int *h,
            const std::vector<boost::dynamic_bitset<>> &bounded,
            const std::vector<boost::dynamic_bitset<>> &unbounded,
            const boost::dynamic_bitset<> &x0)
@@ -50,7 +51,12 @@ public:
           bounded(bounded),
           unbounded(unbounded),
           x0(x0)
+    {}
+
+
+    ~Region()
     {
+        free(h);
     }
 
 

@@ -3,7 +3,8 @@
 
 #include <boost/spirit/home/x3/support/utility/error_reporting.hpp>
 
-namespace timed_automaton::parser {
+namespace timed_automaton::parser
+{
     namespace x3 = boost::spirit::x3;
 
     // X3 Error Handler Utility

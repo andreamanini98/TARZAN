@@ -5,7 +5,8 @@
 
 #include <boost/spirit/home/x3.hpp>
 
-namespace timed_automaton::parser {
+namespace timed_automaton::parser
+{
     namespace x3 = boost::spirit::x3;
     namespace ascii = x3::ascii;
 

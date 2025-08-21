@@ -10,7 +10,8 @@
 
 // TODO: comment the code
 
-namespace timed_automaton::ast {
+namespace timed_automaton::ast
+{
     struct clockConstraint {
         std::string clock;
         comparison_op constraintOperator;

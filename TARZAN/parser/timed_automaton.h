@@ -5,8 +5,10 @@
 
 #include <boost/spirit/home/x3.hpp>
 
-namespace timed_automaton {
-    namespace parser {
+namespace timed_automaton
+{
+    namespace parser
+    {
         namespace x3 = boost::spirit::x3;
 
         struct loc_pair_class;

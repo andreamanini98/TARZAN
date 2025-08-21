@@ -10,7 +10,8 @@
 #include "TARZAN/parser/timed_automaton.h"
 #include "TARZAN/parser/success_handler.h"
 
-namespace timed_automaton {
+namespace timed_automaton
+{
     inline struct comp_op : boost::spirit::x3::symbols<comparison_op> {
         comp_op()
         {
@@ -24,7 +25,8 @@ namespace timed_automaton {
         }
     } comp_op;
 
-    namespace parser {
+    namespace parser
+    {
         namespace x3 = boost::spirit::x3;
         namespace ascii = x3::ascii;
 
@@ -146,36 +148,28 @@ namespace timed_automaton {
                             timedAutomaton_rule,
                             timedArena_rule);
 
-        struct loc_pair_class : success_handler {
-        };
+        struct loc_pair_class : success_handler {};
 
-        struct loc_map_class : success_handler {
-        };
+        struct loc_map_class : success_handler {};
 
-        struct arena_loc_class : success_handler {
-        };
+        struct arena_loc_class : success_handler {};
 
-        struct arena_loc_pair_class : success_handler {
-        };
+        struct arena_loc_pair_class : success_handler {};
 
-        struct arena_loc_map_class : success_handler {
-        };
+        struct arena_loc_map_class : success_handler {};
 
-        struct clockConstraint_class : success_handler {
-        };
+        struct clockConstraint_class : success_handler {};
 
-        struct transition_class : success_handler {
-        };
+        struct transition_class : success_handler {};
 
-        struct timedAutomaton_class : error_handler_base, success_handler {
-        };
+        struct timedAutomaton_class : error_handler_base, success_handler {};
 
-        struct timedArena_class : error_handler_base, success_handler {
-        };
+        struct timedArena_class : error_handler_base, success_handler {};
     }
 }
 
-namespace timed_automaton {
+namespace timed_automaton
+{
     parser::clockConstraint_type clockConstraint()
     {
         return parser::clockConstraint_rule;
