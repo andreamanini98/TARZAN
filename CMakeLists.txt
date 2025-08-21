@@ -75,7 +75,10 @@ endif ()
 
 
 # Define the library source files.
-set(LIBRARY_SOURCES TARZAN/src/library.cpp TARZAN/parser/timed_automaton.cpp)
+set(LIBRARY_SOURCES
+        TARZAN/src/library.cpp
+        TARZAN/parser/timed_automaton.cpp
+        TARZAN/regions/Region.cpp)
 
 
 # Add library

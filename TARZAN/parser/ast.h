@@ -59,6 +59,20 @@ namespace timed_automaton::ast {
         std::vector<transition> transitions;
 
 
+        /**
+         * @return an int representing the maximum constant appearing in the Timed Automaton.
+         */
+        [[nodiscard]] int getMaxConstant() const
+        {
+            int maxConstant{};
+            for (const transition &tr: transitions)
+                for (const clockConstraint &cc: tr.clockGuard)
+                    if (maxConstant < cc.comparingConstant)
+                        maxConstant = cc.comparingConstant;
+            return maxConstant;
+        }
+
+
         [[nodiscard]] std::string to_string() const
         {
             std::ostringstream oss;
@@ -93,6 +107,20 @@ namespace timed_automaton::ast {
         std::vector<std::string> actions;
         arena_loc_map locations;
         std::vector<transition> transitions;
+
+
+        /**
+         * @return an int representing the maximum constant appearing in the Timed Arena.
+         */
+        [[nodiscard]] int getMaxConstant() const
+        {
+            int maxConstant{};
+            for (const transition &tr: transitions)
+                for (const clockConstraint &cc: tr.clockGuard)
+                    if (maxConstant < cc.comparingConstant)
+                        maxConstant = cc.comparingConstant;
+            return maxConstant;
+        }
 
 
         [[nodiscard]] std::string to_string() const
