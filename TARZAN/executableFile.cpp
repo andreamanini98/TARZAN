@@ -62,6 +62,68 @@ void testImmediateDelaySuccessor()
     }
 }
 
+
+void testImmediateDelayPredecessors()
+{
+    Region reg(3);
+
+    const auto newH = static_cast<int *>(malloc(sizeof(int) * 3));
+    newH[0] = 0;
+    newH[1] = 0;
+    newH[2] = 1;
+
+    reg.set_h(newH);
+
+    boost::dynamic_bitset<> xm1(3);
+    boost::dynamic_bitset<> x0(3);
+    boost::dynamic_bitset<> x1(3);
+
+    xm1.set(0, true);
+    x0.set(2, true);
+    x1.set(1, true);
+
+    const std::deque Xm1 {xm1};
+    const std::deque X1 {x1};
+
+    reg.set_unbounded(Xm1);
+    reg.set_x0(x0);
+    reg.set_bounded(X1);
+
+    Region oldSuccessor = reg;
+    for (int i = 0; i < 7; i++)
+    {
+        Region successor = oldSuccessor.getImmediateDelaySuccessor(1);
+        oldSuccessor = successor;
+    }
+
+    std::cout << oldSuccessor.toString() << std::endl;
+
+    std::vector<Region> oldPred;
+    std::vector<Region> newPred;
+    oldPred.push_back(oldSuccessor);
+
+    for (int i = 0; i < 10; i++)
+    {
+        for (const Region& p : oldPred)
+        {
+            std::vector<Region> predecessors = p.getImmediateDelayPredecessors();
+            if (!predecessors.empty())
+            {
+                std::cout << "Predecessors!\n";
+                for (const Region& r : predecessors)
+                {
+                    std::cout << "Predecessor " << (i + 1) << ":\n";
+                    std::cout << r.toString() << std::endl;
+                }
+            }
+            newPred.insert(newPred.end(), predecessors.begin(), predecessors.end());
+        }
+
+        oldPred = newPred;
+        newPred.clear();
+    }
+}
+
 int main()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
@@ -70,7 +132,9 @@ int main()
     // const timed_automaton::ast::timedAutomaton TA = parseTimedAutomaton(path);
     // const int maxConstant = TA.getMaxConstant();
 
-    testImmediateDelaySuccessor();
+    //testImmediateDelaySuccessor();
+
+    testImmediateDelayPredecessors();
 
     return 0;
 }

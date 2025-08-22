@@ -85,7 +85,7 @@ public:
      * @brief Computes the delay successor of the current region as detailed in our paper.
      *
      * @param maxConstant the maximum constant of the Timed Automaton from which the region is derived.
-     * @return a Region delay successor of the current region.
+     * @return a Region immediate delay successor of the current region.
      */
     [[nodiscard]] Region getImmediateDelaySuccessor(int maxConstant) const;
 
@@ -94,11 +94,9 @@ public:
      * @brief Computes the delay predecessor of the current region as detailed in our paper.
      *
      * @param maxConstant the maximum constant of the Timed Automaton from which the region is derived.
-     * @return a Region delay predecessor of the current region.
+     * @return a std::vector<Region> containing immediate delay predecessors of the current region.
      */
-    // TODO: okkio quando la implementi a rispettare le convenzioni sull'ordine degli indici dei clock e degli insiemi bounded ed unbounded,
-    //       vedi come è stata implementata la funzione getDelaySuccessor() se serve.
-    Region getImmediateDelayPredecessor(int maxConstant);
+    [[nodiscard]] std::vector<Region> getImmediateDelayPredecessors() const;
 
 
     /**

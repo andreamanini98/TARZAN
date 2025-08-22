@@ -9,7 +9,7 @@ Region Region::getImmediateDelaySuccessor(const int maxConstant) const
     Region res = clone();
     const int numOfClocks = getNumberOfClocks();
 
-    if (x0.none() && bounded.empty())
+    if (bounded.empty() && x0.none())
         return res;
     if (x0.any())
     {
@@ -44,6 +44,53 @@ Region Region::getImmediateDelaySuccessor(const int maxConstant) const
         res.bounded.pop_back();
     }
 
+    return res;
+}
+
+
+std::vector<Region> Region::getImmediateDelayPredecessors() const
+{
+    std::vector<Region> res;
+    const int numOfClocks = getNumberOfClocks();
+
+    // TODO: vedere se si può migliorare magari tenendo un booleano da aggiornare quando si tocca il valore intero dei clock.
+    for (int i = 0; i < numOfClocks; i++)
+        if (h[i] == 0 && x0.test(numOfClocks - 1 - i))
+            return res;
+
+    Region r0 = clone();
+
+    if (bounded.empty() && x0.none())
+    {
+        r0.x0 |= r0.unbounded.front();
+        r0.unbounded.pop_front();
+    } else if (x0.any())
+    {
+        for (int i = 0; i < numOfClocks; i++)
+            if (r0.x0.test(numOfClocks - 1 - i))
+                r0.h[i]--;
+        r0.bounded.push_back(r0.x0);
+        r0.x0 &= boost::dynamic_bitset<>(numOfClocks);
+    } else
+    {
+        r0.x0 |= r0.bounded.front();
+        r0.bounded.pop_front();
+
+        if (!unbounded.empty())
+        {
+            Region r1 = clone();
+            r1.x0 |= r1.unbounded.front();
+            r1.unbounded.pop_front();
+            res.push_back(r1);
+
+            Region r2 = r1.clone();
+            r2.x0 |= r2.bounded.front();
+            r2.bounded.pop_front();
+            res.push_back(r2);
+        }
+    }
+
+    res.push_back(r0);
     return res;
 }
 
