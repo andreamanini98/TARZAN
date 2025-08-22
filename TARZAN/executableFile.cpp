@@ -25,17 +25,52 @@ void testParsing()
 }
 
 
+void testImmediateDelaySuccessor()
+{
+    Region reg(3);
+
+    const auto newH = static_cast<int *>(malloc(sizeof(int) * 3));
+    newH[0] = 0;
+    newH[1] = 0;
+    newH[2] = 1;
+
+    reg.set_h(newH);
+
+    boost::dynamic_bitset<> xm1(3);
+    boost::dynamic_bitset<> x0(3);
+    boost::dynamic_bitset<> x1(3);
+
+    xm1.set(0, true);
+    x0.set(2, true);
+    x1.set(1, true);
+
+    const std::deque Xm1 {xm1};
+    const std::deque X1 {x1};
+
+    reg.set_unbounded(Xm1);
+    reg.set_x0(x0);
+    reg.set_bounded(X1);
+
+    std::cout << "REG:\n" << reg.toString() << std::endl;
+
+    Region oldSuccessor = reg;
+    for (int i = 0; i < 7; i++)
+    {
+        Region successor = oldSuccessor.getImmediateDelaySuccessor(1);
+        std::cout << "Successor " << (i + 1) << ":\n" << successor.toString() << std::endl;
+        oldSuccessor = successor;
+    }
+}
+
 int main()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
     const std::string automatonFileName = "ta0.txt";
-    const timed_automaton::ast::timedAutomaton TA = parseTimedAutomaton(path + automatonFileName);
 
-    const int maxConstant = TA.getMaxConstant();
+    // const timed_automaton::ast::timedAutomaton TA = parseTimedAutomaton(path);
+    // const int maxConstant = TA.getMaxConstant();
 
-    const Region reg(TA.clocks.size());
-    std::cout << "reg:\n";
-    std::cout << reg.toString() << std::endl;
+    testImmediateDelaySuccessor();
 
     return 0;
 }
