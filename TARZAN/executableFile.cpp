@@ -44,8 +44,8 @@ void testImmediateDelaySuccessor()
     x0.set(2, true);
     x1.set(1, true);
 
-    const std::deque Xm1 {xm1};
-    const std::deque X1 {x1};
+    const std::deque Xm1{ xm1 };
+    const std::deque X1{ x1 };
 
     reg.set_unbounded(Xm1);
     reg.set_x0(x0);
@@ -63,7 +63,7 @@ void testImmediateDelaySuccessor()
 }
 
 
-void testImmediateDelayPredecessors()
+void testImmediateDelayPredecessors(int totSteps, int maxConst)
 {
     Region reg(3);
 
@@ -82,17 +82,17 @@ void testImmediateDelayPredecessors()
     x0.set(2, true);
     x1.set(1, true);
 
-    const std::deque Xm1 {xm1};
-    const std::deque X1 {x1};
+    const std::deque Xm1{ xm1 };
+    const std::deque X1{ x1 };
 
     reg.set_unbounded(Xm1);
     reg.set_x0(x0);
     reg.set_bounded(X1);
 
     Region oldSuccessor = reg;
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < totSteps; i++)
     {
-        Region successor = oldSuccessor.getImmediateDelaySuccessor(1);
+        Region successor = oldSuccessor.getImmediateDelaySuccessor(maxConst);
         oldSuccessor = successor;
     }
 
@@ -102,15 +102,15 @@ void testImmediateDelayPredecessors()
     std::vector<Region> newPred;
     oldPred.push_back(oldSuccessor);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < totSteps; i++)
     {
-        for (const Region& p : oldPred)
+        for (const Region &p: oldPred)
         {
             std::vector<Region> predecessors = p.getImmediateDelayPredecessors();
             if (!predecessors.empty())
             {
                 std::cout << "Predecessors!\n";
-                for (const Region& r : predecessors)
+                for (const Region &r: predecessors)
                 {
                     std::cout << "Predecessor " << (i + 1) << ":\n";
                     std::cout << r.toString() << std::endl;
@@ -124,6 +124,7 @@ void testImmediateDelayPredecessors()
     }
 }
 
+
 int main()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
@@ -134,7 +135,15 @@ int main()
 
     //testImmediateDelaySuccessor();
 
-    testImmediateDelayPredecessors();
+    const auto start = std::chrono::high_resolution_clock::now();
+
+    testImmediateDelayPredecessors(10, 20);
+
+    const auto end = std::chrono::high_resolution_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+    std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
+
 
     return 0;
 }

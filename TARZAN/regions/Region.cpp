@@ -1,7 +1,7 @@
 #include "Region.h"
 
 #include <iostream>
-#include<sstream>
+#include <sstream>
 
 
 Region Region::getImmediateDelaySuccessor(const int maxConstant) const
@@ -53,7 +53,7 @@ std::vector<Region> Region::getImmediateDelayPredecessors() const
     std::vector<Region> res;
     const int numOfClocks = getNumberOfClocks();
 
-    // TODO: vedere se si può migliorare magari tenendo un booleano da aggiornare quando si tocca il valore intero dei clock.
+    // If a delay predecessor cannot be computed, return an empty std::vector.
     for (int i = 0; i < numOfClocks; i++)
         if (h[i] == 0 && x0.test(numOfClocks - 1 - i))
             return res;

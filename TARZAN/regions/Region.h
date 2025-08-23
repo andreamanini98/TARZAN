@@ -7,7 +7,11 @@
 // TODO: vedere come adattare questo alle regioni delle arene. Secondo me non occorre fare altro, q rende possibile determinare la natura
 //       delle locations (controller o environment), ma occorre guardare nella rappresentazione dell'arena. Al limite aggiungi un Bool.
 
-// TODO: per i discrete, occorre passare anche le transizioni del TA (oppure ricavare qualcosa prima)
+// TODO: per i discrete, occorre passare anche le transizioni del TA (oppure ricavare qualcosa prima).
+
+// TODO: dopo avere parsato un automa, dovresti creare una mappa <location, transizioni uscenti da quella location>.
+//       Magari aiuta quando devi passare le transizioni per i discrete successors.
+//       Potresti farne una anche come <location, transizioni incidenti in quella location> per i discrete predecessors.
 
 
 class Region
@@ -93,8 +97,8 @@ public:
     /**
      * @brief Computes the delay predecessor of the current region as detailed in our paper.
      *
-     * @param maxConstant the maximum constant of the Timed Automaton from which the region is derived.
      * @return a std::vector<Region> containing immediate delay predecessors of the current region.
+     *         If no predecessors can be computed, returns an empty std::vector.
      */
     [[nodiscard]] std::vector<Region> getImmediateDelayPredecessors() const;
 
