@@ -1,6 +1,5 @@
 #include "TARZAN/parser/ast.h"
 
-
 using transition = timed_automaton::ast::transition;
 
 

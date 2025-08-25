@@ -6,6 +6,8 @@
 
 #include "TARZAN/parser/ast.h"
 
+using transition = timed_automaton::ast::transition;
+
 // TODO: vedere come adattare questo alle regioni delle arene. Secondo me non occorre fare altro, q rende possibile determinare la natura
 //       delle locations (controller o environment), ma occorre guardare nella rappresentazione dell'arena. Al limite aggiungi un Bool.
 
@@ -83,6 +85,17 @@ public:
 
 
     /**
+     * @brief Computes the clock valuation of a region.
+     *
+     * The clock valuation consists in a std::vector of pairs. Each index of the vector corresponds to the index of a clock (as clocks correspond to
+     * the indices of the clocks Timed Automaton vector). If a clock is not in x0, then that clock has a fractional part that is greater than zero.
+     *
+     * @return a std::vector containing the integer value of a clock and whether the clock has a fractional aprt greater than zero.
+     */
+    [[nodiscard]] std::vector<std::pair<int, bool>> getClockValuation() const;
+
+
+    /**
      * @brief Computes the immediate delay successor of the current region as detailed in our paper.
      *
      * @param maxConstant the maximum constant of the Timed Automaton from which the region is derived.
@@ -107,7 +120,7 @@ public:
      * @return a std::vector<Region> containing immediate discrete successors of the current region.
      *         If no successors can be computed, returns an empty std::vector.
      */
-    [[nodiscard]] std::vector<Region> getImmediateDiscreteSuccessors(const std::vector<timed_automaton::ast::transition> &transitions) const;
+    [[nodiscard]] std::vector<Region> getImmediateDiscreteSuccessors(const std::vector<transition> &transitions) const;
 
 
     /**

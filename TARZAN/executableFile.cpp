@@ -5,7 +5,7 @@
 #include "TARZAN/utilities/file_utilities.h"
 #include "TARZAN/regions/Region.h"
 
-#define REGION_PRINT_REBUG
+// #define REGION_PRINT_REBUG
 
 
 void testParsing()
@@ -94,7 +94,9 @@ void testImmediateDelayPredecessors(int totSteps, int maxConst)
     Region oldSuccessor = reg;
     for (int i = 0; i < totSteps; i++)
     {
+#ifdef REGION_PRINT_REBUG
         std::cout << oldSuccessor.toString() << std::endl;
+#endif
         Region successor = oldSuccessor.getImmediateDelaySuccessor(maxConst);
         oldSuccessor = successor;
     }
@@ -160,18 +162,64 @@ void testLocationMapping()
 }
 
 
+void testClockValuation()
+{
+    Region reg(3);
+
+    const auto newH = static_cast<int *>(malloc(sizeof(int) * 3));
+    newH[0] = 0;
+    newH[1] = 0;
+    newH[2] = 1;
+
+    reg.set_h(newH);
+
+    boost::dynamic_bitset<> xm1(3);
+    boost::dynamic_bitset<> x0(3);
+    boost::dynamic_bitset<> x1(3);
+
+    xm1.set(0, true);
+    x0.set(2, true);
+    x1.set(1, true);
+
+    const std::deque Xm1{ xm1 };
+    const std::deque X1{ x1 };
+
+    reg.set_unbounded(Xm1);
+    reg.set_x0(x0);
+    reg.set_bounded(X1);
+
+    Region oldSuccessor = reg;
+    for (int i = 0; i < 4; i++)
+    {
+        Region successor = oldSuccessor.getImmediateDelaySuccessor(3);
+        oldSuccessor = successor;
+    }
+
+    std::cout << "We now test the clock valuation of: " << oldSuccessor.toString() << std::endl;
+
+    std::vector<std::pair<int, bool>> clockValuation = oldSuccessor.getClockValuation();
+    std::ostringstream oss;
+    oss << "Clock Valuation: [";
+    for (size_t i = 0; i < clockValuation.size(); i++)
+    {
+        if (i > 0) oss << ", ";
+        oss << "clock" << i << ": (" << clockValuation[i].first
+                << ", " << (clockValuation[i].second ? "has_fraction" : "no_fraction") << ")";
+    }
+    oss << "]";
+    std::cout << oss.str() << std::endl;
+}
+
+
 int main()
 {
-    const auto start = std::chrono::high_resolution_clock::now();
+    // std::cout << "Tick period: " << static_cast<double>(std::chrono::high_resolution_clock::period::num) / std::chrono::high_resolution_clock::period::den << " seconds\n";
+    // const auto start = std::chrono::high_resolution_clock::now();
+    // const auto end = std::chrono::high_resolution_clock::now();
+    // const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    // std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
 
-    // testImmediateDelayPredecessors(5, 1);
-
-    testLocationMapping();
-
-    const auto end = std::chrono::high_resolution_clock::now();
-    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-
-    std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
+    testClockValuation();
 
     return 0;
 }

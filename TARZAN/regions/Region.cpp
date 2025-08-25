@@ -1,7 +1,21 @@
 #include "Region.h"
 
-#include <iostream>
 #include <sstream>
+
+
+std::vector<std::pair<int, bool>> Region::getClockValuation() const
+{
+    const int numOfClocks = getNumberOfClocks();
+    std::vector<std::pair<int, bool>> clockValuation(numOfClocks);
+
+    for (int i = 0; i < numOfClocks; i++)
+    {
+        clockValuation[i].first = h[i];
+        clockValuation[i].second = !x0.test(numOfClocks - 1 - i);
+    }
+
+    return clockValuation;
+}
 
 
 Region Region::getImmediateDelaySuccessor(const int maxConstant) const

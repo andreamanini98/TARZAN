@@ -23,6 +23,9 @@ namespace timed_automaton::ast
         int comparingConstant;
 
 
+        [[nodiscard]] bool isSatisfied(int clockValue, bool isFractionalPartGreaterThanZero);
+
+
         [[nodiscard]] std::string to_string() const;
     };
 
@@ -34,6 +37,12 @@ namespace timed_automaton::ast
         std::vector<clockConstraint> clockGuard;
         std::vector<std::string> clocksToReset;
         std::string targetLocation;
+
+
+        // Indices of the vector correspond to clocks.
+        // The integer is h, the bool tells if the clock has a fractional part greater than 0 (it is not in X0).
+        // TODO: adjust this comment to doxygen style.
+        [[nodiscard]] bool isSatisfied(std::vector<std::pair<int, bool>> clockValuation);
 
 
         [[nodiscard]] std::string to_string() const;
