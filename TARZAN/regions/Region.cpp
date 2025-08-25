@@ -38,7 +38,7 @@ Region Region::getImmediateDelaySuccessor(const int maxConstant) const
 
         for (int i = 0; i < numOfClocks; i++)
             if (lastBoundedSet.test(numOfClocks - 1 - i))
-                res.h[i] += 1;
+                res.h[i]++;
 
         res.x0 |= lastBoundedSet;
         res.bounded.pop_back();
@@ -53,11 +53,6 @@ std::vector<Region> Region::getImmediateDelayPredecessors() const
     std::vector<Region> res;
     const int numOfClocks = getNumberOfClocks();
 
-    // If a delay predecessor cannot be computed, return an empty std::vector.
-    for (int i = 0; i < numOfClocks; i++)
-        if (h[i] == 0 && x0.test(numOfClocks - 1 - i))
-            return res;
-
     Region r0 = clone();
 
     if (bounded.empty() && x0.none())
@@ -67,8 +62,15 @@ std::vector<Region> Region::getImmediateDelayPredecessors() const
     } else if (x0.any())
     {
         for (int i = 0; i < numOfClocks; i++)
+        {
             if (r0.x0.test(numOfClocks - 1 - i))
+            {
                 r0.h[i]--;
+                // If the region cannot have a delay predecessor, return an empty std::vector.
+                if (r0.h[i] < 0)
+                    return res;
+            }
+        }
         r0.bounded.push_back(r0.x0);
         r0.x0 &= boost::dynamic_bitset<>(numOfClocks);
     } else

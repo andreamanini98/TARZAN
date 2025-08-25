@@ -5,6 +5,8 @@
 #include "TARZAN/utilities/file_utilities.h"
 #include "TARZAN/regions/Region.h"
 
+#define REGION_PRINT_REBUG
+
 
 void testParsing()
 {
@@ -92,6 +94,7 @@ void testImmediateDelayPredecessors(int totSteps, int maxConst)
     Region oldSuccessor = reg;
     for (int i = 0; i < totSteps; i++)
     {
+        std::cout << oldSuccessor.toString() << std::endl;
         Region successor = oldSuccessor.getImmediateDelaySuccessor(maxConst);
         oldSuccessor = successor;
     }
@@ -107,6 +110,7 @@ void testImmediateDelayPredecessors(int totSteps, int maxConst)
         for (const Region &p: oldPred)
         {
             std::vector<Region> predecessors = p.getImmediateDelayPredecessors();
+#ifdef REGION_PRINT_REBUG
             if (!predecessors.empty())
             {
                 std::cout << "Predecessors!\n";
@@ -116,6 +120,7 @@ void testImmediateDelayPredecessors(int totSteps, int maxConst)
                     std::cout << r.toString() << std::endl;
                 }
             }
+#endif
             newPred.insert(newPred.end(), predecessors.begin(), predecessors.end());
         }
 
@@ -137,7 +142,7 @@ int main()
 
     const auto start = std::chrono::high_resolution_clock::now();
 
-    testImmediateDelayPredecessors(10, 20);
+    testImmediateDelayPredecessors(5, 1);
 
     const auto end = std::chrono::high_resolution_clock::now();
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
