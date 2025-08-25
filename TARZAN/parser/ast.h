@@ -26,6 +26,9 @@ namespace timed_automaton::ast
         [[nodiscard]] bool isSatisfied(int clockValue, bool isFractionalPartGreaterThanZero);
 
 
+        [[nodiscard]] std::string getClockName() const { return clock; }
+
+
         [[nodiscard]] std::string to_string() const;
     };
 
@@ -39,10 +42,14 @@ namespace timed_automaton::ast
         std::string targetLocation;
 
 
-        // Indices of the vector correspond to clocks.
-        // The integer is h, the bool tells if the clock has a fractional part greater than 0 (it is not in X0).
-        // TODO: adjust this comment to doxygen style.
-        [[nodiscard]] bool isSatisfied(std::vector<std::pair<int, bool>> clockValuation);
+        /**
+         * @brief Computes the satisfiability of a transition's guard.
+         *
+         * @param clockValuation the current clock valuation (integer values and a boolean denoting whether the fractional part is greater than zero).
+         * @param clocksIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
+         * @return true if the guard is satisfied, false otherwise.
+         */
+        [[nodiscard]] bool isSatisfied(const std::vector<std::pair<int, bool>> &clockValuation, std::unordered_map<std::string, int> &clocksIndices);
 
 
         [[nodiscard]] std::string to_string() const;
@@ -67,6 +74,15 @@ namespace timed_automaton::ast
          * @return an int representing the maximum constant appearing in the Timed Automaton.
          */
         [[nodiscard]] int getMaxConstant() const;
+
+
+        /**
+         * @return a std::unordered_map from clock names to their index in the clocks vector.
+         *
+         * @warning To be used at the beginning, right after parsing a Timed Automaton, since at the current time of development this is
+         *          the only way we map clocks (saved as std::string) to integers.
+         */
+        [[nodiscard]] std::unordered_map<std::string, int> getClocksIndices() const;
 
 
         /**
@@ -122,9 +138,18 @@ namespace timed_automaton::ast
 
 
         /**
+         * @return a std::unordered_map from clock names to their index in the clocks vector.
+         *
+         * @warning To be used at the beginning, right after parsing a Timed Arena, since at the current time of development this is
+         *          the only way we map clocks (saved as std::string) to integers.
+         */
+        [[nodiscard]] std::unordered_map<std::string, int> getClocksIndices() const;
+
+
+        /**
          * @return a std::unordered_map from location names to integers.
          *
-         * @warning To be used at the beginning, right after parsing a Timed Automaton, since at the current time of development this is
+         * @warning To be used at the beginning, right after parsing a Timed Arena, since at the current time of development this is
          *          the only way we map locations to integers.
          */
         // TODO: if needed to reverse from this, you need to obtain a new std::unordered_map having integer keys and std::string values.

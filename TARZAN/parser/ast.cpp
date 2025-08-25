@@ -45,6 +45,17 @@ int timed_automaton::ast::timedAutomaton::getMaxConstant() const
 }
 
 
+std::unordered_map<std::string, int> timed_automaton::ast::timedAutomaton::getClocksIndices() const
+{
+    std::unordered_map<std::string, int> indices{};
+
+    for (int i = 0; i < static_cast<int>(clocks.size()); i++)
+        indices.insert({ clocks[i], i });
+
+    return indices;
+}
+
+
 std::unordered_map<std::string, int> timed_automaton::ast::timedAutomaton::mapLocationsToInt() const
 {
     std::unordered_map<std::string, int> map;
@@ -109,6 +120,17 @@ int timed_automaton::ast::timedArena::getMaxConstant() const
             if (maxConstant < cc.comparingConstant)
                 maxConstant = cc.comparingConstant;
     return maxConstant;
+}
+
+
+std::unordered_map<std::string, int> timed_automaton::ast::timedArena::getClocksIndices() const
+{
+    std::unordered_map<std::string, int> indices{};
+
+    for (int i = 0; i < static_cast<int>(clocks.size()); i++)
+        indices.insert({ clocks[i], i });
+
+    return indices;
 }
 
 
