@@ -78,7 +78,8 @@ endif ()
 set(LIBRARY_SOURCES
         TARZAN/src/library.cpp
         TARZAN/parser/timed_automaton.cpp
-        TARZAN/regions/Region.cpp)
+        TARZAN/regions/Region.cpp
+        TARZAN/parser/ast.cpp)
 
 
 # Add library

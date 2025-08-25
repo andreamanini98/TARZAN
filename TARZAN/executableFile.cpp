@@ -137,6 +137,8 @@ void testLocationMapping()
 
     const timed_automaton::ast::timedAutomaton TA = parseTimedAutomaton(path + automatonFileName);
 
+    std::cout << TA << std::endl;
+
     // ReSharper disable once CppTooWideScopeInitStatement
     std::unordered_map<std::string, int> map = TA.mapLocationsToInt();
 

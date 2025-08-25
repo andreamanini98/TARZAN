@@ -23,12 +23,7 @@ namespace timed_automaton::ast
         int comparingConstant;
 
 
-        [[nodiscard]] std::string to_string() const
-        {
-            std::ostringstream oss;
-            oss << clock << " " << constraintOperator << " " << comparingConstant;
-            return oss.str();
-        }
+        [[nodiscard]] std::string to_string() const;
     };
 
 
@@ -41,15 +36,7 @@ namespace timed_automaton::ast
         std::string targetLocation;
 
 
-        [[nodiscard]] std::string to_string() const
-        {
-            std::ostringstream oss;
-            oss << "(" << startingLocation << ", " << action << ", "
-                    << "[" << join_elements(clockGuard, " and ") << "], "
-                    << "[" << join_elements(clocksToReset, ", ") << "], "
-                    << targetLocation << ")";
-            return oss.str();
-        }
+        [[nodiscard]] std::string to_string() const;
     };
 
 
@@ -70,15 +57,7 @@ namespace timed_automaton::ast
         /**
          * @return an int representing the maximum constant appearing in the Timed Automaton.
          */
-        [[nodiscard]] int getMaxConstant() const
-        {
-            int maxConstant{};
-            for (const transition &tr: transitions)
-                for (const clockConstraint &cc: tr.clockGuard)
-                    if (maxConstant < cc.comparingConstant)
-                        maxConstant = cc.comparingConstant;
-            return maxConstant;
-        }
+        [[nodiscard]] int getMaxConstant() const;
 
 
         /**
@@ -88,19 +67,7 @@ namespace timed_automaton::ast
          *          the only way we map locations to integers.
          */
         // TODO: if needed to reverse from this, you need to obtain a new std::unordered_map having integer keys and std::string values.
-        [[nodiscard]] std::unordered_map<std::string, int> mapLocationsToInt() const
-        {
-            std::unordered_map<std::string, int> map;
-            int idx{};
-
-            for (const auto &loc: locations | std::views::keys)
-            {
-                map[loc] = idx;
-                idx++;
-            }
-
-            return map;
-        }
+        [[nodiscard]] std::unordered_map<std::string, int> mapLocationsToInt() const;
 
 
         /**
@@ -117,40 +84,10 @@ namespace timed_automaton::ast
         // TODO: for the predecessors, you may also want to do the same but with incoming transitions instead of outgoing transitions.
         // TODO: maybe it can be done also by grouping indices instead of transitions (the indices correspond to the positions in the transitions
         //       std::vector), but let's first try with this.
-        [[nodiscard]] std::vector<std::vector<transition>> getOutTransitions(const std::unordered_map<std::string, int> &locToIntMap) const
-        {
-            std::vector<std::vector<transition>> outTransitions;
-            outTransitions.resize(locToIntMap.size());
-
-            for (const auto &t: transitions)
-            {
-                const int idx = locToIntMap.at(t.startingLocation);
-                outTransitions[idx].push_back(t);
-            }
-
-            return outTransitions;
-        }
+        [[nodiscard]] std::vector<std::vector<transition>> getOutTransitions(const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
-        [[nodiscard]] std::string to_string() const
-        {
-            std::ostringstream oss;
-            oss << "Timed Automaton " << name << std::endl;
-            oss << "Clocks:\n" << join_elements(clocks, ", ") << std::endl;
-            oss << "Actions:\n" << join_elements(actions, ", ") << std::endl;
-            oss << "Locations:\n";
-            for (const auto &[key, value]: locations)
-            {
-                oss << key << ", ";
-                if (value.has_value())
-                    oss << (value.value() ? "true" : "false");
-                else
-                    oss << "null_opt";
-                oss << std::endl;
-            }
-            oss << "Transitions:\n" << join_elements(transitions, "\n") << std::endl;
-            return oss.str();
-        }
+        [[nodiscard]] std::string to_string() const;
     };
 
 
@@ -172,15 +109,7 @@ namespace timed_automaton::ast
         /**
          * @return an int representing the maximum constant appearing in the Timed Arena.
          */
-        [[nodiscard]] int getMaxConstant() const
-        {
-            int maxConstant{};
-            for (const transition &tr: transitions)
-                for (const clockConstraint &cc: tr.clockGuard)
-                    if (maxConstant < cc.comparingConstant)
-                        maxConstant = cc.comparingConstant;
-            return maxConstant;
-        }
+        [[nodiscard]] int getMaxConstant() const;
 
 
         /**
@@ -190,19 +119,7 @@ namespace timed_automaton::ast
          *          the only way we map locations to integers.
          */
         // TODO: if needed to reverse from this, you need to obtain a new std::unordered_map having integer keys and std::string values.
-        [[nodiscard]] std::unordered_map<std::string, int> mapLocationsToInt() const
-        {
-            std::unordered_map<std::string, int> map;
-            int idx{};
-
-            for (const auto &loc: locations | std::views::keys)
-            {
-                map[loc] = idx;
-                idx++;
-            }
-
-            return map;
-        }
+        [[nodiscard]] std::unordered_map<std::string, int> mapLocationsToInt() const;
 
 
         /**
@@ -219,41 +136,10 @@ namespace timed_automaton::ast
         // TODO: for the predecessors, you may also want to do the same but with incoming transitions instead of outgoing transitions.
         // TODO: maybe it can be done also by grouping indices instead of transitions (the indices correspond to the positions in the transitions
         //       std::vector), but let's first try with this.
-        [[nodiscard]] std::vector<std::vector<transition>> getOutTransitions(const std::unordered_map<std::string, int> &locToIntMap) const
-        {
-            std::vector<std::vector<transition>> outTransitions;
-            outTransitions.resize(locToIntMap.size());
-
-            for (const auto &t: transitions)
-            {
-                const int idx = locToIntMap.at(t.startingLocation);
-                outTransitions[idx].push_back(t);
-            }
-
-            return outTransitions;
-        }
+        [[nodiscard]] std::vector<std::vector<transition>> getOutTransitions(const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
-        [[nodiscard]] std::string to_string() const
-        {
-            std::ostringstream oss;
-            oss << "Timed Arena " << name << std::endl;
-            oss << "Clocks:\n" << join_elements(clocks, ", ") << std::endl;
-            oss << "Actions:\n" << join_elements(actions, ", ") << std::endl;
-            oss << "Locations:\n";
-            for (const auto &[location_name, location_info]: locations)
-            {
-                const auto &[player, initial] = location_info;
-                oss << location_name << ", <" << player << ", ";
-                if (initial.has_value())
-                    oss << (initial.value() ? "true" : "false");
-                else
-                    oss << "null_opt";
-                oss << ">\n";
-            }
-            oss << "Transitions:\n" << join_elements(transitions, "\n") << std::endl;
-            return oss.str();
-        }
+        [[nodiscard]] std::string to_string() const;
     };
 }
 

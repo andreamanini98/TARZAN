@@ -107,7 +107,7 @@ public:
      * @return a std::vector<Region> containing immediate discrete successors of the current region.
      *         If no successors can be computed, returns an empty std::vector.
      */
-    [[nodiscard]] std::vector<Region> getImmediateDiscreteSuccessors(std::vector<timed_automaton::ast::transition> transitions) const;
+    [[nodiscard]] std::vector<Region> getImmediateDiscreteSuccessors(const std::vector<timed_automaton::ast::transition> &transitions) const;
 
 
     /**
