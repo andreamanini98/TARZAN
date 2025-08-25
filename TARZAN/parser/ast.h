@@ -6,13 +6,18 @@
 
 #include <vector>
 #include <map>
+#include <ranges>
 #include <sstream>
 
 // TODO: comment the code
 
+// TODO: avoid code duplication.
+
+
 namespace timed_automaton::ast
 {
-    struct clockConstraint {
+    struct clockConstraint
+    {
         std::string clock;
         comparison_op constraintOperator;
         int comparingConstant;
@@ -27,7 +32,8 @@ namespace timed_automaton::ast
     };
 
 
-    struct transition {
+    struct transition
+    {
         std::string startingLocation;
         std::string action;
         std::vector<clockConstraint> clockGuard;
@@ -52,7 +58,8 @@ namespace timed_automaton::ast
     using loc_map = std::unordered_map<std::string, std::optional<bool>>;
 
 
-    struct timedAutomaton {
+    struct timedAutomaton
+    {
         std::string name;
         std::vector<std::string> clocks;
         std::vector<std::string> actions;
@@ -71,6 +78,57 @@ namespace timed_automaton::ast
                     if (maxConstant < cc.comparingConstant)
                         maxConstant = cc.comparingConstant;
             return maxConstant;
+        }
+
+
+        /**
+         * @return a std::unordered_map from location names to integers.
+         *
+         * @warning To be used at the beginning, right after parsing a Timed Automaton, since at the current time of development this is
+         *          the only way we map locations to integers.
+         */
+        // TODO: if needed to reverse from this, you need to obtain a new std::unordered_map having integer keys and std::string values.
+        [[nodiscard]] std::unordered_map<std::string, int> mapLocationsToInt() const
+        {
+            std::unordered_map<std::string, int> map;
+            int idx{};
+
+            for (const auto &loc: locations | std::views::keys)
+            {
+                map[loc] = idx;
+                idx++;
+            }
+
+            return map;
+        }
+
+
+        /**
+         * @brief Collects transitions exiting from locations, grouping and indexing them.
+         *
+         * Each location must be treated as an integer. This way, the transitions exiting from such location can be easily
+         * accessed through indexing the returned std::vector.
+         * For example, if a region r0 is in location q = 2, then we can access the vector at index 2 (recall that q starts from 0) to get the
+         * outgoing transitions from r0.
+         *
+         * @param locToIntMap a mapping from locations (represented by std::string) to int.
+         * @return a std::vector of std::vector, where each inner vector contains the outgoing transitions from the location corresponding to an index.
+         */
+        // TODO: for the predecessors, you may also want to do the same but with incoming transitions instead of outgoing transitions.
+        // TODO: maybe it can be done also by grouping indices instead of transitions (the indices correspond to the positions in the transitions
+        //       std::vector), but let's first try with this.
+        [[nodiscard]] std::vector<std::vector<transition>> getOutTransitions(const std::unordered_map<std::string, int> &locToIntMap) const
+        {
+            std::vector<std::vector<transition>> outTransitions;
+            outTransitions.resize(locToIntMap.size());
+
+            for (const auto &t: transitions)
+            {
+                const int idx = locToIntMap.at(t.startingLocation);
+                outTransitions[idx].push_back(t);
+            }
+
+            return outTransitions;
         }
 
 
@@ -102,7 +160,8 @@ namespace timed_automaton::ast
     using arena_loc_map = std::unordered_map<std::string, arena_loc>;
 
 
-    struct timedArena {
+    struct timedArena
+    {
         std::string name;
         std::vector<std::string> clocks;
         std::vector<std::string> actions;
@@ -121,6 +180,57 @@ namespace timed_automaton::ast
                     if (maxConstant < cc.comparingConstant)
                         maxConstant = cc.comparingConstant;
             return maxConstant;
+        }
+
+
+        /**
+         * @return a std::unordered_map from location names to integers.
+         *
+         * @warning To be used at the beginning, right after parsing a Timed Automaton, since at the current time of development this is
+         *          the only way we map locations to integers.
+         */
+        // TODO: if needed to reverse from this, you need to obtain a new std::unordered_map having integer keys and std::string values.
+        [[nodiscard]] std::unordered_map<std::string, int> mapLocationsToInt() const
+        {
+            std::unordered_map<std::string, int> map;
+            int idx{};
+
+            for (const auto &loc: locations | std::views::keys)
+            {
+                map[loc] = idx;
+                idx++;
+            }
+
+            return map;
+        }
+
+
+        /**
+         * @brief Collects transitions exiting from locations, grouping and indexing them.
+         *
+         * Each location must be treated as an integer. This way, the transitions exiting from such location can be easily
+         * accessed through indexing the returned std::vector.
+         * For example, if a region r0 is in location q = 2, then we can access the vector at index 2 (recall that q starts from 0) to get the
+         * outgoing transitions from r0.
+         *
+         * @param locToIntMap a mapping from locations (represented by std::string) to int.
+         * @return a std::vector of std::vector, where each inner vector contains the outgoing transitions from the location corresponding to an index.
+         */
+        // TODO: for the predecessors, you may also want to do the same but with incoming transitions instead of outgoing transitions.
+        // TODO: maybe it can be done also by grouping indices instead of transitions (the indices correspond to the positions in the transitions
+        //       std::vector), but let's first try with this.
+        [[nodiscard]] std::vector<std::vector<transition>> getOutTransitions(const std::unordered_map<std::string, int> &locToIntMap) const
+        {
+            std::vector<std::vector<transition>> outTransitions;
+            outTransitions.resize(locToIntMap.size());
+
+            for (const auto &t: transitions)
+            {
+                const int idx = locToIntMap.at(t.startingLocation);
+                outTransitions[idx].push_back(t);
+            }
+
+            return outTransitions;
         }
 
 

@@ -4,20 +4,17 @@
 #include <vector>
 #include <boost/dynamic_bitset.hpp>
 
+#include "TARZAN/parser/ast.h"
+
 // TODO: vedere come adattare questo alle regioni delle arene. Secondo me non occorre fare altro, q rende possibile determinare la natura
 //       delle locations (controller o environment), ma occorre guardare nella rappresentazione dell'arena. Al limite aggiungi un Bool.
 
-// TODO: per i discrete, occorre passare anche le transizioni del TA (oppure ricavare qualcosa prima).
-
-// TODO: dopo avere parsato un automa, dovresti creare una mappa <location, transizioni uscenti da quella location>.
-//       Magari aiuta quando devi passare le transizioni per i discrete successors.
-//       Potresti farne una anche come <location, transizioni incidenti in quella location> per i discrete predecessors.
+// TODO: implementare nel file ast.h una funzione che restituisce l'idx delle locations iniziali, quindi ti servirà per trovare le locations iniziali.
 
 
 class Region
 {
     /// The location of the region.
-    //  TODO: magari una stringa è più semplice da gestire? Ti evita tutto encoding delle locations, ma dovrebbe richiedere più bit.
     int q{};
 
     /// The integer values of clocks.
@@ -86,7 +83,7 @@ public:
 
 
     /**
-     * @brief Computes the delay successor of the current region as detailed in our paper.
+     * @brief Computes the immediate delay successor of the current region as detailed in our paper.
      *
      * @param maxConstant the maximum constant of the Timed Automaton from which the region is derived.
      * @return a Region immediate delay successor of the current region.
@@ -95,12 +92,22 @@ public:
 
 
     /**
-     * @brief Computes the delay predecessor of the current region as detailed in our paper.
+     * @brief Computes the immediate delay predecessor of the current region as detailed in our paper.
      *
      * @return a std::vector<Region> containing immediate delay predecessors of the current region.
      *         If no predecessors can be computed, returns an empty std::vector.
      */
     [[nodiscard]] std::vector<Region> getImmediateDelayPredecessors() const;
+
+
+    /**
+     * @brief Computes the immediate discrete successor of the current region as detailed in our paper.
+     *
+     * @param transitions the transitions over which immediate discrete successors must be computed.
+     * @return a std::vector<Region> containing immediate discrete successors of the current region.
+     *         If no successors can be computed, returns an empty std::vector.
+     */
+    [[nodiscard]] std::vector<Region> getImmediateDiscreteSuccessors(std::vector<timed_automaton::ast::transition> transitions) const;
 
 
     /**
@@ -126,12 +133,16 @@ public:
     [[nodiscard]] std::string toString() const;
 
 
+    // Getters.
+    [[nodiscard]] int getLocation() const { return q; }
+
+
     // Setters, created only for convenience.
-    void set_q(const int q) { this->q = q; }
-    void set_h(int *h) { this->h = h; }
-    void set_unbounded(const std::deque<boost::dynamic_bitset<>> &unbounded) { this->unbounded = unbounded; }
-    void set_x0(const boost::dynamic_bitset<> &x0) { this->x0 = x0; }
-    void set_bounded(const std::deque<boost::dynamic_bitset<>> &bounded) { this->bounded = bounded; }
+    void set_q(const int q_p) { this->q = q_p; }
+    void set_h(int *h_p) { this->h = h_p; }
+    void set_unbounded(const std::deque<boost::dynamic_bitset<>> &unbounded_p) { this->unbounded = unbounded_p; }
+    void set_x0(const boost::dynamic_bitset<> &x0_p) { this->x0 = x0_p; }
+    void set_bounded(const std::deque<boost::dynamic_bitset<>> &bounded_p) { this->bounded = bounded_p; }
 
 
     Region &operator=(const Region &other)
@@ -143,7 +154,7 @@ public:
             x0 = other.x0;
             bounded = other.bounded;
 
-            // Deep copy the h array
+            // Deep copy the h array.
             free(h);
             const size_t numClocks = x0.size();
             h = static_cast<int *>(malloc(numClocks * sizeof(int)));

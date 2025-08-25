@@ -130,25 +130,46 @@ void testImmediateDelayPredecessors(int totSteps, int maxConst)
 }
 
 
-int main()
+void testLocationMapping()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
     const std::string automatonFileName = "ta0.txt";
 
-    // const timed_automaton::ast::timedAutomaton TA = parseTimedAutomaton(path);
-    // const int maxConstant = TA.getMaxConstant();
+    const timed_automaton::ast::timedAutomaton TA = parseTimedAutomaton(path + automatonFileName);
 
-    //testImmediateDelaySuccessor();
+    // ReSharper disable once CppTooWideScopeInitStatement
+    std::unordered_map<std::string, int> map = TA.mapLocationsToInt();
 
+    for (const auto &[key, value]: map)
+        std::cout << key << ": " << value << std::endl;
+
+    std::cout << "\nNow printing the transitions:" << std::endl;
+    const std::vector<std::vector<timed_automaton::ast::transition>> outTransitions = TA.getOutTransitions(map);
+
+    std::cout << outTransitions.size() << std::endl;
+
+    for (size_t i = 0; i < outTransitions.size(); ++i)
+    {
+        std::cout << "Index " << i << ":" << std::endl;
+        for (const auto &transition: outTransitions[i])
+            std::cout << "  " << transition << std::endl;
+        std::cout << std::endl;
+    }
+}
+
+
+int main()
+{
     const auto start = std::chrono::high_resolution_clock::now();
 
-    testImmediateDelayPredecessors(5, 1);
+    // testImmediateDelayPredecessors(5, 1);
+
+    testLocationMapping();
 
     const auto end = std::chrono::high_resolution_clock::now();
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
     std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
-
 
     return 0;
 }
