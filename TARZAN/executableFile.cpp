@@ -76,7 +76,7 @@ void testImmediateDelaySuccessor()
 }
 
 
-void testImmediateDelayPredecessors(int totSteps, int maxConst)
+void testImmediateDelayPredecessors(const int totSteps, const int maxConst)
 {
     Region oldSuccessor = getRegion(0);
 
@@ -186,6 +186,33 @@ void testClockIndices()
 }
 
 
+void testTransitionIsSatisfiable()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+    const std::string automatonFileName = "ta0.txt";
+
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    std::cout << "\n\n\nThe transitions of the automaton are:" << std::endl;
+    for (const auto &tr : automaton.transitions)
+        std::cout << tr << std::endl;
+
+    std::vector<std::pair<int, bool>> clockValuation{};
+    clockValuation.emplace_back(4, true);
+    clockValuation.emplace_back(5, true);
+    clockValuation.emplace_back(5, true);
+
+    std::unordered_map<std::string, int> clocksIndices{};
+    clocksIndices.emplace("x", 0);
+    clocksIndices.emplace("y", 1);
+    clocksIndices.emplace("z", 2);
+
+    std::cout << "Now trying to see if the transitions are satisfied:" << std::endl;
+    for (const auto &tr : automaton.transitions)
+        std::cout << tr << ": \n" << tr.isSatisfied(clockValuation, clocksIndices) << std::endl;
+}
+
+
 int main()
 {
     // std::cout << "Tick period: " << static_cast<double>(std::chrono::high_resolution_clock::period::num) / std::chrono::high_resolution_clock::period::den << " seconds\n";
@@ -194,7 +221,7 @@ int main()
     // const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     // std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
 
-    testClockIndices();
+    testTransitionIsSatisfiable();
 
     return 0;
 }

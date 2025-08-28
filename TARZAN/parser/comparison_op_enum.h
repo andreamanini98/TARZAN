@@ -1,7 +1,8 @@
 #ifndef COMPARISON_OP_ENUM_H
 #define COMPARISON_OP_ENUM_H
 
-#include <iostream>
+#include <string>
+
 
 // Enumeration containing comparison operators used in guards.
 enum comparison_op { LT, LE, EQ, GE, GT };

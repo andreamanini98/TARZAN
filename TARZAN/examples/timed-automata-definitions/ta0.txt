@@ -22,6 +22,6 @@ create automaton taTA_0
     transitions
     {
         (q0, action, [(x, <, 4), (y, =, 5)], [x, y, z], q1),
-        (q1, action2, [(x2, >=, 4), (y2, <=, 5)], [x2, y2, z2], q2);
+        (q1, action2, [(x, >=, 4), (z, <=, 5)], [x, y, z], q2);
     }
 }

@@ -11,7 +11,18 @@ using transition = timed_automaton::ast::transition;
 // TODO: vedere come adattare questo alle regioni delle arene. Secondo me non occorre fare altro, q rende possibile determinare la natura
 //       delle locations (controller o environment), ma occorre guardare nella rappresentazione dell'arena. Al limite aggiungi un Bool.
 
-// TODO: implementare nel file ast.h una funzione che restituisce l'idx delle locations iniziali, quindi ti servirà per trovare le locations iniziali.
+// TODO: implementare nel file ast.h una funzione che restituisce l'idx delle locations iniziali, quindi ti servirà per trovare le regioni iniziali.
+
+// TODO: crea un namespace region
+
+// TODO: PROSSIMI PASSI
+//       1) Devi implementare le funzioni isSatisfied() prima per le transizioni poi per i clock constraints.
+//       2) Implementa la funzione getImmediateDiscreteSuccessors().
+//       Okkio a gestire bene gli indici dei clock, ricorda che l'ordine degli indici dei clock è dato dal loro ordinamento nel vettore 'clocks' una volta che sono
+//       stati parsati. Dovresti riuscire a mantenere l'ordinamento usando la mappa che passi alle funzioni citate sopra (tranne a quella dei clock constraints).
+//
+// TODO: Quando farai l'algoritmo per trovare il region graph, devi vedere se dopo una discrete puoi subito trovare una discrete (almeno per i successors) =>
+//       comportamento zeno (non è escluso).
 
 
 class Region
@@ -117,10 +128,12 @@ public:
      * @brief Computes the immediate discrete successor of the current region as detailed in our paper.
      *
      * @param transitions the transitions over which immediate discrete successors must be computed.
+     * @param clockIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
      * @return a std::vector<Region> containing immediate discrete successors of the current region.
      *         If no successors can be computed, returns an empty std::vector.
      */
-    [[nodiscard]] std::vector<Region> getImmediateDiscreteSuccessors(const std::vector<transition> &transitions) const;
+    [[nodiscard]] std::vector<Region> getImmediateDiscreteSuccessors(const std::vector<transition> &transitions,
+                                                                     const std::unordered_map<std::string, int> &clockIndices) const;
 
 
     /**

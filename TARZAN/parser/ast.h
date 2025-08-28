@@ -7,7 +7,6 @@
 #include <vector>
 #include <map>
 #include <ranges>
-#include <sstream>
 
 // TODO: comment the code
 
@@ -23,7 +22,14 @@ namespace timed_automaton::ast
         int comparingConstant;
 
 
-        [[nodiscard]] bool isSatisfied(int clockValue, bool isFractionalPartGreaterThanZero);
+        /**
+         * @brief Computes the satisfiability of a clock constraint.
+         *
+         * @param clockValue the integer value of the constraint's clock.
+         * @param isFractionalPartGreaterThanZero true if the clock has a fractional part that is greater than zero, false otherwise.
+         * @return true if the constraint is satisfied, false otherwise.
+         */
+        [[nodiscard]] bool isSatisfied(int clockValue, bool isFractionalPartGreaterThanZero) const;
 
 
         [[nodiscard]] std::string getClockName() const { return clock; }
@@ -48,8 +54,11 @@ namespace timed_automaton::ast
          * @param clockValuation the current clock valuation (integer values and a boolean denoting whether the fractional part is greater than zero).
          * @param clocksIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
          * @return true if the guard is satisfied, false otherwise.
+         *
+         * @attention Works only if the guard is a conjunction of clock constraints, where a clock constraint is (x ~ c), with ~ in {<, <=, =, >=, >}.
          */
-        [[nodiscard]] bool isSatisfied(const std::vector<std::pair<int, bool>> &clockValuation, std::unordered_map<std::string, int> &clocksIndices);
+        [[nodiscard]] bool isSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
+                                       const std::unordered_map<std::string, int> &clocksIndices) const;
 
 
         [[nodiscard]] std::string to_string() const;
@@ -106,7 +115,7 @@ namespace timed_automaton::ast
          * @param locToIntMap a mapping from locations (represented by std::string) to int.
          * @return a std::vector of std::vector, where each inner vector contains the outgoing transitions from the location corresponding to an index.
          */
-        // TODO: for the predecessors, you may also want to do the same but with incoming transitions instead of outgoing transitions.
+        // TODO: for the discrete predecessors, you may also want to do the same but with incoming transitions instead of outgoing transitions.
         // TODO: maybe it can be done also by grouping indices instead of transitions (the indices correspond to the positions in the transitions
         //       std::vector), but let's first try with this.
         [[nodiscard]] std::vector<std::vector<transition>> getOutTransitions(const std::unordered_map<std::string, int> &locToIntMap) const;
@@ -167,7 +176,7 @@ namespace timed_automaton::ast
          * @param locToIntMap a mapping from locations (represented by std::string) to int.
          * @return a std::vector of std::vector, where each inner vector contains the outgoing transitions from the location corresponding to an index.
          */
-        // TODO: for the predecessors, you may also want to do the same but with incoming transitions instead of outgoing transitions.
+        // TODO: for the discrete predecessors, you may also want to do the same but with incoming transitions instead of outgoing transitions.
         // TODO: maybe it can be done also by grouping indices instead of transitions (the indices correspond to the positions in the transitions
         //       std::vector), but let's first try with this.
         [[nodiscard]] std::vector<std::vector<transition>> getOutTransitions(const std::unordered_map<std::string, int> &locToIntMap) const;

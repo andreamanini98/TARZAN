@@ -1,9 +1,45 @@
 #include "TARZAN/parser/ast.h"
 
+#include <iostream>
+
 using transition = timed_automaton::ast::transition;
 
 
 // Clock constraint class.
+
+bool timed_automaton::ast::clockConstraint::isSatisfied(const int clockValue, const bool isFractionalPartGreaterThanZero) const
+{
+    switch (constraintOperator)
+    {
+        case LT:
+            // No need of fractional part info.
+            return clockValue < comparingConstant;
+
+        case LE:
+            if (isFractionalPartGreaterThanZero)
+                return clockValue < comparingConstant;
+            return clockValue <= comparingConstant;
+
+        case EQ:
+            if (isFractionalPartGreaterThanZero)
+                return false;
+            return clockValue == comparingConstant;
+
+        case GE:
+            // No need of fractional part info.
+            return clockValue >= comparingConstant;
+
+        case GT:
+            if (isFractionalPartGreaterThanZero)
+                return clockValue >= comparingConstant;
+            return clockValue > comparingConstant;
+
+        default:
+            std::cerr << "Unsupported constraintOperator: " << constraintOperator << std::endl;
+            return false;
+    }
+}
+
 
 std::string timed_automaton::ast::clockConstraint::to_string() const
 {
@@ -17,6 +53,20 @@ std::string timed_automaton::ast::clockConstraint::to_string() const
 
 
 // Transition class.
+
+bool timed_automaton::ast::transition::isSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
+                                                   const std::unordered_map<std::string, int> &clocksIndices) const
+{
+    return std::ranges::all_of(clockGuard, [&](const auto &cc) {
+        const int clockIdx = clocksIndices.at(cc.getClockName());
+
+        const int clockIntVal = clockValuation[clockIdx].first;
+        const int clockHasFracPart = clockValuation[clockIdx].second;
+
+        return cc.isSatisfied(clockIntVal, clockHasFracPart);
+    });
+}
+
 
 std::string timed_automaton::ast::transition::to_string() const
 {
