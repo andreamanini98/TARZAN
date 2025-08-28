@@ -11,18 +11,15 @@ using transition = timed_automaton::ast::transition;
 // TODO: vedere come adattare questo alle regioni delle arene. Secondo me non occorre fare altro, q rende possibile determinare la natura
 //       delle locations (controller o environment), ma occorre guardare nella rappresentazione dell'arena. Al limite aggiungi un Bool.
 
-// TODO: implementare nel file ast.h una funzione che restituisce l'idx delle locations iniziali, quindi ti servirà per trovare le regioni iniziali.
-
 // TODO: crea un namespace region
 
-// TODO: PROSSIMI PASSI
-//       1) Devi implementare le funzioni isSatisfied() prima per le transizioni poi per i clock constraints.
-//       2) Implementa la funzione getImmediateDiscreteSuccessors().
-//       Okkio a gestire bene gli indici dei clock, ricorda che l'ordine degli indici dei clock è dato dal loro ordinamento nel vettore 'clocks' una volta che sono
-//       stati parsati. Dovresti riuscire a mantenere l'ordinamento usando la mappa che passi alle funzioni citate sopra (tranne a quella dei clock constraints).
-//
 // TODO: Quando farai l'algoritmo per trovare il region graph, devi vedere se dopo una discrete puoi subito trovare una discrete (almeno per i successors) =>
 //       comportamento zeno (non è escluso).
+
+// TODO: prossimi passi:
+//       1) implementare nel file ast.h una funzione che restituisce l'idx delle locations iniziali, quindi ti servirà per trovare le regioni iniziali (SE SERVE).
+//       2) crea una funzione che restituisce tutte le regioni iniziali di un dato automa.
+//       3) prova a ricreare (per ora solo foreword) l'automa di esempio come nel progetto delle ragazze.
 
 
 class Region
@@ -129,11 +126,18 @@ public:
      *
      * @param transitions the transitions over which immediate discrete successors must be computed.
      * @param clockIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
+     * @param locationsAsIntMap a std::unordered_map associating an integer with each string name.
      * @return a std::vector<Region> containing immediate discrete successors of the current region.
      *         If no successors can be computed, returns an empty std::vector.
+     *
+     * @warning The transitions parameter must contain all and only the transitions exiting from the location of the region.
+     *          To provide such transitions, the getOutTransitions() function of a Timed Automaton can be used.
+     * @warning To provide the clockIndices parameter, the getClocksIndices() function of a Timed Automaton can be used.
+     * @warning To provide the locationsAsIntMap, the mapLocationsToInt() function of a Timed Automaton can be used.
      */
     [[nodiscard]] std::vector<Region> getImmediateDiscreteSuccessors(const std::vector<transition> &transitions,
-                                                                     const std::unordered_map<std::string, int> &clockIndices) const;
+                                                                     const std::unordered_map<std::string, int> &clockIndices,
+                                                                     const std::unordered_map<std::string, int> &locationsAsIntMap) const;
 
 
     /**

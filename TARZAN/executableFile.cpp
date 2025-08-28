@@ -5,7 +5,7 @@
 #include "TARZAN/utilities/file_utilities.h"
 #include "TARZAN/regions/Region.h"
 
-// #define REGION_PRINT_REBUG
+// #define REGION_PRINT_DEBUG
 
 
 Region getRegion(int numSteps)
@@ -82,7 +82,7 @@ void testImmediateDelayPredecessors(const int totSteps, const int maxConst)
 
     for (int i = 0; i < totSteps; i++)
     {
-#ifdef REGION_PRINT_REBUG
+#ifdef REGION_PRINT_DEBUG
         std::cout << oldSuccessor.toString() << std::endl;
 #endif
         const Region successor = oldSuccessor.getImmediateDelaySuccessor(maxConst);
@@ -100,7 +100,7 @@ void testImmediateDelayPredecessors(const int totSteps, const int maxConst)
         for (const Region &p: oldPred)
         {
             std::vector<Region> predecessors = p.getImmediateDelayPredecessors();
-#ifdef REGION_PRINT_REBUG
+#ifdef REGION_PRINT_DEBUG
             if (!predecessors.empty())
             {
                 std::cout << "Predecessors!\n";
@@ -194,12 +194,12 @@ void testTransitionIsSatisfiable()
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
     std::cout << "\n\n\nThe transitions of the automaton are:" << std::endl;
-    for (const auto &tr : automaton.transitions)
+    for (const auto &tr: automaton.transitions)
         std::cout << tr << std::endl;
 
     std::vector<std::pair<int, bool>> clockValuation{};
-    clockValuation.emplace_back(4, true);
-    clockValuation.emplace_back(5, true);
+    clockValuation.emplace_back(2, true);
+    clockValuation.emplace_back(5, false);
     clockValuation.emplace_back(5, true);
 
     std::unordered_map<std::string, int> clocksIndices{};
@@ -208,8 +208,134 @@ void testTransitionIsSatisfiable()
     clocksIndices.emplace("z", 2);
 
     std::cout << "Now trying to see if the transitions are satisfied:" << std::endl;
-    for (const auto &tr : automaton.transitions)
-        std::cout << tr << ": \n" << tr.isSatisfied(clockValuation, clocksIndices) << std::endl;
+    for (const auto &tr: automaton.transitions)
+        std::cout << tr << ": \n" << tr.isGuardSatisfied(clockValuation, clocksIndices) << std::endl;
+}
+
+
+// TODO: guarda qui come passare la roba che serve per il calcolo dei discrete successors (ricontrolla che sia giusta).
+void testImmediateDiscreteSuccessors()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+    const std::string automatonFileName = "ta0.txt";
+
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    std::cout << "\n\n\n";
+
+    Region reg(3);
+
+    const auto newH = static_cast<int *>(malloc(sizeof(int) * 3));
+    newH[0] = 0;
+    newH[1] = 0;
+    newH[2] = 0;
+    reg.set_h(newH);
+
+    boost::dynamic_bitset<> x0(3);
+    x0.set(0, true);
+    x0.set(1, true);
+    x0.set(2, true);
+    reg.set_x0(x0);
+
+    std::unordered_map<std::string, int> locationsIntMap = automaton.mapLocationsToInt();
+
+    // std::cout << "Location to Integer Mapping:\n";
+    // for (const auto& [location, index] : locationsIntMap) {
+    //     std::cout << location << " -> " << index << std::endl;
+    // }
+
+    reg.set_q(locationsIntMap.at("q0"));
+
+    std::vector<std::vector<transition>> outTransitions = automaton.getOutTransitions(locationsIntMap);
+
+    // std::cout << "Outgoing Transitions Map:\n";
+    // for (size_t i = 0; i < outTransitionsMap.size(); ++i) {
+    //     std::cout << "Location Index " << i << " (" << outTransitionsMap[i].size() << " transitions):\n";
+    //     for (const auto& transition : outTransitionsMap[i]) {
+    //         std::cout << "  " << transition << std::endl;
+    //     }
+    //     std::cout << std::endl;
+    // }
+
+    std::unordered_map<std::string, int> clockIndices = automaton.getClocksIndices();
+
+    // std::cout << "Clock to Index Mapping:\n";
+    // for (const auto& [clockName, index] : clockIndices) {
+    //     std::cout << clockName << " -> " << index << std::endl;
+    // }
+
+    std::cout << "Initial region: " << reg.toString() << std::endl;
+
+    Region oldSuccessor = reg;
+    bool computedDiscreteSuccessor = false;
+
+    while (!computedDiscreteSuccessor)
+    {
+        std::vector<Region> discreteSuccessors = oldSuccessor.getImmediateDiscreteSuccessors(
+            outTransitions[reg.getLocation()], clockIndices, locationsIntMap
+        );
+
+        if (discreteSuccessors.empty())
+            std::cout << "Discrete successors are empty!" << std::endl;
+        else
+        {
+            std::cout << "Discrete successors found!" << std::endl;
+            std::cout << "Discrete Successors:\n";
+            std::cout << std::string(50, '-') << std::endl;
+
+            int count = 1;
+            for (const auto& region : discreteSuccessors) {
+                oldSuccessor = region;
+                std::cout << "Region #" << count++ << ":\n";
+                std::cout << region.toString();
+                std::cout << std::string(30, '-') << std::endl;
+            }
+
+            computedDiscreteSuccessor = true;
+            break;
+        }
+
+        Region successor = oldSuccessor.getImmediateDelaySuccessor(10);
+        std::cout << "Delay successor :\n" << successor.toString() << std::endl;
+        oldSuccessor = successor;
+    }
+
+    reg = oldSuccessor;
+    std::cout << "New initial region: " << reg.toString() << std::endl;
+
+    oldSuccessor = reg;
+    computedDiscreteSuccessor = false;
+
+    while (!computedDiscreteSuccessor)
+    {
+        std::vector<Region> discreteSuccessors = oldSuccessor.getImmediateDiscreteSuccessors(
+            outTransitions[reg.getLocation()], clockIndices, locationsIntMap
+        );
+
+        if (discreteSuccessors.empty())
+            std::cout << "Discrete successors are empty!" << std::endl;
+        else
+        {
+            std::cout << "Discrete successors found!" << std::endl;
+            std::cout << "Discrete Successors:\n";
+            std::cout << std::string(50, '-') << std::endl;
+
+            int count = 1;
+            for (const auto& region : discreteSuccessors) {
+                oldSuccessor = region;
+                std::cout << "Region #" << count++ << ":\n";
+                std::cout << region.toString();
+                std::cout << std::string(30, '-') << std::endl;
+            }
+
+            computedDiscreteSuccessor = true;
+            break;
+        }
+
+        Region successor = oldSuccessor.getImmediateDelaySuccessor(10);
+        std::cout << "Delay successor :\n" << successor.toString() << std::endl;
+        oldSuccessor = successor;
+    }
 }
 
 
@@ -221,7 +347,7 @@ int main()
     // const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     // std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
 
-    testTransitionIsSatisfiable();
+    testImmediateDiscreteSuccessors();
 
     return 0;
 }

@@ -54,8 +54,8 @@ std::string timed_automaton::ast::clockConstraint::to_string() const
 
 // Transition class.
 
-bool timed_automaton::ast::transition::isSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
-                                                   const std::unordered_map<std::string, int> &clocksIndices) const
+bool timed_automaton::ast::transition::isGuardSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
+                                                        const std::unordered_map<std::string, int> &clocksIndices) const
 {
     return std::ranges::all_of(clockGuard, [&](const auto &cc) {
         const int clockIdx = clocksIndices.at(cc.getClockName());

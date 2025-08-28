@@ -20,11 +20,11 @@ std::vector<std::pair<int, bool>> Region::getClockValuation() const
 
 Region Region::getImmediateDelaySuccessor(const int maxConstant) const
 {
-    Region res = clone();
+    Region reg = clone();
     const int numOfClocks = getNumberOfClocks();
 
     if (bounded.empty() && x0.none())
-        return res;
+        return reg;
     if (x0.any())
     {
         boost::dynamic_bitset<> xTmp(numOfClocks);
@@ -32,39 +32,39 @@ Region Region::getImmediateDelaySuccessor(const int maxConstant) const
 
         for (int i = 0; i < numOfClocks; i++)
         {
-            if (res.x0.test(numOfClocks - 1 - i))
+            if (reg.x0.test(numOfClocks - 1 - i))
             {
-                if (res.h[i] == maxConstant)
+                if (reg.h[i] == maxConstant)
                     xOob.set(numOfClocks - 1 - i, true);
                 else
                     xTmp.set(numOfClocks - 1 - i, true);
             }
         }
-        res.x0 &= boost::dynamic_bitset<>(numOfClocks);
+        reg.x0 &= boost::dynamic_bitset<>(numOfClocks);
 
         if (xTmp.any())
-            res.bounded.push_front(xTmp);
+            reg.bounded.push_front(xTmp);
         if (xOob.any())
-            res.unbounded.push_front(xOob);
+            reg.unbounded.push_front(xOob);
     } else
     {
-        const boost::dynamic_bitset<> &lastBoundedSet = res.bounded.back();
+        const boost::dynamic_bitset<> &lastBoundedSet = reg.bounded.back();
 
         for (int i = 0; i < numOfClocks; i++)
             if (lastBoundedSet.test(numOfClocks - 1 - i))
-                res.h[i]++;
+                reg.h[i]++;
 
-        res.x0 |= lastBoundedSet;
-        res.bounded.pop_back();
+        reg.x0 |= lastBoundedSet;
+        reg.bounded.pop_back();
     }
 
-    return res;
+    return reg;
 }
 
 
 std::vector<Region> Region::getImmediateDelayPredecessors() const
 {
-    std::vector<Region> res;
+    std::vector<Region> res{};
     const int numOfClocks = getNumberOfClocks();
 
     Region r0 = clone();
@@ -107,6 +107,49 @@ std::vector<Region> Region::getImmediateDelayPredecessors() const
     }
 
     res.push_back(r0);
+    return res;
+}
+
+
+std::vector<Region> Region::getImmediateDiscreteSuccessors(const std::vector<transition> &transitions,
+                                                           const std::unordered_map<std::string, int> &clockIndices,
+                                                           const std::unordered_map<std::string, int> &locationsAsIntMap) const
+{
+    std::vector<Region> res{};
+
+    for (const auto &transition: transitions)
+    {
+        if (transition.isGuardSatisfied(getClockValuation(), clockIndices))
+        {
+            Region reg = clone();
+            reg.set_q(locationsAsIntMap.at(transition.targetLocation));
+
+            const int numOfClocks = getNumberOfClocks();
+            boost::dynamic_bitset<> resetClocksMask(numOfClocks);
+
+            for (const std::string &resetClock: transition.clocksToReset)
+            {
+                const int resetClockIdx = clockIndices.at(resetClock);
+                reg.h[resetClockIdx] = 0;
+                resetClocksMask.set(numOfClocks - 1 - resetClockIdx);
+            }
+
+            reg.x0 |= resetClocksMask;
+
+            resetClocksMask.flip();
+
+            for (auto &clockSet: reg.unbounded)
+                clockSet &= resetClocksMask;
+            for (auto &clockSet: reg.bounded)
+                clockSet &= resetClocksMask;
+
+            std::erase_if(reg.unbounded, [](const auto &clockSet) { return clockSet.none(); });
+            std::erase_if(reg.bounded, [](const auto &clockSet) { return clockSet.none(); });
+
+            res.push_back(reg);
+        }
+    }
+
     return res;
 }
 

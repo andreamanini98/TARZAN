@@ -57,8 +57,8 @@ namespace timed_automaton::ast
          *
          * @attention Works only if the guard is a conjunction of clock constraints, where a clock constraint is (x ~ c), with ~ in {<, <=, =, >=, >}.
          */
-        [[nodiscard]] bool isSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
-                                       const std::unordered_map<std::string, int> &clocksIndices) const;
+        [[nodiscard]] bool isGuardSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
+                                            const std::unordered_map<std::string, int> &clocksIndices) const;
 
 
         [[nodiscard]] std::string to_string() const;
