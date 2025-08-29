@@ -8,9 +8,9 @@
 // #define REGION_PRINT_DEBUG
 
 
-Region getRegion(int numSteps)
+region::Region getRegion(int numSteps)
 {
-    Region reg(3);
+    region::Region reg(3);
 
     const auto newH = static_cast<int *>(malloc(sizeof(int) * 3));
     newH[0] = 0;
@@ -34,10 +34,10 @@ Region getRegion(int numSteps)
     reg.set_x0(x0);
     reg.set_bounded(X1);
 
-    Region oldSuccessor = reg;
+    region::Region oldSuccessor = reg;
     for (int i = 0; i < numSteps; i++)
     {
-        Region successor = oldSuccessor.getImmediateDelaySuccessor(1);
+        region::Region successor = oldSuccessor.getImmediateDelaySuccessor(1);
         oldSuccessor = successor;
     }
 
@@ -66,10 +66,10 @@ void testParsing()
 
 void testImmediateDelaySuccessor()
 {
-    Region oldSuccessor = getRegion(0);
+    region::Region oldSuccessor = getRegion(0);
     for (int i = 0; i < 7; i++)
     {
-        Region successor = oldSuccessor.getImmediateDelaySuccessor(1);
+        region::Region successor = oldSuccessor.getImmediateDelaySuccessor(1);
         std::cout << "Successor " << (i + 1) << ":\n" << successor.toString() << std::endl;
         oldSuccessor = successor;
     }
@@ -78,33 +78,33 @@ void testImmediateDelaySuccessor()
 
 void testImmediateDelayPredecessors(const int totSteps, const int maxConst)
 {
-    Region oldSuccessor = getRegion(0);
+    region::Region oldSuccessor = getRegion(0);
 
     for (int i = 0; i < totSteps; i++)
     {
 #ifdef REGION_PRINT_DEBUG
         std::cout << oldSuccessor.toString() << std::endl;
 #endif
-        const Region successor = oldSuccessor.getImmediateDelaySuccessor(maxConst);
+        const region::Region successor = oldSuccessor.getImmediateDelaySuccessor(maxConst);
         oldSuccessor = successor;
     }
 
     std::cout << oldSuccessor.toString() << std::endl;
 
-    std::vector<Region> oldPred;
-    std::vector<Region> newPred;
+    std::vector<region::Region> oldPred;
+    std::vector<region::Region> newPred;
     oldPred.push_back(oldSuccessor);
 
     for (int i = 0; i < totSteps; i++)
     {
-        for (const Region &p: oldPred)
+        for (const region::Region &p: oldPred)
         {
-            std::vector<Region> predecessors = p.getImmediateDelayPredecessors();
+            std::vector<region::Region> predecessors = p.getImmediateDelayPredecessors();
 #ifdef REGION_PRINT_DEBUG
             if (!predecessors.empty())
             {
                 std::cout << "Predecessors!\n";
-                for (const Region &r: predecessors)
+                for (const region::Region &r: predecessors)
                 {
                     std::cout << "Predecessor " << (i + 1) << ":\n";
                     std::cout << r.toString() << std::endl;
@@ -152,7 +152,7 @@ void testLocationMapping()
 
 void testClockValuation()
 {
-    const Region reg = getRegion(4);
+    const region::Region reg = getRegion(4);
 
     std::cout << "We now test the clock valuation of: " << reg.toString() << std::endl;
 
@@ -223,7 +223,7 @@ void testImmediateDiscreteSuccessors()
 
     std::cout << "\n\n\n";
 
-    Region reg(3);
+    region::Region reg(3);
 
     const auto newH = static_cast<int *>(malloc(sizeof(int) * 3));
     newH[0] = 0;
@@ -266,12 +266,12 @@ void testImmediateDiscreteSuccessors()
 
     std::cout << "Initial region: " << reg.toString() << std::endl;
 
-    Region oldSuccessor = reg;
+    region::Region oldSuccessor = reg;
     bool computedDiscreteSuccessor = false;
 
     while (!computedDiscreteSuccessor)
     {
-        std::vector<Region> discreteSuccessors = oldSuccessor.getImmediateDiscreteSuccessors(
+        std::vector<region::Region> discreteSuccessors = oldSuccessor.getImmediateDiscreteSuccessors(
             outTransitions[reg.getLocation()], clockIndices, locationsIntMap
         );
 
@@ -287,7 +287,7 @@ void testImmediateDiscreteSuccessors()
             for (const auto &region: discreteSuccessors)
             {
                 oldSuccessor = region;
-                std::cout << "Region #" << count++ << ":\n";
+                std::cout << "region::Region #" << count++ << ":\n";
                 std::cout << region.toString();
                 std::cout << std::string(30, '-') << std::endl;
             }
@@ -296,7 +296,7 @@ void testImmediateDiscreteSuccessors()
             break;
         }
 
-        Region successor = oldSuccessor.getImmediateDelaySuccessor(10);
+        region::Region successor = oldSuccessor.getImmediateDelaySuccessor(10);
         std::cout << "Delay successor :\n" << successor.toString() << std::endl;
         oldSuccessor = successor;
     }
@@ -309,7 +309,7 @@ void testImmediateDiscreteSuccessors()
 
     while (!computedDiscreteSuccessor)
     {
-        std::vector<Region> discreteSuccessors = oldSuccessor.getImmediateDiscreteSuccessors(
+        std::vector<region::Region> discreteSuccessors = oldSuccessor.getImmediateDiscreteSuccessors(
             outTransitions[reg.getLocation()], clockIndices, locationsIntMap
         );
 
@@ -325,7 +325,7 @@ void testImmediateDiscreteSuccessors()
             for (const auto &region: discreteSuccessors)
             {
                 oldSuccessor = region;
-                std::cout << "Region #" << count++ << ":\n";
+                std::cout << "region::Region #" << count++ << ":\n";
                 std::cout << region.toString();
                 std::cout << std::string(30, '-') << std::endl;
             }
@@ -334,7 +334,7 @@ void testImmediateDiscreteSuccessors()
             break;
         }
 
-        Region successor = oldSuccessor.getImmediateDelaySuccessor(10);
+        region::Region successor = oldSuccessor.getImmediateDelaySuccessor(10);
         std::cout << "Delay successor :\n" << successor.toString() << std::endl;
         oldSuccessor = successor;
     }
@@ -372,7 +372,7 @@ int main()
     // const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     // std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
 
-    testIsInitial();
+    testImmediateDiscreteSuccessors();
 
     return 0;
 }

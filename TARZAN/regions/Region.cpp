@@ -3,7 +3,7 @@
 #include <sstream>
 
 
-std::vector<std::pair<int, bool>> Region::getClockValuation() const
+std::vector<std::pair<int, bool>> region::Region::getClockValuation() const
 {
     const int numOfClocks = getNumberOfClocks();
     std::vector<std::pair<int, bool>> clockValuation(numOfClocks);
@@ -18,7 +18,7 @@ std::vector<std::pair<int, bool>> Region::getClockValuation() const
 }
 
 
-Region Region::getImmediateDelaySuccessor(const int maxConstant) const
+region::Region region::Region::getImmediateDelaySuccessor(const int maxConstant) const
 {
     Region reg = clone();
     const int numOfClocks = getNumberOfClocks();
@@ -62,7 +62,7 @@ Region Region::getImmediateDelaySuccessor(const int maxConstant) const
 }
 
 
-std::vector<Region> Region::getImmediateDelayPredecessors() const
+std::vector<region::Region> region::Region::getImmediateDelayPredecessors() const
 {
     std::vector<Region> res{};
     const int numOfClocks = getNumberOfClocks();
@@ -111,7 +111,7 @@ std::vector<Region> Region::getImmediateDelayPredecessors() const
 }
 
 
-std::vector<Region> Region::getImmediateDiscreteSuccessors(const std::vector<transition> &transitions,
+std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const std::vector<transition> &transitions,
                                                            const std::unordered_map<std::string, int> &clockIndices,
                                                            const std::unordered_map<std::string, int> &locationsAsIntMap) const
 {
@@ -154,7 +154,7 @@ std::vector<Region> Region::getImmediateDiscreteSuccessors(const std::vector<tra
 }
 
 
-std::string Region::toString() const
+std::string region::Region::toString() const
 {
     std::ostringstream oss;
     oss << "Region\n";
