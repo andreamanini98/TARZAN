@@ -14,11 +14,6 @@ using transition = timed_automaton::ast::transition;
 // TODO: Quando farai l'algoritmo per trovare il region graph, devi vedere se dopo una discrete puoi subito trovare una discrete (almeno per i successors) =>
 //       comportamento zeno (non è escluso).
 
-// TODO: prossimi passi:
-//       1) implementare nel file ast.h una funzione che restituisce l'idx delle locations iniziali, quindi ti servirà per trovare le regioni iniziali (SE SERVE).
-//       2) crea una funzione che restituisce tutte le regioni iniziali di un dato automa.
-//       3) prova a ricreare (per ora solo foreword) l'automa di esempio come nel progetto delle ragazze.
-
 
 namespace region
 {
@@ -205,6 +200,33 @@ namespace region
                 std::memcpy(h, other.h, numClocks * sizeof(int));
             }
             return *this;
+        }
+
+
+        bool operator==(const Region &other) const
+        {
+            if (this == &other)
+                return true;
+            if (q != other.q)
+                return false;
+            if (x0 != other.x0)
+                return false;
+            if (unbounded != other.unbounded)
+                return false;
+            if (bounded != other.bounded)
+                return false;
+
+            const size_t numClocks = x0.size();
+            for (size_t i = 0; i < numClocks; ++i)
+                if (h[i] != other.h[i]) return false;
+
+            return true;
+        }
+
+
+        bool operator!=(const Region &other) const
+        {
+            return !(*this == other);
         }
     };
 }

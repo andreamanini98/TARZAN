@@ -1,8 +1,6 @@
 #ifndef TARZAN_RTS_H
 #define TARZAN_RTS_H
 
-#include <utility>
-
 #include "Region.h"
 #include "TARZAN/parser/ast.h"
 
@@ -24,6 +22,8 @@ namespace region
 
         std::vector<std::vector<transition>> outTransitions{};
 
+        std::vector<Region> initialRegions{};
+
 
     public:
         explicit RTS(const timed_automaton::ast::timedAutomaton &automaton) : automaton(automaton)
@@ -33,13 +33,18 @@ namespace region
             locationsToInt = automaton.mapLocationsToInt();
             initialLocations = automaton.getInitialLocations(locationsToInt);
             outTransitions = automaton.getOutTransitions(locationsToInt);
+
+            const int numOfClocks = static_cast<int>(clocksIndices.size());
+            for (const int loc: initialLocations)
+                initialRegions.emplace_back(numOfClocks, loc);
         }
 
 
-        /**
-         * @return the initial regions of the RTS 'automaton' attribute.
-         */
-        [[nodiscard]] std::vector<Region> getInitialRegions() const;
+        [[nodiscard]] std::vector<Region> buildRegionGraphForeword() const;
+
+
+        // Getters.
+        [[nodiscard]] std::vector<Region> getInitialRegions() const { return initialRegions; }
     };
 }
 

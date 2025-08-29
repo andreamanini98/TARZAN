@@ -214,7 +214,6 @@ void testTransitionIsSatisfiable()
 }
 
 
-// TODO: guarda qui come passare la roba che serve per il calcolo dei discrete successors (ricontrolla che sia giusta).
 void testImmediateDiscreteSuccessors()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
@@ -365,6 +364,23 @@ void testIsInitial()
 }
 
 
+void testRTS()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+    const std::string automatonFileName = "light_switch.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const region::RTS regionTransitionSystem(automaton);
+
+    std::cout << "\n\n\n";
+
+    std::cout << "Computed the following regions:" << std::endl;
+
+    for (const std::vector<region::Region> rts = regionTransitionSystem.buildRegionGraphForeword(); const auto &region: rts)
+        std::cout << region.toString() << std::endl;
+}
+
+
 int main()
 {
     // std::cout << "Tick period: " << static_cast<double>(std::chrono::high_resolution_clock::period::num) / std::chrono::high_resolution_clock::period::den << " seconds\n";
@@ -373,7 +389,7 @@ int main()
     // const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     // std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
 
-    testParsing();
+    testRTS();
 
     return 0;
 }
