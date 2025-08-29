@@ -121,6 +121,18 @@ std::unordered_map<std::string, int> timed_automaton::ast::timedAutomaton::mapLo
 }
 
 
+std::vector<int> timed_automaton::ast::timedAutomaton::getInitialLocations(const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    std::vector<int> initialLocations{};
+
+    for (const auto &[loc, isInitial]: locations)
+        if (isInitial && isInitial.value())
+            initialLocations.push_back(locToIntMap.at(loc));
+
+    return initialLocations;
+}
+
+
 std::vector<std::vector<transition>> timed_automaton::ast::timedAutomaton::getOutTransitions(const std::unordered_map<std::string, int> &locToIntMap) const
 {
     std::vector<std::vector<transition>> outTransitions;
@@ -196,6 +208,18 @@ std::unordered_map<std::string, int> timed_automaton::ast::timedArena::mapLocati
     }
 
     return map;
+}
+
+
+std::vector<int> timed_automaton::ast::timedArena::getInitialLocations(const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    std::vector<int> initialLocations{};
+
+    for (const auto &[loc, locInfo]: locations)
+        if (locInfo.second && locInfo.second.value())
+            initialLocations.push_back(locToIntMap.at(loc));
+
+    return initialLocations;
 }
 
 

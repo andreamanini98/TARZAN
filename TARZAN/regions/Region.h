@@ -59,6 +59,20 @@ public:
     }
 
 
+    /**
+     * @brief Creates an initial region (all clocks are in x0 with integer value equal to zero) with location q.
+     *
+     * @param numClocks the number of Timed Automaton clocks from which the region is derived.
+     * @param q the location of the region.
+     */
+    Region(const int numClocks, const int q) : q(q)
+    {
+        h = static_cast<int *>(malloc(numClocks * sizeof(int)));
+        x0.resize(numClocks);
+        x0.flip();
+    }
+
+
     Region(const int q,
            int *h,
            const std::deque<boost::dynamic_bitset<>> &unbounded,

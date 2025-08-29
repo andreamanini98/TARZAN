@@ -105,6 +105,15 @@ namespace timed_automaton::ast
 
 
         /**
+         * @brief Returns the int indices of the initial locations given a mapping from location names to int values.
+         *
+         * @param locToIntMap the mapping from location names to int values.
+         * @return a std::vector containing the indices of the initial locations.
+         */
+        [[nodiscard]] std::vector<int> getInitialLocations(const std::unordered_map<std::string, int> &locToIntMap) const;
+
+
+        /**
          * @brief Collects transitions exiting from locations, grouping and indexing them.
          *
          * Each location must be treated as an integer. This way, the transitions exiting from such location can be easily
@@ -163,6 +172,15 @@ namespace timed_automaton::ast
          */
         // TODO: if needed to reverse from this, you need to obtain a new std::unordered_map having integer keys and std::string values.
         [[nodiscard]] std::unordered_map<std::string, int> mapLocationsToInt() const;
+
+
+        /**
+         * @brief Returns the int indices of the initial locations given a mapping from location names to int values.
+         *
+         * @param locToIntMap the mapping from location names to int values.
+         * @return a std::vector containing the indices of the initial locations.
+         */
+        [[nodiscard]] std::vector<int> getInitialLocations(const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
         /**

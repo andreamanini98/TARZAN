@@ -14,9 +14,9 @@ create automaton taTA_0
     {
         q0 <initial: true>,
         q1 <initial: false>,
-        q2 <initial: true>,
+        q2 <initial: false>,
         q3,
-        q4 <initial:true>;
+        q4 <initial:false>;
     }
 
     transitions

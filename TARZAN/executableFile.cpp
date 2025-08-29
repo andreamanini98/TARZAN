@@ -284,7 +284,8 @@ void testImmediateDiscreteSuccessors()
             std::cout << std::string(50, '-') << std::endl;
 
             int count = 1;
-            for (const auto& region : discreteSuccessors) {
+            for (const auto &region: discreteSuccessors)
+            {
                 oldSuccessor = region;
                 std::cout << "Region #" << count++ << ":\n";
                 std::cout << region.toString();
@@ -321,7 +322,8 @@ void testImmediateDiscreteSuccessors()
             std::cout << std::string(50, '-') << std::endl;
 
             int count = 1;
-            for (const auto& region : discreteSuccessors) {
+            for (const auto &region: discreteSuccessors)
+            {
                 oldSuccessor = region;
                 std::cout << "Region #" << count++ << ":\n";
                 std::cout << region.toString();
@@ -339,6 +341,29 @@ void testImmediateDiscreteSuccessors()
 }
 
 
+void testIsInitial()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+    const std::string automatonFileName = "ta0.txt";
+
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    std::cout << "\n\n\n";
+
+    std::unordered_map<std::string, int> locationsIntMap = automaton.mapLocationsToInt();
+
+    std::cout << "Location to Integer Mapping:\n";
+    for (const auto &[location, index]: locationsIntMap)
+    {
+        std::cout << location << " -> " << index << std::endl;
+    }
+
+    std::cout << "initial locations are: " << std::endl;
+    for (const std::vector<int> initials = automaton.getInitialLocations(locationsIntMap); const int loc : initials)
+        std::cout << loc << std::endl;
+}
+
+
 int main()
 {
     // std::cout << "Tick period: " << static_cast<double>(std::chrono::high_resolution_clock::period::num) / std::chrono::high_resolution_clock::period::den << " seconds\n";
@@ -347,7 +372,7 @@ int main()
     // const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     // std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
 
-    testImmediateDiscreteSuccessors();
+    testIsInitial();
 
     return 0;
 }
