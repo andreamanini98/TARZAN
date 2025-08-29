@@ -4,6 +4,7 @@
 #include "TARZAN/parser/ast.h"
 #include "TARZAN/utilities/file_utilities.h"
 #include "TARZAN/regions/Region.h"
+#include "TARZAN/regions/RTS.h"
 
 // #define REGION_PRINT_DEBUG
 
@@ -49,18 +50,18 @@ void testParsing()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
 
-    const std::string automatonFileName = "ta0.txt";
-    const std::string arenaFileName = "arena0.txt";
+    const std::string automatonFileName = "light_switch.txt";
+    //const std::string arenaFileName = "arena0.txt";
 
-    timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
-    timed_automaton::ast::timedArena arena = parseTimedArena(path + arenaFileName);
+    //timed_automaton::ast::timedArena arena = parseTimedArena(path + arenaFileName);
 
     std::cout << "\n\n\n\n\n";
     std::cout << "Parsed automaton: " << automaton << std::endl;
 
-    std::cout << "\n\n\n\n\n";
-    std::cout << "Parsed arena: " << arena << std::endl;
+    //std::cout << "\n\n\n\n\n";
+    //std::cout << "Parsed arena: " << arena << std::endl;
 }
 
 
@@ -359,7 +360,7 @@ void testIsInitial()
     }
 
     std::cout << "initial locations are: " << std::endl;
-    for (const std::vector<int> initials = automaton.getInitialLocations(locationsIntMap); const int loc : initials)
+    for (const std::vector<int> initials = automaton.getInitialLocations(locationsIntMap); const int loc: initials)
         std::cout << loc << std::endl;
 }
 
@@ -372,7 +373,7 @@ int main()
     // const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     // std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
 
-    testImmediateDiscreteSuccessors();
+    testParsing();
 
     return 0;
 }

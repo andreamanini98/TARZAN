@@ -12,7 +12,8 @@
 
 namespace timed_automaton
 {
-    inline struct comp_op : boost::spirit::x3::symbols<comparison_op> {
+    inline struct comp_op : boost::spirit::x3::symbols<comparison_op>
+    {
         comp_op()
         {
             auto &self = add
@@ -87,7 +88,7 @@ namespace timed_automaton
                 > clockConstraint_rule % ','
                 > lit(']') > lit(',')
                 > lit('[')
-                > literal % ','
+                > -(literal % ',') // Since a transition may have no clocks to reset, we put the unused - symbol to match no reset clocks at all.
                 > lit(']') > lit(',')
                 > literal
                 > lit(')');
@@ -148,23 +149,32 @@ namespace timed_automaton
                             timedAutomaton_rule,
                             timedArena_rule);
 
-        struct loc_pair_class : success_handler {};
+        struct loc_pair_class : success_handler
+        {};
 
-        struct loc_map_class : success_handler {};
+        struct loc_map_class : success_handler
+        {};
 
-        struct arena_loc_class : success_handler {};
+        struct arena_loc_class : success_handler
+        {};
 
-        struct arena_loc_pair_class : success_handler {};
+        struct arena_loc_pair_class : success_handler
+        {};
 
-        struct arena_loc_map_class : success_handler {};
+        struct arena_loc_map_class : success_handler
+        {};
 
-        struct clockConstraint_class : success_handler {};
+        struct clockConstraint_class : success_handler
+        {};
 
-        struct transition_class : success_handler {};
+        struct transition_class : success_handler
+        {};
 
-        struct timedAutomaton_class : error_handler_base, success_handler {};
+        struct timedAutomaton_class : error_handler_base, success_handler
+        {};
 
-        struct timedArena_class : error_handler_base, success_handler {};
+        struct timedArena_class : error_handler_base, success_handler
+        {};
     }
 }
 

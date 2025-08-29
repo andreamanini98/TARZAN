@@ -1,0 +1,24 @@
+create automaton light_switch
+{
+    clocks
+    {
+        x;
+    }
+
+    actions
+    {
+        switch_on, switch_off;
+    }
+
+    locations
+    {
+        off <initial: true>,
+        on  <initial: false>;
+    }
+
+    transitions
+    {
+        (off, switch_on, [(x, >=, 0)], [x], on),
+        (on, switch_off, [(x, =, 2)], [], off);
+    }
+}

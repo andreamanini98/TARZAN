@@ -112,8 +112,8 @@ std::vector<region::Region> region::Region::getImmediateDelayPredecessors() cons
 
 
 std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const std::vector<transition> &transitions,
-                                                           const std::unordered_map<std::string, int> &clockIndices,
-                                                           const std::unordered_map<std::string, int> &locationsAsIntMap) const
+                                                                           const std::unordered_map<std::string, int> &clockIndices,
+                                                                           const std::unordered_map<std::string, int> &locationsAsIntMap) const
 {
     std::vector<Region> res{};
 
@@ -124,27 +124,30 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
             Region reg = clone();
             reg.set_q(locationsAsIntMap.at(transition.targetLocation));
 
-            const int numOfClocks = getNumberOfClocks();
-            boost::dynamic_bitset<> resetClocksMask(numOfClocks);
-
-            for (const std::string &resetClock: transition.clocksToReset)
+            if (!transition.clocksToReset.empty())
             {
-                const int resetClockIdx = clockIndices.at(resetClock);
-                reg.h[resetClockIdx] = 0;
-                resetClocksMask.set(numOfClocks - 1 - resetClockIdx);
+                const int numOfClocks = getNumberOfClocks();
+                boost::dynamic_bitset<> resetClocksMask(numOfClocks);
+
+                for (const std::string &resetClock: transition.clocksToReset)
+                {
+                    const int resetClockIdx = clockIndices.at(resetClock);
+                    reg.h[resetClockIdx] = 0;
+                    resetClocksMask.set(numOfClocks - 1 - resetClockIdx);
+                }
+
+                reg.x0 |= resetClocksMask;
+
+                resetClocksMask.flip();
+
+                for (auto &clockSet: reg.unbounded)
+                    clockSet &= resetClocksMask;
+                for (auto &clockSet: reg.bounded)
+                    clockSet &= resetClocksMask;
+
+                std::erase_if(reg.unbounded, [](const auto &clockSet) { return clockSet.none(); });
+                std::erase_if(reg.bounded, [](const auto &clockSet) { return clockSet.none(); });
             }
-
-            reg.x0 |= resetClocksMask;
-
-            resetClocksMask.flip();
-
-            for (auto &clockSet: reg.unbounded)
-                clockSet &= resetClocksMask;
-            for (auto &clockSet: reg.bounded)
-                clockSet &= resetClocksMask;
-
-            std::erase_if(reg.unbounded, [](const auto &clockSet) { return clockSet.none(); });
-            std::erase_if(reg.bounded, [](const auto &clockSet) { return clockSet.none(); });
 
             res.push_back(reg);
         }

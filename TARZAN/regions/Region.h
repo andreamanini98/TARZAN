@@ -11,8 +11,6 @@ using transition = timed_automaton::ast::transition;
 // TODO: vedere come adattare questo alle regioni delle arene. Secondo me non occorre fare altro, q rende possibile determinare la natura
 //       delle locations (controller o environment), ma occorre guardare nella rappresentazione dell'arena. Al limite aggiungi un Bool.
 
-// TODO: crea un namespace region
-
 // TODO: Quando farai l'algoritmo per trovare il region graph, devi vedere se dopo una discrete puoi subito trovare una discrete (almeno per i successors) =>
 //       comportamento zeno (non è escluso).
 
