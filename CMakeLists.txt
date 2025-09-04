@@ -64,6 +64,10 @@ set(BOOST_ROOT "/Users/echo/Desktop/boostinstall")
 find_package(Boost 1.88.0 REQUIRED system filesystem)
 
 
+# Find Abseil libraries.
+find_package(absl CONFIG REQUIRED)
+
+
 # Add compiler warnings.
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-Wall COMPILER_SUPPORTS_WALL)
@@ -91,7 +95,10 @@ add_library(TARZAN STATIC ${LIBRARY_SOURCES})
 target_link_libraries(TARZAN PRIVATE
         Boost::headers
         Boost::system
-        Boost::filesystem)
+        Boost::filesystem
+        absl::base
+        absl::strings
+        absl::flat_hash_map)
 
 
 # Setup include directories for the library.
@@ -135,7 +142,10 @@ foreach (source IN LISTS LIBRARY_EXECUTABLES)
             TARZAN
             Boost::headers
             Boost::system
-            Boost::filesystem)
+            Boost::filesystem
+            absl::base
+            absl::strings
+            absl::flat_hash_map)
 
     # Set include directories properly
     # target_include_directories(${executable_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

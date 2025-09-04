@@ -13,6 +13,43 @@
 // TODO: avoid code duplication.
 
 
+// The following is the grammar for the Liana DSL used to create Timed Automata (STILL NEED TO DEFINE THE TIMED ARENA ONE).
+//
+// <automaton> -> 'create' 'automaton' <literal>
+//                '{'
+//                'clocks'      '{' <clocks_rule>      '}'
+//                'actions'     '{' <actions_rule>     '}'
+//                'locations'   '{' <locations_rule>   '}'
+//                'transitions' '{' <transition_rule> (, <transition_rule>)* ';' '}'
+//                '}'
+//
+//  <clocks_rule> -> <literal> (, <literal>)* ';'
+//
+//  <actions_rule> -> <literal> (, <literal>)* ';'
+//
+//  <locations_rule> -> <loc_rule> (, <loc_rule>)* ';'
+//
+//  <loc_rule> -> <literal> (eps | '<' 'initial' ':' <bool> '>')
+//
+//  <bool> -> 'true' | 'false'
+//
+//  <transition_rule> -> '('
+//                        <literal> ','
+//                        <literal> ','
+//                        '[' <clock_constraint_rule> (, <clock_constraint_rule>)* ']' ','
+//                        '[' (eps | <literal> (',' <literal>)*) ']' ','
+//                        <literal>
+//                        ')'
+//
+//  <clock_constraint_rule> -> '(' <literal> ',' <comparison_operator> ',' <int> ')'
+//
+//  <comparison_operator> -> '<' | '<=' | '=' | '>=' | '>'
+//
+//  <int> -> '1..9'('0..9')*
+//
+//  <literal> -> ('a..z' | 'A..Z' | '0..9' | '_' )+
+
+
 namespace timed_automaton::ast
 {
     struct clockConstraint
