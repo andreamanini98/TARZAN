@@ -228,6 +228,77 @@ namespace region
         {
             return !(*this == other);
         }
+
+
+        friend struct RegionHash;
+    };
+
+
+    // Hash function for Region.
+    struct RegionHash
+    {
+        std::size_t operator()(const Region &region) const
+        {
+            std::size_t seed = 0;
+
+            // Hash the location.
+            hash_combine(seed, region.getLocation());
+
+            // Hash the integer array h.
+            const int numClocks = region.getNumberOfClocks();
+            for (int i = 0; i < numClocks; i++)
+                hash_combine(seed, region.h[i]);
+
+            // Hash the x0 bitset.
+            hash_combine(seed, hash_bitset(region.x0));
+
+            // Hash the unbounded deque (include size for order).
+            hash_combine(seed, region.unbounded.size());
+            for (const auto &bitset: region.unbounded)
+                hash_combine(seed, hash_bitset(bitset));
+
+            // Hash the bounded deque (include size for order).
+            hash_combine(seed, region.bounded.size());
+            for (const auto &bitset: region.bounded)
+                hash_combine(seed, hash_bitset(bitset));
+
+            return seed;
+        }
+
+
+    private:
+        /**
+         * @brief Combines two hashes using golden ratio hashing.
+         *
+         * @tparam T the class of the new element for which we are combining the hash.
+         * @param seed an existing hash value.
+         * @param v an element whose hash value must be combined with seed.
+         */
+        template<class T>
+        static void hash_combine(std::size_t &seed, const T &v)
+        {
+            std::hash<T> hasher;
+            seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+        }
+
+
+        /**
+         * @brief Hashes a boost::dynamic_bitset exploiting its string representation.
+         *
+         * @param bitset the boost::dynamic_bitset to hash.
+         * @return the hash of bitset.
+         */
+        static std::size_t hash_bitset(const boost::dynamic_bitset<> &bitset)
+        {
+            std::size_t seed = 0;
+            hash_combine(seed, bitset.size());
+
+            std::string bit_string;
+            boost::to_string(bitset, bit_string);
+            hash_combine(seed, std::hash<std::string>{}(bit_string));
+
+            return seed;
+        }
     };
 }
 
