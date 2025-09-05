@@ -14,6 +14,14 @@
 cmake_minimum_required(VERSION 3.31)
 
 
+# These were put for problems with threads, but everything seems fine now.
+# set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+# set(CMAKE_HAVE_THREADS_LIBRARY 1)
+# set(CMAKE_USE_WIN32_THREADS_INIT 0)
+# set(CMAKE_USE_PTHREADS_INIT 1)
+# set(THREADS_PREFER_PTHREAD_FLAG ON)
+
+
 # Getting the project name as the current directory name.
 get_filename_component(ProjectId ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
@@ -50,8 +58,18 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/lib
 option(ENABLE_OPTIMIZATION "Enable O3 optimization level" ON)
 if (ENABLE_OPTIMIZATION)
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE} -O3")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -O3")
+
+        # TODO: review this code (the entire file in general). See also omp in target_link_libraries functions below.
+        # Homebrew libomp paths
+        set(LIBOMP_INCLUDE_DIR /opt/homebrew/opt/libomp/include)
+        set(LIBOMP_LIB_DIR /opt/homebrew/opt/libomp/lib)
+
+        # Add include path
+        include_directories(${LIBOMP_INCLUDE_DIR})
+
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp -O3")
+
+        link_directories(${LIBOMP_LIB_DIR})
 
         message(STATUS "O3 optimization enabled.")
     endif ()
@@ -98,7 +116,8 @@ target_link_libraries(TARZAN PRIVATE
         Boost::filesystem
         absl::base
         absl::strings
-        absl::flat_hash_map)
+        absl::flat_hash_map
+        omp)
 
 
 # Setup include directories for the library.
@@ -145,7 +164,8 @@ foreach (source IN LISTS LIBRARY_EXECUTABLES)
             Boost::filesystem
             absl::base
             absl::strings
-            absl::flat_hash_map)
+            absl::flat_hash_map
+            omp)
 
     # Set include directories properly
     # target_include_directories(${executable_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
