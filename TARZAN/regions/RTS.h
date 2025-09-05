@@ -40,6 +40,7 @@ namespace region
         }
 
 
+        // TODO: questo va modificato, vedi nel file .cpp qualche indizio.
         [[nodiscard]] std::vector<Region> buildRegionGraphForeword() const;
 
 

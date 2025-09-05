@@ -5,6 +5,7 @@
 #include "TARZAN/utilities/file_utilities.h"
 #include "TARZAN/regions/Region.h"
 #include "TARZAN/regions/RTS.h"
+#include "absl/container/flat_hash_set.h"
 
 // #define REGION_PRINT_DEBUG
 
@@ -364,32 +365,74 @@ void testIsInitial()
 }
 
 
+void testHash()
+{
+    region::Region r = getRegion(3);
+
+    std::cout << "Region: " << r.toString() << std::endl;
+
+    absl::flat_hash_set<region::Region, region::RegionHash> regions{};
+
+    regions.insert(r);
+
+    std::cout << "is r in regions? " << regions.contains(r) << std::endl;
+
+    region::Region r1 = getRegion(3);
+
+    regions.insert(r1);
+
+    region::Region r2 = getRegion(3);
+
+    std::cout << "is r in regions? " << regions.contains(r2) << std::endl;
+
+    region::Region r3 = getRegion(6);
+
+    std::cout << "is r in regions? " << regions.contains(r3) << std::endl;
+}
+
+
 void testRTS()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
-    const std::string automatonFileName = "light_switch.txt";
+    // const std::string automatonFileName = "light_switch.txt";
+
+    const std::string automatonFileName = "test_flower_small.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
+
+    //std::cout << "Location to Integer Mapping:\n";
+    //for (const auto& [location, index] : automaton.mapLocationsToInt()) {
+    //    std::cout << location << " -> " << index << std::endl;
+    //}
 
     std::cout << "\n\n\n";
 
     std::cout << "Computed the following regions:" << std::endl;
 
-    for (const std::vector<region::Region> rts = regionTransitionSystem.buildRegionGraphForeword(); const auto &region: rts)
-        std::cout << region.toString() << std::endl;
+    const std::vector<region::Region> rts = regionTransitionSystem.buildRegionGraphForeword();
+
+    //for (const std::vector<region::Region> rts = regionTransitionSystem.buildRegionGraphForeword(); const auto &region: rts)
+    //    std::cout << region.toString() << std::endl;
 }
 
 
 int main()
 {
-    // std::cout << "Tick period: " << static_cast<double>(std::chrono::high_resolution_clock::period::num) / std::chrono::high_resolution_clock::period::den << " seconds\n";
-    // const auto start = std::chrono::high_resolution_clock::now();
-    // const auto end = std::chrono::high_resolution_clock::now();
-    // const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    // std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
+    //std::cout << "Tick period: " << static_cast<double>(std::chrono::high_resolution_clock::period::num) / std::chrono::high_resolution_clock::period::den << " seconds\n";
+    //const auto start = std::chrono::high_resolution_clock::now();
 
     testRTS();
+
+#ifdef _OPENMP
+    std::cout << "Compiled with OpenMP!!" << std::endl;
+#else
+    std::cout << "OpenMP not available!" << std::endl;
+#endif
+
+    //const auto end = std::chrono::high_resolution_clock::now();
+    //const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    //std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
 
     return 0;
 }
