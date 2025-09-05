@@ -117,9 +117,11 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
 {
     std::vector<Region> res{};
 
+    const std::vector<std::pair<int, bool>> clockValuation = getClockValuation();
+
     for (const auto &transition: transitions)
     {
-        if (transition.isGuardSatisfied(getClockValuation(), clockIndices))
+        if (transition.isGuardSatisfied(clockValuation, clockIndices))
         {
             Region reg = clone();
             reg.set_q(locationsAsIntMap.at(transition.targetLocation));
