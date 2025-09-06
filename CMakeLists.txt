@@ -52,10 +52,10 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/lib)
 
 
-# Optimizations can be enabled as Boost libraries require them at compile time.
+# Optimizations can be enabled at compile time.
 # When changing the value of the option, remember to:
 # click on (1) the cmake icon at the bottom left corner -> (2) three dots -> (3) reset cache and reload project.
-option(ENABLE_OPTIMIZATION "Enable O3 optimization level" ON)
+option(ENABLE_OPTIMIZATION "Enable O2 optimization level" ON)
 if (ENABLE_OPTIMIZATION)
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
@@ -67,11 +67,11 @@ if (ENABLE_OPTIMIZATION)
         # Add include path
         include_directories(${LIBOMP_INCLUDE_DIR})
 
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp -O3")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp -O2")
 
         link_directories(${LIBOMP_LIB_DIR})
 
-        message(STATUS "O3 optimization enabled.")
+        message(STATUS "O2 Optimization enabled.")
     endif ()
 endif ()
 
