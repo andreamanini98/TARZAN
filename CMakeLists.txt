@@ -110,7 +110,7 @@ add_library(TARZAN STATIC ${LIBRARY_SOURCES})
 
 
 # Linking libraries to library sources.
-target_link_libraries(TARZAN PRIVATE
+target_link_libraries(TARZAN PUBLIC
         Boost::headers
         Boost::system
         Boost::filesystem
@@ -157,18 +157,7 @@ foreach (source IN LISTS LIBRARY_EXECUTABLES)
     add_executable(${executable_name} ${source})
 
     # Targeting the source with libraries.
-    target_link_libraries(${executable_name} PRIVATE
-            TARZAN
-            Boost::headers
-            Boost::system
-            Boost::filesystem
-            absl::base
-            absl::strings
-            absl::flat_hash_map
-            omp)
-
-    # Set include directories properly
-    # target_include_directories(${executable_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+    target_link_libraries(${executable_name} PRIVATE TARZAN)
 endforeach ()
 
 
