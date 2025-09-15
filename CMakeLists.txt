@@ -52,26 +52,32 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/lib)
 
 
-# Optimizations can be enabled at compile time.
-# When changing the value of the option, remember to:
-# click on (1) the cmake icon at the bottom left corner -> (2) three dots -> (3) reset cache and reload project.
-option(ENABLE_OPTIMIZATION "Enable O2 optimization level" ON)
+# When changing the value of the options, remember to:
+# (1) click on the cmake icon at the bottom left corner -> (2) three dots -> (3) reset cache and reload project.
+option(ENABLE_OPTIMIZATION "Enable O2 optimization level." OFF)
+option(ENABLE_OPENMP "Enable OpenMP parallelization." OFF)
+
+
+# Handle O2 optimization.
 if (ENABLE_OPTIMIZATION)
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+        message(STATUS "O2 Optimization enabled.")
+    endif ()
+endif ()
 
-        # TODO: review this code (the entire file in general). See also omp in target_link_libraries functions below.
-        # Homebrew libomp paths
+
+# Handle OpenMP.
+if (ENABLE_OPENMP)
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+        # Homebrew libomp paths.
         set(LIBOMP_INCLUDE_DIR /opt/homebrew/opt/libomp/include)
         set(LIBOMP_LIB_DIR /opt/homebrew/opt/libomp/lib)
-
-        # Add include path
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp")
+        # Add include path.
         include_directories(${LIBOMP_INCLUDE_DIR})
-
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp -O2")
-
         link_directories(${LIBOMP_LIB_DIR})
-
-        message(STATUS "O2 Optimization enabled.")
+        message(STATUS "OpenMP enabled.")
     endif ()
 endif ()
 
@@ -91,7 +97,6 @@ include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-Wall COMPILER_SUPPORTS_WALL)
 if (COMPILER_SUPPORTS_WALL)
     add_compile_options(-Wall -Wextra -Wpedantic)
-
     message(STATUS "Added compiler warnings.")
 endif ()
 
@@ -109,15 +114,24 @@ set(LIBRARY_SOURCES
 add_library(TARZAN STATIC ${LIBRARY_SOURCES})
 
 
-# Linking libraries to library sources.
-target_link_libraries(TARZAN PUBLIC
+# Configure library dependencies.
+set(TARZAN_LIBRARIES
         Boost::headers
         Boost::system
         Boost::filesystem
         absl::base
         absl::strings
-        absl::flat_hash_map
-        omp)
+        absl::flat_hash_map)
+
+
+# Add conditional libraries.
+if (ENABLE_OPENMP)
+    list(APPEND TARZAN_LIBRARIES omp)
+endif ()
+
+
+# Single target_link_libraries call.
+target_link_libraries(TARZAN PUBLIC ${TARZAN_LIBRARIES})
 
 
 # Setup include directories for the library.
