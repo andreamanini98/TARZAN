@@ -2,6 +2,7 @@
 #define TARZAN_PARTITION_UTILITIES_H
 
 #include <vector>
+#include <numeric>
 #include <boost/dynamic_bitset.hpp>
 
 #include "TARZAN/utilities/function_utilities.h"
@@ -17,14 +18,12 @@
  * For example, if we have bitset = 10010, then the elements to partition correspond to indices 0 and 3.
  *
  * @param bitset the bitset to partition (only partitions the bits set to 1).
- * @return all partitions of the bitset parameter.
- *         In particular, the first element of the returned pair contains the partitions, while the second element contains the vector specifying
- *         the indices of the elements that have been partitioned.
+ * @param partitions a std::vector in which to store the partitions of bitset.
+ * @param activeBitsIndices a std::vector in which to store the indices of the elements that have been partitioned.
  */
-inline std::pair<std::vector<std::vector<int>>, std::vector<int>> partitionBitset(const boost::dynamic_bitset<> &bitset)
+inline void partitionBitset(const boost::dynamic_bitset<> &bitset, std::vector<std::vector<int>> &partitions, std::vector<int> &activeBitsIndices)
 {
     // Collecting the indices of the elements to partition.
-    std::vector<int> activeBitsIndices{};
     const int bitsetSize = static_cast<int>(bitset.size());
 
     for (int i = 0; i < bitsetSize; i++)
@@ -109,9 +108,6 @@ inline std::pair<std::vector<std::vector<int>>, std::vector<int>> partitionBitse
     std::cout << "]\n";
 #endif
 
-
-    std::vector<std::vector<int>> partitions;
-
     // Saving the trivial partition.
     partitions.emplace_back(vecA);
 
@@ -186,9 +182,48 @@ inline std::pair<std::vector<std::vector<int>>, std::vector<int>> partitionBitse
         std::cout << "]\n";
     }
 #endif
+}
 
 
-    return { partitions, activeBitsIndices };
+/**
+ * @brief Computes the bitsets derived from Restricted Growth String partitions.
+ *
+ * @param bitsetSize the size of the resulting bitset (this is done to account for the elements contained in activeBitsIndices).
+ * @param partitions the partitions represented as Restricted Growth Strings.
+ * @param activeBitsIndices the indices of the elements belonging to the partitions.
+ * @return a std::vector of partitions represented as dynamic bitsets.
+ */
+inline std::vector<std::vector<boost::dynamic_bitset<>>> getBitsetsFromRestrictedGrowthStrings(const int bitsetSize,
+                                                                                               const std::vector<std::vector<int>> &partitions,
+                                                                                               const std::vector<int> &activeBitsIndices)
+{
+    const int totalPartitions = static_cast<int>(partitions.size());
+    const int totalElementsInPartition = static_cast<int>(activeBitsIndices.size());
+
+    std::vector<std::vector<boost::dynamic_bitset<>>> res;
+    res.resize(totalPartitions);
+
+    // This loop can be parallelized with OpenMP. However, speedup appears only when there are a LARGE number of partitions (otherwise, you get a slowdown).
+    for (int i = 0; i < totalPartitions; i++)
+    {
+        const std::vector<int> &partition = partitions[i];
+
+        auto it = std::ranges::max_element(partition);
+        const int maxNumberOfSets = *it;
+
+        std::vector<boost::dynamic_bitset<>> bitsetPartition{};
+        bitsetPartition.reserve(maxNumberOfSets);
+
+        for (int j = 0; j < maxNumberOfSets + 1; j++)
+            bitsetPartition.emplace_back(bitsetSize);
+
+        for (int j = 0; j < totalElementsInPartition; j++)
+            bitsetPartition[partition[j]].set(cIdx(bitsetSize, activeBitsIndices[j]));
+
+        res[i] = std::move(bitsetPartition);
+    }
+
+    return res;
 }
 
 #endif //TARZAN_PARTITION_UTILITIES_H
