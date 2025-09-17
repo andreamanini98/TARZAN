@@ -30,14 +30,12 @@ inline void partitionBitset(const boost::dynamic_bitset<> &bitset, std::vector<s
         if (bitset.test(cIdx(bitsetSize, i)))
             activeBitsIndices.push_back(i);
 
-
 #ifdef PARTITION_DEBUG
     std::cout << "The bitset indices are:" << std::endl;
     for (const int activeBitsIndice: activeBitsIndices)
         std::cout << activeBitsIndice << " ";
     std::cout << std::endl;
 #endif
-
 
     // Initializing auxiliary data structures.
     const int totalActiveBits = static_cast<int>(activeBitsIndices.size());
@@ -47,7 +45,6 @@ inline void partitionBitset(const boost::dynamic_bitset<> &bitset, std::vector<s
     std::vector vecS(totalActiveBits, 0);
     std::vector<int> stackS{}; // Vector used as a stack.
     std::vector vecV(totalActiveBits, true);
-
 
 #ifdef PARTITION_DEBUG
     // Print all vectors.
@@ -157,7 +154,6 @@ inline void partitionBitset(const boost::dynamic_bitset<> &bitset, std::vector<s
             vecS[idx] = vecA[idx];
         }
     }
-
 
 #ifdef PARTITION_DEBUG
     std::cout << "\nCollected partitions" << " (size " << partitions.size() << "): ";
