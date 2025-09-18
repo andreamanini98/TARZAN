@@ -9,7 +9,7 @@
 
 // #define PARTITION_DEBUG
 
-using insertionOrderMap = absl::btree_map<int, std::vector<boost::dynamic_bitset<>>, std::greater<>>;
+using insOrdMap = absl::btree_map<int, std::vector<boost::dynamic_bitset<>>, std::greater<>>;
 using dequeVector = std::vector<std::deque<boost::dynamic_bitset<>>>;
 
 
@@ -258,11 +258,7 @@ std::vector<std::vector<T>> getAllVectorPermutations(const std::vector<T> &vec)
  * @param it an iterator moving through the map.
  * @param output a std::vector containing all deques.
  */
-inline void generateDeques(const insertionOrderMap &map,
-                           const std::deque<boost::dynamic_bitset<>> &current,
-                           const insertionOrderMap::const_iterator it,
-                           dequeVector &output
-)
+inline void generateDeques(const insOrdMap &map, const std::deque<boost::dynamic_bitset<>> &current, const insOrdMap::const_iterator it, dequeVector &output)
 {
     // TODO: creare una cache delle permutazioni dei vettori. Idealmente, si dovrebbe calcolare una permutazione per vettore, ma qui vengono
     //       calcolate ogni volta che si richiama ricorsivamente la funzione.
@@ -297,7 +293,7 @@ inline void generateDeques(const insertionOrderMap &map,
  * @param inputDeque the deque in which to insert permutations.
  * @return a std::vector of deques obtained by inserting, at specific positions, all permutations of vectors (as described by the map parameter).
  */
-inline dequeVector generateAllDeques(const insertionOrderMap &map, const std::deque<boost::dynamic_bitset<>> &inputDeque)
+inline dequeVector generateAllDeques(const insOrdMap &map, const std::deque<boost::dynamic_bitset<>> &inputDeque)
 {
     dequeVector res;
 
