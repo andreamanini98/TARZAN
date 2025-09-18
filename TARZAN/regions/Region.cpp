@@ -142,7 +142,7 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
                 {
                     const int resetClockIdx = clockIndices.at(resetClock);
                     reg.h[resetClockIdx] = 0;
-                    resetClocksMask.set(numOfClocks - 1 - resetClockIdx); // TODO: usare l'inline function anche qui
+                    resetClocksMask.set(cIdx(numOfClocks, resetClockIdx));
                 }
 
                 reg.x0 |= resetClocksMask;
