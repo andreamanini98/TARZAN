@@ -9,6 +9,9 @@
 
 // #define PARTITION_DEBUG
 
+using insertionOrderMap = absl::btree_map<int, std::vector<boost::dynamic_bitset<>>, std::greater<>>;
+using dequeVector = std::vector<std::deque<boost::dynamic_bitset<>>>;
+
 
 /**
  * @brief The implementation follows the paper: Maximize the Rightmost Digit: Gray Codes for Restricted Growth Strings.
@@ -218,6 +221,87 @@ inline std::vector<std::vector<boost::dynamic_bitset<>>> getBitsetsFromRestricte
 
         res[i] = std::move(bitsetPartition);
     }
+
+    return res;
+}
+
+
+/**
+ * @brief Computes and collects all possible permutations of all std::vector elements.
+ *
+ * @tparam T the type of the vector.
+ * @param vec the vector that must be permuted.
+ * @return all possible permutations of vec elements.
+ */
+template<typename T>
+std::vector<std::vector<T>> getAllVectorPermutations(const std::vector<T> &vec)
+{
+    std::vector<std::vector<T>> res;
+
+    std::vector<T> tmp = vec;
+    std::sort(tmp.begin(), tmp.end());
+
+    do
+        res.emplace_back(tmp);
+    while (std::next_permutation(tmp.begin(), tmp.end()));
+
+    return res;
+}
+
+
+/**
+ * @brief Recursively computes all possible deques from inserting all permutations of the map elements in positions described by map keys.
+ *
+ * @param map the integer key denotes the position of the deque 'inputDeque' in which to insert all possible permutations of the key values (vectors).
+ *            Note that keys are stored from biggest to smallest; in this way, inserting from the biggest one does not influence indexing.
+ * @param current the current deque from which computation must start.
+ * @param it an iterator moving through the map.
+ * @param output a std::vector containing all deques.
+ */
+inline void generateDeques(const insertionOrderMap &map,
+                           const std::deque<boost::dynamic_bitset<>> &current,
+                           const insertionOrderMap::const_iterator it,
+                           dequeVector &output
+)
+{
+    // TODO: creare una cache delle permutazioni dei vettori. Idealmente, si dovrebbe calcolare una permutazione per vettore, ma qui vengono
+    //       calcolate ogni volta che si richiama ricorsivamente la funzione.
+    if (it == map.end())
+    {
+        output.emplace_back(current);
+        return;
+    }
+
+    const int pos = it->first;
+    const auto &vec = it->second;
+
+    // ReSharper disable once CppTooWideScopeInitStatement
+    const auto &permutations = getAllVectorPermutations(vec);
+
+    for (const auto &perm: permutations)
+    {
+        // Insert permutation into current deque at position 'pos'.
+        std::deque<boost::dynamic_bitset<>> next = current;
+        next.insert(next.begin() + pos, perm.begin(), perm.end());
+
+        generateDeques(map, next, std::next(it), output);
+    }
+}
+
+
+/**
+ * @brief Computes all possible deques from inserting all permutations of the map elements in positions described by map keys.
+ *
+ * @param map the integer key denotes the position of the deque 'inputDeque' in which to insert all possible permutations of the key values (vectors).
+ *            Note that keys are stored from biggest to smallest; in this way, inserting from the biggest one does not influence indexing.
+ * @param inputDeque the deque in which to insert permutations.
+ * @return a std::vector of deques obtained by inserting, at specific positions, all permutations of vectors (as described by the map parameter).
+ */
+inline dequeVector generateAllDeques(const insertionOrderMap &map, const std::deque<boost::dynamic_bitset<>> &inputDeque)
+{
+    dequeVector res;
+
+    generateDeques(map, inputDeque, map.begin(), res);
 
     return res;
 }
