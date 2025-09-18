@@ -7,7 +7,7 @@
 #include "TARZAN/utilities/function_utilities.h"
 #include "TARZAN/utilities/partition_utilities.h"
 
-#define REGION_DEBUG
+// #define REGION_DEBUG
 
 
 std::vector<std::pair<int, bool>> region::Region::getClockValuation() const
@@ -166,29 +166,38 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
 }
 
 
-// TODO: sembrerebbe che molte regioni vengono calcolate (correttamente) più volte durante tutte le possibili combinazioni, magari si può semplificare.
-// TODO: DEVI IMPLEMENTARE IL CASO UNBOUNDED E OKKIO SE HAI UNA DEQUE VUOTA (PER IL CASO BOUNDED NON SI VERIFICA QUESTO PROBLEMA PERCHÈ CONSIDERI SEMPRE X0).
-std::vector<region::Region> region::Region::permRegs(const bool partBounded, boost::dynamic_bitset<> X, const int maxConstant, const std::vector<int> &H) const
+/**
+ * @brief Auxiliary function computing the permRegs function as seen in our paper for the bounded case.
+ *
+ * @param unbounded the unbounded sets of the Region for which we are computing discrete predecessors.
+ * @param x0 the x0 set of the Region for which we are computing discrete predecessors.
+ * @param bounded the bounded sets of the Region for which we are computing discrete predecessors.
+ * @param numOfClocks the original Timed Automaton number of clocks.
+ * @param X the clocks for which we must compute all ordered partitions.
+ * @param maxConstant the maximum constant of the original Timed Automaton.
+ * @param H a vector containing the values of the clocks (indices are computed as usual for Timed Automata, see the ast.h file).
+ * @return all regions returned by permRegs as described in our paper.
+ */
+inline std::vector<region::Region> permRegsBounded(const std::deque<boost::dynamic_bitset<>> &unbounded,
+                                                   boost::dynamic_bitset<> x0,
+                                                   const std::deque<boost::dynamic_bitset<>> &bounded,
+                                                   const int numOfClocks,
+                                                   boost::dynamic_bitset<> X,
+                                                   const int maxConstant,
+                                                   const std::vector<int> &H)
 {
-    std::vector<Region> res{};
-    const int numOfClocks = getNumberOfClocks();
+    std::vector<region::Region> res{};
 
-    // Bitset collecting clocks that must directly go in X0 in the new regions (if considering only bounded clocks).
-    boost::dynamic_bitset<> newX0(numOfClocks);
+    // Checking if clocks of X can be inserted into x0 to ease the partitioning of set X.
+    boost::dynamic_bitset<> maxConstantClockMask(numOfClocks);
 
-    // Checking if clocks can be inserted into X0 to ease the partitioning of set X.
-    if (partBounded)
-    {
-        boost::dynamic_bitset<> cMaxClockMask(numOfClocks);
+    for (int i = 0; i < numOfClocks; i++)
+        if (X.test(cIdx(numOfClocks, i)) && H[i] == maxConstant)
+            maxConstantClockMask.set(cIdx(numOfClocks, i));
 
-        for (int i = 0; i < numOfClocks; i++)
-            if (X.test(cIdx(numOfClocks, i)) && H[i] == maxConstant)
-                cMaxClockMask.set(cIdx(numOfClocks, i));
-
-        newX0 |= cMaxClockMask;
-        cMaxClockMask.flip();
-        X &= cMaxClockMask;
-    }
+    x0 |= maxConstantClockMask;
+    maxConstantClockMask.flip();
+    X &= maxConstantClockMask;
 
     std::vector<std::vector<int>> partitions{};
     std::vector<int> activeBitsIndices{};
@@ -226,10 +235,9 @@ std::vector<region::Region> region::Region::permRegs(const bool partBounded, boo
 
 #endif
 
-    // Slots account for the positions in the deques in which to insert clocks.
-    // 2 * (bounded.size() + 1) : the +1 accounts for X0, the 2* for the possibility to insert clock sets in between existing ones.
-    // 2 * unbounded.size() + 1 : the +1 accounts for the possibility of inserting clock sets before the first set (the one with index -l), the 2* as above.
-    const int totalSlots = partBounded ? static_cast<int>(2 * (bounded.size() + 1)) : static_cast<int>(2 * unbounded.size() + 1);
+    // Slots account for the positions in the deque in which to insert clocks.
+    // 2 * (bounded.size() + 1) : the +1 accounts for x0, the 2* for the possibility to insert clock sets in between existing ones.
+    const int totalSlots = static_cast<int>(2 * (bounded.size() + 1));
 
     // Now processing each partition.
     for (int i = 0; i < static_cast<int>(partitions.size()); i++)
@@ -237,7 +245,8 @@ std::vector<region::Region> region::Region::permRegs(const bool partBounded, boo
         const std::vector<boost::dynamic_bitset<>> &partition = bitPart[i];
         const int totalElementsInPartition = static_cast<int>(partition.size());
 
-        // Now computing the total ways in which to insert elements in a dequeue.
+        // Now computing the total ways in which to insert elements in a deque.
+        // TODO: vedere se si riesce a fare a meno di calcolare direttamente l'esponenziale.
         const auto total = static_cast<size_t>(std::pow(totalSlots, totalElementsInPartition));
 
 #ifdef REGION_DEBUG
@@ -251,100 +260,299 @@ std::vector<region::Region> region::Region::permRegs(const bool partBounded, boo
 
 #endif
 
-        if (partBounded)
+        for (size_t j = 0; j < total; j++)
         {
-            for (size_t j = 0; j < total; j++)
+            // Making these copies so that each newly generated Region can have its own x0 and bounded sets.
+            boost::dynamic_bitset<> newX0 = x0;
+            std::deque<boost::dynamic_bitset<>> newBounded = bounded;
+
+            // Variable used to identify the positions in which to insert partition elements.
+            int ctr = static_cast<int>(j);
+
+            // Keeps track of the clock sets which must be inserted last, otherwise the indices of the deque would be modified during the loop.
+            absl::btree_map<int, std::vector<boost::dynamic_bitset<>>, std::greater<>> insertionOrder;
+
+            for (int k = 0; k < totalElementsInPartition; k++)
             {
-                Region reg = clone();
-                reg.x0 |= newX0;
+                // The index in which to insert the k-th element of a partition (need to be adjusted, see below).
+                const int index = ctr % totalSlots;
 
-                // Variable used to identify the positions in which to insert partition elements.
-                int ctr = static_cast<int>(j);
-
-                // Keeps track of the clock sets which must be inserted last, otherwise the indices of the deque would be modified during the loop.
-                absl::btree_map<int, std::vector<boost::dynamic_bitset<>>, std::greater<>> insertionOrder;
-
-                for (int k = 0; k < totalElementsInPartition; k++)
-                {
-                    // The index in which to insert the k-th element of a partition (need to be adjusted, see below).
-                    const int index = ctr % totalSlots;
-
-                    if (index == 0)
-                        // Index 0: we must insert the clocks in X0.
-                        reg.x0 |= partition[k];
-                    else if (index % 2 == 0)
-                        // Even index: we must insert clocks in an already existing set (we need to adjust idx since the deque does not contain X0).
-                        reg.bounded.at((index - 1) / 2) |= partition[k];
-                    else
-                        // Odd index: the clock set must be inserted in-between existing ones, but we do it later to avoid modifying the indices during the loop.
-                        insertionOrder[index / 2].emplace_back(partition[k]);
-
-#ifdef REGION_DEBUG
-
-                    std::cout << std::endl;
-                    std::cout << "REGION_DEBUG: Processing element " << k << " (bitset: " << partition[k] << ") at slot " << index << "\n";
-
-#endif
-
-                    ctr /= totalSlots;
-                }
-
-#ifdef REGION_DEBUG
-
-                std::cout << "REGION_DEBUG: Insertion order map:\n";
-                for (auto &[key, vec]: insertionOrder)
-                {
-                    std::cout << "              Key " << key << ":\n";
-                    for (size_t currentCombination = 0; currentCombination < vec.size(); currentCombination++)
-                        std::cout << "                [" << currentCombination << "]: " << vec[currentCombination] << "\n";
-
-                    std::cout << "REGION_DEBUG: Now printing permutations:\n";
-
-                    std::ranges::sort(vec, [](const auto &a, const auto &b) { return a.to_ulong() < b.to_ulong(); });
-                    do
-                    {
-                        std::cout << "              ";
-                        for (const auto &bs: vec)
-                            std::cout << bs << " ";
-                        std::cout << "\n";
-                    } while (std::ranges::next_permutation(vec, [](const auto &a, const auto &b) { return a.to_ulong() < b.to_ulong(); }).found);
-                }
-
-#endif
-
-                // Inserting missing clock sets in the deque.
-                const std::vector<std::deque<boost::dynamic_bitset<>>> &permutedDeques = generateAllDeques(insertionOrder, reg.bounded);
+                if (index == 0)
+                    // Index 0: we must insert the clocks in x0.
+                    newX0 |= partition[k];
+                else if (index % 2 == 0)
+                    // Even index: we must insert clocks in an already existing set (we need to adjust idx since the deque does not contain x0).
+                    newBounded.at((index - 1) / 2) |= partition[k];
+                else
+                    // Odd index: the clock set must be inserted in-between existing ones, but we do it later to avoid modifying the indices during the loop.
+                    insertionOrder[index / 2].emplace_back(partition[k]);
 
 #ifdef REGION_DEBUG
 
                 std::cout << std::endl;
-                std::cout << "REGION_DEBUG: permutedDeques (size " << permutedDeques.size() << "):\n";
-
-                for (size_t idx = 0; idx < permutedDeques.size(); idx++)
-                {
-                    std::cout << "              [" << idx << "]: ";
-                    for (const auto &bitset: permutedDeques[idx])
-                        std::cout << bitset << " ";
-                    std::cout << "\n";
-                }
+                std::cout << "REGION_DEBUG: Processing element " << k << " (bitset: " << partition[k] << ") at slot " << index << "\n";
 
 #endif
 
-                for (const auto &permutedDeque: permutedDeques)
+                // Advancing the index.
+                ctr /= totalSlots;
+            }
+
+#ifdef REGION_DEBUG
+
+            std::cout << "REGION_DEBUG: Insertion order map:\n";
+            for (auto &[key, vec]: insertionOrder)
+            {
+                std::cout << "              Key " << key << ":\n";
+                for (size_t currentCombination = 0; currentCombination < vec.size(); currentCombination++)
+                    std::cout << "                [" << currentCombination << "]: " << vec[currentCombination] << "\n";
+
+                std::cout << "REGION_DEBUG: Now printing permutations:\n";
+
+                std::ranges::sort(vec, [](const auto &a, const auto &b) { return a.to_ulong() < b.to_ulong(); });
+                do
                 {
-                    reg.set_bounded(permutedDeque);
+                    std::cout << "              ";
+                    for (const auto &bs: vec)
+                        std::cout << bs << " ";
+                    std::cout << "\n";
+                } while (std::ranges::next_permutation(vec, [](const auto &a, const auto &b) { return a.to_ulong() < b.to_ulong(); }).found);
+            }
 
-                    for (int k = 0; k < static_cast<int>(H.size()); k++)
-                        reg.h[k] = H[k];
+#endif
 
-                    res.emplace_back(reg);
-                }
+            // Inserting missing clock sets in the deque.
+            const std::vector<std::deque<boost::dynamic_bitset<>>> &permutedDeques = generateAllDeques(insertionOrder, newBounded);
+
+#ifdef REGION_DEBUG
+
+            std::cout << std::endl;
+            std::cout << "REGION_DEBUG: permutedDeques (size " << permutedDeques.size() << "):\n";
+
+            for (size_t idx = 0; idx < permutedDeques.size(); idx++)
+            {
+                std::cout << "              [" << idx << "]: ";
+                for (const auto &bitset: permutedDeques[idx])
+                    std::cout << bitset << " ";
+                std::cout << "\n";
+            }
+
+#endif
+
+            // For each obtained deque, we generate a new Region.
+            for (const auto &permutedDeque: permutedDeques)
+            {
+                region::Region reg(numOfClocks);
+
+                reg.set_unbounded(unbounded);
+                reg.set_x0(newX0);
+                reg.set_bounded(permutedDeque);
+                reg.set_h(H);
+
+                res.emplace_back(reg);
             }
         }
     }
 
     return res;
 }
+
+
+// TODO: sembrerebbe che molte regioni vengono calcolate (correttamente) più volte durante tutte le possibili combinazioni, magari si può semplificare.
+// TODO: DEVI IMPLEMENTARE IL CASO UNBOUNDED E OKKIO SE HAI UNA DEQUE VUOTA (PER IL CASO BOUNDED NON SI VERIFICA QUESTO PROBLEMA PERCHÈ CONSIDERI SEMPRE X0).
+std::vector<region::Region> region::Region::permRegs(const bool partBounded, const boost::dynamic_bitset<> &X, const int maxC, const std::vector<int> &H) const
+{
+    std::vector<Region> res;
+
+    if (partBounded)
+        return permRegsBounded(unbounded, x0, bounded, getNumberOfClocks(), X, maxC, H);
+
+    //     // Slots account for the positions in the deques in which to insert clocks.
+    //     // 2 * (bounded.size() + 1) : the +1 accounts for X0, the 2* for the possibility to insert clock sets in between existing ones.
+    //     // 2 * unbounded.size() + 1 : the +1 accounts for the possibility of inserting clock sets before the first set (the one with index -l), the 2* as above.
+    //     const int totalSlots = partBounded ? static_cast<int>(2 * (bounded.size() + 1)) : static_cast<int>(2 * unbounded.size() + 1);
+
+    return res;
+}
+
+
+/*// std::vector<region::Region> region::Region::permRegs(const bool partBounded, boost::dynamic_bitset<> X, const int maxConstant, const std::vector<int> &H) const
+// {
+//     std::vector<Region> res{};
+//     const int numOfClocks = getNumberOfClocks();
+//
+//     // Bitset collecting clocks that must directly go in X0 in the new regions (if considering only bounded clocks).
+//     boost::dynamic_bitset<> newX0(numOfClocks);
+//
+//     // Checking if clocks can be inserted into X0 to ease the partitioning of set X.
+//     if (partBounded)
+//     {
+//         boost::dynamic_bitset<> cMaxClockMask(numOfClocks);
+//
+//         for (int i = 0; i < numOfClocks; i++)
+//             if (X.test(cIdx(numOfClocks, i)) && H[i] == maxConstant)
+//                 cMaxClockMask.set(cIdx(numOfClocks, i));
+//
+//         newX0 |= cMaxClockMask;
+//         cMaxClockMask.flip();
+//         X &= cMaxClockMask;
+//     }
+//
+//     std::vector<std::vector<int>> partitions{};
+//     std::vector<int> activeBitsIndices{};
+//
+//     // Getting the partitions as Restricted Growth Strings.
+//     partitionBitset(X, partitions, activeBitsIndices);
+//
+//     // Now getting the partitions as vectors of bitsets (surprisingly, separating this task from partitionBitset() is faster).
+//     const std::vector<std::vector<boost::dynamic_bitset<>>> &bitPart = getBitsetsFromRestrictedGrowthStrings(numOfClocks, partitions, activeBitsIndices);
+//
+// #ifdef REGION_DEBUG
+//
+//     std::cout << std::endl;
+//     std::cout << "REGION_DEBUG: After getBitsetsFromRestrictedGrowthStrings():\n";
+//     std::cout << "              bitPart.size(): " << bitPart.size() << "\n";
+//     std::cout << "REGION_DEBUG: Partitions:\n";
+//
+//     for (size_t idx = 0; idx < bitPart.size(); idx++)
+//     {
+//         std::cout << "              [" << idx << "]: [ ";
+//
+//         const auto &innerVector = bitPart[idx];
+//         for (size_t jdx = 0; jdx < innerVector.size(); jdx++)
+//         {
+//             std::cout << innerVector[jdx];
+//             if (jdx < innerVector.size() - 1)
+//                 std::cout << ", ";
+//         }
+//
+//         std::cout << " ]";
+//         if (idx < bitPart.size() - 1)
+//             std::cout << ",";
+//         std::cout << "\n";
+//     }
+//
+// #endif
+//
+//     // Slots account for the positions in the deques in which to insert clocks.
+//     // 2 * (bounded.size() + 1) : the +1 accounts for X0, the 2* for the possibility to insert clock sets in between existing ones.
+//     // 2 * unbounded.size() + 1 : the +1 accounts for the possibility of inserting clock sets before the first set (the one with index -l), the 2* as above.
+//     const int totalSlots = partBounded ? static_cast<int>(2 * (bounded.size() + 1)) : static_cast<int>(2 * unbounded.size() + 1);
+//
+//     // Now processing each partition.
+//     for (int i = 0; i < static_cast<int>(partitions.size()); i++)
+//     {
+//         const std::vector<boost::dynamic_bitset<>> &partition = bitPart[i];
+//         const int totalElementsInPartition = static_cast<int>(partition.size());
+//
+//         // Now computing the total ways in which to insert elements in a dequeue.
+//         const auto total = static_cast<size_t>(std::pow(totalSlots, totalElementsInPartition));
+//
+// #ifdef REGION_DEBUG
+//
+//         std::cout << std::endl;
+//         std::cout << "REGION_DEBUG: totalElementsInPartition: " << totalElementsInPartition << "\n";
+//         std::cout << "REGION_DEBUG: Partition bitsets:\n";
+//
+//         for (int jdx = 0; jdx < totalElementsInPartition; jdx++)
+//             std::cout << "              [" << jdx << "]: " << partition[jdx] << "\n";
+//
+// #endif
+//
+//         if (partBounded)
+//         {
+//             for (size_t j = 0; j < total; j++)
+//             {
+//                 Region reg = clone();
+//                 reg.x0 |= newX0;
+//
+//                 // Variable used to identify the positions in which to insert partition elements.
+//                 int ctr = static_cast<int>(j);
+//
+//                 // Keeps track of the clock sets which must be inserted last, otherwise the indices of the deque would be modified during the loop.
+//                 absl::btree_map<int, std::vector<boost::dynamic_bitset<>>, std::greater<>> insertionOrder;
+//
+//                 for (int k = 0; k < totalElementsInPartition; k++)
+//                 {
+//                     // The index in which to insert the k-th element of a partition (need to be adjusted, see below).
+//                     const int index = ctr % totalSlots;
+//
+//                     if (index == 0)
+//                         // Index 0: we must insert the clocks in X0.
+//                         reg.x0 |= partition[k];
+//                     else if (index % 2 == 0)
+//                         // Even index: we must insert clocks in an already existing set (we need to adjust idx since the deque does not contain X0).
+//                         reg.bounded.at((index - 1) / 2) |= partition[k];
+//                     else
+//                         // Odd index: the clock set must be inserted in-between existing ones, but we do it later to avoid modifying the indices during the loop.
+//                         insertionOrder[index / 2].emplace_back(partition[k]);
+//
+// #ifdef REGION_DEBUG
+//
+//                     std::cout << std::endl;
+//                     std::cout << "REGION_DEBUG: Processing element " << k << " (bitset: " << partition[k] << ") at slot " << index << "\n";
+//
+// #endif
+//
+//                     ctr /= totalSlots;
+//                 }
+//
+// #ifdef REGION_DEBUG
+//
+//                 std::cout << "REGION_DEBUG: Insertion order map:\n";
+//                 for (auto &[key, vec]: insertionOrder)
+//                 {
+//                     std::cout << "              Key " << key << ":\n";
+//                     for (size_t currentCombination = 0; currentCombination < vec.size(); currentCombination++)
+//                         std::cout << "                [" << currentCombination << "]: " << vec[currentCombination] << "\n";
+//
+//                     std::cout << "REGION_DEBUG: Now printing permutations:\n";
+//
+//                     std::ranges::sort(vec, [](const auto &a, const auto &b) { return a.to_ulong() < b.to_ulong(); });
+//                     do
+//                     {
+//                         std::cout << "              ";
+//                         for (const auto &bs: vec)
+//                             std::cout << bs << " ";
+//                         std::cout << "\n";
+//                     } while (std::ranges::next_permutation(vec, [](const auto &a, const auto &b) { return a.to_ulong() < b.to_ulong(); }).found);
+//                 }
+//
+// #endif
+//
+//                 // Inserting missing clock sets in the deque.
+//                 const std::vector<std::deque<boost::dynamic_bitset<>>> &permutedDeques = generateAllDeques(insertionOrder, reg.bounded);
+//
+// #ifdef REGION_DEBUG
+//
+//                 std::cout << std::endl;
+//                 std::cout << "REGION_DEBUG: permutedDeques (size " << permutedDeques.size() << "):\n";
+//
+//                 for (size_t idx = 0; idx < permutedDeques.size(); idx++)
+//                 {
+//                     std::cout << "              [" << idx << "]: ";
+//                     for (const auto &bitset: permutedDeques[idx])
+//                         std::cout << bitset << " ";
+//                     std::cout << "\n";
+//                 }
+//
+// #endif
+//
+//                 for (const auto &permutedDeque: permutedDeques)
+//                 {
+//                     reg.set_bounded(permutedDeque);
+//
+//                     for (int k = 0; k < static_cast<int>(H.size()); k++)
+//                         reg.h[k] = H[k];
+//
+//                     res.emplace_back(reg);
+//                 }
+//             }
+//         }
+//     }
+//
+//     return res;
+// }*/
 
 
 std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(const std::vector<transition> &transitions,
