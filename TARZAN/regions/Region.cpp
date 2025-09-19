@@ -179,6 +179,13 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
  * @param maxConstant the maximum constant of the original Timed Automaton.
  * @return all regions returned by permRegs as described in our paper.
  */
+// TODO: MI SA CHE BISOGNA ANCORA SISTEMARE UN'ULTIMA COSA (PER GLI UNBOUNDED NON PENSO SERVA NON HAI X0)
+//       Mettiamo caso che in una transizione abbiamo un vincolo x > 3 (SIMMETRICAMENTE PER VINCOLI <, come x < 3, mentre con =, >=, <= non serve).
+//       In questo caso noi calcoliamo tutte le possibili partizioni ordinate ed assegniamo ai clock i valori come passati da H.
+//       Tuttavia, se H assegna ad x un valore 3, x non poteva avere parte frazionaria uguale a 0 (siccome doveva essere x > 3).
+//       Quindi nelle nuove regioni x non dovrebbe essere contenuto in x0.
+//       Quindi, dovresti controllare che quando una partizione mette x in x0, scarti quella regione perchè sarebbe non valida.
+//       Per gli unbounded non dovrebbe essere un problem perchè non hai il problema di x0.
 inline std::vector<region::Region> permRegsBounded(const int q,
                                                    const std::vector<int> &H,
                                                    const std::deque<boost::dynamic_bitset<>> &unbounded,
@@ -279,6 +286,9 @@ inline std::vector<region::Region> permRegsBounded(const int q,
                 // The index in which to insert the k-th element of a partition (need to be adjusted, see below).
                 const int index = ctr % totalSlots;
 
+                // TODO: riguardo al discorso sopra, magari il controllo si può fare direttamente qui.
+                //       torna su questo ragionamento quando implementerai i predecessori discreti, perchè penso serva qualche
+                //       informazione aggiuntiva derivante dalle transizioni e dai clock constraints.
                 if (index == 0)
                     // Index 0: we must insert the clocks in x0.
                     newX0 |= partition[k];
