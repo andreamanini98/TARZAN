@@ -7,7 +7,7 @@
 #include "TARZAN/utilities/function_utilities.h"
 #include "TARZAN/utilities/partition_utilities.h"
 
-// #define REGION_DEBUG
+#define REGION_DEBUG
 
 
 std::vector<std::pair<int, bool>> region::Region::getClockValuation() const
@@ -527,10 +527,10 @@ inline std::vector<region::Region> permRegsUnbounded(const int q,
 
 
 // TODO: sembrerebbe che molte regioni vengono calcolate (correttamente) più volte durante tutte le possibili combinazioni, magari si può semplificare.
-std::vector<region::Region> region::Region::permRegs(const bool partBounded, const boost::dynamic_bitset<> &X, const int maxC, const std::vector<int> &H) const
+std::vector<region::Region> region::Region::permRegs(const bool partBounded, const boost::dynamic_bitset<> &X, const int cMax, const std::vector<int> &H) const
 {
     if (partBounded)
-        return permRegsBounded(q, H, unbounded, x0, bounded, getNumberOfClocks(), X, maxC);
+        return permRegsBounded(q, H, unbounded, x0, bounded, getNumberOfClocks(), X, cMax);
 
     return permRegsUnbounded(q, H, unbounded, x0, bounded, getNumberOfClocks(), X);
 }

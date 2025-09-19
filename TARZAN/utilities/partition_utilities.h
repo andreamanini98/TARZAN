@@ -8,7 +8,7 @@
 
 #include "TARZAN/utilities/function_utilities.h"
 
-// #define PARTITION_DEBUG
+#define PARTITION_DEBUG
 
 using insOrdMap = absl::btree_map<int, std::vector<boost::dynamic_bitset<>>, std::greater<>>;
 using dequeVector = std::vector<std::deque<boost::dynamic_bitset<>>>;

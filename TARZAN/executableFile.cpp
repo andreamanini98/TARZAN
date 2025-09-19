@@ -2,12 +2,16 @@
 
 #include "TARZAN/headers/library.h"
 #include "TARZAN/parser/ast.h"
-#include "TARZAN/utilities/file_utilities.h"
 #include "TARZAN/regions/Region.h"
 #include "TARZAN/regions/RTS.h"
 #include "absl/container/flat_hash_set.h"
+#include "absl/container/btree_map.h"
+#include "TARZAN/utilities/partition_utilities.h"
+#include <omp.h>
+#include <algorithm>
 
-// #define REGION_PRINT_DEBUG
+
+// #define REGION_TIMING
 
 
 region::Region getRegion(int numSteps)
@@ -417,22 +421,215 @@ void testRTS()
 }
 
 
+void testPartitionBitset()
+{
+    const boost::dynamic_bitset bitset(std::string("10110"));
+    std::vector<std::vector<int>> partitions{};
+    std::vector<int> activeBitsIndices{};
+    partitionBitset(bitset, partitions, activeBitsIndices);
+
+    const double t1 = omp_get_wtime();
+    const std::vector<std::vector<boost::dynamic_bitset<>>> bitsets = getBitsetsFromRestrictedGrowthStrings(5, partitions, activeBitsIndices);
+    const double t2 = omp_get_wtime();
+
+    std::cout << "\n";
+    std::cout << "Total time: " << t2 - t1 << std::endl;
+    std::cout << "\n";
+
+    std::cout << "[\n";
+
+    for (size_t i = 0; i < bitsets.size(); ++i)
+    {
+        std::cout << "  [" << i << "]: [ ";
+
+        const auto &innerVector = bitsets[i];
+        for (size_t j = 0; j < innerVector.size(); ++j)
+        {
+            std::cout << innerVector[j];
+            if (j < innerVector.size() - 1)
+            {
+                std::cout << ", ";
+            }
+        }
+
+        std::cout << " ]";
+        if (i < bitsets.size() - 1)
+        {
+            std::cout << ",";
+        }
+        std::cout << "\n";
+    }
+
+    std::cout << "]\n";
+}
+
+
+void printDeque(const std::deque<boost::dynamic_bitset<>> &dq, const std::string &prefix = "")
+{
+    std::cout << prefix;
+    for (const auto &b: dq) std::cout << b << " ";
+    std::cout << "\n";
+}
+
+
+void printComparison(const std::deque<boost::dynamic_bitset<>> &userDeque, const std::deque<boost::dynamic_bitset<>> &resultDeque)
+{
+    std::cout << "[";
+    size_t maxLen = std::max(userDeque.size(), resultDeque.size());
+    for (size_t i = 0; i < maxLen; ++i)
+    {
+        std::string mark = " ";
+        if (i < userDeque.size() && i < resultDeque.size() && userDeque[i] != resultDeque[i])
+            mark = ""; // difference
+        if (i >= resultDeque.size())
+        {
+            std::cout << "(none)" << mark << " ";
+        } else
+        {
+            std::cout << resultDeque[i] << mark << " ";
+        }
+    }
+    std::cout << "]\n";
+}
+
+
+void testGenerateDeques()
+{
+    absl::btree_map<int, std::vector<boost::dynamic_bitset<>>, std::greater<>> myMap;
+
+    // Map with 3 keys
+    myMap[2] = {
+        boost::dynamic_bitset<>(3, 0b001),
+        boost::dynamic_bitset<>(3, 0b010),
+        boost::dynamic_bitset<>(3, 0b100)
+    }; // vector length 3
+    myMap[1] = {
+        boost::dynamic_bitset<>(3, 0b100),
+        boost::dynamic_bitset<>(3, 0b111)
+    };
+    myMap[0] = {
+        //boost::dynamic_bitset<>(3, 0b101),
+        boost::dynamic_bitset<>(3, 0b111)
+    };
+
+    // User-defined deque of length 3, initialized with zeros
+    std::deque<boost::dynamic_bitset<>> userDeque(3, boost::dynamic_bitset<>(3, 0));
+
+    std::cout << "User-defined starting deque:\n";
+    printDeque(userDeque, "  ");
+
+    // Generate all deques
+    double t1 = omp_get_wtime();
+    auto allDeques = generateAllDeques(myMap, userDeque);
+    double t2 = omp_get_wtime();
+
+    std::cout << "\n";
+    std::cout << "Total time: " << t2 - t1 << std::endl;
+    std::cout << "\n";
+
+    std::cout << "\nTotal resulting deques: " << allDeques.size() << "\n\n";
+
+    int count = 0;
+    for (const auto &dq: allDeques)
+    {
+        std::cout << "Resulting deque " << ++count << ": ";
+        printComparison(userDeque, dq);
+    }
+}
+
+
+void testPermRegs()
+{
+    // Creating a region with numOfClocks clocks.
+    constexpr int numOfClocks = 5;
+    region::Region regToPerm(numOfClocks);
+
+    // Creating q for regToPerm;
+    constexpr int q = 3;
+
+    // Creating h for regToPerm.
+    constexpr int maxConstant = 5;
+    const auto h = static_cast<int *>(malloc(sizeof(int) * numOfClocks));
+    for (int i = 0; i < numOfClocks; i++)
+    {
+        constexpr int multiplier = 37;
+        h[i] = i * multiplier % maxConstant + 1;
+    }
+
+    // Creating unbounded clocks for RegToPerm.
+    std::deque<boost::dynamic_bitset<>> unbounded;
+    // Creating clock sets.
+    boost::dynamic_bitset<> xm1(numOfClocks);
+    xm1.set(0, true);
+    // Inserting clock sets in bounded deque.
+    unbounded.push_back(xm1);
+
+    // Creating x0 for regToPerm.
+    boost::dynamic_bitset<> x0(numOfClocks);
+
+    // Creating bounded clocks for regToPerm.
+    std::deque<boost::dynamic_bitset<>> bounded;
+    // Creating clock sets.
+    boost::dynamic_bitset<> x1(numOfClocks);
+    x1.set(1, true);
+    // Inserting clock sets in bounded deque.
+    bounded.push_back(x1);
+
+    // Creating clocks to partition.
+    boost::dynamic_bitset<> X(numOfClocks);
+    X.set(numOfClocks - 1, true);
+    X.set(numOfClocks - 2, true);
+    X.set(2, true);
+
+    // Setting up the region.
+    regToPerm.set_q(q);
+    regToPerm.set_h(h);
+    regToPerm.set_unbounded(unbounded);
+    regToPerm.set_x0(x0);
+    regToPerm.set_bounded(bounded);
+
+    std::cout << "The region in which we want to compute clock partitions is:" << std::endl;
+    std::cout << regToPerm.toString() << "\n";
+    std::cout << "The clocks to partition are: " << X << "\n";
+
+    // Creating the vector required for the regToPerm function.
+    auto clockValuation = regToPerm.getClockValuation();
+    std::vector<int> clockValues(numOfClocks);
+    for (int i = 0; i < numOfClocks; i++)
+        clockValues[i] = clockValuation[i].first;
+
+    const double t1 = omp_get_wtime();
+    std::vector<region::Region> regs = regToPerm.permRegs(false, X, maxConstant, clockValues);
+    const double t2 = omp_get_wtime();
+
+    std::cout << "\n";
+    std::cout << "Total time: " << t2 - t1 << std::endl;
+    std::cout << "\n";
+
+    // Printing resulting regions.
+    for (const auto &r: regs)
+        std::cout << r.toString() << std::endl;
+    std::cout << std::endl;
+}
+
+
 int main()
 {
-    //std::cout << "Tick period: " << static_cast<double>(std::chrono::high_resolution_clock::period::num) / std::chrono::high_resolution_clock::period::den << " seconds\n";
-    //const auto start = std::chrono::high_resolution_clock::now();
-
-    testRTS();
-
-#ifdef _OPENMP
-    std::cout << "Compiled with OpenMP!!" << std::endl;
-#else
-    std::cout << "OpenMP not available!" << std::endl;
+#ifdef REGION_TIMING
+    std::cout << "Tick period: " << static_cast<double>(std::chrono::high_resolution_clock::period::num) / std::chrono::high_resolution_clock::period::den <<
+            " seconds\n";
+    const auto start = std::chrono::high_resolution_clock::now();
 #endif
 
-    //const auto end = std::chrono::high_resolution_clock::now();
-    //const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    //std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
+
+    testPermRegs();
+
+
+#ifdef REGION_TIMING
+    const auto end = std::chrono::high_resolution_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
+#endif
 
     return 0;
 }

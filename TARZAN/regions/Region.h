@@ -180,11 +180,13 @@ namespace region
          *
          * @param partBounded used to indicate the indices i...j, since in the paper we consider either unbounded or bounded clocks.
          * @param X the set of clocks for which we compute all ordered partitions.
-         * @param maxC the maximum constant of the original Timed Automaton.
+         * @param cMax the maximum constant of the original Timed Automaton.
          * @param H a vector containing the values of the clocks (indices are computed as usual for Timed Automata, see the ast.h file).
          * @return a std::vector of Regions obtained by computing the ordered partitions of X while preserving the order of sets from i to j.
          */
-        [[nodiscard]] std::vector<Region> permRegs(bool partBounded, const boost::dynamic_bitset<> &X, int maxC, const std::vector<int> &H) const;
+        // TODO: H in questo caso rappresenta i valori dei clock che devono essere assegnati alle nuove regioni, vedere se va bene trattarlo
+        //       così quando si deve gestire per i bounded il caso in cui un clock sia uguale a cmax.
+        [[nodiscard]] std::vector<Region> permRegs(bool partBounded, const boost::dynamic_bitset<> &X, int cMax, const std::vector<int> &H) const;
 
 
         // TODO: comment this function.
