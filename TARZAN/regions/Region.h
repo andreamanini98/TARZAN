@@ -22,21 +22,28 @@ namespace region
         /// The location of the region.
         int q{};
 
-        /// The integer values of clocks.
-        /// The clocks at a given index of this array correspond to the same clock in the std::vector<std::string> clocks of a Timed Automaton.
-        /// @warning The order in bitsets is reversed, e.g., considering (clock, index), h = (x,0)(y,1)(z,2) x0 = (z,2)(y,1)(x,0).
-        ///          For this reason, we use indices in a way such that the two representations coincide.
+        /**
+         * The integer values of clocks.
+         * The clocks at a given index of this array correspond to the same clock in the std::vector<std::string> clocks of a Timed Automaton.
+         *
+         * @warning The order in bitsets is reversed, e.g., considering (clock, index), h = (x,0)(y,1)(z,2) x0 = (z,2)(y,1)(x,0).
+         *          For this reason, we use indices in a way such that the two representations coincide.
+         */
         int *h{};
 
-        /// A vector of bitsets keeping track of the order in which clocks became unbounded.
-        /// Index -l corresponds to the front of the deque, while -1 corresponds to the back of the deque.
+        /**
+         * A vector of bitsets keeping track of the order in which clocks became unbounded.
+         * Index -l corresponds to the front of the deque, while -1 corresponds to the back of the deque.
+         */
         std::deque<boost::dynamic_bitset<>> unbounded;
 
         /// A bitset representing the bounded clocks with no fractional part.
         boost::dynamic_bitset<> x0{};
 
-        /// A vector of bitsets keeping track of the fractional order of bounded clocks.
-        /// Index 1 corresponds to the front of the deque, while r corresponds to the back of the deque.
+        /**
+         * A vector of bitsets keeping track of the fractional order of bounded clocks.
+         * Index 1 corresponds to the front of the deque, while r corresponds to the back of the deque.
+         */
         std::deque<boost::dynamic_bitset<>> bounded;
 
 
@@ -79,6 +86,25 @@ namespace region
               x0(x0),
               bounded(bounded)
         {}
+
+
+        Region(const int q,
+               const std::vector<int> &H,
+               const std::deque<boost::dynamic_bitset<>> &unbounded,
+               const boost::dynamic_bitset<> &x0,
+               const std::deque<boost::dynamic_bitset<>> &bounded)
+            : q(q),
+              unbounded(unbounded),
+              x0(x0),
+              bounded(bounded)
+        {
+            const int numOfClocks = static_cast<int>(H.size());
+
+            h = static_cast<int *>(malloc(numOfClocks * sizeof(int)));
+
+            for (int i = 0; i < numOfClocks; i++)
+                h[i] = H[i];
+        }
 
 
         // Copy constructor.
@@ -147,6 +173,24 @@ namespace region
         [[nodiscard]] std::vector<Region> getImmediateDiscreteSuccessors(const std::vector<transition> &transitions,
                                                                          const std::unordered_map<std::string, int> &clockIndices,
                                                                          const std::unordered_map<std::string, int> &locationsAsIntMap) const;
+
+
+        /**
+         * @brief Computes the ordered partitions of X while preserving the order of the clock sets corresponding to indices i to j, where i <= j.
+         *
+         * @param partBounded used to indicate the indices i...j, since in the paper we consider either unbounded or bounded clocks.
+         * @param X the set of clocks for which we compute all ordered partitions.
+         * @param maxC the maximum constant of the original Timed Automaton.
+         * @param H a vector containing the values of the clocks (indices are computed as usual for Timed Automata, see the ast.h file).
+         * @return a std::vector of Regions obtained by computing the ordered partitions of X while preserving the order of sets from i to j.
+         */
+        [[nodiscard]] std::vector<Region> permRegs(bool partBounded, const boost::dynamic_bitset<> &X, int maxC, const std::vector<int> &H) const;
+
+
+        // TODO: comment this function.
+        [[nodiscard]] std::vector<Region> getImmediateDiscretePredecessors(const std::vector<transition> &transitions,
+                                                                           const std::unordered_map<std::string, int> &clockIndices,
+                                                                           const std::unordered_map<std::string, int> &locationsAsIntMap) const;
 
 
         /**
@@ -234,7 +278,7 @@ namespace region
     };
 
 
-    // Hash function for Region.
+    /// Hash function for Region.
     struct RegionHash
     {
         std::size_t operator()(const Region &region) const
