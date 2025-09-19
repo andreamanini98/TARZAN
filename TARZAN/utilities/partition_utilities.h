@@ -4,6 +4,7 @@
 #include <vector>
 #include <numeric>
 #include <boost/dynamic_bitset.hpp>
+#include "absl/container/flat_hash_map.h"
 
 #include "TARZAN/utilities/function_utilities.h"
 
@@ -11,6 +12,19 @@
 
 using insOrdMap = absl::btree_map<int, std::vector<boost::dynamic_bitset<>>, std::greater<>>;
 using dequeVector = std::vector<std::deque<boost::dynamic_bitset<>>>;
+using permutationsCache = absl::flat_hash_map<int, std::vector<std::vector<boost::dynamic_bitset<>>>>;
+
+
+/**
+ * @brief Used to retrieve a singleton acting as a cache for permutations.
+ *
+ * @return an absl::flat_hash_map acting as a cache for stored partitions.
+ */
+inline permutationsCache &get_p_cache()
+{
+    static permutationsCache cache;
+    return cache;
+}
 
 
 /**
@@ -34,10 +48,12 @@ inline void partitionBitset(const boost::dynamic_bitset<> &bitset, std::vector<s
             activeBitsIndices.push_back(i);
 
 #ifdef PARTITION_DEBUG
+
     std::cout << "The bitset indices are:" << std::endl;
     for (const int activeBitsIndice: activeBitsIndices)
         std::cout << activeBitsIndice << " ";
     std::cout << std::endl;
+
 #endif
 
     // Initializing auxiliary data structures.
@@ -50,6 +66,7 @@ inline void partitionBitset(const boost::dynamic_bitset<> &bitset, std::vector<s
     std::vector vecV(totalActiveBits, true);
 
 #ifdef PARTITION_DEBUG
+
     // Print all vectors.
     std::cout << "Initial values before computation:\n";
     std::cout << "totalActiveBits = " << totalActiveBits << "\n";
@@ -106,6 +123,7 @@ inline void partitionBitset(const boost::dynamic_bitset<> &bitset, std::vector<s
         if (i < vecV.size() - 1) std::cout << ", ";
     }
     std::cout << "]\n";
+
 #endif
 
     // Saving the trivial partition.
@@ -159,6 +177,7 @@ inline void partitionBitset(const boost::dynamic_bitset<> &bitset, std::vector<s
     }
 
 #ifdef PARTITION_DEBUG
+
     std::cout << "\nCollected partitions" << " (size " << partitions.size() << "): ";
     if (partitions.empty())
     {
@@ -180,6 +199,7 @@ inline void partitionBitset(const boost::dynamic_bitset<> &bitset, std::vector<s
         }
         std::cout << "]\n";
     }
+
 #endif
 }
 
@@ -260,19 +280,30 @@ std::vector<std::vector<T>> getAllVectorPermutations(const std::vector<T> &vec)
  */
 inline void generateDeques(const insOrdMap &map, const std::deque<boost::dynamic_bitset<>> &current, const insOrdMap::const_iterator it, dequeVector &output)
 {
-    // TODO: creare una cache delle permutazioni dei vettori. Idealmente, si dovrebbe calcolare una permutazione per vettore, ma qui vengono
-    //       calcolate ogni volta che si richiama ricorsivamente la funzione.
     if (it == map.end())
     {
         output.emplace_back(current);
         return;
     }
 
+    auto &p_cache = get_p_cache();
+
     const int pos = it->first;
     const auto &vec = it->second;
 
+    // Trying to cache the permutation if not already in cache.
+    auto [it_cache, inserted] = p_cache.try_emplace(pos, getAllVectorPermutations(vec));
     // ReSharper disable once CppTooWideScopeInitStatement
-    const auto &permutations = getAllVectorPermutations(vec);
+    const auto &permutations = it_cache->second;
+
+#ifdef PARTITION_DEBUG
+
+    if (inserted)
+        std::cout << "Ins: Inserted permutation in cache with key: " << pos << std::endl;
+    else
+        std::cout << "NoIns: Not inserted permutation in cache with key: " << pos << std::endl;
+
+#endif
 
     for (const auto &perm: permutations)
     {
@@ -298,6 +329,9 @@ inline dequeVector generateAllDeques(const insOrdMap &map, const std::deque<boos
     dequeVector res;
 
     generateDeques(map, inputDeque, map.begin(), res);
+
+    // We need to free the cache after all deques have been generated so that it can be reused when invoked again.
+    get_p_cache().clear();
 
     return res;
 }
