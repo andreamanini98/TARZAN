@@ -324,6 +324,9 @@ inline void generateDeques(const insOrdMap &map, const std::deque<boost::dynamic
  * @param inputDeque the deque in which to insert permutations.
  * @return a std::vector of deques obtained by inserting, at specific positions, all permutations of vectors (as described by the map parameter).
  */
+// TODO: se parallelizzi il loop in Region.cpp, hai delle race conditions quando accedi alla cache dato che è statica.
+//       Non so se per risolvere basta rendere la cache una variabile locale a generateAllDeques per poi passarla come parametro, ma così non funzionava correttamente
+//       il salvataggio degli elementi all'interno della cache.
 inline dequeVector generateAllDeques(const insOrdMap &map, const std::deque<boost::dynamic_bitset<>> &inputDeque)
 {
     dequeVector res;

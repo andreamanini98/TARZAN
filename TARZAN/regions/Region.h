@@ -182,14 +182,22 @@ namespace region
          * @param X the set of clocks for which we compute all ordered partitions.
          * @param cMax the maximum constant of the original Timed Automaton.
          * @param H a vector containing the values of the clocks (indices are computed as usual for Timed Automata, see the ast.h file).
+         * @param notInX0 a bitset where the i-th bit is set to 1 if the i-th clock must not be contained in x0.
          * @return a std::vector of Regions obtained by computing the ordered partitions of X while preserving the order of sets from i to j.
          */
         // TODO: H in questo caso rappresenta i valori dei clock che devono essere assegnati alle nuove regioni, vedere se va bene trattarlo
         //       così quando si deve gestire per i bounded il caso in cui un clock sia uguale a cmax.
-        [[nodiscard]] std::vector<Region> permRegs(bool partBounded, const boost::dynamic_bitset<> &X, int cMax, const std::vector<int> &H) const;
+        [[nodiscard]] std::vector<Region> permRegs(bool partBounded,
+                                                   const boost::dynamic_bitset<> &X,
+                                                   int cMax,
+                                                   const std::vector<int> &H,
+                                                   const boost::dynamic_bitset<> &notInX0) const;
 
 
         // TODO: comment this function.
+        // TODO: quando devi calcolare H per passarla a permRegs e sei nel caso bounded, se hai vincoli del tipo:
+        //       x < 3 : devi arrivare al massimo a 2, ossia x può assumere valori interi 0, 1, 2 (non può essere 3 se deve essere minore di 3)
+        //       x > 3 : devi partire da 3, però in questo caso metterai x nel bitset di clock che non devono andare in X0
         [[nodiscard]] std::vector<Region> getImmediateDiscretePredecessors(const std::vector<transition> &transitions,
                                                                            const std::unordered_map<std::string, int> &clockIndices,
                                                                            const std::unordered_map<std::string, int> &locationsAsIntMap) const;

@@ -177,15 +177,15 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
  * @param numOfClocks the original Timed Automaton number of clocks.
  * @param X the clocks for which we must compute all ordered partitions.
  * @param maxConstant the maximum constant of the original Timed Automaton.
+ * @param notInX0 a bitset where the i-th bit is set to 1 if the i-th clock must not be contained in x0 (needed for constraints like x > alpha, but NOT for x < alpha).
  * @return all regions returned by permRegs as described in our paper.
+ *
+ * @warning For constraints of the form: x > alpha.
+ *          In this step, we compute all possible ordered partitions and assign to the clocks the values provided by H.
+ *          However, if H assigns value alpha to a clock x, then x could not have had a fractional part equal to 0 (since it must have been x > alpha).
+ *          Therefore, in the newly generated regions, x must not be included in x0.
+ *          You should check that whenever a partition places x in x0, that region is discarded as it would be invalid.
  */
-// TODO: MI SA CHE BISOGNA ANCORA SISTEMARE UN'ULTIMA COSA (PER GLI UNBOUNDED NON PENSO SERVA NON HAI X0)
-//       Mettiamo caso che in una transizione abbiamo un vincolo x > 3 (SIMMETRICAMENTE PER VINCOLI <, come x < 3, mentre con =, >=, <= non serve).
-//       In questo caso noi calcoliamo tutte le possibili partizioni ordinate ed assegniamo ai clock i valori come passati da H.
-//       Tuttavia, se H assegna ad x un valore 3, x non poteva avere parte frazionaria uguale a 0 (siccome doveva essere x > 3).
-//       Quindi nelle nuove regioni x non dovrebbe essere contenuto in x0.
-//       Quindi, dovresti controllare che quando una partizione mette x in x0, scarti quella regione perchè sarebbe non valida.
-//       Per gli unbounded non dovrebbe essere un problem perchè non hai il problema di x0.
 inline std::vector<region::Region> permRegsBounded(const int q,
                                                    const std::vector<int> &H,
                                                    const std::deque<boost::dynamic_bitset<>> &unbounded,
@@ -193,7 +193,8 @@ inline std::vector<region::Region> permRegsBounded(const int q,
                                                    const std::deque<boost::dynamic_bitset<>> &bounded,
                                                    const int numOfClocks,
                                                    boost::dynamic_bitset<> X,
-                                                   const int maxConstant)
+                                                   const int maxConstant,
+                                                   const boost::dynamic_bitset<> &notInX0)
 {
     std::vector<region::Region> res{};
 
@@ -286,9 +287,6 @@ inline std::vector<region::Region> permRegsBounded(const int q,
                 // The index in which to insert the k-th element of a partition (need to be adjusted, see below).
                 const int index = ctr % totalSlots;
 
-                // TODO: riguardo al discorso sopra, magari il controllo si può fare direttamente qui.
-                //       torna su questo ragionamento quando implementerai i predecessori discreti, perchè penso serva qualche
-                //       informazione aggiuntiva derivante dalle transizioni e dai clock constraints.
                 if (index == 0)
                     // Index 0: we must insert the clocks in x0.
                     newX0 |= partition[k];
@@ -333,29 +331,33 @@ inline std::vector<region::Region> permRegsBounded(const int q,
 
 #endif
 
-            // Inserting missing clock sets in the deque.
-            const std::vector<std::deque<boost::dynamic_bitset<>>> &permutedDeques = generateAllDeques(insertionOrder, newBounded);
+            // Checking if the partition has been correctly inserted, i.e., x0 must not contain any clock belonging to notInx0.
+            if ((newX0 & notInX0).none())
+            {
+                // Inserting missing clock sets in the deque.
+                const std::vector<std::deque<boost::dynamic_bitset<>>> &permutedDeques = generateAllDeques(insertionOrder, newBounded);
 
 #ifdef REGION_DEBUG
 
-            std::cout << std::endl;
-            std::cout << "REGION_DEBUG: permutedDeques (size " << permutedDeques.size() << "):\n";
+                std::cout << std::endl;
+                std::cout << "REGION_DEBUG: permutedDeques (size " << permutedDeques.size() << "):\n";
 
-            for (size_t idx = 0; idx < permutedDeques.size(); idx++)
-            {
-                std::cout << "              [" << idx << "]: ";
-                for (const auto &bitset: permutedDeques[idx])
-                    std::cout << bitset << " ";
-                std::cout << "\n";
-            }
+                for (size_t idx = 0; idx < permutedDeques.size(); idx++)
+                {
+                    std::cout << "              [" << idx << "]: ";
+                    for (const auto &bitset: permutedDeques[idx])
+                        std::cout << bitset << " ";
+                    std::cout << "\n";
+                }
 
 #endif
 
-            // For each obtained deque, we generate a new Region.
-            for (const auto &permutedDeque: permutedDeques)
-            {
-                region::Region reg(q, H, unbounded, newX0, permutedDeque);
-                res.emplace_back(reg);
+                // For each obtained deque, we generate a new Region.
+                for (const auto &permutedDeque: permutedDeques)
+                {
+                    region::Region reg(q, H, unbounded, newX0, permutedDeque);
+                    res.emplace_back(reg);
+                }
             }
         }
     }
@@ -537,10 +539,14 @@ inline std::vector<region::Region> permRegsUnbounded(const int q,
 
 
 // TODO: sembrerebbe che molte regioni vengono calcolate (correttamente) più volte durante tutte le possibili combinazioni, magari si può semplificare.
-std::vector<region::Region> region::Region::permRegs(const bool partBounded, const boost::dynamic_bitset<> &X, const int cMax, const std::vector<int> &H) const
+std::vector<region::Region> region::Region::permRegs(const bool partBounded,
+                                                     const boost::dynamic_bitset<> &X,
+                                                     const int cMax,
+                                                     const std::vector<int> &H,
+                                                     const boost::dynamic_bitset<> &notInX0) const
 {
     if (partBounded)
-        return permRegsBounded(q, H, unbounded, x0, bounded, getNumberOfClocks(), X, cMax);
+        return permRegsBounded(q, H, unbounded, x0, bounded, getNumberOfClocks(), X, cMax, notInX0);
 
     return permRegsUnbounded(q, H, unbounded, x0, bounded, getNumberOfClocks(), X);
 }

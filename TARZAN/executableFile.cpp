@@ -598,8 +598,13 @@ void testPermRegs()
     for (int i = 0; i < numOfClocks; i++)
         clockValues[i] = clockValuation[i].first;
 
+    // Creating a dummy notInX0 bitset.
+    boost::dynamic_bitset<> notInX0(numOfClocks);
+    // notInX0.set(numOfClocks - 1, true); // The first clock from the left now cannot be in x0.
+    // notInX0.set(numOfClocks - 2, true); // The second clock from the left now cannot be in x0.
+
     const double t1 = omp_get_wtime();
-    std::vector<region::Region> regs = regToPerm.permRegs(false, X, maxConstant, clockValues);
+    std::vector<region::Region> regs = regToPerm.permRegs(true, X, maxConstant, clockValues, notInX0);
     const double t2 = omp_get_wtime();
 
     std::cout << "\n";
