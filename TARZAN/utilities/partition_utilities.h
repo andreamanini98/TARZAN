@@ -225,21 +225,25 @@ inline std::vector<std::vector<boost::dynamic_bitset<>>> getBitsetsFromRestricte
     // This loop can be parallelized with OpenMP. However, speedup appears only when there are a LARGE number of partitions (otherwise, you get a slowdown).
     for (int i = 0; i < totalPartitions; i++)
     {
+        // ReSharper disable once CppTooWideScopeInitStatement
         const std::vector<int> &partition = partitions[i];
 
-        auto it = std::ranges::max_element(partition);
-        const int maxNumberOfSets = *it;
+        if (!partition.empty())
+        {
+            auto it = std::ranges::max_element(partition);
+            const int maxNumberOfSets = *it;
 
-        std::vector<boost::dynamic_bitset<>> bitsetPartition{};
-        bitsetPartition.reserve(maxNumberOfSets);
+            std::vector<boost::dynamic_bitset<>> bitsetPartition{};
+            bitsetPartition.reserve(maxNumberOfSets);
 
-        for (int j = 0; j < maxNumberOfSets + 1; j++)
-            bitsetPartition.emplace_back(bitsetSize);
+            for (int j = 0; j < maxNumberOfSets + 1; j++)
+                bitsetPartition.emplace_back(bitsetSize);
 
-        for (int j = 0; j < totalElementsInPartition; j++)
-            bitsetPartition[partition[j]].set(cIdx(bitsetSize, activeBitsIndices[j]));
+            for (int j = 0; j < totalElementsInPartition; j++)
+                bitsetPartition[partition[j]].set(cIdx(bitsetSize, activeBitsIndices[j]));
 
-        res[i] = std::move(bitsetPartition);
+            res[i] = std::move(bitsetPartition);
+        }
     }
 
     return res;
@@ -337,6 +341,62 @@ inline dequeVector generateAllDeques(const insOrdMap &map, const std::deque<boos
     get_p_cache().clear();
 
     return res;
+}
+
+
+/**
+ * @brief Computes all the possible combinations of the integer intervals values as given by the minMaxValues map.
+ *
+ * @param minMaxValues map storing, for each key, the integer interval the element corresponding to such a key can take (an integer in such an interval).
+ * @return the cartesian product of all possible values belonging to the intervals.
+ */
+inline std::vector<std::vector<std::pair<int, int>>> generateAllIntegerIntervalCombinations(const absl::flat_hash_map<int, std::pair<int, int>> &minMaxValues)
+{
+    std::vector<std::vector<std::pair<int, int>>> result{};
+
+    if (minMaxValues.empty())
+        return result;
+
+    // Extract keys and ranges for easier iteration.
+    std::vector<int> keys;
+    std::vector<std::pair<int, int>> ranges;
+
+    for (const auto &[key, range]: minMaxValues)
+    {
+        keys.push_back(key);
+        ranges.push_back(range);
+    }
+
+    // Calculate the total number of combinations.
+    size_t totalCombinations = 1;
+    for (const auto &[min_val, max_val]: ranges)
+        totalCombinations *= max_val - min_val + 1;
+
+    result.reserve(totalCombinations);
+
+    // Generate all combinations using a counter-approach.
+    for (size_t i = 0; i < totalCombinations; i++)
+    {
+        std::vector<std::pair<int, int>> combination;
+        combination.reserve(keys.size());
+
+        size_t temp = i;
+        for (size_t j = 0; j < keys.size(); ++j)
+        {
+            const int min_val = ranges[j].first;
+            const int max_val = ranges[j].second;
+            const int range_size = max_val - min_val + 1;
+
+            int value = static_cast<int>(min_val + temp % range_size);
+            combination.emplace_back(keys[j], value);
+
+            temp /= range_size;
+        }
+
+        result.push_back(std::move(combination));
+    }
+
+    return result;
 }
 
 #endif //TARZAN_PARTITION_UTILITIES_H
