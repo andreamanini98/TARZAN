@@ -148,6 +148,21 @@ std::vector<std::vector<transition>> timed_automaton::ast::timedAutomaton::getOu
 }
 
 
+std::vector<std::vector<transition>> timed_automaton::ast::timedAutomaton::getInTransitions(const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    std::vector<std::vector<transition>> inTransitions;
+    inTransitions.resize(locToIntMap.size());
+
+    for (const auto &t: transitions)
+    {
+        const int idx = locToIntMap.at(t.targetLocation);
+        inTransitions[idx].push_back(t);
+    }
+
+    return inTransitions;
+}
+
+
 std::string timed_automaton::ast::timedAutomaton::to_string() const
 {
     std::ostringstream oss;
@@ -235,6 +250,21 @@ std::vector<std::vector<transition>> timed_automaton::ast::timedArena::getOutTra
     }
 
     return outTransitions;
+}
+
+
+std::vector<std::vector<transition>> timed_automaton::ast::timedArena::getInTransitions(const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    std::vector<std::vector<transition>> inTransitions;
+    inTransitions.resize(locToIntMap.size());
+
+    for (const auto &t: transitions)
+    {
+        const int idx = locToIntMap.at(t.targetLocation);
+        inTransitions[idx].push_back(t);
+    }
+
+    return inTransitions;
 }
 
 

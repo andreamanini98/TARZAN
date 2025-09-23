@@ -22,6 +22,8 @@ namespace region
 
         std::vector<std::vector<transition>> outTransitions{};
 
+        std::vector<std::vector<transition>> inTransitions{};
+
         std::vector<Region> initialRegions{};
 
 
@@ -33,6 +35,7 @@ namespace region
             locationsToInt = automaton.mapLocationsToInt();
             initialLocations = automaton.getInitialLocations(locationsToInt);
             outTransitions = automaton.getOutTransitions(locationsToInt);
+            inTransitions = automaton.getInTransitions(locationsToInt);
 
             const int numOfClocks = static_cast<int>(clocksIndices.size());
             for (const int loc: initialLocations)
@@ -42,6 +45,10 @@ namespace region
 
         // TODO: questo va modificato, vedi nel file .cpp qualche indizio.
         [[nodiscard]] std::vector<Region> buildRegionGraphForeword() const;
+
+
+        // TODO: questo va modificato, vedi nel file .cpp qualche indizio.
+        [[nodiscard]] std::vector<Region> buildRegionGraphBackwards(std::vector<Region> startingRegions) const;
 
 
         // Getters.

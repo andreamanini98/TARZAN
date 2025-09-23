@@ -14,6 +14,11 @@ using transition = timed_automaton::ast::transition;
 // TODO: Quando farai l'algoritmo per trovare il region graph, devi vedere se dopo una discrete puoi subito trovare una discrete (almeno per i successors) =>
 //       comportamento zeno (non è escluso).
 
+// TODO: si può ottimizzare un bel po' (specialmente per i discrete predecessors) se per ogni clock si associa una singola costante massima
+//       invece di assumere che essa sia uguale per tutti.
+
+// TODO: sembrerebbe che molte regioni vengono calcolate (correttamente) più volte durante tutte le possibili combinazioni dei predecessori discreti, magari si può semplificare.
+
 
 namespace region
 {
@@ -133,7 +138,7 @@ namespace region
          * The clock valuation consists in a std::vector of pairs. Each index of the vector corresponds to the index of a clock (as clocks correspond to
          * the indices of the clocks Timed Automaton vector). If a clock is not in x0, then that clock has a fractional part that is greater than zero.
          *
-         * @return a std::vector containing the integer value of a clock and whether the clock has a fractional aprt greater than zero.
+         * @return a std::vector containing the integer value of a clock and whether the clock has a fractional part greater than zero.
          */
         [[nodiscard]] std::vector<std::pair<int, bool>> getClockValuation() const;
 
@@ -176,31 +181,78 @@ namespace region
 
 
         /**
-         * @brief Computes the ordered partitions of X while preserving the order of the clock sets corresponding to indices i to j, where i <= j.
+         * @brief Auxiliary function computing the permRegs function as seen in our paper for the bounded case.
          *
-         * @param partBounded used to indicate the indices i...j, since in the paper we consider either unbounded or bounded clocks.
-         * @param X the set of clocks for which we compute all ordered partitions.
-         * @param cMax the maximum constant of the original Timed Automaton.
+         * @param qReg the location of the Region for which we are computing discrete predecessors.
          * @param H a vector containing the values of the clocks (indices are computed as usual for Timed Automata, see the ast.h file).
-         * @param notInX0 a bitset where the i-th bit is set to 1 if the i-th clock must not be contained in x0.
-         * @return a std::vector of Regions obtained by computing the ordered partitions of X while preserving the order of sets from i to j.
+         * @param unboundedReg the unbounded sets of the Region for which we are computing discrete predecessors.
+         * @param x0Reg the x0 set of the Region for which we are computing discrete predecessors.
+         * @param boundedReg the bounded sets of the Region for which we are computing discrete predecessors.
+         * @param numOfClocks the original Timed Automaton number of clocks.
+         * @param X the clocks for which we must compute all ordered partitions.
+         * @param maxConstant the maximum constant of the original Timed Automaton.
+         * @param notInX0 a bitset where the i-th bit is set to 1 if the i-th clock must not be contained in x0 (needed for constraints like x > alpha, but NOT for x < alpha).
+         * @param notFractionalPart a bitset where the i-th bit is set to 1 if the i-th clock must be contained in x0 (needed for constraints like x <= alpha).
+         * @return all regions returned by permRegs as described in our paper.
+         *
+         * @warning For constraints of the form: x > alpha.
+         *          In this step, we compute all possible ordered partitions and assign to the clocks the values provided by H.
+         *          However, if H assigns value alpha to a clock x, then x could not have had a fractional part equal to 0 (since it must have been x > alpha).
+         *          Therefore, in the newly generated regions, x must not be included in x0.
+         *          You should check that whenever a partition places x in x0, that region is discarded as it would be invalid.
          */
-        // TODO: H in questo caso rappresenta i valori dei clock che devono essere assegnati alle nuove regioni, vedere se va bene trattarlo
-        //       così quando si deve gestire per i bounded il caso in cui un clock sia uguale a cmax.
-        [[nodiscard]] std::vector<Region> permRegs(bool partBounded,
-                                                   const boost::dynamic_bitset<> &X,
-                                                   int cMax,
-                                                   const std::vector<int> &H,
-                                                   const boost::dynamic_bitset<> &notInX0) const;
+        [[nodiscard]] static std::vector<Region> permRegsBounded(int qReg,
+                                                                 const std::vector<int> &H,
+                                                                 const std::deque<boost::dynamic_bitset<>> &unboundedReg,
+                                                                 boost::dynamic_bitset<> x0Reg,
+                                                                 const std::deque<boost::dynamic_bitset<>> &boundedReg,
+                                                                 int numOfClocks,
+                                                                 boost::dynamic_bitset<> X,
+                                                                 int maxConstant,
+                                                                 const boost::dynamic_bitset<> &notInX0,
+                                                                 const boost::dynamic_bitset<> &notFractionalPart);
 
 
-        // TODO: comment this function.
-        // TODO: quando devi calcolare H per passarla a permRegs e sei nel caso bounded, se hai vincoli del tipo:
-        //       x < 3 : devi arrivare al massimo a 2, ossia x può assumere valori interi 0, 1, 2 (non può essere 3 se deve essere minore di 3)
-        //       x > 3 : devi partire da 3, però in questo caso metterai x nel bitset di clock che non devono andare in X0
+        /**
+         * @brief Auxiliary function computing the permRegs function as seen in our paper for the unbounded case.
+         *
+         * @param qReg the location of the Region for which we are computing discrete predecessors.
+         * @param H a vector containing the values of the clocks (indices are computed as usual for Timed Automata, see the ast.h file).
+         * @param unboundedReg the unbounded sets of the Region for which we are computing discrete predecessors.
+         * @param x0Reg the x0 set of the Region for which we are computing discrete predecessors.
+         * @param boundedReg the bounded sets of the Region for which we are computing discrete predecessors.
+         * @param numOfClocks the original Timed Automaton number of clocks.
+         * @param X the clocks for which we must compute all ordered partitions.
+         * @return all regions returned by permRegs as described in our paper.
+         */
+        [[nodiscard]] static std::vector<Region> permRegsUnbounded(int qReg,
+                                                                   const std::vector<int> &H,
+                                                                   const std::deque<boost::dynamic_bitset<>> &unboundedReg,
+                                                                   const boost::dynamic_bitset<> &x0Reg,
+                                                                   const std::deque<boost::dynamic_bitset<>> &boundedReg,
+                                                                   int numOfClocks,
+                                                                   const boost::dynamic_bitset<> &X);
+
+
+        /**
+         * @brief Computes the immediate discrete predecessors of the current region as detailed in our paper.
+         *
+         * @param transitions the transitions over which immediate discrete predecessors must be computed.
+         * @param clockIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
+         * @param locationsAsIntMap a std::unordered_map associating an integer with each string name.
+         * @param maxConstant the maximum constant appearing in a Timed Automaton.
+         * @return a std::vector<Region> containing immediate discrete predecessors of the current region.
+         *         If no successors can be computed, returns an empty std::vector.
+         *
+         * @warning The transitions parameter must contain all and only the transitions entering the location of the region.
+         *          To provide such transitions, the getInTransitions() function of a Timed Automaton can be used.
+         * @warning To provide the clockIndices parameter, the getClocksIndices() function of a Timed Automaton can be used.
+         * @warning To provide the locationsAsIntMap, the mapLocationsToInt() function of a Timed Automaton can be used.
+         */
         [[nodiscard]] std::vector<Region> getImmediateDiscretePredecessors(const std::vector<transition> &transitions,
                                                                            const std::unordered_map<std::string, int> &clockIndices,
-                                                                           const std::unordered_map<std::string, int> &locationsAsIntMap) const;
+                                                                           const std::unordered_map<std::string, int> &locationsAsIntMap,
+                                                                           int maxConstant) const;
 
 
         /**

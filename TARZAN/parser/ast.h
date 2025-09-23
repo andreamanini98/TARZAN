@@ -161,10 +161,21 @@ namespace timed_automaton::ast
          * @param locToIntMap a mapping from locations (represented by std::string) to int.
          * @return a std::vector of std::vector, where each inner vector contains the outgoing transitions from the location corresponding to an index.
          */
-        // TODO: for the discrete predecessors, you may also want to do the same but with incoming transitions instead of outgoing transitions.
-        // TODO: maybe it can be done also by grouping indices instead of transitions (the indices correspond to the positions in the transitions
-        //       std::vector), but let's first try with this.
         [[nodiscard]] std::vector<std::vector<transition>> getOutTransitions(const std::unordered_map<std::string, int> &locToIntMap) const;
+
+
+        /**
+         * @brief Collects transitions entering into locations, grouping and indexing them.
+         *
+         * Each location must be treated as an integer. This way, the transitions entering such a location can be easily
+         * accessed through indexing the returned std::vector.
+         * For example, if a region r0 is in location q = 2, then we can access the vector at index 2 (recall that q starts from 0) to get the
+         * outgoing transitions from r0.
+         *
+         * @param locToIntMap a mapping from locations (represented by std::string) to int.
+         * @return a std::vector of std::vector, where each inner vector contains the ingoing transitions from the location corresponding to an index.
+         */
+        [[nodiscard]] std::vector<std::vector<transition>> getInTransitions(const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
         [[nodiscard]] std::string to_string() const;
@@ -231,10 +242,21 @@ namespace timed_automaton::ast
          * @param locToIntMap a mapping from locations (represented by std::string) to int.
          * @return a std::vector of std::vector, where each inner vector contains the outgoing transitions from the location corresponding to an index.
          */
-        // TODO: for the discrete predecessors, you may also want to do the same but with incoming transitions instead of outgoing transitions.
-        // TODO: maybe it can be done also by grouping indices instead of transitions (the indices correspond to the positions in the transitions
-        //       std::vector), but let's first try with this.
         [[nodiscard]] std::vector<std::vector<transition>> getOutTransitions(const std::unordered_map<std::string, int> &locToIntMap) const;
+
+
+        /**
+         * @brief Collects transitions entering into locations, grouping and indexing them.
+         *
+         * Each location must be treated as an integer. This way, the transitions entering such a location can be easily
+         * accessed through indexing the returned std::vector.
+         * For example, if a region r0 is in location q = 2, then we can access the vector at index 2 (recall that q starts from 0) to get the
+         * outgoing transitions from r0.
+         *
+         * @param locToIntMap a mapping from locations (represented by std::string) to int.
+         * @return a std::vector of std::vector, where each inner vector contains the ingoing transitions from the location corresponding to an index.
+         */
+        [[nodiscard]] std::vector<std::vector<transition>> getInTransitions(const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
         [[nodiscard]] std::string to_string() const;

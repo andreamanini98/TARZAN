@@ -604,7 +604,7 @@ void testPermRegs()
     // notInX0.set(numOfClocks - 2, true); // The second clock from the left now cannot be in x0.
 
     const double t1 = omp_get_wtime();
-    std::vector<region::Region> regs = regToPerm.permRegs(true, X, maxConstant, clockValues, notInX0);
+    std::vector<region::Region> regs = region::Region::permRegsBounded(q, clockValues, unbounded, x0, bounded, numOfClocks, X, maxConstant, notInX0, boost::dynamic_bitset<>(numOfClocks));
     const double t2 = omp_get_wtime();
 
     std::cout << "\n";
@@ -618,6 +618,133 @@ void testPermRegs()
 }
 
 
+void testGetDiscretePredecessors()
+{
+    constexpr int numOfClocks = 2;
+
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+    const std::string automatonFileName = "light_switch_predecessors_test.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    std::cout << "Parsed automaton: " << automaton << std::endl;
+
+    std::vector<transition> transitions = automaton.transitions;
+    std::unordered_map<std::string, int> clockIndices = automaton.getClocksIndices();
+    std::unordered_map<std::string, int> locationsAsIntMap = automaton.mapLocationsToInt();
+
+    region::Region initialRegion(numOfClocks);
+
+    std::cout << initialRegion.toString() << std::endl;
+
+    std::vector<region::Region> regs = initialRegion.getImmediateDiscretePredecessors(transitions, clockIndices, locationsAsIntMap, automaton.getMaxConstant());
+
+    std::cout << "Printing regions: " << std::endl;
+    for (const auto &region : regs)
+        std::cout << region.toString() << std::endl;
+}
+
+
+void testInTransitions()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+    // const std::string automatonFileName = "light_switch.txt";
+
+    const std::string automatonFileName = "ta0.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const std::unordered_map<std::string, int> locationsToInt = automaton.mapLocationsToInt();
+
+    std::vector<std::vector<transition>> transitions = automaton.getInTransitions(locationsToInt);
+
+    std::cout << "locationsToInt contents:\n";
+    for (const auto& [name, index] : locationsToInt) {
+        std::cout << "  " << name << " -> " << index << "\n";
+    }
+
+    for (int i = 0; i < transitions.size(); i++)
+    {
+        std::cout << "Location " << i << std::endl;
+        for (const auto &transition : transitions[i])
+            std::cout << transition << std::endl;
+    }
+
+}
+
+
+void testDiscretePredecessorsLightSwitch()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+    const std::string automatonFileName = "light_switch.txt";
+
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const std::unordered_map<std::string, int> locationsToInt = automaton.mapLocationsToInt();
+
+    std::cout << "locationsToInt contents:\n";
+    for (const auto& [name, index] : locationsToInt) {
+        std::cout << "  " << name << " -> " << index << "\n";
+    }
+
+    const int numOfClocks = 1;
+
+    region::Region startingRegion(numOfClocks);
+    startingRegion.set_q(1);
+
+    const auto h = static_cast<int *>(malloc(sizeof(int) * numOfClocks));
+    h[0] = 2;
+    startingRegion.set_h(h);
+
+    boost::dynamic_bitset<> x0(numOfClocks);
+    startingRegion.set_x0(x0);
+
+    boost::dynamic_bitset<> unboundedClock(numOfClocks);
+    unboundedClock.set(0, true);
+    std::deque<boost::dynamic_bitset<>> unbounded;
+    unbounded.push_back(unboundedClock);
+
+    startingRegion.set_unbounded(unbounded);
+
+    std::cout << startingRegion.toString() << std::endl;
+
+    const region::RTS regionTransitionSystem(automaton);
+
+    std::vector<region::Region> regs{};
+    regs.push_back(startingRegion);
+    std::vector<region::Region> predecessors = regionTransitionSystem.buildRegionGraphBackwards(regs);
+
+    std::cout << "Predecessors contents:\n";
+    for (const auto &region : predecessors)
+        std::cout << region.toString() << std::endl;
+
+}
+
+
+void testFlowerBackwards()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+    // const std::string automatonFileName = "light_switch.txt";
+
+    const std::string automatonFileName = "test_flower_small.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const region::RTS regionTransitionSystem(automaton);
+
+    const std::vector<region::Region> rts = regionTransitionSystem.buildRegionGraphForeword();
+
+    std::cout << "\n\n\n";
+
+    std::cout << "Computed the following regions:" << std::endl;
+    for (const auto &region : rts)
+        std::cout << region.toString() << std::endl;
+
+    const std::vector<region::Region> predecessors = regionTransitionSystem.buildRegionGraphBackwards(rts);
+
+    std::cout << "Predecessors contents:\n";
+    for (const auto &region : predecessors)
+        std::cout << region.toString() << std::endl;
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -627,7 +754,8 @@ int main()
 #endif
 
 
-    testPermRegs();
+    // testDiscretePredecessorsLightSwitch();
+    testFlowerBackwards();
 
 
 #ifdef REGION_TIMING
