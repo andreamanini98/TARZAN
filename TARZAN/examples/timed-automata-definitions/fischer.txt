@@ -1,0 +1,29 @@
+create automaton fischer
+{
+	clocks
+	{
+		x;
+	}
+
+	actions
+	{
+		a;
+	}
+
+	locations
+	{
+		A <initial: true>,
+		req,
+		wait,
+		cs;
+	}
+
+	transitions
+	{
+		(A,    a, [(x, >=, 0)], [x], req),
+		(req,  a, [(x, <=, 2)], [x], wait),
+		(wait, a, [(x, >=, 0)], [x], req),
+		(wait, a, [(x, >, 2)],  [],  cs),
+		(A,    a, [(x, >=, 0)], [],  A);
+	}
+}
