@@ -661,7 +661,7 @@ void testInTransitions()
         std::cout << "  " << name << " -> " << index << "\n";
     }
 
-    for (int i = 0; i < transitions.size(); i++)
+    for (int i = 0; i < static_cast<int>(transitions.size()); i++)
     {
         std::cout << "Location " << i << std::endl;
         for (const auto &transition : transitions[i])
@@ -729,13 +729,15 @@ void testFlowerBackwards()
 
     const region::RTS regionTransitionSystem(automaton);
 
-    const std::vector<region::Region> rts = regionTransitionSystem.buildRegionGraphForeword();
+    std::cout << "\n\n";
 
-    std::cout << "\n\n\n";
+    const std::vector<region::Region> rts = regionTransitionSystem.buildRegionGraphForeword();
 
     std::cout << "Computed the following regions:" << std::endl;
     for (const auto &region : rts)
         std::cout << region.toString() << std::endl;
+
+    std::cout << "\n\n";
 
     const std::vector<region::Region> predecessors = regionTransitionSystem.buildRegionGraphBackwards(rts);
 
@@ -755,6 +757,10 @@ int main()
 
 
     // testDiscretePredecessorsLightSwitch();
+
+    // Con il flower da 16 clock:
+    // foreword: Function took: 35,845,987 microseconds
+    // backward: Function took: 23,750,887 microseconds
     testFlowerBackwards();
 
 

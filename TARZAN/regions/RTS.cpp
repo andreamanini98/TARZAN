@@ -5,6 +5,9 @@
 
 #include "absl/container/flat_hash_set.h"
 
+// TODO: TOGLIERLO, MESSO SOLO PER TESTARE IN EXECUTABLEFILE.
+#define CHECK_INITIAL_IS_REACHED
+
 
 // TODO: quando calcoli una regione e questa è di classe U, non ti interessa calcolare nuovamente il successore delay (sarà sempre quello), quindi secondo me
 //       puoi anche non calcolare un successore di una regione di classe U e di conseguenza non mettere auto-anelli nel RTS, tanto sono già sottintesi.
@@ -96,6 +99,7 @@ std::vector<region::Region> region::RTS::buildRegionGraphBackwards(std::vector<R
         Region currentRegion = toProcess.back();
         toProcess.pop_back();
 
+#ifdef CHECK_INITIAL_IS_REACHED
         // Il codice che vedi qui è servito solo per fare un esempio veloce del flower, dopo va tolto.
         const auto &clockValuation = currentRegion.getClockValuation();
 
@@ -116,6 +120,7 @@ std::vector<region::Region> region::RTS::buildRegionGraphBackwards(std::vector<R
             std::cout << "CURRENT REGION: " << currentRegion.toString() << std::endl;
             std::exit(EXIT_FAILURE);
         }
+#endif
 
         std::vector<Region> delayPredecessors = currentRegion.getImmediateDelayPredecessors();
 
