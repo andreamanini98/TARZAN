@@ -1,6 +1,34 @@
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
+#include "TARZAN/parser/input_output_action_enum.h"
 
 // #define REGION_TIMING
+
+
+void testNetworkActions()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+
+    const std::string automatonFileName = "light_switch.txt";
+
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    std::cout << "\n\n\n\n\n";
+    std::cout << "Parsed automaton: " << automaton << std::endl;
+
+    std::cout << "\nActions:" << std::endl;
+    for (const auto &action: automaton.actions)
+        std::cout << action << std::endl;
+
+    std::cout << "\nNow printing the actions in transitions:" << std::endl;
+    for (const auto &transition: automaton.transitions)
+    {
+        std::cout << transition << std::endl;
+        std::cout << "Action first element: " << transition.action.first << std::endl;
+        std::cout << "Action second element: " <<
+                (transition.action.second.has_value() ? in_out_act_to_string(transition.action.second.value()) : "NO_VALUE") << std::endl;
+        std::cout << std::endl;
+    }
+}
 
 
 int main()
@@ -12,12 +40,7 @@ int main()
 #endif
 
 
-    // testDiscretePredecessorsLightSwitch();
-
-    // Con il flower da 16 clock:
-    // foreword: Function took: 35,845,987 microseconds
-    // backward: Function took: 23,750,887 microseconds
-    testFlowerBackwards();
+    testNetworkActions();
 
 
 #ifdef REGION_TIMING

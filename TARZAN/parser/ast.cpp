@@ -71,7 +71,8 @@ bool timed_automaton::ast::transition::isGuardSatisfied(const std::vector<std::p
 std::string timed_automaton::ast::transition::to_string() const
 {
     std::ostringstream oss;
-    oss << "(" << startingLocation << ", " << action << ", "
+    const std::string actString = action.first + (action.second.has_value() ? in_out_act_to_string(action.second.value()) : "");
+    oss << "(" << startingLocation << ", " << actString << ", "
             << "[" << join_elements(clockGuard, " and ") << "], "
             << "[" << join_elements(clocksToReset, ", ") << "], "
             << targetLocation << ")";

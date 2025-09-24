@@ -26,6 +26,17 @@ namespace timed_automaton
         }
     } comp_op;
 
+    inline struct io_act : boost::spirit::x3::symbols<in_out_act>
+    {
+        io_act()
+        {
+            auto &self = add
+                    ("!", OUTACT)
+                    ("?", INACT);
+            (void) self;
+        }
+    } io_act;
+
     namespace parser
     {
         namespace x3 = boost::spirit::x3;
@@ -37,6 +48,8 @@ namespace timed_automaton
         using x3::lexeme;
         using ascii::char_;
         using x3::bool_;
+
+        constexpr x3::rule<action_pair_class, ast::act> action_pair_rule = "action_pair_rule";
 
         constexpr x3::rule<loc_pair_class, ast::loc_pair> loc_pair_rule = "loc_pair_rule";
         constexpr x3::rule<loc_map_class, ast::loc_map> loc_map_rule = "loc_map_rule";
@@ -52,6 +65,10 @@ namespace timed_automaton
 
         inline auto literal =
                 lexeme[+char_("a-zA-Z0-9_")];
+
+        inline auto action_pair_rule_def =
+                literal
+                > -io_act;
 
         inline auto loc_pair_rule_def =
                 literal
@@ -83,7 +100,7 @@ namespace timed_automaton
         inline auto transition_rule_def =
                 lit('(')
                 > literal > lit(',')
-                > literal > lit(',')
+                > action_pair_rule > lit(',')
                 > lit('[')
                 > clockConstraint_rule % ','
                 > lit(']') > lit(',')
@@ -139,7 +156,8 @@ namespace timed_automaton
                 > lit('}')
                 > lit('}');
 
-        BOOST_SPIRIT_DEFINE(loc_pair_rule,
+        BOOST_SPIRIT_DEFINE(action_pair_rule,
+                            loc_pair_rule,
                             loc_map_rule,
                             arena_loc_rule,
                             arena_loc_pair_rule,
@@ -148,6 +166,9 @@ namespace timed_automaton
                             transition_rule,
                             timedAutomaton_rule,
                             timedArena_rule);
+
+        struct action_pair_class : success_handler
+        {};
 
         struct loc_pair_class : success_handler
         {};

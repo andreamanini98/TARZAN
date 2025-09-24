@@ -2,30 +2,28 @@
 #define AST_H
 
 #include "TARZAN/parser/comparison_op_enum.h"
+#include "TARZAN/parser/input_output_action_enum.h"
 #include "TARZAN/utilities/printing_utilities.h"
 
 #include <vector>
 #include <map>
 #include <ranges>
 
-// TODO: comment the code
-
-// TODO: avoid code duplication.
+// TODO: avoid code duplication (if possible).
 
 
 // The following is the grammar for the Liana DSL used to create Timed Automata (STILL NEED TO DEFINE THE TIMED ARENA ONE).
+// Whether the actions are input or output actions must be specified only in the transitions.
 //
 // <automaton> -> 'create' 'automaton' <literal>
 //                '{'
-//                'clocks'      '{' <clocks_rule>      '}'
-//                'actions'     '{' <actions_rule>     '}'
-//                'locations'   '{' <locations_rule>   '}'
+//                'clocks'      '{' <clocks_rule> '}'
+//                'actions'     '{' <literal> (, <literal>)* '}'
+//                'locations'   '{' <locations_rule> '}'
 //                'transitions' '{' <transition_rule> (, <transition_rule>)* ';' '}'
 //                '}'
 //
 //  <clocks_rule> -> <literal> (, <literal>)* ';'
-//
-//  <actions_rule> -> <literal> (, <literal>)* ';'
 //
 //  <locations_rule> -> <loc_rule> (, <loc_rule>)* ';'
 //
@@ -34,12 +32,16 @@
 //  <bool> -> 'true' | 'false'
 //
 //  <transition_rule> -> '('
-//                        <literal> ','
-//                        <literal> ','
-//                        '[' <clock_constraint_rule> (, <clock_constraint_rule>)* ']' ','
-//                        '[' (eps | <literal> (',' <literal>)*) ']' ','
-//                        <literal>
-//                        ')'
+//                       <literal> ','
+//                       <actions_rule> ','
+//                       '[' <clock_constraint_rule> (, <clock_constraint_rule>)* ']' ','
+//                       '[' (eps | <literal> (',' <literal>)*) ']' ','
+//                       <literal>
+//                       ')'
+//
+//  <actions_rule> -> <literal> (eps | <input_output_action>)
+//
+//  <input_output_action> -> '!' | '?'
 //
 //  <clock_constraint_rule> -> '(' <literal> ',' <comparison_operator> ',' <int> ')'
 //
@@ -76,10 +78,14 @@ namespace timed_automaton::ast
     };
 
 
+    // Defining an action such that it can also handle the case of being an input or an output action in a network of TA.
+    using act = std::pair<std::string, std::optional<in_out_act>>;
+
+
     struct transition
     {
         std::string startingLocation;
-        std::string action;
+        act action;
         std::vector<clockConstraint> clockGuard;
         std::vector<std::string> clocksToReset;
         std::string targetLocation;

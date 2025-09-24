@@ -11,6 +11,7 @@ namespace timed_automaton
     {
         namespace x3 = boost::spirit::x3;
 
+        struct action_pair_class;
         struct loc_pair_class;
         struct loc_map_class;
         struct arena_loc_class;
