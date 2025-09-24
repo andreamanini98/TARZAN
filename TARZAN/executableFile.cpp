@@ -756,7 +756,6 @@ int main()
 #endif
 
 
-    // testcomment
     // testDiscretePredecessorsLightSwitch();
 
     // Con il flower da 16 clock:
