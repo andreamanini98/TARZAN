@@ -7,6 +7,11 @@
 #include "TARZAN/parser/ast.h"
 #include "TARZAN/utilities/partition_utilities.h"
 
+// Regarding the invariants in Timed Automata:
+// it is enough to take the invariant and combine it with the guard (using conjunction) on all transitions entering and leaving the location
+// that has the invariant. This approach works if you only need to compute reachability (as in our case), but it may not be enough for other purposes,
+// such as handling Buchi acceptance conditions.
+
 
 namespace region
 {
