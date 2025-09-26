@@ -280,9 +280,12 @@ namespace region
 
         // Getters.
         [[nodiscard]] int getLocation() const { return q; }
+        [[nodiscard]] std::deque<boost::dynamic_bitset<>> getUnbounded() const { return unbounded; }
+        [[nodiscard]] boost::dynamic_bitset<> getX0() const { return x0; }
+        [[nodiscard]] std::deque<boost::dynamic_bitset<>> getBounded() const { return bounded; }
 
 
-        // Setters, created only for convenience.
+        // Setters.
         void set_q(const int q_p) { this->q = q_p; }
         void set_h(int *h_p) { this->h = h_p; }
         void set_unbounded(const std::deque<boost::dynamic_bitset<>> &unbounded_p) { this->unbounded = unbounded_p; }
