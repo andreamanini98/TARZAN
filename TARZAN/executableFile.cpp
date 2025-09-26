@@ -1,4 +1,4 @@
-#include "regions/RTSNetwork.h"
+#include "regions/networkOfTA/RTSNetwork.h"
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
 #include "TARZAN/parser/input_output_action_enum.h"
 #include "TARZAN/utilities/partition_utilities.h"
@@ -42,11 +42,39 @@ void testParseMultipleAutomata()
     for (const auto &automaton: automata)
         std::cout << "\nParsed the following automaton:\n" << automaton << std::endl;
 
-    const region::RTSNetwork net(automata);
+    const networkOfTA::RTSNetwork net(automata);
 
     std::cout << "\n\n\n\n\n";
     std::cout << "Network:" << std::endl;
     std::cout << net.toString() << std::endl;
+}
+
+
+void testGetImmediateNetworkDelaySuccessor()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/networks_of_TA/TA_semantics_algorithms_tools";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << "\n\n\n\n\n";
+    std::cout << "Network:" << std::endl;
+    std::cout << net.toString() << std::endl;
+
+    const auto &initialRegions = net.getInitialRegions();
+
+    std::cout << "\n\n\n\n\n\n";
+    std::cout << "Starting from the following Network Regions:\n" << std::endl;
+    for (const auto &region: initialRegions)
+        std::cout << region.toString() << std::endl;
+
+    std::cout << "\n\n\n";
+
+    networkOfTA::NetworkRegion current = initialRegions[0];
+    for (int i = 1; i <= 40; i++)
+    {
+        current = current.getImmediateDelaySuccessor(net.getMaxConstants());
+        std::cout << "Successor " << i << ":\n" << current.toString() << std::endl;
+    }
 }
 
 
@@ -59,7 +87,7 @@ int main()
 #endif
 
 
-    testParseMultipleAutomata();
+    testGetImmediateNetworkDelaySuccessor();
 
 
 #ifdef REGION_TIMING

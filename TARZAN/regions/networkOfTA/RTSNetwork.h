@@ -84,6 +84,7 @@ namespace networkOfTA
 
         // Getters.
         [[nodiscard]] std::vector<NetworkRegion> getInitialRegions() const { return initialRegions; }
+        [[nodiscard]] std::vector<int> getMaxConstants() const { return maxConstants; }
 
 
         [[nodiscard]] std::string toString() const

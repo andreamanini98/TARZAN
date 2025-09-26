@@ -6,6 +6,8 @@
 
 #include "TARZAN/regions/Region.h"
 
+// An advantage of defining the configuration of the network using a vector of regions is that, when computing discrete successors, you can compute
+// them only on the necessary regions, instead of computing the discrete successor of the whole cartesian product region.
 
 namespace networkOfTA
 {
@@ -17,7 +19,10 @@ namespace networkOfTA
         /// Contains the indices of the regions vector such that the corresponding region is either of class A or class C.
         std::vector<int> isAorC{};
 
-        /// Keeps track of the clocks ordering between different regions. Key = region index.
+        /**
+         * Keeps track of the clocks ordering between different regions. Key = region index.
+         * The maps in the front capture the smallest equivalent fractional parts, while the maps in the back the highest equivalent fractional parts.
+         */
         std::deque<absl::flat_hash_map<int, boost::dynamic_bitset<>>> isB{};
 
 
@@ -40,10 +45,10 @@ namespace networkOfTA
 
 
         /**
-         * @brief
+         * @brief Computes the immediate delay successor of the current network region.
          *
-         * @param maxConstants
-         * @return
+         * @param maxConstants the maximum constants of the Timed Automata from which the network region is derived.
+         * @return a NetworkRegion immediate delay successor of the current network region.
          */
         [[nodiscard]] NetworkRegion getImmediateDelaySuccessor(const std::vector<int> &maxConstants) const;
 
@@ -56,6 +61,7 @@ namespace networkOfTA
          * @param locationsToInt
          * @return
          */
+        // TODO: potrebbe servirti come parametro anche absl::flat_hash_map<std::string, std::vector<int>> clocksToRegions{}; (glielo darai poi dal RTSNetwork)
         [[nodiscard]] std::vector<NetworkRegion> getImmediateDiscreteSuccessors(const std::vector<transition> &transitions,
                                                                                 const std::vector<std::unordered_map<std::string, int>> &clockIndices,
                                                                                 const std::vector<std::unordered_map<std::string, int>> &locationsToInt) const;
