@@ -107,7 +107,8 @@ set(LIBRARY_SOURCES
         TARZAN/parser/timed_automaton.cpp
         TARZAN/regions/Region.cpp
         TARZAN/parser/ast.cpp
-        TARZAN/regions/RTS.cpp)
+        TARZAN/regions/RTS.cpp
+        TARZAN/regions/RTSNetwork.cpp)
 
 
 # Add library

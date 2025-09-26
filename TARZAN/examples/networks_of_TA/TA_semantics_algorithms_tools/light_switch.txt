@@ -1,0 +1,27 @@
+create automaton light_switch
+{
+    clocks
+    {
+        x;
+    }
+
+    actions
+    {
+        press;
+    }
+
+    locations
+    {
+        off    <initial: true>,
+        dim    <initial: false>,
+        bright <initial: false>;
+    }
+
+    transitions
+    {
+        (off,    press?, [(x, >=, 0)],  [x], dim),
+        (dim,    press?, [(x, >, 10)],  [],  off),
+        (dim,    press?, [(x, <=, 10)], [],  bright),
+        (bright, press?, [(x, >=, 0)],  [],  off);
+    }
+}

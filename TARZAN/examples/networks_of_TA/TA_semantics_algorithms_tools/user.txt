@@ -1,0 +1,30 @@
+create automaton user
+{
+    clocks
+    {
+        y;
+    }
+
+    actions
+    {
+        press, tau;
+    }
+
+    locations
+    {
+        idle  <initial: true>,
+        t     <initial: false>,
+        study <initial: false>,
+        relax <initial: false>;
+    }
+
+    transitions
+    {
+        (idle,  press!, [(y, <, 5)],  [y], t),
+        (idle,  press!, [(y, >=, 0)], [y], relax),
+        (t,     press!, [(y, <, 5)],  [],  study),
+        (study, tau,    [(y, >=, 0)], [],  study),
+        (study, press!, [(y, >=, 0)], [],  idle),
+        (relax, press!, [(y, >, 10)], [],  idle);
+    }
+}
