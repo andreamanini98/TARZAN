@@ -1,5 +1,7 @@
+#include "regions/RTSNetwork.h"
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
 #include "TARZAN/parser/input_output_action_enum.h"
+#include "TARZAN/utilities/partition_utilities.h"
 
 // #define REGION_TIMING
 
@@ -31,6 +33,23 @@ void testNetworkActions()
 }
 
 
+void testParseMultipleAutomata()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/networks_of_TA/TA_semantics_algorithms_tools";
+
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+
+    for (const auto &automaton: automata)
+        std::cout << "\nParsed the following automaton:\n" << automaton << std::endl;
+
+    const region::RTSNetwork net(automata);
+
+    std::cout << "\n\n\n\n\n";
+    std::cout << "Network:" << std::endl;
+    std::cout << net.toString() << std::endl;
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -40,7 +59,7 @@ int main()
 #endif
 
 
-    testNetworkActions();
+    testParseMultipleAutomata();
 
 
 #ifdef REGION_TIMING
