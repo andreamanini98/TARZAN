@@ -108,7 +108,8 @@ set(LIBRARY_SOURCES
         TARZAN/regions/Region.cpp
         TARZAN/parser/ast.cpp
         TARZAN/regions/RTS.cpp
-        TARZAN/regions/RTSNetwork.cpp)
+        TARZAN/regions/networkOfTA/RTSNetwork.cpp
+        TARZAN/regions/networkOfTA/NetworkRegion.cpp)
 
 
 # Add library

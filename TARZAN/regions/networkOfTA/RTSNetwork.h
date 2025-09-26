@@ -1,9 +1,10 @@
 #ifndef TARZAN_RTSNETWORK_H
 #define TARZAN_RTSNETWORK_H
 
-#include "Region.h"
 #include "absl/container/flat_hash_map.h"
 
+#include "TARZAN/regions/Region.h"
+#include "TARZAN/regions/networkOfTA/NetworkRegion.h"
 #include "TARZAN/parser/ast.h"
 #include "TARZAN/utilities/partition_utilities.h"
 
@@ -13,84 +14,8 @@
 // such as handling Buchi acceptance conditions.
 
 
-namespace region
+namespace networkOfTA
 {
-    struct NetworkRegion
-    {
-        /// Each region corresponds to a Timed Automaton of the network.
-        std::vector<Region> regions{};
-
-        /// Contains the indices of the regions vector such that the corresponding region is either of class A or class C.
-        std::vector<int> isAorC{};
-
-        /// Keeps track of the clocks ordering between different regions. Key = region index.
-        std::deque<absl::flat_hash_map<int, boost::dynamic_bitset<>>> isB{};
-
-
-        explicit NetworkRegion(const std::vector<Region> &regions, const bool allRegionsAreInitial) : regions(regions)
-        {
-            // If every region is initial, they must all belong to class A.
-            if (allRegionsAreInitial)
-            {
-                const int isAorCSize = static_cast<int>(regions.size());
-                isAorC.resize(isAorCSize);
-
-                // We insert values from 0 to isAorCSize - 1 since every region is initial.
-                std::iota(isAorC.begin(), isAorC.end(), 0);
-            }
-        }
-
-
-        [[nodiscard]] std::string toString() const
-        {
-            std::ostringstream oss;
-
-            oss << "NetworkRegion {\n";
-            oss << "  Regions (" << regions.size() << "):\n";
-
-            for (size_t i = 0; i < regions.size(); i++)
-            {
-                // Indent the Region's toString output.
-                std::istringstream regionStream(regions[i].toString());
-                std::string line;
-                oss << "  [" << i << "]:\n";
-
-                while (std::getline(regionStream, line))
-                    if (!line.empty())
-                        oss << "    " << line << "\n";
-            }
-
-            oss << "  isAorC (" << isAorC.size() << "): [";
-            for (size_t i = 0; i < isAorC.size(); i++)
-            {
-                oss << isAorC[i];
-                if (i < isAorC.size() - 1)
-                    oss << ", ";
-            }
-            oss << "]\n";
-
-            oss << "  isB (" << isB.size() << "):\n";
-            int index = 0;
-            for (const auto &map: isB)
-            {
-                oss << "    [" << index++ << "]: {";
-                bool first = true;
-                for (const auto &[key, bitset]: map)
-                {
-                    if (!first)
-                        oss << ", ";
-                    first = false;
-                    oss << key << " -> " << bitset;
-                }
-                oss << "}\n";
-            }
-
-            oss << "}\n";
-            return oss.str();
-        }
-    };
-
-
     class RTSNetwork
     {
         std::vector<timed_automaton::ast::timedAutomaton> automata;
@@ -143,7 +68,7 @@ namespace region
 
             for (const auto &cartesianProduct: initialLocationsCartesianProduct)
             {
-                std::vector<Region> initRegs{};
+                std::vector<region::Region> initRegs{};
 
                 for (int i = 0; i < static_cast<int>(cartesianProduct.size()); i++)
                     initRegs.emplace_back(static_cast<int>(clocksIndices[i].size()), cartesianProduct[i]);
@@ -153,7 +78,12 @@ namespace region
         }
 
 
-        // TODO: se quanto fatto sopra va bene (ricontrollare e testare), devi farti un wrapper per chiamare i discrete e delay successors come scritto nelle note.
+        // TODO: comment this function.
+        std::vector<NetworkRegion> buildRegionGraphForeword();
+
+
+        // Getters.
+        [[nodiscard]] std::vector<NetworkRegion> getInitialRegions() const { return initialRegions; }
 
 
         [[nodiscard]] std::string toString() const
