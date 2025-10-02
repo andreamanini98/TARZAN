@@ -18,14 +18,23 @@
 
 // TODO: per visualizzare in modo più carino il RTS (se te lo crei) usa graphviz.
 
-// TODO: implementare un vero BFS.
+// TODO: implementare un vero BFS e DFS.
 
+
+// TODO: una volta fatto bene questo usare come spunto per sotto andando backwards.
 std::vector<region::Region> region::RTS::buildRegionGraphForeword() const
 {
-    std::vector toProcess{ getInitialRegions() };
-    std::vector result{ getInitialRegions() };
+    std::vector<Region> toProcess{};
+    std::vector<Region> result{};
 
     absl::flat_hash_set<Region, RegionHash> regionsHashMap{};
+
+    for (const auto &init: getInitialRegions())
+    {
+        result.push_back(init);
+        toProcess.push_back(init);
+        regionsHashMap.insert(init);
+    }
 
     // togliere
     unsigned long long int totalregions = 0;
@@ -35,18 +44,18 @@ std::vector<region::Region> region::RTS::buildRegionGraphForeword() const
     {
         std::vector<Region> successors{};
 
-        Region currentRegion = toProcess.back();
-        toProcess.pop_back();
+        const Region &currentRegion = toProcess.back();
 
         // Il codice che vedi qui è servito solo per fare un esempio veloce del flower, dopo va tolto.
         //std::cout << currentRegion.toString() << std::endl;
         if (currentRegion.getLocation() == 0)
         {
+            const auto end = std::chrono::high_resolution_clock::now();
             std::cout << "Total number of computed regions: " << totalregions << std::endl;
             std::cout << "MAX CONSTANT IS: " << maxConstant << std::endl;
             std::cout << currentRegion.toString() << std::endl;
             std::cout << "GOAL REGION IS REACHABLE!\n";
-            const auto end = std::chrono::high_resolution_clock::now();
+
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
             std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
             //std::exit(EXIT_FAILURE);
@@ -55,12 +64,15 @@ std::vector<region::Region> region::RTS::buildRegionGraphForeword() const
             return regionToReturn;
         }
 
-        Region delaySuccessor = currentRegion.getImmediateDelaySuccessor(maxConstant);
+        const Region &delaySuccessor = currentRegion.getImmediateDelaySuccessor(maxConstant);
 
-        std::vector<transition> transitions = outTransitions[currentRegion.getLocation()];
-        std::vector<Region> discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
+        const std::vector<transition> &transitions = outTransitions[currentRegion.getLocation()];
+        const std::vector<Region> &discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
 
         totalregions += discreteSuccessors.size() + 1;
+
+        // Removing now since we do not need it anymore.
+        toProcess.pop_back();
 
         if (!regionsHashMap.contains(delaySuccessor))
         {
