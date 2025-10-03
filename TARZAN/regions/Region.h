@@ -5,14 +5,12 @@
 #include <boost/dynamic_bitset.hpp>
 
 #include "TARZAN/parser/ast.h"
+#include "TARZAN/utilities/hash_utilities.h"
 
 using transition = timed_automaton::ast::transition;
 
 // TODO: vedere come adattare questo alle regioni delle arene. Secondo me non occorre fare altro, q rende possibile determinare la natura
 //       delle locations (controller o environment), ma occorre guardare nella rappresentazione dell'arena. Al limite aggiungi un Bool.
-
-// TODO: Quando farai l'algoritmo per trovare il region graph, devi vedere se dopo una discrete puoi subito trovare una discrete (almeno per i successors) =>
-//       comportamento zeno (non è escluso).
 
 // TODO: si può ottimizzare un bel po' (specialmente per i discrete predecessors) se per ogni clock si associa una singola costante massima
 //       invece di assumere che essa sia uguale per tutti.
@@ -370,41 +368,6 @@ namespace region
             hash_combine(seed, region.bounded.size());
             for (const auto &bitset: region.bounded)
                 hash_combine(seed, hash_bitset(bitset));
-
-            return seed;
-        }
-
-
-    private:
-        /**
-         * @brief Combines two hashes using golden ratio hashing.
-         *
-         * @tparam T the class of the new element for which we are combining the hash.
-         * @param seed an existing hash value.
-         * @param v an element whose hash value must be combined with seed.
-         */
-        template<class T>
-        static void hash_combine(std::size_t &seed, const T &v)
-        {
-            std::hash<T> hasher;
-            seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-        }
-
-
-        /**
-         * @brief Hashes a boost::dynamic_bitset exploiting its string representation.
-         *
-         * @param bitset the boost::dynamic_bitset to hash.
-         * @return the hash of bitset.
-         */
-        static std::size_t hash_bitset(const boost::dynamic_bitset<> &bitset)
-        {
-            std::size_t seed = 0;
-            hash_combine(seed, bitset.size());
-
-            std::string bit_string;
-            boost::to_string(bitset, bit_string);
-            hash_combine(seed, std::hash<std::string>{}(bit_string));
 
             return seed;
         }
