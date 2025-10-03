@@ -78,6 +78,24 @@ void testGetImmediateNetworkDelaySuccessor()
 }
 
 
+void testNetworkBuildRegionGraphForeword()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/networks_of_TA/TA_semantics_algorithms_tools";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    const std::vector goalLocations = { 1, 3 };
+
+    // Reachable.
+    // const std::vector goalLocations = { 1, 1 };
+
+    // Unreachable (the entire region graph will be computed).
+    // const std::vector goalLocations = { 1, 3 };
+
+    const auto res = net.buildRegionGraphForeword(goalLocations);
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -87,7 +105,7 @@ int main()
 #endif
 
 
-    testGetImmediateNetworkDelaySuccessor();
+    testNetworkBuildRegionGraphForeword();
 
 
 #ifdef REGION_TIMING
