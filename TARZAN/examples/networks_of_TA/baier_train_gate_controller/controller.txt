@@ -13,16 +13,16 @@ create automaton controller
     locations
     {
         0 <ini: T>,
-        1 <ini: F>,
+        1 <ini: F, inv: [(z, <=, 1)]>,
         2 <ini: F>,
-        3 <ini: F>;
+        3 <ini: F, inv: [(z, <=, 1)]>;
     }
 
     transitions
     {
-        (0, approach?, [(z, <=, 1)], [z], 1),
-        (1, lower?,    [(z, <=, 1), (z, =, 1)],  [],  2),
-        (2, exit?,     [(z, <=, 1)], [z], 3),
-        (3, raise?,    [(z, <=, 1)], [],  0);
+        (0, approach?, [(z, >=, 0)], [z], 1),
+        (1, lower?,    [(z, =, 1)],  [],  2),
+        (2, exit?,     [(z, >=, 0)], [z], 3),
+        (3, raise?,    [(z, >=, 0)], [],  0);
     }
 }

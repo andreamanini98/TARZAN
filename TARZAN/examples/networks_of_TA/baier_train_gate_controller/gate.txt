@@ -13,16 +13,16 @@ create automaton gate
     locations
     {
         up          <ini: T>,
-        coming_down <ini: F>,
+        coming_down <ini: F, inv: [(x, <=, 1)]>,
         down        <ini: F>,
-        going_up    <ini: F>;
+        going_up    <ini: F, inv: [(x, <=, 2)]>;
     }
 
     transitions
     {
-        (up,          lower!, [(x, <=, 1)],             [x], coming_down),
-        (coming_down, tau,    [(x, <=, 1)],             [],  down),
-        (down,        raise!, [(x, <=, 2)],             [x], going_up),
-        (going_up,    tau,    [(x, >=, 1), (x, <=, 2)], [],  up);
+        (up,          lower!, [(x, >=, 0)], [x], coming_down),
+        (coming_down, tau,    [(x, >=, 0)], [],  down),
+        (down,        raise!, [(x, >=, 0)], [x], going_up),
+        (going_up,    tau,    [(x, >=, 1)], [],  up);
     }
 }
