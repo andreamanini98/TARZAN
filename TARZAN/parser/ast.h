@@ -3,11 +3,11 @@
 
 #include "enums/comparison_op_enum.h"
 #include "enums/input_output_action_enum.h"
-#include "TARZAN/utilities/printing_utilities.h"
 
 #include <vector>
 #include <map>
 #include <ranges>
+#include "absl/container/flat_hash_map.h"
 
 // TODO: avoid code duplication (if possible).
 
@@ -200,6 +200,16 @@ namespace timed_automaton::ast
         [[nodiscard]] std::vector<std::vector<transition>> getInTransitions(const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
+        /**
+         * @brief Collects the invariants of the Timed Automaton.
+         *
+         * @param locToIntMap a mapping from locations (represented by std::string) to int.
+         * @return a map from integers representing locations to invariants of each location.
+         */
+        [[nodiscard]] absl::flat_hash_map<int, std::vector<clockConstraint>> getInvariants(
+            const std::unordered_map<std::string, int> &locToIntMap) const;
+
+
         [[nodiscard]] std::string to_string() const;
     };
 
@@ -279,6 +289,16 @@ namespace timed_automaton::ast
          * @return a std::vector of std::vector, where each inner vector contains the ingoing transitions from the location corresponding to an index.
          */
         [[nodiscard]] std::vector<std::vector<transition>> getInTransitions(const std::unordered_map<std::string, int> &locToIntMap) const;
+
+
+        /**
+         * @brief Collects the invariants of the Timed Automaton.
+         *
+         * @param locToIntMap a mapping from locations (represented by std::string) to int.
+         * @return a map from integers representing locations to invariants of each location.
+         */
+        [[nodiscard]] absl::flat_hash_map<int, std::vector<clockConstraint>> getInvariants(
+            const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
         [[nodiscard]] std::string to_string() const;

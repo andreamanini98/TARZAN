@@ -1,6 +1,7 @@
 #include "TARZAN/parser/ast.h"
 
 #include <iostream>
+#include "TARZAN/utilities/printing_utilities.h"
 
 using transition = timed_automaton::ast::transition;
 
@@ -58,7 +59,7 @@ std::string timed_automaton::ast::locationContent::to_string() const
 {
     std::ostringstream oss;
     oss << "<";
-        oss << "initial: " << (isInitial ? "true" : "false");
+    oss << "initial: " << (isInitial ? "true" : "false");
     oss << ", ";
     oss << "invariant: [" << join_elements(invariant, " and ") << "]";
     oss << ">";
@@ -181,6 +182,19 @@ std::vector<std::vector<transition>> timed_automaton::ast::timedAutomaton::getIn
 }
 
 
+absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> timed_automaton::ast::timedAutomaton::getInvariants(
+    const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    absl::flat_hash_map<int, std::vector<clockConstraint>> invariants;
+
+    for (const auto &[locName, locContent]: locations)
+        if (!locContent.invariant.empty())
+            invariants[locToIntMap.at(locName)] = locContent.invariant;
+
+    return invariants;
+}
+
+
 std::string timed_automaton::ast::timedAutomaton::to_string() const
 {
     std::ostringstream oss;
@@ -280,6 +294,19 @@ std::vector<std::vector<transition>> timed_automaton::ast::timedArena::getInTran
     }
 
     return inTransitions;
+}
+
+
+absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> timed_automaton::ast::timedArena::getInvariants(
+    const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    absl::flat_hash_map<int, std::vector<clockConstraint>> invariants;
+
+    for (const auto &[locName, locContent]: locations)
+        if (!locContent.second.invariant.empty())
+            invariants[locToIntMap.at(locName)] = locContent.second.invariant;
+
+    return invariants;
 }
 
 
