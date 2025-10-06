@@ -12,11 +12,11 @@ create automaton taTA_0
 
     locations
     {
-        q0 <initial: true>,
-        q1 <initial: false>,
-        q2 <initial: false>,
-        q3,
-        q4 <initial:false>;
+        q0 <ini: true>,
+        q1 <ini: false>,
+        q2 <ini: false>,
+        q3 <>,
+        q4 <ini: false>;
     }
 
     transitions

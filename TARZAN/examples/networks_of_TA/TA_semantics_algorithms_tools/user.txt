@@ -12,10 +12,10 @@ create automaton user
 
     locations
     {
-        idle  <initial: true>,
-        t     <initial: false>,
-        study <initial: false>,
-        relax <initial: false>;
+        idle  <ini: true>,
+        t     <ini: false>,
+        study <ini: false>,
+        relax <ini: false>;
     }
 
     transitions

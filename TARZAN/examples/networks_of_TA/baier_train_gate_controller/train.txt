@@ -12,9 +12,9 @@ create automaton train
 
     locations
     {
-        far  <initial: true>,
-        near <initial: false>,
-        in   <initial: false>;
+        far  <ini: true>,
+        near <ini: false>,
+        in   <ini: false>;
     }
 
     transitions

@@ -12,8 +12,8 @@ create automaton test_flower
 
     locations
     {
-        start <initial: true>,
-        goal <initial: false>;
+        start <ini: true>,
+        goal  <ini: false>;
     }
 
     transitions

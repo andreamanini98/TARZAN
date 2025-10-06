@@ -12,8 +12,8 @@ create automaton light_switch
 
     locations
     {
-        off <initial: true>,
-        on  <initial: false>;
+        off <ini: true>,
+        on  <ini: false>;
     }
 
     transitions
