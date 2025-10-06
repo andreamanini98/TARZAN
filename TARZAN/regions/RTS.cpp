@@ -5,9 +5,6 @@
 
 #include "absl/container/flat_hash_set.h"
 
-// TODO: TOGLIERLO, MESSO SOLO PER TESTARE IN EXECUTABLEFILE.
-#define CHECK_INITIAL_IS_REACHED
-
 
 // TODO: quando calcoli una regione e questa è di classe U, non ti interessa calcolare nuovamente il successore delay (sarà sempre quello), quindi secondo me
 //       puoi anche non calcolare un successore di una regione di classe U e di conseguenza non mettere auto-anelli nel RTS, tanto sono già sottintesi.
@@ -93,7 +90,8 @@ std::vector<region::Region> region::RTS::buildRegionGraphForeword() const
 }
 
 
-std::vector<region::Region> region::RTS::buildRegionGraphBackwards(std::vector<Region> startingRegions) const
+// TODO: implementare questa meglio
+/*std::vector<region::Region> region::RTS::buildRegionGraphBackwards(std::vector<Region> startingRegions) const
 {
     std::vector toProcess{ std::move(startingRegions) };
     std::vector result{ startingRegions };
@@ -162,4 +160,4 @@ std::vector<region::Region> region::RTS::buildRegionGraphBackwards(std::vector<R
     }
 
     return result;
-}
+}*/

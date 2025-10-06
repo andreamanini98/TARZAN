@@ -26,6 +26,8 @@ namespace region
 
         std::vector<Region> initialRegions{};
 
+        absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> invariants{};
+
 
     public:
         explicit RTS(const timed_automaton::ast::timedAutomaton &automaton) : automaton(automaton)
@@ -36,11 +38,15 @@ namespace region
             initialLocations = automaton.getInitialLocations(locationsToInt);
             outTransitions = automaton.getOutTransitions(locationsToInt);
             inTransitions = automaton.getInTransitions(locationsToInt);
+            invariants = automaton.getInvariants(locationsToInt);
 
             const int numOfClocks = static_cast<int>(clocksIndices.size());
             for (const int loc: initialLocations)
                 initialRegions.emplace_back(numOfClocks, loc);
         }
+
+
+        // TODO: finire di implementare gli invarianti nel file .cpp.
 
 
         // TODO: questo va modificato, vedi nel file .cpp qualche indizio.
