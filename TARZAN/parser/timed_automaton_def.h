@@ -82,7 +82,7 @@ namespace timed_automaton
         inline auto arena_loc_rule_def =
                 lit('<')
                 > lit("player") > lit(':') > (x3::char_('c') | x3::char_('e'))
-                > locationContent_rule
+                > lit(',') > locationContent_rule
                 > lit('>');
 
         inline auto arena_loc_pair_rule_def =

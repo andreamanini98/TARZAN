@@ -1,8 +1,8 @@
 #ifndef AST_H
 #define AST_H
 
-#include "TARZAN/parser/comparison_op_enum.h"
-#include "TARZAN/parser/input_output_action_enum.h"
+#include "enums/comparison_op_enum.h"
+#include "enums/input_output_action_enum.h"
 #include "TARZAN/utilities/printing_utilities.h"
 
 #include <vector>

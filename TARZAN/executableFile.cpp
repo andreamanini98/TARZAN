@@ -1,6 +1,6 @@
 #include "regions/networkOfTA/RTSNetwork.h"
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
-#include "TARZAN/parser/input_output_action_enum.h"
+#include "parser/enums/input_output_action_enum.h"
 #include "TARZAN/utilities/partition_utilities.h"
 
 // #define REGION_TIMING
