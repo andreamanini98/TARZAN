@@ -14,14 +14,12 @@ namespace timed_automaton::parser
     // tag used to get our error handler from the context
     using error_handler_tag = x3::error_handler_tag;
 
-    struct error_handler_base {
+    struct error_handler_base
+    {
         error_handler_base();
 
         template<typename Iterator, typename Exception, typename Context>
-        x3::error_handler_result on_error(Iterator &first,
-                                          Iterator const &last,
-                                          Exception const &x,
-                                          Context const &context);
+        x3::error_handler_result on_error(Iterator &first, Iterator const &last, Exception const &x, Context const &context);
     };
 
     inline error_handler_base::error_handler_base() = default;
