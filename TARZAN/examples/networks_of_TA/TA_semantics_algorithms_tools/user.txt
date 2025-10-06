@@ -13,16 +13,16 @@ create automaton user
     locations
     {
         idle  <ini: T>,
-        t     <ini: F>,
+        t     <ini: F, inv: [(y, <, 5)]>,
         study <ini: F>,
         relax <ini: F>;
     }
 
     transitions
     {
-        (idle,  press!, [(y, <, 5)],  [y], t),
+        (idle,  press!, [(y, >=, 0)], [y], t),
         (idle,  press!, [(y, >=, 0)], [y], relax),
-        (t,     press!, [(y, <, 5)],  [],  study),
+        (t,     press!, [(y, >=, 0)], [],  study),
         (study, tau,    [(y, >=, 0)], [],  study),
         (study, press!, [(y, >=, 0)], [],  idle),
         (relax, press!, [(y, >, 10)], [],  idle);
