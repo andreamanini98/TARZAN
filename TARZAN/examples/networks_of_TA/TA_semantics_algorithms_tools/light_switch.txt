@@ -12,9 +12,9 @@ create automaton light_switch
 
     locations
     {
-        off    <ini: true>,
-        dim    <ini: false>,
-        bright <ini: false>;
+        off    <ini: T>,
+        dim    <ini: F>,
+        bright <ini: F>;
     }
 
     transitions

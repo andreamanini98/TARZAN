@@ -12,10 +12,10 @@ create automaton controller
 
     locations
     {
-        0 <ini: true>,
-        1 <ini: false>,
-        2 <ini: false>,
-        3 <ini: false>;
+        0 <ini: T>,
+        1 <ini: F>,
+        2 <ini: F>,
+        3 <ini: F>;
     }
 
     transitions

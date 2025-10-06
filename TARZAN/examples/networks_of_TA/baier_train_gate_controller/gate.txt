@@ -12,10 +12,10 @@ create automaton gate
 
     locations
     {
-        up          <ini: true>,
-        coming_down <ini: false>,
-        down        <ini: false>,
-        going_up    <ini: false>;
+        up          <ini: T>,
+        coming_down <ini: F>,
+        down        <ini: F>,
+        going_up    <ini: F>;
     }
 
     transitions

@@ -12,13 +12,13 @@ create automaton light_switch
 
     locations
     {
-        off <ini: true>,
-        on  <ini: false>;
+        off <ini: T>,
+        on  <ini: F>;
     }
 
     transitions
     {
-        (off, switch_on!, [(x, >=, 0)], [x], on),
-        (on, switch_off?, [(x, =, 2)], [], off);
+        (off, switch_on!,  [(x, >=, 0)], [x], on),
+        (on,  switch_off?, [(x, =, 2)],  [],  off);
     }
 }
