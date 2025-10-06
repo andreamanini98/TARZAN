@@ -1,0 +1,28 @@
+create automaton gate
+{
+    clocks
+    {
+        x;
+    }
+
+    actions
+    {
+        lower, raise, tau;
+    }
+
+    locations
+    {
+        up          <initial: true>,
+        coming_down <initial: false>,
+        down        <initial: false>,
+        going_up    <initial: false>;
+    }
+
+    transitions
+    {
+        (up,          lower!, [(x, <=, 1)],             [x], coming_down),
+        (coming_down, tau,    [(x, <=, 1)],             [],  down),
+        (down,        raise!, [(x, <=, 2)],             [x], going_up),
+        (going_up,    tau,    [(x, >=, 1), (x, <=, 2)], [],  up);
+    }
+}

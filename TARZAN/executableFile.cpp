@@ -96,6 +96,32 @@ void testNetworkBuildRegionGraphForeword()
 }
 
 
+void testNetworkTrainGateController()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/networks_of_TA/baier_train_gate_controller";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    // Locations:
+    // Automaton [0] (3 locations): {in -> 2, near -> 1, far -> 0}
+    // Automaton [1] (4 locations): {3 -> 3, 2 -> 2, 1 -> 1, 0 -> 0}
+    // Automaton [2] (4 locations): {going_up -> 3, down -> 2, coming_down -> 1, up -> 0}
+
+    // TODO: IN QUESTO CASO È POSSIBILE CHE IL NOSTRO TOOL CALCOLI ERRONEAMENTE LA REACHABILITY DELLA REGIONE CON LOCATIONS 2,1,0 PER COME
+    //       VENGONO GESTITI GLI INVARIANTI: SICCOME LA TRANSIZIONE CON AZIONE enter NON CONTROLLA GLI INVARIANTI DELLE ALTRE REGIONI,
+    //       È POSSIBILE CHE QUELLA TRANSIZIONE VENGA PRSA ANCHE SE GLI ALTRI INVARIANTI (ad esempio, quello sul clock z) NON SONO SODDISFATTI
+    //       FIX: VEDERE COME CODIFICARE GLI INVARIANTI OPPURE AGGIUNGERE INVARIANTI ALLE REGIONI STESSE
+    //       PER IMPLEMENTARE GLI INVARIANTI:
+    //       SAREBBERO SEMPLICEMENTE DELLE GUARDIE AGGIUNTIVE DA METTERE NELLE LOCATIONS.
+    //       QUINDI POTRESTI FARTI NELLE REGIONI UNA MAPPA <int, guardia>, DOVE INT RAPPRESENTA LA LOCATION E LA GUARDIA L'INVARIANTE DI QUELLA LOCATION.
+    const std::vector goalLocations = { 2, 1, 0 };
+
+    const auto res = net.buildRegionGraphForeword(goalLocations);
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -105,7 +131,7 @@ int main()
 #endif
 
 
-    testNetworkBuildRegionGraphForeword();
+    testNetworkTrainGateController();
 
 
 #ifdef REGION_TIMING

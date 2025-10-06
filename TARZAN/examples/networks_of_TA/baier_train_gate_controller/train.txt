@@ -1,0 +1,26 @@
+create automaton train
+{
+    clocks
+    {
+        y;
+    }
+
+    actions
+    {
+        approach, enter, exit;
+    }
+
+    locations
+    {
+        far  <initial: true>,
+        near <initial: false>,
+        in   <initial: false>;
+    }
+
+    transitions
+    {
+        (far,  approach!, [(y, <=, 5)],            [y], near),
+        (near, enter,     [(y, >, 2), (y, <=, 5)], [],  in),
+        (in,   exit!,     [(y, <=, 5)],            [],  far);
+    }
+}

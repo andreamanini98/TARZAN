@@ -1,0 +1,28 @@
+create automaton controller
+{
+    clocks
+    {
+        z;
+    }
+
+    actions
+    {
+        approach, lower, exit, raise;
+    }
+
+    locations
+    {
+        0 <initial: true>,
+        1 <initial: false>,
+        2 <initial: false>,
+        3 <initial: false>;
+    }
+
+    transitions
+    {
+        (0, approach?, [(z, <=, 1)], [z], 1),
+        (1, lower?,    [(z, <=, 1), (z, =, 1)],  [],  2),
+        (2, exit?,     [(z, <=, 1)], [z], 3),
+        (3, raise?,    [(z, <=, 1)], [],  0);
+    }
+}

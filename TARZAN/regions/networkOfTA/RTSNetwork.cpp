@@ -59,6 +59,10 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::buildRegionGrap
             transitions.push_back(outTransitions[i][currentRegion.getRegions()[i].getLocation()]);
         }
 
+        for (int i = 0; i < transitions.size(); i++)
+            for (const auto &transition: transitions[i])
+                std::cout << "Transition " << i << ": " << transition << std::endl;
+
         const std::vector<NetworkRegion> discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
 
         totalregions += discreteSuccessors.size() + 1;
