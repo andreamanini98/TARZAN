@@ -10,6 +10,7 @@
 #include "TARZAN/parser/timed_automaton.h"
 #include "TARZAN/parser/success_handler.h"
 
+
 namespace timed_automaton
 {
     inline struct comp_op : boost::spirit::x3::symbols<comparison_op>
@@ -59,6 +60,7 @@ namespace timed_automaton
         constexpr x3::rule<arena_loc_map_class, ast::arena_loc_map> arena_loc_map_rule = "arena_loc_map_rule";
 
         constexpr x3::rule<clockConstraint_class, ast::clockConstraint> clockConstraint_rule = " clockConstraint_rule";
+        constexpr x3::rule<locationContent_class, ast::locationContent> locationContent_rule = "locationContent_rule";
         constexpr x3::rule<transition_class, ast::transition> transition_rule = "transition_rule";
         constexpr x3::rule<timedAutomaton_class, ast::timedAutomaton> timedAutomaton_rule = "timedAutomaton_rule";
         constexpr x3::rule<timedArena_class, ast::timedArena> timedArena_rule = "timedArena_rule";
@@ -72,7 +74,7 @@ namespace timed_automaton
 
         inline auto loc_pair_rule_def =
                 literal
-                > -(lit('<') > lit("initial") > lit(':') > bool_ > lit('>'));
+                > locationContent_rule;
 
         inline auto loc_map_rule_def =
                 loc_pair_rule % ',';
@@ -80,7 +82,7 @@ namespace timed_automaton
         inline auto arena_loc_rule_def =
                 lit('<')
                 > lit("player") > lit(':') > (x3::char_('c') | x3::char_('e'))
-                > -(lit(',') > lit("initial") > lit(':') > bool_)
+                > locationContent_rule
                 > lit('>');
 
         inline auto arena_loc_pair_rule_def =
@@ -96,6 +98,15 @@ namespace timed_automaton
                 > comp_op > lit(',')
                 > int_
                 > lit(')');
+
+        inline auto locationContent_rule_def =
+                lit('<')
+                > (lit("ini") > lit(':') > bool_
+                   > -(lit(',') > lit("inv") > lit(':') > lit('[') > clockConstraint_rule % ',' > lit(']'))
+                   |
+                   x3::attr(false)
+                   > -(lit("inv") > lit(':') > lit('[') > clockConstraint_rule % ',' > lit(']')))
+                > lit('>');
 
         inline auto transition_rule_def =
                 lit('(')
@@ -163,6 +174,7 @@ namespace timed_automaton
                             arena_loc_pair_rule,
                             arena_loc_map_rule,
                             clockConstraint_rule,
+                            locationContent_rule,
                             transition_rule,
                             timedAutomaton_rule,
                             timedArena_rule);
@@ -188,6 +200,9 @@ namespace timed_automaton
         struct clockConstraint_class : success_handler
         {};
 
+        struct locationContent_class : success_handler
+        {};
+
         struct transition_class : success_handler
         {};
 
@@ -204,6 +219,12 @@ namespace timed_automaton
     parser::clockConstraint_type clockConstraint()
     {
         return parser::clockConstraint_rule;
+    }
+
+
+    parser::locationContent_type locationContent()
+    {
+        return parser::locationContent_rule;
     }
 
 

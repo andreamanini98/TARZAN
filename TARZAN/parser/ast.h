@@ -12,32 +12,38 @@
 // TODO: avoid code duplication (if possible).
 
 
+// TODO: fare una enum per rendere più semplice la dichiarazione di locations iniziali (invece che scrivere true e false fare T e F)?
 // The following is the grammar for the Liana DSL used to create Timed Automata (STILL NEED TO DEFINE THE TIMED ARENA ONE).
 // Whether the actions are input or output actions must be specified only in the transitions.
+// Up to now, it is better to specify clock constraints for clocks that should not appear in a guard as x >= 0.
 //
-// <automaton> -> 'create' 'automaton' <literal>
-//                '{'
-//                'clocks'      '{' <clocks_rule> '}'
-//                'actions'     '{' <literal> (, <literal>)* '}'
-//                'locations'   '{' <locations_rule> '}'
-//                'transitions' '{' <transition_rule> (, <transition_rule>)* ';' '}'
-//                '}'
+//  <automaton> -> 'create' 'automaton' <literal>
+//                 '{'
+//                 'clocks'      '{' <clocks_rule> '}'
+//                 'actions'     '{' <literal> (, <literal>)* '}'
+//                 'locations'   '{' <locations_rule> '}'
+//                 'transitions' '{' <transition_rule> (, <transition_rule>)* ';' '}'
+//                 '}'
 //
 //  <clocks_rule> -> <literal> (, <literal>)* ';'
 //
 //  <locations_rule> -> <loc_rule> (, <loc_rule>)* ';'
 //
-//  <loc_rule> -> <literal> (eps | '<' 'initial' ':' <bool> '>')
+//  <loc_rule> -> <literal> <loc_content_rule>
+//
+//  <loc_content_rule> -> '<' (eps | 'ini' ':' <bool> (eps | ',' 'inv' ':' <guard_rule>) | 'inv' ':' <guard_rule>) '>'
 //
 //  <bool> -> 'true' | 'false'
 //
 //  <transition_rule> -> '('
 //                       <literal> ','
 //                       <actions_rule> ','
-//                       '[' <clock_constraint_rule> (, <clock_constraint_rule>)* ']' ','
+//                       <guard_rule> ','
 //                       '[' (eps | <literal> (',' <literal>)*) ']' ','
 //                       <literal>
 //                       ')'
+//
+//  <guard_rule> -> '[' <clock_constraint_rule> (, <clock_constraint_rule>)* ']'
 //
 //  <actions_rule> -> <literal> (eps | <input_output_action>)
 //
@@ -78,6 +84,16 @@ namespace timed_automaton::ast
     };
 
 
+    struct locationContent
+    {
+        bool isInitial;
+        std::vector<clockConstraint> invariant;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
     // Defining an action such that it can also handle the case of being an input or an output action in a network of TA.
     using act = std::pair<std::string, std::optional<in_out_act>>;
 
@@ -109,8 +125,8 @@ namespace timed_automaton::ast
 
 
     // Defining the map to hold Timed Automata locations.
-    using loc_pair = std::pair<std::string, std::optional<bool>>;
-    using loc_map = std::unordered_map<std::string, std::optional<bool>>;
+    using loc_pair = std::pair<std::string, locationContent>;
+    using loc_map = std::unordered_map<std::string, locationContent>;
 
 
     struct timedAutomaton
@@ -189,7 +205,7 @@ namespace timed_automaton::ast
 
 
     // Defining the map to hold Timed Arenas locations.
-    using arena_loc = std::pair<char, std::optional<bool>>;
+    using arena_loc = std::pair<char, locationContent>;
     using arena_loc_pair = std::pair<std::string, arena_loc>;
     using arena_loc_map = std::unordered_map<std::string, arena_loc>;
 
@@ -273,6 +289,12 @@ namespace timed_automaton::ast
 inline std::ostream &operator<<(std::ostream &os, const timed_automaton::ast::clockConstraint &g)
 {
     return os << g.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const timed_automaton::ast::locationContent &l)
+{
+    return os << l.to_string();
 }
 
 

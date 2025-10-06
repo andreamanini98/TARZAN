@@ -122,6 +122,19 @@ void testNetworkTrainGateController()
 }
 
 
+void testParseInvariants()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+
+    const std::string automatonFileName = "light_switch.txt";
+
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    std::cout << "\n\n\n\n\n";
+    std::cout << "Parsed automaton: " << automaton << std::endl;
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -131,7 +144,7 @@ int main()
 #endif
 
 
-    testNetworkTrainGateController();
+    testParseInvariants();
 
 
 #ifdef REGION_TIMING
