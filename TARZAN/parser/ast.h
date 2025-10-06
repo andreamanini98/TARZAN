@@ -12,10 +12,10 @@
 // TODO: avoid code duplication (if possible).
 
 
-// TODO: fare una enum per rendere più semplice la dichiarazione di locations iniziali (invece che scrivere true e false fare T e F)?
 // The following is the grammar for the Liana DSL used to create Timed Automata (STILL NEED TO DEFINE THE TIMED ARENA ONE).
 // Whether the actions are input or output actions must be specified only in the transitions.
 // Up to now, it is better to specify clock constraints for clocks that should not appear in a guard as x >= 0.
+// T and F are syntax sugar for true and false.
 //
 //  <automaton> -> 'create' 'automaton' <literal>
 //                 '{'
@@ -33,7 +33,7 @@
 //
 //  <loc_content_rule> -> '<' (eps | 'ini' ':' <bool> (eps | ',' 'inv' ':' <guard_rule>) | 'inv' ':' <guard_rule>) '>'
 //
-//  <bool> -> 'true' | 'false'
+//  <bool> -> 'T' | 'F' | 'true' | 'false'
 //
 //  <transition_rule> -> '('
 //                       <literal> ','

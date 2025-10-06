@@ -38,6 +38,20 @@ namespace timed_automaton
         }
     } io_act;
 
+    inline struct is_ini_loc : boost::spirit::x3::symbols<bool>
+    {
+        is_ini_loc()
+        {
+            auto &self = add
+                    ("T", true)
+                    ("F", false)
+                    ("true", true)
+                    ("false", false);
+            (void) self;
+        }
+    } is_ini_loc;
+
+
     namespace parser
     {
         namespace x3 = boost::spirit::x3;
@@ -101,7 +115,7 @@ namespace timed_automaton
 
         inline auto locationContent_rule_def =
                 lit('<')
-                > (lit("ini") > lit(':') > bool_
+                > (lit("ini") > lit(':') > is_ini_loc
                    > -(lit(',') > lit("inv") > lit(':') > lit('[') > clockConstraint_rule % ',' > lit(']'))
                    |
                    x3::attr(false)
