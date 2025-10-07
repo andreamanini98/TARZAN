@@ -55,6 +55,15 @@ namespace region
         [[nodiscard]] std::vector<Region> forwardReachabilityDFS(int targetLocation) const;
 
 
+        /**
+         * @brief Computes whether a region with a location equal to targetLocation is reachable from the set of initial regions.
+         *
+         * @param targetLocation the location of the region that must be reached.
+         * @return a vector containing the target region if it is reachable, an empty vector otherwise.
+         */
+        [[nodiscard]] std::vector<Region> forwardReachabilityBFS(int targetLocation) const;
+
+
         // TODO: questo va modificato, vedi nel file .cpp qualche indizio.
         [[nodiscard]] std::vector<Region> buildRegionGraphBackwards(std::vector<Region> startingRegions) const;
 
