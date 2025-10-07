@@ -238,37 +238,17 @@ inline void testImmediateDiscreteSuccessors()
 
     std::unordered_map<std::string, int> locationsIntMap = automaton.mapLocationsToInt();
 
-    // std::cout << "Location to Integer Mapping:\n";
-    // for (const auto& [location, index] : locationsIntMap) {
-    //     std::cout << location << " -> " << index << std::endl;
-    // }
-
     reg.set_q(locationsIntMap.at("q0"));
 
     std::vector<std::vector<transition>> outTransitions = automaton.getOutTransitions(locationsIntMap);
 
-    // std::cout << "Outgoing Transitions Map:\n";
-    // for (size_t i = 0; i < outTransitionsMap.size(); ++i) {
-    //     std::cout << "Location Index " << i << " (" << outTransitionsMap[i].size() << " transitions):\n";
-    //     for (const auto& transition : outTransitionsMap[i]) {
-    //         std::cout << "  " << transition << std::endl;
-    //     }
-    //     std::cout << std::endl;
-    // }
-
     std::unordered_map<std::string, int> clockIndices = automaton.getClocksIndices();
-
-    // std::cout << "Clock to Index Mapping:\n";
-    // for (const auto& [clockName, index] : clockIndices) {
-    //     std::cout << clockName << " -> " << index << std::endl;
-    // }
 
     std::cout << "Initial region: " << reg.toString() << std::endl;
 
     region::Region oldSuccessor = reg;
-    bool computedDiscreteSuccessor = false;
 
-    while (!computedDiscreteSuccessor)
+    while (true)
     {
         std::vector<region::Region> discreteSuccessors = oldSuccessor.getImmediateDiscreteSuccessors(
             outTransitions[reg.getLocation()], clockIndices, locationsIntMap
@@ -285,13 +265,11 @@ inline void testImmediateDiscreteSuccessors()
             int count = 1;
             for (const auto &region: discreteSuccessors)
             {
-                oldSuccessor = region;
                 std::cout << "region::Region #" << count++ << ":\n";
                 std::cout << region.toString();
                 std::cout << std::string(30, '-') << std::endl;
             }
 
-            computedDiscreteSuccessor = true;
             break;
         }
 
@@ -304,9 +282,8 @@ inline void testImmediateDiscreteSuccessors()
     std::cout << "New initial region: " << reg.toString() << std::endl;
 
     oldSuccessor = reg;
-    computedDiscreteSuccessor = false;
 
-    while (!computedDiscreteSuccessor)
+    while (true)
     {
         std::vector<region::Region> discreteSuccessors = oldSuccessor.getImmediateDiscreteSuccessors(
             outTransitions[reg.getLocation()], clockIndices, locationsIntMap
@@ -323,13 +300,11 @@ inline void testImmediateDiscreteSuccessors()
             int count = 1;
             for (const auto &region: discreteSuccessors)
             {
-                oldSuccessor = region;
                 std::cout << "region::Region #" << count++ << ":\n";
                 std::cout << region.toString();
                 std::cout << std::string(30, '-') << std::endl;
             }
 
-            computedDiscreteSuccessor = true;
             break;
         }
 
