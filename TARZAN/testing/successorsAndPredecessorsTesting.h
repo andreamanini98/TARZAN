@@ -704,7 +704,7 @@ inline void testDiscretePredecessorsLightSwitch()
 
     std::vector<region::Region> regs{};
     regs.push_back(startingRegion);
-    std::vector<region::Region> predecessors = regionTransitionSystem.buildRegionGraphBackwards(regs);
+    std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(regs, DFS);
 
     std::cout << "Predecessors contents:\n";
     for (const auto &region : predecessors)
@@ -725,7 +725,7 @@ inline void testFlowerBackwards()
 
     std::cout << "\n\n";
 
-    const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(1, DFS);
+    const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(0, DFS);
 
     std::cout << "Computed the following regions:" << std::endl;
     for (const auto &region : rts)
@@ -733,7 +733,7 @@ inline void testFlowerBackwards()
 
     std::cout << "\n\n";
 
-    const std::vector<region::Region> predecessors = regionTransitionSystem.buildRegionGraphBackwards(rts);
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(rts, DFS);
 
     std::cout << "Predecessors contents:\n";
     for (const auto &region : predecessors)

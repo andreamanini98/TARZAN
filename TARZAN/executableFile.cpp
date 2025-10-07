@@ -143,7 +143,8 @@ int main()
 #endif
 
 
-    testRTS();
+    // testRTS();
+    testFlowerBackwards();
 
 
 #ifdef REGION_TIMING

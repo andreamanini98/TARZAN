@@ -57,8 +57,14 @@ namespace region
         [[nodiscard]] std::vector<Region> forwardReachability(int targetLocation, ssee explorationTechnique) const;
 
 
-        // TODO: questo va modificato, vedi nel file .cpp qualche indizio.
-        [[nodiscard]] std::vector<Region> buildRegionGraphBackwards(std::vector<Region> startingRegions) const;
+        /**
+         * @brief Computes whether an initial region is reachable from a set of starting regions.
+         *
+         * @param startingRegions the regions from which to start the backward reachability analysis.
+         * @param explorationTechnique determines the state space exploration technique (e.g., BFS, DFS).
+         * @return a vector containing an initial region if it is reachable, an empty vector otherwise.
+         */
+        [[nodiscard]] std::vector<Region> backwardReachability(const std::vector<Region> &startingRegions, ssee explorationTechnique) const;
 
 
         // Getters.

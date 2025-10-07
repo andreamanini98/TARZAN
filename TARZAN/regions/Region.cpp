@@ -7,7 +7,7 @@
 #include "TARZAN/utilities/function_utilities.h"
 #include "TARZAN/utilities/partition_utilities.h"
 
-#define REGION_DEBUG
+// #define REGION_DEBUG
 
 
 std::vector<std::pair<int, bool>> region::Region::getClockValuation() const
