@@ -18,11 +18,11 @@
  * @param clocksIndices a map from clock names to their index in the clocks vector.
  * @param invariants the invariants of the original Timed Automaton.
  */
-void insertRegionInMapAndToProcess(const region::Region &reg,
-                                   std::deque<region::Region> &toProcess,
-                                   absl::flat_hash_set<region::Region, region::RegionHash> &regionsHashMap,
-                                   const std::unordered_map<std::string, int> &clocksIndices,
-                                   const absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> &invariants)
+inline void insertRegionInMapAndToProcess(const region::Region &reg,
+                                          std::deque<region::Region> &toProcess,
+                                          absl::flat_hash_set<region::Region, region::RegionHash> &regionsHashMap,
+                                          const std::unordered_map<std::string, int> &clocksIndices,
+                                          const absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> &invariants)
 {
     // ReSharper disable once CppTooWideScopeInitStatement
     const int regLocation = reg.getLocation();

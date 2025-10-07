@@ -2,90 +2,137 @@
 
 #include "absl/container/flat_hash_set.h"
 
+#define RTSNETWORK_DEBUG
 
-std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::buildRegionGraphForeword(const std::vector<int> &targetLocations) const
+
+/**
+ * @brief Auxiliary function for the forwardReachability function.
+ *
+ * @param reg the current network region to handle.
+ * @param toProcess collects network regions that must be processed.
+ * @param regionsHashMap a map containing already processed network regions.
+ * @param clocksIndices a vector of maps from clock names to their index in the clocks vector.
+ * @param invariants the invariants of the original Timed Automata.
+ */
+inline void insertRegionInMapAndToProcess(const networkOfTA::NetworkRegion &reg,
+                                          std::deque<networkOfTA::NetworkRegion> &toProcess,
+                                          absl::flat_hash_set<networkOfTA::NetworkRegion, networkOfTA::NetworkRegionHash> &regionsHashMap,
+                                          const std::vector<std::unordered_map<std::string, int>> &clocksIndices,
+                                          const std::vector<absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>>> &invariants)
 {
-    std::vector<NetworkRegion> toProcess{};
-    std::vector<NetworkRegion> result{};
+    bool isRegionLegal = true;
+    const auto &regRegs = reg.getRegions();
 
+    for (int i = 0; i < static_cast<int>(regRegs.size()); i++)
+        if (invariants[i].contains(regRegs[i].getLocation()))
+            isRegionLegal = isRegionLegal && isInvariantSatisfied(invariants[i].at(regRegs[i].getLocation()), regRegs[i].getClockValuation(), clocksIndices[i]);
+
+    if (isRegionLegal)
+    {
+        toProcess.push_back(reg);
+        regionsHashMap.insert(reg);
+    }
+}
+
+
+std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(const std::vector<int> &targetLocs, const ssee explorationTechnique) const
+{
+    // Initializing auxiliary data structures for reachability computation.
+    std::deque<NetworkRegion> toProcess{};
     absl::flat_hash_set<NetworkRegion, NetworkRegionHash> regionsHashMap{};
 
     for (const auto &init: getInitialRegions())
     {
-        result.push_back(init);
         toProcess.push_back(init);
         regionsHashMap.insert(init);
     }
 
-    unsigned long long int totalregions = 0;
+#ifdef RTSNETWORK_DEBUG
 
+    unsigned long long int totalRegions = 0;
+
+#endif
+
+    // Starting the timer for measuring computation.
     const auto start = std::chrono::high_resolution_clock::now();
 
     while (!toProcess.empty())
     {
-        std::cout << "\nTOPROCESSSIZE: " << toProcess.size() << std::endl;
-        std::cout << "\nTOTALREGIONS: " << totalregions << std::endl;
+        const NetworkRegion &currentRegion = explorationTechnique == BFS ? toProcess.front() : toProcess.back();
 
-        std::vector<NetworkRegion> successors{};
+        // Getting the regions of the network region currentRegion.
+        const auto &currentRegionRegions = currentRegion.getRegions();
 
-        const NetworkRegion &currentRegion = toProcess.back();
+        // Checking if the target region has been reached.
+        bool isTargetRegionReached = true;
 
-        std::cout << "\nCurrent network region:\n" << currentRegion.toString() << std::endl;
+        for (int i = 0; i < static_cast<int>(targetLocs.size()); i++)
+            isTargetRegionReached = isTargetRegionReached && currentRegionRegions[i].getLocation() == targetLocs[i];
 
-        bool stop = true;
-
-        for (int i = 0; i < static_cast<int>(targetLocations.size()); i++)
-            stop = stop && currentRegion.getRegions()[i].getLocation() == targetLocations[i];
-
-        if (stop)
+        if (isTargetRegionReached)
         {
+            // Ending the timer for measuring computation.
             const auto end = std::chrono::high_resolution_clock::now();
-            std::cout << "Total number of computed regions: " << totalregions << std::endl;
-            std::cout << currentRegion.toString() << std::endl;
-            std::cout << "GOAL REGION IS REACHABLE!\n";
+
+#ifdef RTSNETWORK_DEBUG
+
+            std::cout << "Total number of computed regions: " << totalRegions << std::endl;
+
+#endif
+
+            std::cout << "Goal region is reachable!\n";
 
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-            std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
-            std::vector<NetworkRegion> regionToReturn{};
-            regionToReturn.push_back(currentRegion);
-            return regionToReturn;
+            std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
+
+            return { currentRegion };
         }
 
-        const NetworkRegion delaySuccessor = currentRegion.getImmediateDelaySuccessor(maxConstants);
+        // Computing network immediate delay successor.
+        const NetworkRegion &delaySuccessor = currentRegion.getImmediateDelaySuccessor(maxConstants);
 
+        // Setting up the transitions for the network discrete successor computation.
         std::vector<std::vector<transition>> transitions{};
-        for (int i = 0; i < static_cast<int>(currentRegion.getRegions().size()); i++)
-        {
-            transitions.push_back(outTransitions[i][currentRegion.getRegions()[i].getLocation()]);
-        }
+        for (int i = 0; i < static_cast<int>(currentRegionRegions.size()); i++)
+            transitions.push_back(outTransitions[i][currentRegionRegions[i].getLocation()]);
 
-        for (int i = 0; i < transitions.size(); i++)
-            for (const auto &transition: transitions[i])
-                std::cout << "Transition " << i << ": " << transition << std::endl;
-
+        // Computing network discrete successors.
         const std::vector<NetworkRegion> discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
 
-        totalregions += discreteSuccessors.size() + 1;
+#ifdef RTSNETWORK_DEBUG
+
+        totalRegions += discreteSuccessors.size() + 1;
+
+#endif
 
         // Removing now since we do not need it anymore.
-        toProcess.pop_back();
+        explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();
 
+        // We insert the delay successor first and then the discrete successors.
         if (!regionsHashMap.contains(delaySuccessor))
-        {
-            regionsHashMap.insert(delaySuccessor);
-            toProcess.push_back(delaySuccessor);
-        }
-        for (const auto &reg: discreteSuccessors)
-        {
-            if (!regionsHashMap.contains(reg))
-            {
-                regionsHashMap.insert(reg);
-                toProcess.push_back(reg);
-            }
-        }
+            insertRegionInMapAndToProcess(delaySuccessor, toProcess, regionsHashMap, clocksIndices, invariants);
+
+        for (const auto &discreteSuccessor: discreteSuccessors)
+            if (!regionsHashMap.contains(discreteSuccessor))
+                insertRegionInMapAndToProcess(discreteSuccessor, toProcess, regionsHashMap, clocksIndices, invariants);
     }
 
-    return result;
+    // No target region has been reached if the while loop ends.
+    // Ending the timer for measuring computation.
+    const auto end = std::chrono::high_resolution_clock::now();
+
+#ifdef RTSNETWORK_DEBUG
+
+    std::cout << "Total number of computed regions: " << totalRegions << std::endl;
+
+#endif
+
+    std::cout << "Goal region is not reachable!\n";
+
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
+
+    return {};
 }
 
 

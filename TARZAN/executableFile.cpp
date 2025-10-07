@@ -98,7 +98,7 @@ void testNetworkBuildRegionGraphForeword()
     // Unreachable (the entire region graph will be computed).
     // const std::vector goalLocations = { 1, 3 };
 
-    const auto res = net.buildRegionGraphForeword(goalLocations);
+    const auto res = net.forwardReachability(goalLocations, DFS);
 }
 
 
@@ -117,7 +117,7 @@ void testNetworkTrainGateController()
 
     const std::vector goalLocations = { 2, 1, 0 };
 
-    const auto res = net.buildRegionGraphForeword(goalLocations);
+    const auto res = net.forwardReachability(goalLocations, DFS);
 }
 
 
@@ -143,8 +143,7 @@ int main()
 #endif
 
 
-    // testRTS();
-    testFlowerBackwards();
+    testNetworkTrainGateController();
 
 
 #ifdef REGION_TIMING

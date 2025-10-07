@@ -4,20 +4,15 @@
 #include "TARZAN/regions/Region.h"
 #include "TARZAN/regions/networkOfTA/NetworkRegion.h"
 #include "TARZAN/parser/ast.h"
+#include "TARZAN/regions/enums/state_space_exploration_enum.h"
 #include "TARZAN/utilities/partition_utilities.h"
 
-
-// TODO: devi aggiustare l'implementazione dei successori qui e nella classe RTS.
+// TODO: fai in modo che con un ifdef puoi restituire tutte le regioni calcolate. Aggiorna i commenti delle funzioni di conseguenza e aggiorna anche quelle in RTS.cpp
 
 // TODO: devi fare in modo che ogni clock abbia la sua costante massima.
 
 // TODO: devi aggiungere la possibilità di avere degli interi nelle regioni normali (prima pensare bene a come farlo però).
 
-
-// Regarding the invariants in Timed Automata:
-// it is enough to take the invariant and combine it with the guard (using conjunction) on all transitions entering and leaving the location
-// that has the invariant. This approach works if you only need to compute reachability (as in our case), but it may not be enough for other purposes,
-// such as handling Buchi acceptance conditions.
 
 namespace networkOfTA
 {
@@ -40,6 +35,8 @@ namespace networkOfTA
 
         std::vector<NetworkRegion> initialRegions{};
 
+        std::vector<absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>>> invariants{};
+
 
     public:
         explicit RTSNetwork(const std::vector<timed_automaton::ast::timedAutomaton> &automata) : automata(automata)
@@ -54,6 +51,7 @@ namespace networkOfTA
                 initialLocations.emplace_back(automaton.getInitialLocations(locationsToInt[i]));
                 outTransitions.emplace_back(automaton.getOutTransitions(locationsToInt[i]));
                 inTransitions.emplace_back(automaton.getInTransitions(locationsToInt[i]));
+                invariants.emplace_back(automaton.getInvariants(locationsToInt[i]));
             }
 
             // ReSharper disable once CppTooWideScopeInitStatement
@@ -71,8 +69,14 @@ namespace networkOfTA
         }
 
 
-        // TODO: questo va modificato, vedi nel file .cpp qualche indizio.
-        [[nodiscard]] std::vector<NetworkRegion> buildRegionGraphForeword(const std::vector<int> &targetLocations) const;
+        /**
+         * @brief Computes whether a network region with locations equal to targetLocs is reachable from the set of initial network regions.
+         *
+         * @param targetLocs the locations of the network region that must be reached.
+         * @param explorationTechnique determines the state space exploration technique (e.g., BFS, DFS).
+         * @return a vector containing the target network region if it is reachable, an empty vector otherwise.
+         */
+        [[nodiscard]] std::vector<NetworkRegion> forwardReachability(const std::vector<int> &targetLocs, ssee explorationTechnique) const;
 
 
         [[nodiscard]] std::string toString() const;

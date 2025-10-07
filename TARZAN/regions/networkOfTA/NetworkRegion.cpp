@@ -1,7 +1,7 @@
 #include "NetworkRegion.h"
 #include "TARZAN/utilities/function_utilities.h"
 
-#define NETWORKREGION_DEBUG
+// #define NETWORKREGION_DEBUG
 
 
 networkOfTA::NetworkRegion networkOfTA::NetworkRegion::getImmediateDelaySuccessor(const std::vector<int> &maxConstants) const
