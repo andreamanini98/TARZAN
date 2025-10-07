@@ -1,6 +1,7 @@
 #include "TARZAN/parser/ast.h"
 
 #include <iostream>
+#include "TARZAN/utilities/printing_utilities.h"
 
 using transition = timed_automaton::ast::transition;
 
@@ -52,6 +53,23 @@ std::string timed_automaton::ast::clockConstraint::to_string() const
 // ---
 
 
+// LocationContent class.
+
+std::string timed_automaton::ast::locationContent::to_string() const
+{
+    std::ostringstream oss;
+    oss << "<";
+    oss << "initial: " << (isInitial ? "true" : "false");
+    oss << ", ";
+    oss << "invariant: [" << join_elements(invariant, " and ") << "]";
+    oss << ">";
+    return oss.str();
+}
+
+
+// ---
+
+
 // Transition class.
 
 bool timed_automaton::ast::transition::isGuardSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
@@ -71,7 +89,8 @@ bool timed_automaton::ast::transition::isGuardSatisfied(const std::vector<std::p
 std::string timed_automaton::ast::transition::to_string() const
 {
     std::ostringstream oss;
-    oss << "(" << startingLocation << ", " << action << ", "
+    const std::string actString = action.first + (action.second.has_value() ? in_out_act_to_string(action.second.value()) : "");
+    oss << "(" << startingLocation << ", " << actString << ", "
             << "[" << join_elements(clockGuard, " and ") << "], "
             << "[" << join_elements(clocksToReset, ", ") << "], "
             << targetLocation << ")";
@@ -125,9 +144,9 @@ std::vector<int> timed_automaton::ast::timedAutomaton::getInitialLocations(const
 {
     std::vector<int> initialLocations{};
 
-    for (const auto &[loc, isInitial]: locations)
-        if (isInitial && isInitial.value())
-            initialLocations.push_back(locToIntMap.at(loc));
+    for (const auto &[locName, locContent]: locations)
+        if (locContent.isInitial)
+            initialLocations.push_back(locToIntMap.at(locName));
 
     return initialLocations;
 }
@@ -163,6 +182,19 @@ std::vector<std::vector<transition>> timed_automaton::ast::timedAutomaton::getIn
 }
 
 
+absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> timed_automaton::ast::timedAutomaton::getInvariants(
+    const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    absl::flat_hash_map<int, std::vector<clockConstraint>> invariants;
+
+    for (const auto &[locName, locContent]: locations)
+        if (!locContent.invariant.empty())
+            invariants[locToIntMap.at(locName)] = locContent.invariant;
+
+    return invariants;
+}
+
+
 std::string timed_automaton::ast::timedAutomaton::to_string() const
 {
     std::ostringstream oss;
@@ -173,10 +205,7 @@ std::string timed_automaton::ast::timedAutomaton::to_string() const
     for (const auto &[key, value]: locations)
     {
         oss << key << ", ";
-        if (value.has_value())
-            oss << (value.value() ? "true" : "false");
-        else
-            oss << "null_opt";
+        oss << value;
         oss << std::endl;
     }
     oss << "Transitions:\n" << join_elements(transitions, "\n") << std::endl;
@@ -230,9 +259,9 @@ std::vector<int> timed_automaton::ast::timedArena::getInitialLocations(const std
 {
     std::vector<int> initialLocations{};
 
-    for (const auto &[loc, locInfo]: locations)
-        if (locInfo.second && locInfo.second.value())
-            initialLocations.push_back(locToIntMap.at(loc));
+    for (const auto &[locName, locContent]: locations)
+        if (locContent.second.isInitial)
+            initialLocations.push_back(locToIntMap.at(locName));
 
     return initialLocations;
 }
@@ -268,6 +297,19 @@ std::vector<std::vector<transition>> timed_automaton::ast::timedArena::getInTran
 }
 
 
+absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> timed_automaton::ast::timedArena::getInvariants(
+    const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    absl::flat_hash_map<int, std::vector<clockConstraint>> invariants;
+
+    for (const auto &[locName, locContent]: locations)
+        if (!locContent.second.invariant.empty())
+            invariants[locToIntMap.at(locName)] = locContent.second.invariant;
+
+    return invariants;
+}
+
+
 std::string timed_automaton::ast::timedArena::to_string() const
 {
     std::ostringstream oss;
@@ -277,12 +319,9 @@ std::string timed_automaton::ast::timedArena::to_string() const
     oss << "Locations:\n";
     for (const auto &[location_name, location_info]: locations)
     {
-        const auto &[player, initial] = location_info;
+        const auto &[player, locContent] = location_info;
         oss << location_name << ", <" << player << ", ";
-        if (initial.has_value())
-            oss << (initial.value() ? "true" : "false");
-        else
-            oss << "null_opt";
+        oss << locContent << std::endl;
         oss << ">\n";
     }
     oss << "Transitions:\n" << join_elements(transitions, "\n") << std::endl;

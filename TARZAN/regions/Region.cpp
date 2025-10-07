@@ -7,7 +7,7 @@
 #include "TARZAN/utilities/function_utilities.h"
 #include "TARZAN/utilities/partition_utilities.h"
 
-#define REGION_DEBUG
+// #define REGION_DEBUG
 
 
 std::vector<std::pair<int, bool>> region::Region::getClockValuation() const
@@ -706,6 +706,9 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
                 // Key: the index of the clock. Value: a pair <min_value_of_such_clock, max_value_for_such_clock>.
                 absl::flat_hash_map<int, std::pair<int, int>> minMaxValues;
 
+                // The paper now has been modified and directly checks all clocks that are reset.
+                // Here, we still check all clock constraints first and then look for any clock that did not show up in a constraint but is still reset.
+                // This implementation is CORRECT, as stated in the older version of the paper.
                 for (const auto &[clock, constraintOperator, comparingConstant]: transition.clockGuard)
                 {
                     // Index of the clock in the current clock constraint.

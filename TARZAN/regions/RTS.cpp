@@ -1,153 +1,238 @@
 #include "RTS.h"
+#include "TARZAN/utilities/function_utilities.h"
 
 #include <iostream>
+#include <ranges>
 #include <utility>
-
 #include "absl/container/flat_hash_set.h"
 
-// TODO: TOGLIERLO, MESSO SOLO PER TESTARE IN EXECUTABLEFILE.
-#define CHECK_INITIAL_IS_REACHED
+// #define RTS_DEBUG
 
 
-// TODO: quando calcoli una regione e questa è di classe U, non ti interessa calcolare nuovamente il successore delay (sarà sempre quello), quindi secondo me
-//       puoi anche non calcolare un successore di una regione di classe U e di conseguenza non mettere auto-anelli nel RTS, tanto sono già sottintesi.
-
-// TODO: non ti dovrebbe servire salvarti tutto il RTS per visualizzarlo graficamente. Se dovesse servirti, potresti mettere direttamente dei puntatori nelle regioni
-//       che puntano ai loro successori (uno per i delay e uno per i discreti). Salva una regione in uno di questi puntatori (la reference ovviamente) solo quando
-//       sei sicuro che non ne hai già trovata un'altra uguale; in caso contrario, salva direttamente nel puntatore la regione già calcolata.
-
-// TODO: per visualizzare in modo più carino il RTS (se te lo crei) usa graphviz.
-
-// TODO: implementare un vero BFS.
-
-std::vector<region::Region> region::RTS::buildRegionGraphForeword() const
+/**
+ * @brief Auxiliary function for the forwardReachability and backwardReachability functions.
+ *
+ * @param reg the current region to handle.
+ * @param toProcess collects regions that must be processed.
+ * @param regionsHashMap a map containing already processed regions.
+ * @param clocksIndices a map from clock names to their index in the clocks vector.
+ * @param invariants the invariants of the original Timed Automaton.
+ */
+inline void insertRegionInMapAndToProcess(const region::Region &reg,
+                                          std::deque<region::Region> &toProcess,
+                                          absl::flat_hash_set<region::Region, region::RegionHash> &regionsHashMap,
+                                          const std::unordered_map<std::string, int> &clocksIndices,
+                                          const absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> &invariants)
 {
-    std::vector toProcess{ getInitialRegions() };
-    std::vector result{ getInitialRegions() };
+    // ReSharper disable once CppTooWideScopeInitStatement
+    const int regLocation = reg.getLocation();
 
+    if (invariants.contains(regLocation))
+    {
+        if (isInvariantSatisfied(invariants.at(regLocation), reg.getClockValuation(), clocksIndices))
+        {
+            regionsHashMap.insert(reg);
+            toProcess.push_back(reg);
+        }
+    } else
+    {
+        regionsHashMap.insert(reg);
+        toProcess.push_back(reg);
+    }
+}
+
+
+std::vector<region::Region> region::RTS::forwardReachability(const int targetLocation, const ssee explorationTechnique) const
+{
+    // Initializing auxiliary data structures for reachability computation.
+    std::deque<Region> toProcess{};
     absl::flat_hash_set<Region, RegionHash> regionsHashMap{};
 
-    // togliere
-    unsigned long long int totalregions = 0;
+    for (const auto &init: getInitialRegions())
+    {
+        toProcess.push_back(init);
+        regionsHashMap.insert(init);
+    }
 
+#ifdef RTS_DEBUG
+
+    unsigned long long int totalRegions = 0;
+
+#endif
+
+    // Starting the timer for measuring computation.
     const auto start = std::chrono::high_resolution_clock::now();
+
     while (!toProcess.empty())
     {
         std::vector<Region> successors{};
 
-        Region currentRegion = toProcess.back();
-        toProcess.pop_back();
+        const Region &currentRegion = explorationTechnique == BFS ? toProcess.front() : toProcess.back();
+        const int currentRegionLocation = currentRegion.getLocation();
 
-        // Il codice che vedi qui è servito solo per fare un esempio veloce del flower, dopo va tolto.
-        //std::cout << currentRegion.toString() << std::endl;
-        if (currentRegion.getLocation() == 0)
+#ifdef RTS_DEBUG
+
+        std::cout << "Current region:\n" << currentRegion.toString() << std::endl;
+
+#endif
+
+        if (currentRegionLocation == targetLocation)
         {
-            std::cout << "Total number of computed regions: " << totalregions << std::endl;
-            std::cout << "MAX CONSTANT IS: " << maxConstant << std::endl;
-            std::cout << currentRegion.toString() << std::endl;
-            std::cout << "GOAL REGION IS REACHABLE!\n";
+            // Ending the timer for measuring computation.
             const auto end = std::chrono::high_resolution_clock::now();
+
+#ifdef RTS_DEBUG
+
+            std::cout << "Total number of computed regions: " << totalRegions << std::endl;
+
+#endif
+
+            std::cout << "Goal region is reachable!\n";
+
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-            std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
-            //std::exit(EXIT_FAILURE);
-            std::vector<Region> regionToReturn{};
-            regionToReturn.push_back(currentRegion);
-            return regionToReturn;
+            std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
+
+            return { currentRegion };
         }
 
-        Region delaySuccessor = currentRegion.getImmediateDelaySuccessor(maxConstant);
+        // Computing immediate delay successor.
+        const Region &delaySuccessor = currentRegion.getImmediateDelaySuccessor(maxConstant);
 
-        std::vector<transition> transitions = outTransitions[currentRegion.getLocation()];
-        std::vector<Region> discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
+        // Computing discrete successors.
+        const std::vector<transition> &transitions = outTransitions[currentRegionLocation];
+        const std::vector<Region> &discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
 
-        totalregions += discreteSuccessors.size() + 1;
+#ifdef RTS_DEBUG
 
+        totalRegions += discreteSuccessors.size() + 1;
+
+#endif
+
+        // Removing the processed region now since we do not need it anymore.
+        explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();
+
+        // We insert the delay successor first and then the discrete successors.
         if (!regionsHashMap.contains(delaySuccessor))
-        {
-            regionsHashMap.insert(delaySuccessor);
-            toProcess.push_back(delaySuccessor);
-        }
-        for (const auto &reg: discreteSuccessors)
-        {
-            if (!regionsHashMap.contains(reg))
-            {
-                regionsHashMap.insert(reg);
-                toProcess.push_back(reg);
-            }
-        }
+            insertRegionInMapAndToProcess(delaySuccessor, toProcess, regionsHashMap, clocksIndices, invariants);
+
+        for (const auto &discreteSuccessor: discreteSuccessors)
+            if (!regionsHashMap.contains(discreteSuccessor))
+                insertRegionInMapAndToProcess(discreteSuccessor, toProcess, regionsHashMap, clocksIndices, invariants);
     }
 
-    return result;
+    // No target region has been reached if the while loop ends.
+    // Ending the timer for measuring computation.
+    const auto end = std::chrono::high_resolution_clock::now();
+
+    std::cout << "Goal region is not reachable!\n";
+
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
+
+    return {};
 }
 
 
-std::vector<region::Region> region::RTS::buildRegionGraphBackwards(std::vector<Region> startingRegions) const
+std::vector<region::Region> region::RTS::backwardReachability(const std::vector<Region> &startingRegions, const ssee explorationTechnique) const
 {
-    std::vector toProcess{ std::move(startingRegions) };
-    std::vector result{ startingRegions };
-
+    // Initializing auxiliary data structures for reachability computation.
+    std::deque<Region> toProcess{};
     absl::flat_hash_set<Region, RegionHash> regionsHashMap{};
 
-    // togliere
-    unsigned long long int totalregions = 0;
-
-    const auto start = std::chrono::high_resolution_clock::now();
-    while (!toProcess.empty())
+    for (const auto &startReg: startingRegions)
     {
-        std::vector<Region> predecessors{};
-
-        Region currentRegion = toProcess.back();
-        toProcess.pop_back();
-
-#ifdef CHECK_INITIAL_IS_REACHED
-        // Il codice che vedi qui è servito solo per fare un esempio veloce del flower, dopo va tolto.
-        const auto &clockValuation = currentRegion.getClockValuation();
-
-        bool isGoalReached = true;
-        for (const auto &[fst, snd]: clockValuation)
-            if (fst != 0 || snd == true)
-                isGoalReached = false;
-
-        if (currentRegion.getLocation() == 1 && isGoalReached)
-        {
-            std::cout << "Total number of computed regions: " << totalregions << std::endl;
-            std::cout << "MAX CONSTANT IS: " << maxConstant << std::endl;
-            std::cout << currentRegion.toString() << std::endl;
-            std::cout << "GOAL REGION IS REACHABLE!\n";
-            const auto end = std::chrono::high_resolution_clock::now();
-            const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-            std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
-            std::cout << "CURRENT REGION: " << currentRegion.toString() << std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-#endif
-
-        std::vector<Region> delayPredecessors = currentRegion.getImmediateDelayPredecessors();
-
-        std::vector<transition> transitions = inTransitions[currentRegion.getLocation()];
-        std::vector<Region> discretePredecessors = currentRegion.getImmediateDiscretePredecessors(transitions, clocksIndices, locationsToInt, maxConstant);
-
-        totalregions += delayPredecessors.size() + discretePredecessors.size();
-
-        for (const auto &reg: delayPredecessors)
-        {
-            if (!regionsHashMap.contains(reg))
-            {
-                result.push_back(reg);
-                regionsHashMap.insert(reg);
-                toProcess.push_back(reg);
-            }
-        }
-        for (const auto &reg: discretePredecessors)
-        {
-            if (!regionsHashMap.contains(reg))
-            {
-                result.push_back(reg);
-                regionsHashMap.insert(reg);
-                toProcess.push_back(reg);
-            }
-        }
+        toProcess.push_back(startReg);
+        regionsHashMap.insert(startReg);
     }
 
-    return result;
+#ifdef RTS_DEBUG
+
+    unsigned long long int totalRegions = 0;
+
+#endif
+
+    // Starting the timer for measuring computation.
+    const auto start = std::chrono::high_resolution_clock::now();
+
+    while (!toProcess.empty())
+    {
+        const Region &currentRegion = explorationTechnique == BFS ? toProcess.front() : toProcess.back();
+
+#ifdef RTS_DEBUG
+
+        std::cout << "Current region:\n" << currentRegion.toString() << std::endl;
+
+#endif
+
+        // Getting the clock valuation to see if we reached an initial region.
+        const auto &clockValuation = currentRegion.getClockValuation();
+
+        // Checking if an initial region has been reached.
+        bool isInitialRegionReached = true;
+        for (const auto &[fst, snd]: clockValuation)
+            if (fst != 0 || snd == true)
+            {
+                isInitialRegionReached = false;
+                break;
+            }
+
+        // TODO: ogni volta scansioni un vettore, magari potrebbe essere meglio un set.
+        if (isInitialRegionReached)
+            isInitialRegionReached = std::ranges::find(initialLocations, currentRegion.getLocation()) != initialLocations.end();
+
+        if (isInitialRegionReached)
+        {
+            // Ending the timer for measuring computation.
+            const auto end = std::chrono::high_resolution_clock::now();
+
+#ifdef RTS_DEBUG
+
+            std::cout << "Total number of computed regions: " << totalRegions << std::endl;
+
+#endif
+
+            std::cout << "An initial region is reachable!\n";
+
+            const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+            std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
+
+            return { currentRegion };
+        }
+
+        // Computing immediate delay predecessors.
+        const std::vector<Region> &delayPredecessors = currentRegion.getImmediateDelayPredecessors();
+
+        // Computing discrete predecessors.
+        const std::vector<transition> &transitions = inTransitions[currentRegion.getLocation()];
+        const std::vector<Region> &discPreds = currentRegion.getImmediateDiscretePredecessors(transitions, clocksIndices, locationsToInt, maxConstant);
+
+#ifdef RTS_DEBUG
+
+        totalRegions += delayPredecessors.size() + discPreds.size();
+
+#endif
+
+        // Removing the processed region now since we do not need it anymore.
+        explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();
+
+        // We insert the delay predecessors first and then the discrete predecessors.
+        for (const auto &delayPredecessor: delayPredecessors)
+            if (!regionsHashMap.contains(delayPredecessor))
+                insertRegionInMapAndToProcess(delayPredecessor, toProcess, regionsHashMap, clocksIndices, invariants);
+
+        for (const auto &discretePredecessor: discPreds)
+            if (!regionsHashMap.contains(discretePredecessor))
+                insertRegionInMapAndToProcess(discretePredecessor, toProcess, regionsHashMap, clocksIndices, invariants);
+    }
+
+    // No initial region has been reached if the while loop ends.
+    // Ending the timer for measuring computation.
+    const auto end = std::chrono::high_resolution_clock::now();
+
+    std::cout << "An initial region is not reachable!\n";
+
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
+
+    return {};
 }

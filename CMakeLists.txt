@@ -29,7 +29,7 @@ get_filename_component(ProjectId ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 # Setting project information.
 project(${ProjectId}
         VERSION 0.1.0
-        DESCRIPTION "TARZAN: Timed Automata Region and Zone library for Automata aNalysis"
+        DESCRIPTION "TARZAN: Timed Automata Region and Zone library for real-time systems ANalysis"
         LANGUAGES CXX)
 
 
@@ -107,7 +107,9 @@ set(LIBRARY_SOURCES
         TARZAN/parser/timed_automaton.cpp
         TARZAN/regions/Region.cpp
         TARZAN/parser/ast.cpp
-        TARZAN/regions/RTS.cpp)
+        TARZAN/regions/RTS.cpp
+        TARZAN/regions/networkOfTA/RTSNetwork.cpp
+        TARZAN/regions/networkOfTA/NetworkRegion.cpp)
 
 
 # Add library

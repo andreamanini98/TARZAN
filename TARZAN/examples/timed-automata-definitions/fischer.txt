@@ -12,10 +12,10 @@ create automaton fischer
 
 	locations
 	{
-		A <initial: true>,
-		req,
-		wait,
-		cs;
+		A    <ini: T>,
+		req  <>,
+		wait <>,
+		cs   <>;
 	}
 
 	transitions

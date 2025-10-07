@@ -5,10 +5,11 @@
 #include <numeric>
 #include <boost/dynamic_bitset.hpp>
 #include "absl/container/flat_hash_map.h"
+#include "absl/container/btree_map.h"
 
 #include "TARZAN/utilities/function_utilities.h"
 
-#define PARTITION_DEBUG
+// #define PARTITION_DEBUG
 
 using insOrdMap = absl::btree_map<int, std::vector<boost::dynamic_bitset<>>, std::greater<>>;
 using dequeVector = std::vector<std::deque<boost::dynamic_bitset<>>>;
@@ -394,6 +395,41 @@ inline std::vector<std::vector<std::pair<int, int>>> generateAllIntegerIntervalC
         }
 
         result.push_back(std::move(combination));
+    }
+
+    return result;
+}
+
+
+/**
+ * @brief Computes the cartesian product of the given vectors.
+ *
+ * @param input a std::vector of std::vectors, each of which contains integers.
+ * @return the cartesian product of every vector's integer values inside the input vector.
+ */
+inline std::vector<std::vector<int>> vectorsCartesianProduct(const std::vector<std::vector<int>> &input)
+{
+    std::vector<std::vector<int>> result;
+
+    if (input.empty())
+        return result;
+
+    // Start with an empty combination.
+    result.emplace_back();
+
+    for (const auto &inner: input)
+    {
+        std::vector<std::vector<int>> temp;
+        for (const auto &combination: result)
+        {
+            for (const int value: inner)
+            {
+                auto newComb = combination;
+                newComb.push_back(value);
+                temp.push_back(std::move(newComb));
+            }
+        }
+        result = std::move(temp);
     }
 
     return result;

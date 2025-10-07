@@ -3,6 +3,7 @@
 
 #include "Region.h"
 #include "TARZAN/parser/ast.h"
+#include "TARZAN/regions/enums/state_space_exploration_enum.h"
 
 
 namespace region
@@ -26,6 +27,8 @@ namespace region
 
         std::vector<Region> initialRegions{};
 
+        absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> invariants{};
+
 
     public:
         explicit RTS(const timed_automaton::ast::timedAutomaton &automaton) : automaton(automaton)
@@ -36,6 +39,7 @@ namespace region
             initialLocations = automaton.getInitialLocations(locationsToInt);
             outTransitions = automaton.getOutTransitions(locationsToInt);
             inTransitions = automaton.getInTransitions(locationsToInt);
+            invariants = automaton.getInvariants(locationsToInt);
 
             const int numOfClocks = static_cast<int>(clocksIndices.size());
             for (const int loc: initialLocations)
@@ -43,12 +47,24 @@ namespace region
         }
 
 
-        // TODO: questo va modificato, vedi nel file .cpp qualche indizio.
-        [[nodiscard]] std::vector<Region> buildRegionGraphForeword() const;
+        /**
+         * @brief Computes whether a region with a location equal to targetLocation is reachable from the set of initial regions.
+         *
+         * @param targetLocation the location of the region that must be reached.
+         * @param explorationTechnique determines the state space exploration technique (e.g., BFS, DFS).
+         * @return a vector containing the target region if it is reachable, an empty vector otherwise.
+         */
+        [[nodiscard]] std::vector<Region> forwardReachability(int targetLocation, ssee explorationTechnique) const;
 
 
-        // TODO: questo va modificato, vedi nel file .cpp qualche indizio.
-        [[nodiscard]] std::vector<Region> buildRegionGraphBackwards(std::vector<Region> startingRegions) const;
+        /**
+         * @brief Computes whether an initial region is reachable from a set of starting regions.
+         *
+         * @param startingRegions the regions from which to start the backward reachability analysis.
+         * @param explorationTechnique determines the state space exploration technique (e.g., BFS, DFS).
+         * @return a vector containing an initial region if it is reachable, an empty vector otherwise.
+         */
+        [[nodiscard]] std::vector<Region> backwardReachability(const std::vector<Region> &startingRegions, ssee explorationTechnique) const;
 
 
         // Getters.

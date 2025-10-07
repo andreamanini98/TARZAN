@@ -4,7 +4,8 @@
 #include <iostream>
 #include <regex>
 
-struct success_handler {
+struct success_handler
+{
     template<typename T, typename Iterator, typename Context>
     static void on_success(Iterator const &first, Iterator const &last, T &, Context const &)
     {

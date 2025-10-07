@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 
 #include "TARZAN/parser/ast.h"
 #include "TARZAN/parser/timed_automaton.h"
@@ -88,4 +89,60 @@ timed_automaton::ast::timedAutomaton parseTimedAutomaton(std::string const &path
         std::cerr << "Wrong parsing" << std::endl;
 
     return automaton;
+}
+
+
+std::vector<timed_automaton::ast::timedAutomaton> parseTimedAutomataFromFolder(std::string const &folderPath)
+{
+    std::vector<timed_automaton::ast::timedAutomaton> automata;
+
+    try
+    {
+        // Iterate through all files in the folder.
+        for (const auto &entry: std::filesystem::directory_iterator(folderPath))
+        {
+            if (entry.is_regular_file() && entry.path().extension() == ".txt")
+            {
+                std::string filePath = entry.path().string();
+                std::cerr << "Parsing automaton from file: " << filePath << std::endl;
+
+                // Parse the automaton using the existing function.
+                timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(filePath);
+                automata.push_back(automaton);
+            }
+        }
+    } catch (const std::filesystem::filesystem_error &ex)
+    {
+        std::cerr << "Filesystem error: " << ex.what() << std::endl;
+    }
+
+    return automata;
+}
+
+
+std::vector<timed_automaton::ast::timedArena> parseTimedArenasFromFolder(std::string const &folderPath)
+{
+    std::vector<timed_automaton::ast::timedArena> arenas;
+
+    try
+    {
+        // Iterate through all files in the folder.
+        for (const auto &entry: std::filesystem::directory_iterator(folderPath))
+        {
+            if (entry.is_regular_file() && entry.path().extension() == ".txt")
+            {
+                std::string filePath = entry.path().string();
+                std::cerr << "Parsing arena from file: " << filePath << std::endl;
+
+                // Parse the arena using the existing function.
+                timed_automaton::ast::timedArena arena = parseTimedArena(filePath);
+                arenas.push_back(arena);
+            }
+        }
+    } catch (const std::filesystem::filesystem_error &ex)
+    {
+        std::cerr << "Filesystem error: " << ex.what() << std::endl;
+    }
+
+    return arenas;
 }
