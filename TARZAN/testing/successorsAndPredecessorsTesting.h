@@ -394,7 +394,7 @@ inline void testRTS()
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
     // const std::string automatonFileName = "light_switch.txt";
 
-    const std::string automatonFileName = "test_flower_tiny.txt";
+    const std::string automatonFileName = "test_flower_small.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -408,7 +408,7 @@ inline void testRTS()
 
     std::cout << "Computed the following regions:" << std::endl;
 
-    const std::vector<region::Region> rts = regionTransitionSystem.forwardReachabilityBFS(0);
+    const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(0, DFS);
 
     for (const auto &region: rts)
         std::cout << region.toString() << std::endl;
@@ -725,7 +725,7 @@ inline void testFlowerBackwards()
 
     std::cout << "\n\n";
 
-    const std::vector<region::Region> rts = regionTransitionSystem.forwardReachabilityDFS(1);
+    const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(1, DFS);
 
     std::cout << "Computed the following regions:" << std::endl;
     for (const auto &region : rts)

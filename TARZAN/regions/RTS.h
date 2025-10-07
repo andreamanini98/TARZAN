@@ -3,6 +3,7 @@
 
 #include "Region.h"
 #include "TARZAN/parser/ast.h"
+#include "TARZAN/regions/enums/state_space_exploration_enum.h"
 
 
 namespace region
@@ -50,18 +51,10 @@ namespace region
          * @brief Computes whether a region with a location equal to targetLocation is reachable from the set of initial regions.
          *
          * @param targetLocation the location of the region that must be reached.
+         * @param explorationTechnique determines the state space exploration technique (e.g., BFS, DFS).
          * @return a vector containing the target region if it is reachable, an empty vector otherwise.
          */
-        [[nodiscard]] std::vector<Region> forwardReachabilityDFS(int targetLocation) const;
-
-
-        /**
-         * @brief Computes whether a region with a location equal to targetLocation is reachable from the set of initial regions.
-         *
-         * @param targetLocation the location of the region that must be reached.
-         * @return a vector containing the target region if it is reachable, an empty vector otherwise.
-         */
-        [[nodiscard]] std::vector<Region> forwardReachabilityBFS(int targetLocation) const;
+        [[nodiscard]] std::vector<Region> forwardReachability(int targetLocation, ssee explorationTechnique) const;
 
 
         // TODO: questo va modificato, vedi nel file .cpp qualche indizio.
