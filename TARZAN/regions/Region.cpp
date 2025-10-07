@@ -47,7 +47,7 @@ region::Region region::Region::getImmediateDelaySuccessor(const int maxConstant)
                     xTmp.set(cIdx(numOfClocks, i), true);
             }
         }
-        reg.x0 &= boost::dynamic_bitset<>(numOfClocks);
+        reg.x0.reset();
 
         if (xTmp.any())
             reg.bounded.push_front(xTmp);
