@@ -6,7 +6,7 @@
 #include <utility>
 #include "absl/container/flat_hash_set.h"
 
-#define RTS_DEBUG
+// #define RTS_DEBUG
 
 
 /**
@@ -69,6 +69,12 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
 
         const Region &currentRegion = explorationTechnique == BFS ? toProcess.front() : toProcess.back();
         const int currentRegionLocation = currentRegion.getLocation();
+
+#ifdef RTS_DEBUG
+
+        std::cout << "Current region:\n" << currentRegion.toString() << std::endl;
+
+#endif
 
         if (currentRegionLocation == targetLocation)
         {
@@ -152,6 +158,12 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
     {
         const Region &currentRegion = explorationTechnique == BFS ? toProcess.front() : toProcess.back();
 
+#ifdef RTS_DEBUG
+
+        std::cout << "Current region:\n" << currentRegion.toString() << std::endl;
+
+#endif
+
         // Getting the clock valuation to see if we reached an initial region.
         const auto &clockValuation = currentRegion.getClockValuation();
 
@@ -159,10 +171,14 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
         bool isInitialRegionReached = true;
         for (const auto &[fst, snd]: clockValuation)
             if (fst != 0 || snd == true)
+            {
                 isInitialRegionReached = false;
+                break;
+            }
 
         // TODO: ogni volta scansioni un vettore, magari potrebbe essere meglio un set.
-        isInitialRegionReached = isInitialRegionReached && std::ranges::find(initialLocations, currentRegion.getLocation()) != initialLocations.end();
+        if (isInitialRegionReached)
+            isInitialRegionReached = std::ranges::find(initialLocations, currentRegion.getLocation()) != initialLocations.end();
 
         if (isInitialRegionReached)
         {

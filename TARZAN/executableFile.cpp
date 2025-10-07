@@ -143,7 +143,7 @@ int main()
 #endif
 
 
-    testNetworkTrainGateController();
+    testFlowerBackwards();
 
 
 #ifdef REGION_TIMING

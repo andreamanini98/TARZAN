@@ -25,7 +25,11 @@ inline void insertRegionInMapAndToProcess(const networkOfTA::NetworkRegion &reg,
 
     for (int i = 0; i < static_cast<int>(regRegs.size()); i++)
         if (invariants[i].contains(regRegs[i].getLocation()))
-            isRegionLegal = isRegionLegal && isInvariantSatisfied(invariants[i].at(regRegs[i].getLocation()), regRegs[i].getClockValuation(), clocksIndices[i]);
+            if (!isInvariantSatisfied(invariants[i].at(regRegs[i].getLocation()), regRegs[i].getClockValuation(), clocksIndices[i]))
+            {
+                isRegionLegal = false;
+                break;
+            }
 
     if (isRegionLegal)
     {
@@ -60,6 +64,12 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
     {
         const NetworkRegion &currentRegion = explorationTechnique == BFS ? toProcess.front() : toProcess.back();
 
+#ifdef RTSNETWORK_DEBUG
+
+        std::cout << "Current region:\n" << currentRegion.toString() << std::endl;
+
+#endif
+
         // Getting the regions of the network region currentRegion.
         const auto &currentRegionRegions = currentRegion.getRegions();
 
@@ -67,7 +77,11 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
         bool isTargetRegionReached = true;
 
         for (int i = 0; i < static_cast<int>(targetLocs.size()); i++)
-            isTargetRegionReached = isTargetRegionReached && currentRegionRegions[i].getLocation() == targetLocs[i];
+            if (currentRegionRegions[i].getLocation() != targetLocs[i])
+            {
+                isTargetRegionReached = false;
+                break;
+            }
 
         if (isTargetRegionReached)
         {
