@@ -408,7 +408,7 @@ inline void testRTS()
 
     std::cout << "Computed the following regions:" << std::endl;
 
-    const std::vector<region::Region> rts = regionTransitionSystem.buildRegionGraphForeword();
+    const std::vector<region::Region> rts = regionTransitionSystem.forwardReachabilityDFS(0);
 
     //for (const std::vector<region::Region> rts = regionTransitionSystem.buildRegionGraphForeword(); const auto &region: rts)
     //    std::cout << region.toString() << std::endl;
@@ -725,7 +725,7 @@ inline void testFlowerBackwards()
 
     std::cout << "\n\n";
 
-    const std::vector<region::Region> rts = regionTransitionSystem.buildRegionGraphForeword();
+    const std::vector<region::Region> rts = regionTransitionSystem.forwardReachabilityDFS(1);
 
     std::cout << "Computed the following regions:" << std::endl;
     for (const auto &region : rts)
