@@ -65,8 +65,6 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
 
     while (!toProcess.empty())
     {
-        std::vector<Region> successors{};
-
         const Region &currentRegion = explorationTechnique == BFS ? toProcess.front() : toProcess.back();
         const int currentRegionLocation = currentRegion.getLocation();
 
