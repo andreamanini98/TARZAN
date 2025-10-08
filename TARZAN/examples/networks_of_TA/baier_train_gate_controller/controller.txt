@@ -21,7 +21,7 @@ create automaton controller
     transitions
     {
         (0, approach?, [(z, >=, 0)], [z], 1),
-        (1, lower?,    [(z, =, 1)],  [],  2),
+        (1, lower?,    [(z, ==, 1)], [],  2),
         (2, exit?,     [(z, >=, 0)], [z], 3),
         (3, raise?,    [(z, >=, 0)], [],  0);
     }
