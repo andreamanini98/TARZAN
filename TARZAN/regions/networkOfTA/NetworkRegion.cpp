@@ -96,6 +96,10 @@ inline void updateNetRegionWithDiscSucc(networkOfTA::NetworkRegion &netReg,
     // We update the regions vector with the new discrete successor.
     netReg.setRegionGivenIndex(regIdx, discSuccReg);
 
+    // If no clocks must be reset, we can return without affecting clockOrdering.
+    if (resetClocks.empty())
+        return;
+
     // We must remove the clocks that have been reset.
     // Setting a bitset storing clocks that must be removed from a clock map.
     boost::dynamic_bitset<> toReset(numOfClocks);
@@ -104,8 +108,6 @@ inline void updateNetRegionWithDiscSucc(networkOfTA::NetworkRegion &netReg,
 
     auto &clockOrdering = netReg.getModifiableClockOrdering();
 
-    // TODO: siccome hai delle partizioni dei clock salvate nella deque, una volta che becchi il clock da rimuovere non ti serve
-    //       continuare a scansionare la deque (vedere se ottimizzare o no).
     // For each clock map, we remove the clocks that have been reset.
     for (auto &clockMap: clockOrdering)
     {
@@ -120,8 +122,6 @@ inline void updateNetRegionWithDiscSucc(networkOfTA::NetworkRegion &netReg,
     }
 
     // Removing empty maps to keep the clockOrdering deque consistent.
-    // TODO: seguendo il ragionamento del TODO di prima, dovrai rimuovere alla peggio solamente una mappa, quindi puoi tenere
-    //       traccia dell'indice della mappa da rimuovere dalla deque e risparmiare il ciclo for qui sotto.
     for (auto it = clockOrdering.begin(); it != clockOrdering.end();)
         if (it->empty())
             it = clockOrdering.erase(it);

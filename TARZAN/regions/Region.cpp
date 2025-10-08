@@ -124,7 +124,8 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
 {
     std::vector<Region> res{};
 
-    const std::vector<std::pair<int, bool>> clockValuation = getClockValuation();
+    const std::vector<std::pair<int, bool>> &clockValuation = getClockValuation();
+    const int numOfClocks = getNumberOfClocks();
 
     for (const auto &transition: transitions)
     {
@@ -135,7 +136,6 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
 
             if (!transition.clocksToReset.empty())
             {
-                const int numOfClocks = getNumberOfClocks();
                 boost::dynamic_bitset<> resetClocksMask(numOfClocks);
 
                 for (const std::string &resetClock: transition.clocksToReset)
@@ -158,7 +158,7 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
                 std::erase_if(reg.bounded, [](const auto &clockSet) { return clockSet.none(); });
             }
 
-            res.push_back(reg);
+            res.emplace_back(reg);
         }
     }
 
