@@ -51,7 +51,7 @@
 //
 //  <clock_constraint_rule> -> '(' <literal> ',' <comparison_operator> ',' <int> ')'
 //
-//  <comparison_operator> -> '<' | '<=' | '=' | '>=' | '>'
+//  <comparison_operator> -> '<' | '<=' | '==' | '>=' | '>'
 //
 //  <int> -> '1..9'('0..9')*
 //

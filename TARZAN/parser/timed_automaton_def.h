@@ -20,7 +20,7 @@ namespace timed_automaton
             auto &self = add
                     ("<", LT)
                     ("<=", LE)
-                    ("=", EQ)
+                    ("==", EQ)
                     (">=", GE)
                     (">", GT);
             (void) self;

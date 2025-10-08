@@ -15,7 +15,7 @@ inline std::string comparison_op_to_string(const comparison_op op)
     {
         case LT: return "<";
         case LE: return "<=";
-        case EQ: return "=";
+        case EQ: return "==";
         case GE: return ">=";
         case GT: return ">";
         default: return "?";
