@@ -4,7 +4,7 @@
 // #define NETWORKREGION_DEBUG
 
 
-networkOfTA::NetworkRegion networkOfTA::NetworkRegion::getImmediateDelaySuccessor(const std::vector<int> &maxConstants) const
+networkOfTA::NetworkRegion networkOfTA::NetworkRegion::getImmediateDelaySuccessor(const std::vector<std::vector<int>> &maxConstants) const
 {
     // If all regions in reg are of class U, the same network region should be returned (both isAorC and clockOrdering should be empty).
     NetworkRegion reg = clone();

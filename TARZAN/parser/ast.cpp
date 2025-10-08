@@ -106,11 +106,41 @@ std::string timed_automaton::ast::transition::to_string() const
 int timed_automaton::ast::timedAutomaton::getMaxConstant() const
 {
     int maxConstant{};
+
+    // Checking for maximum constant in transitions.
     for (const transition &tr: transitions)
         for (const clockConstraint &cc: tr.clockGuard)
             if (maxConstant < cc.comparingConstant)
                 maxConstant = cc.comparingConstant;
+
+    // Checking for maximum constant in invariants.
+    for (const auto &[isInitial, invariant]: locations | std::views::values)
+        for (const clockConstraint &cc: invariant)
+            if (maxConstant < cc.comparingConstant)
+                maxConstant = cc.comparingConstant;
+
     return maxConstant;
+}
+
+
+std::vector<int> timed_automaton::ast::timedAutomaton::getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices) const
+{
+    std::vector<int> maxConstants{};
+    maxConstants.resize(clocksIndices.size());
+
+    // Checking for maximum constants in transitions.
+    for (const transition &tr: transitions)
+        for (const clockConstraint &cc: tr.clockGuard)
+            if (maxConstants[clocksIndices.at(cc.clock)] < cc.comparingConstant)
+                maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
+
+    // Checking for maximum constants in invariants.
+    for (const auto &[isInitial, invariant]: locations | std::views::values)
+        for (const clockConstraint &cc: invariant)
+            if (maxConstants[clocksIndices.at(cc.clock)] < cc.comparingConstant)
+                maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
+
+    return maxConstants;
 }
 
 
@@ -221,11 +251,41 @@ std::string timed_automaton::ast::timedAutomaton::to_string() const
 int timed_automaton::ast::timedArena::getMaxConstant() const
 {
     int maxConstant{};
+
+    // Checking for maximum constant in transitions.
     for (const transition &tr: transitions)
         for (const clockConstraint &cc: tr.clockGuard)
             if (maxConstant < cc.comparingConstant)
                 maxConstant = cc.comparingConstant;
+
+    // Checking for maximum constant in invariants.
+    for (const auto &[isInitial, locContent]: locations | std::views::values)
+        for (const clockConstraint &cc: locContent.invariant)
+            if (maxConstant < cc.comparingConstant)
+                maxConstant = cc.comparingConstant;
+
     return maxConstant;
+}
+
+
+std::vector<int> timed_automaton::ast::timedArena::getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices) const
+{
+    std::vector<int> maxConstants{};
+    maxConstants.resize(clocksIndices.size());
+
+    // Checking for maximum constants in transitions.
+    for (const transition &tr: transitions)
+        for (const clockConstraint &cc: tr.clockGuard)
+            if (maxConstants[clocksIndices.at(cc.clock)] < cc.comparingConstant)
+                maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
+
+    // Checking for maximum constants in invariants.
+    for (const auto &[fst, snd]: locations | std::views::values)
+        for (const clockConstraint &cc: snd.invariant)
+            if (maxConstants[clocksIndices.at(cc.clock)] < cc.comparingConstant)
+                maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
+
+    return maxConstants;
 }
 
 

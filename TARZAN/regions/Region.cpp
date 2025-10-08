@@ -25,7 +25,7 @@ std::vector<std::pair<int, bool>> region::Region::getClockValuation() const
 }
 
 
-region::Region region::Region::getImmediateDelaySuccessor(const int maxConstant) const
+region::Region region::Region::getImmediateDelaySuccessor(const std::vector<int> &maxConstants) const
 {
     Region reg = clone();
     const int numOfClocks = getNumberOfClocks();
@@ -41,7 +41,7 @@ region::Region region::Region::getImmediateDelaySuccessor(const int maxConstant)
         {
             if (reg.x0.test(cIdx(numOfClocks, i)))
             {
-                if (reg.h[i] == maxConstant)
+                if (reg.h[i] == maxConstants[i])
                     xOob.set(cIdx(numOfClocks, i), true);
                 else
                     xTmp.set(cIdx(numOfClocks, i), true);
@@ -173,7 +173,7 @@ std::vector<region::Region> region::Region::permRegsBounded(const int qReg,
                                                             const std::deque<boost::dynamic_bitset<>> &boundedReg,
                                                             const int numOfClocks,
                                                             boost::dynamic_bitset<> X,
-                                                            const int maxConstant,
+                                                            const std::vector<int> &maxConstants,
                                                             const boost::dynamic_bitset<> &notInX0,
                                                             const boost::dynamic_bitset<> &notFractionalPart)
 {
@@ -183,7 +183,7 @@ std::vector<region::Region> region::Region::permRegsBounded(const int qReg,
     boost::dynamic_bitset<> maxConstantClockMask(numOfClocks);
 
     for (int i = 0; i < numOfClocks; i++)
-        if (X.test(cIdx(numOfClocks, i)) && H[i] == maxConstant)
+        if (X.test(cIdx(numOfClocks, i)) && H[i] == maxConstants[i])
             maxConstantClockMask.set(cIdx(numOfClocks, i));
 
     x0Reg |= maxConstantClockMask;
@@ -525,7 +525,7 @@ std::vector<region::Region> region::Region::permRegsUnbounded(const int qReg,
  * @param clockIndex the index of the current clock under analysis.
  * @param constraintOperator the constraint operator of the current clock constraint under analysis.
  * @param comparingConstant the integer constant of the current clock constraint under analysis.
- * @param maxConstant the maximum constant of the Timed Automaton.
+ * @param maxConstant the maximum constant of the clock corresponding to clockIndex.
  * @param notInX0 a map where the key corresponds to a clock index and the value indicates that, when such a clock has such value,
  *                it must not be put in set x0 during discrete predecessors' computation.
  * @param notFractionalPart a map where the key corresponds to a clock index and the value indicates that, when such a clock has such value,
@@ -605,7 +605,7 @@ inline void handleConstraintOperator(const int clockIndex,
 std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(const std::vector<transition> &transitions,
                                                                              const std::unordered_map<std::string, int> &clockIndices,
                                                                              const std::unordered_map<std::string, int> &locationsAsIntMap,
-                                                                             const int maxConstant) const
+                                                                             const std::vector<int> &maxConstants) const
 {
     std::vector<Region> res{};
 
@@ -719,9 +719,9 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
                     {
                         if (constraintOperator == EQ)
                             H[clockIndex] = comparingConstant;
-                        else if (constraintOperator == GT && comparingConstant == maxConstant)
+                        else if (constraintOperator == GT && comparingConstant == maxConstants[clockIndex])
                         {
-                            H[clockIndex] = maxConstant;
+                            H[clockIndex] = maxConstants[clockIndex];
                             xOob.set(cIdx(numOfClocks, clockIndex));
                             xRefToDelete.set(cIdx(numOfClocks, clockIndex));
                         } else
@@ -732,7 +732,7 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
                             handleConstraintOperator(clockIndex,
                                                      constraintOperator,
                                                      comparingConstant,
-                                                     maxConstant,
+                                                     maxConstants[clockIndex],
                                                      notInX0,
                                                      notFractionalPart,
                                                      minMaxValues);
@@ -762,7 +762,7 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
                         {
                             xBnd.set(pos);
                             xRefToDelete.set(pos);
-                            minMaxValues[i] = std::make_pair(0, maxConstant + 1);
+                            minMaxValues[i] = std::make_pair(0, maxConstants[i] + 1);
                         }
                     }
                 }
@@ -841,7 +841,7 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
 
                         for (const auto &[clockIdx, clockValue]: combination)
                         {
-                            if (clockValue > maxConstant)
+                            if (clockValue > maxConstants[clockIdx])
                                 delta.set(cIdx(numOfClocks, clockIdx));
 
                             if (notInX0.contains(clockIdx) && notInX0.at(clockIdx) == clockValue)
@@ -850,7 +850,7 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
                             if (notFractionalPart.contains(clockIdx) && notFractionalPart.at(clockIdx) == clockValue)
                                 notFractionalPartBitset.set(cIdx(numOfClocks, clockIdx));
 
-                            HCopy[clockIdx] = clockValue > maxConstant ? maxConstant : clockValue;
+                            HCopy[clockIdx] = clockValue > maxConstants[clockIdx] ? maxConstants[clockIdx] : clockValue;
                         }
 
                         boost::dynamic_bitset<> deltaUnionOob = delta | xOob;
@@ -871,7 +871,7 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
                                                                            reg.bounded,
                                                                            numOfClocks,
                                                                            xBndMinusDelta,
-                                                                           maxConstant,
+                                                                           maxConstants,
                                                                            notInX0Bitset,
                                                                            notFractionalPartBitset);
                                 res.insert(res.end(), tmp2.begin(), tmp2.end());

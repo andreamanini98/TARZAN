@@ -145,6 +145,15 @@ namespace timed_automaton::ast
 
 
         /**
+         * @brief Computes the maximum constant appearing in a Timed Automaton for each clock.
+         *
+         * @param clocksIndices a map from clock names to their index in the clocks vector.
+         * @return a vector containing in position i the maximum constant of the i-th clock, where the index i of the clock is given by clockIndices.
+         */
+        [[nodiscard]] std::vector<int> getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices) const;
+
+
+        /**
          * @return a std::unordered_map from clock names to their index in the clocks vector.
          *
          * @warning To be used at the beginning, right after parsing a Timed Automaton, since at the current time of development this is
@@ -233,6 +242,15 @@ namespace timed_automaton::ast
          * @return an int representing the maximum constant appearing in the Timed Arena.
          */
         [[nodiscard]] int getMaxConstant() const;
+
+
+        /**
+         * @brief Computes the maximum constant appearing in a Timed Arena for each clock.
+         *
+         * @param clocksIndices a map from clock names to their index in the clocks vector.
+         * @return a vector containing in position i the maximum constant of the i-th clock, where the index i of the clock is given by clockIndices.
+         */
+        [[nodiscard]] std::vector<int> getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices) const;
 
 
         /**

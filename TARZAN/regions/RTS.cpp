@@ -94,7 +94,7 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
         }
 
         // Computing immediate delay successor.
-        const Region &delaySuccessor = currentRegion.getImmediateDelaySuccessor(maxConstant);
+        const Region &delaySuccessor = currentRegion.getImmediateDelaySuccessor(maxConstants);
 
         // Computing discrete successors.
         const std::vector<transition> &transitions = outTransitions[currentRegionLocation];
@@ -202,7 +202,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
 
         // Computing discrete predecessors.
         const std::vector<transition> &transitions = inTransitions[currentRegion.getLocation()];
-        const std::vector<Region> &discPreds = currentRegion.getImmediateDiscretePredecessors(transitions, clocksIndices, locationsToInt, maxConstant);
+        const std::vector<Region> &discPreds = currentRegion.getImmediateDiscretePredecessors(transitions, clocksIndices, locationsToInt, maxConstants);
 
 #ifdef RTS_DEBUG
 

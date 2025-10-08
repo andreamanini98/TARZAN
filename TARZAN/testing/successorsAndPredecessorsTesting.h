@@ -43,7 +43,7 @@ inline region::Region getRegion(int numSteps)
     region::Region oldSuccessor = reg;
     for (int i = 0; i < numSteps; i++)
     {
-        region::Region successor = oldSuccessor.getImmediateDelaySuccessor(1);
+        region::Region successor = oldSuccessor.getImmediateDelaySuccessor({ 1, 1, 1 });
         oldSuccessor = successor;
     }
 
@@ -69,7 +69,7 @@ inline void testImmediateDelaySuccessor()
     region::Region oldSuccessor = getRegion(0);
     for (int i = 0; i < 7; i++)
     {
-        region::Region successor = oldSuccessor.getImmediateDelaySuccessor(1);
+        region::Region successor = oldSuccessor.getImmediateDelaySuccessor({ 1, 1, 1 });
         std::cout << "Successor " << (i + 1) << ":\n" << successor.toString() << std::endl;
         oldSuccessor = successor;
     }
@@ -85,7 +85,7 @@ inline void testImmediateDelayPredecessors(const int totSteps, const int maxCons
 #ifdef REGION_PRINT_DEBUG
         std::cout << oldSuccessor.toString() << std::endl;
 #endif
-        const region::Region successor = oldSuccessor.getImmediateDelaySuccessor(maxConst);
+        const region::Region successor = oldSuccessor.getImmediateDelaySuccessor({ maxConst, maxConst, maxConst });
         oldSuccessor = successor;
     }
 
@@ -273,7 +273,7 @@ inline void testImmediateDiscreteSuccessors()
             break;
         }
 
-        region::Region successor = oldSuccessor.getImmediateDelaySuccessor(10);
+        region::Region successor = oldSuccessor.getImmediateDelaySuccessor({ 10, 10, 10 });
         std::cout << "Delay successor :\n" << successor.toString() << std::endl;
         oldSuccessor = successor;
     }
@@ -308,7 +308,7 @@ inline void testImmediateDiscreteSuccessors()
             break;
         }
 
-        region::Region successor = oldSuccessor.getImmediateDelaySuccessor(10);
+        region::Region successor = oldSuccessor.getImmediateDelaySuccessor({ 10, 10, 10 });
         std::cout << "Delay successor :\n" << successor.toString() << std::endl;
         oldSuccessor = successor;
     }
@@ -573,7 +573,9 @@ inline void testPermRegs()
     // notInX0.set(numOfClocks - 2, true); // The second clock from the left now cannot be in x0.
 
     const double t1 = omp_get_wtime();
-    std::vector<region::Region> regs = region::Region::permRegsBounded(q, clockValues, unbounded, x0, bounded, numOfClocks, X, maxConstant, notInX0, boost::dynamic_bitset<>(numOfClocks));
+    std::vector<region::Region> regs = region::Region::permRegsBounded(q, clockValues, unbounded, x0, bounded, numOfClocks, X,
+                                                                       { maxConstant, maxConstant, maxConstant, maxConstant, maxConstant },
+                                                                       notInX0, boost::dynamic_bitset<>(numOfClocks));
     const double t2 = omp_get_wtime();
 
     std::cout << "\n";
@@ -605,10 +607,11 @@ inline void testGetDiscretePredecessors()
 
     std::cout << initialRegion.toString() << std::endl;
 
-    std::vector<region::Region> regs = initialRegion.getImmediateDiscretePredecessors(transitions, clockIndices, locationsAsIntMap, automaton.getMaxConstant());
+    std::vector<region::Region> regs = initialRegion.getImmediateDiscretePredecessors(transitions, clockIndices, locationsAsIntMap,
+                                                                                      automaton.getMaxConstants(clockIndices));
 
     std::cout << "Printing regions: " << std::endl;
-    for (const auto &region : regs)
+    for (const auto &region: regs)
         std::cout << region.toString() << std::endl;
 }
 
@@ -626,17 +629,17 @@ inline void testInTransitions()
     std::vector<std::vector<transition>> transitions = automaton.getInTransitions(locationsToInt);
 
     std::cout << "locationsToInt contents:\n";
-    for (const auto& [name, index] : locationsToInt) {
+    for (const auto &[name, index]: locationsToInt)
+    {
         std::cout << "  " << name << " -> " << index << "\n";
     }
 
     for (int i = 0; i < static_cast<int>(transitions.size()); i++)
     {
         std::cout << "Location " << i << std::endl;
-        for (const auto &transition : transitions[i])
+        for (const auto &transition: transitions[i])
             std::cout << transition << std::endl;
     }
-
 }
 
 
@@ -650,7 +653,8 @@ inline void testDiscretePredecessorsLightSwitch()
     const std::unordered_map<std::string, int> locationsToInt = automaton.mapLocationsToInt();
 
     std::cout << "locationsToInt contents:\n";
-    for (const auto& [name, index] : locationsToInt) {
+    for (const auto &[name, index]: locationsToInt)
+    {
         std::cout << "  " << name << " -> " << index << "\n";
     }
 
@@ -682,9 +686,8 @@ inline void testDiscretePredecessorsLightSwitch()
     std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(regs, DFS);
 
     std::cout << "Predecessors contents:\n";
-    for (const auto &region : predecessors)
+    for (const auto &region: predecessors)
         std::cout << region.toString() << std::endl;
-
 }
 
 
@@ -703,7 +706,7 @@ inline void testFlowerBackwards()
     const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(0, DFS);
 
     std::cout << "Computed the following regions:" << std::endl;
-    for (const auto &region : rts)
+    for (const auto &region: rts)
         std::cout << region.toString() << std::endl;
 
     std::cout << "\n\n";
@@ -711,7 +714,7 @@ inline void testFlowerBackwards()
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(rts, DFS);
 
     std::cout << "Predecessors contents:\n";
-    for (const auto &region : predecessors)
+    for (const auto &region: predecessors)
         std::cout << region.toString() << std::endl;
 }
 

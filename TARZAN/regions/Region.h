@@ -12,9 +12,6 @@ using transition = timed_automaton::ast::transition;
 // TODO: vedere come adattare questo alle regioni delle arene. Secondo me non occorre fare altro, q rende possibile determinare la natura
 //       delle locations (controller o environment), ma occorre guardare nella rappresentazione dell'arena. Al limite aggiungi un Bool.
 
-// TODO: si può ottimizzare un bel po' (specialmente per i discrete predecessors) se per ogni clock si associa una singola costante massima
-//       invece di assumere che essa sia uguale per tutti.
-
 // TODO: sembrerebbe che molte regioni vengono calcolate (correttamente) più volte durante tutte le possibili combinazioni dei predecessori discreti, magari si può semplificare.
 
 
@@ -144,10 +141,10 @@ namespace region
         /**
          * @brief Computes the immediate delay successor of the current region as detailed in our paper.
          *
-         * @param maxConstant the maximum constant of the Timed Automaton from which the region is derived.
+         * @param maxConstants the maximum constants of the Timed Automaton from which the region is derived.
          * @return a Region immediate delay successor of the current region.
          */
-        [[nodiscard]] Region getImmediateDelaySuccessor(int maxConstant) const;
+        [[nodiscard]] Region getImmediateDelaySuccessor(const std::vector<int> &maxConstants) const;
 
 
         /**
@@ -188,7 +185,7 @@ namespace region
          * @param boundedReg the bounded sets of the Region for which we are computing discrete predecessors.
          * @param numOfClocks the original Timed Automaton number of clocks.
          * @param X the clocks for which we must compute all ordered partitions.
-         * @param maxConstant the maximum constant of the original Timed Automaton.
+         * @param maxConstants the maximum constants of the original Timed Automaton.
          * @param notInX0 a bitset where the i-th bit is set to 1 if the i-th clock must not be contained in x0 (needed for constraints like x > alpha, but NOT for x < alpha).
          * @param notFractionalPart a bitset where the i-th bit is set to 1 if the i-th clock must be contained in x0 (needed for constraints like x <= alpha).
          * @return all regions returned by permRegs as described in our paper.
@@ -206,7 +203,7 @@ namespace region
                                                                  const std::deque<boost::dynamic_bitset<>> &boundedReg,
                                                                  int numOfClocks,
                                                                  boost::dynamic_bitset<> X,
-                                                                 int maxConstant,
+                                                                 const std::vector<int> &maxConstants,
                                                                  const boost::dynamic_bitset<> &notInX0,
                                                                  const boost::dynamic_bitset<> &notFractionalPart);
 
@@ -238,7 +235,7 @@ namespace region
          * @param transitions the transitions over which immediate discrete predecessors must be computed.
          * @param clockIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
          * @param locationsAsIntMap a std::unordered_map associating an integer with each string name.
-         * @param maxConstant the maximum constant appearing in a Timed Automaton.
+         * @param maxConstants the maximum constants appearing in a Timed Automaton.
          * @return a std::vector<Region> containing immediate discrete predecessors of the current region.
          *         If no successors can be computed, returns an empty std::vector.
          *
@@ -250,7 +247,7 @@ namespace region
         [[nodiscard]] std::vector<Region> getImmediateDiscretePredecessors(const std::vector<transition> &transitions,
                                                                            const std::unordered_map<std::string, int> &clockIndices,
                                                                            const std::unordered_map<std::string, int> &locationsAsIntMap,
-                                                                           int maxConstant) const;
+                                                                           const std::vector<int> &maxConstants) const;
 
 
         /**

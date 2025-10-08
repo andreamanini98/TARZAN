@@ -134,6 +134,25 @@ void testParseInvariants()
 }
 
 
+void testMultipleMaxConstants()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+    const std::string automatonFileName = "test_flower_small.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const auto &clocksIndices = automaton.getClocksIndices();
+    const auto &maxConstants = automaton.getMaxConstants(clocksIndices);
+
+    std::cout << "Clock indices:" << std::endl;
+    for (const auto &[fst, snd]: clocksIndices)
+        std::cout << fst << " " << snd + 1 << std::endl;
+
+    std::cout << "Maximum constants:" << std::endl;
+    for (int i = 0; i < static_cast<int>(maxConstants.size()); i++)
+        std::cout << i + 1 << " " << maxConstants[i] << std::endl;
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -143,7 +162,7 @@ int main()
 #endif
 
 
-    testFlowerBackwards();
+    testNetworkTrainGateController();
 
 
 #ifdef REGION_TIMING

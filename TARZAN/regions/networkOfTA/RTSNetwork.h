@@ -7,10 +7,6 @@
 #include "TARZAN/regions/enums/state_space_exploration_enum.h"
 #include "TARZAN/utilities/partition_utilities.h"
 
-// TODO: fai in modo che con un ifdef puoi restituire tutte le regioni calcolate. Aggiorna i commenti delle funzioni di conseguenza e aggiorna anche quelle in RTS.cpp
-
-// TODO: devi fare in modo che ogni clock abbia la sua costante massima.
-
 // TODO: devi aggiungere la possibilità di avere degli interi nelle regioni normali (prima pensare bene a come farlo però).
 
 
@@ -20,12 +16,12 @@ namespace networkOfTA
     {
         std::vector<timed_automaton::ast::timedAutomaton> automata;
 
-        std::vector<int> maxConstants{};
-
         // The size of this map's element corresponds to the number of the i-th 'automaton' clocks.
         std::vector<std::unordered_map<std::string, int>> clocksIndices{};
 
         std::vector<std::unordered_map<std::string, int>> locationsToInt{};
+
+        std::vector<std::vector<int>> maxConstants{};
 
         std::vector<std::vector<int>> initialLocations{};
 
@@ -45,9 +41,9 @@ namespace networkOfTA
             {
                 const timed_automaton::ast::timedAutomaton &automaton = automata[i];
 
-                maxConstants.emplace_back(automaton.getMaxConstant());
                 clocksIndices.emplace_back(automaton.getClocksIndices());
                 locationsToInt.emplace_back(automaton.mapLocationsToInt());
+                maxConstants.emplace_back(automaton.getMaxConstants(clocksIndices[i]));
                 initialLocations.emplace_back(automaton.getInitialLocations(locationsToInt[i]));
                 outTransitions.emplace_back(automaton.getOutTransitions(locationsToInt[i]));
                 inTransitions.emplace_back(automaton.getInTransitions(locationsToInt[i]));
@@ -83,8 +79,8 @@ namespace networkOfTA
 
 
         // Getters.
-        [[nodiscard]] std::vector<NetworkRegion> getInitialRegions() const { return initialRegions; }
-        [[nodiscard]] std::vector<int> getMaxConstants() const { return maxConstants; }
+        [[nodiscard]] const std::vector<NetworkRegion> &getInitialRegions() const { return initialRegions; }
+        [[nodiscard]] const std::vector<std::vector<int>> &getMaxConstants() const { return maxConstants; }
     };
 }
 

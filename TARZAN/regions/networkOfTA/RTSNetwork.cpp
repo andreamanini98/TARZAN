@@ -68,6 +68,11 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
 
         std::cout << "Current region:\n" << currentRegion.toString() << std::endl;
 
+        std::cout << "Locations of the network region:" << std::endl;
+        for (const auto &reg: currentRegion.getRegions())
+            std::cout << reg.getLocation() << " ";
+        std::cout << "\n\n";
+
 #endif
 
         // Getting the regions of the network region currentRegion.
@@ -162,14 +167,19 @@ std::string networkOfTA::RTSNetwork::toString() const
         oss << "    [" << i << "]: " << automata[i].name << "\n";
 
     // Display max constants.
-    oss << "  Max Constants (" << maxConstants.size() << "): [";
+    oss << "  Max Constants (" << maxConstants.size() << "):\n";
     for (size_t i = 0; i < maxConstants.size(); i++)
     {
-        oss << maxConstants[i];
-        if (i < maxConstants.size() - 1)
-            oss << ", ";
+        oss << "    Automaton [" << i << "] (" << maxConstants[i].size() << " clocks): [";
+        for (size_t j = 0; j < maxConstants[i].size(); j++)
+        {
+            oss << maxConstants[i][j];
+            if (j < maxConstants[i].size() - 1)
+                oss << ", ";
+        }
+        oss << "]\n";
     }
-    oss << "]\n";
+    oss << "\n";
 
     // Display clocks info.
     oss << "  Clocks:\n";

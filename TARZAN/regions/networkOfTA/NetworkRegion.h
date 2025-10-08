@@ -54,7 +54,7 @@ namespace networkOfTA
          * @param maxConstants the maximum constants of the Timed Automata from which the network region is derived.
          * @return a NetworkRegion immediate delay successor of the current network region.
          */
-        [[nodiscard]] NetworkRegion getImmediateDelaySuccessor(const std::vector<int> &maxConstants) const;
+        [[nodiscard]] NetworkRegion getImmediateDelaySuccessor(const std::vector<std::vector<int>> &maxConstants) const;
 
 
         /**

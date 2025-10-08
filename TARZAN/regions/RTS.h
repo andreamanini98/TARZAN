@@ -12,12 +12,12 @@ namespace region
     {
         timed_automaton::ast::timedAutomaton automaton;
 
-        int maxConstant{};
-
         // The size of this map corresponds to the number of 'automaton' clocks.
         std::unordered_map<std::string, int> clocksIndices{};
 
         std::unordered_map<std::string, int> locationsToInt{};
+
+        std::vector<int> maxConstants{};
 
         std::vector<int> initialLocations{};
 
@@ -33,9 +33,9 @@ namespace region
     public:
         explicit RTS(const timed_automaton::ast::timedAutomaton &automaton) : automaton(automaton)
         {
-            maxConstant = automaton.getMaxConstant();
             clocksIndices = automaton.getClocksIndices();
             locationsToInt = automaton.mapLocationsToInt();
+            maxConstants = automaton.getMaxConstants(clocksIndices);
             initialLocations = automaton.getInitialLocations(locationsToInt);
             outTransitions = automaton.getOutTransitions(locationsToInt);
             inTransitions = automaton.getInTransitions(locationsToInt);
