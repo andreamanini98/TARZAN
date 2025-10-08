@@ -8,7 +8,7 @@
 enum comparison_op { LT, LE, EQ, GE, GT };
 
 
-// Operator to convert comp_op to string
+// Convert comp_op to string.
 inline std::string comparison_op_to_string(const comparison_op op)
 {
     switch (op)
@@ -18,12 +18,12 @@ inline std::string comparison_op_to_string(const comparison_op op)
         case EQ: return "==";
         case GE: return ">=";
         case GT: return ">";
-        default: return "?";
+        default: return "invalid_comparison_op";
     }
 }
 
 
-// Stream operator for convenient printing
+// Stream operator for convenient printing.
 inline std::ostream &operator<<(std::ostream &os, const comparison_op op)
 {
     return os << comparison_op_to_string(op);

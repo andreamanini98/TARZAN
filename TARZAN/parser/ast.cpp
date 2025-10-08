@@ -6,6 +6,59 @@
 using transition = timed_automaton::ast::transition;
 
 
+// Arithmetic expr class.
+
+std::string expr::ast::arithmeticExpr::to_string() const
+{
+    std::ostringstream oss;
+
+    oss << std::visit([]<typename T0>(T0 const &val) -> std::string {
+        using T = std::decay_t<T0>;
+
+        if constexpr (std::is_same_v<T, int>)
+            // We must print an integer.
+            return std::to_string(val);
+        else if constexpr (std::is_same_v<T, expr::ast::variable>)
+            // We must print a string (the variable name).
+            return val.name;
+        else
+            // We must print a binary expression.
+            return "(" + val.get().to_string() + ")";
+    }, value);
+
+    return oss.str();
+}
+
+
+// ---
+
+
+// Binary expr class.
+
+std::string expr::ast::binaryExpr::to_string() const
+{
+    std::ostringstream oss;
+    oss << left_expr.to_string() << " " << op << " " << right_expr.to_string();
+    return oss.str();
+}
+
+
+// ---
+
+
+// Assignment class.
+
+std::string expr::ast::assignmentExpr::to_string() const
+{
+    std::ostringstream oss;
+    oss << lhs.name << " = " << rhs.to_string();
+    return oss.str();
+}
+
+
+// ---
+
+
 // Clock constraint class.
 
 bool timed_automaton::ast::clockConstraint::isSatisfied(const int clockValue, const bool isFractionalPartGreaterThanZero) const

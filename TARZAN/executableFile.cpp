@@ -2,6 +2,9 @@
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
 #include "parser/enums/input_output_action_enum.h"
 #include "TARZAN/utilities/partition_utilities.h"
+#include "TARZAN/utilities/file_utilities.h"
+#include "TARZAN/parser/timed_automaton_def.h"
+#include "TARZAN/parser/config.h"
 
 // #define REGION_TIMING
 
@@ -153,6 +156,64 @@ void testMultipleMaxConstants()
 }
 
 
+void testExpression()
+{
+    using namespace expr::ast;
+
+    // Build a small expression by hand: L = L + 1 * (3 + N).
+    assignmentExpr a;
+    a.lhs.name = "L";
+    a.rhs = binaryExpr{
+        variable{ "L" },
+        ADD,
+        binaryExpr{
+            1,
+            MUL,
+            binaryExpr{3, ADD, variable{ "N" } }
+        }
+    };
+
+    std::cout << a.to_string() << "\n";
+
+    // Parse an expression from a file.
+    std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp";
+    std::stringstream out;
+    const std::string source = readFromFile(path);
+
+    using parser::iterator_type;
+    iterator_type iter(source.begin());
+    iterator_type const end(source.end());
+
+    assignmentExpr ass;
+
+    // Our error handler.
+    using boost::spirit::x3::with;
+    using parser::error_handler_type;
+    using parser::error_handler_tag;
+    error_handler_type error_handler(iter, end, out, path);
+
+    // Our parser.
+    // We pass our error handler to the parser so we can access it later on in our on_error and on_success handlers.
+    auto const parser = with<error_handler_tag>(std::ref(error_handler))[expr::assignmentExpr()];
+
+    // Now we parse.
+    using boost::spirit::x3::ascii::space;
+    // ReSharper disable once CppTooWideScope
+    bool success = phrase_parse(iter, end, parser, space, ass);
+
+    if (success)
+    {
+        if (iter != end)
+            error_handler(iter, "Error! Expecting end of input here: ");
+        else
+            std::cerr << "SUCCESSFUL parsing" << std::endl;
+    } else
+        std::cerr << "Wrong parsing" << std::endl;
+
+    std::cout << ass.to_string() << std::endl;
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -162,7 +223,7 @@ int main()
 #endif
 
 
-    testFlowerBackwards();
+    testExpression();
 
 
 #ifdef REGION_TIMING

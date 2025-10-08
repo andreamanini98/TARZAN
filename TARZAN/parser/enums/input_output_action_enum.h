@@ -8,19 +8,19 @@
 enum in_out_act { OUTACT, INACT };
 
 
-// Operator to convert in_out_act to string
+// Convert in_out_act to string.
 inline std::string in_out_act_to_string(const in_out_act ioa)
 {
     switch (ioa)
     {
         case OUTACT: return "!";
         case INACT: return "?";
-        default: return "Invalid in_out_act symbol";
+        default: return "invalid_input_output_action";
     }
 }
 
 
-// Stream operator for convenient printing
+// Stream operator for convenient printing.
 inline std::ostream &operator<<(std::ostream &os, const in_out_act ioa)
 {
     return os << in_out_act_to_string(ioa);

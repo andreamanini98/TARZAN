@@ -6,7 +6,7 @@
 #include <filesystem>
 
 #include "TARZAN/parser/ast.h"
-#include "TARZAN/parser/timed_automaton.h"
+#include "TARZAN/parser/timed_automaton_def.h"
 #include "TARZAN/parser/error_handler.h"
 #include "TARZAN/parser/config.h"
 #include "TARZAN/utilities/file_utilities.h"
@@ -17,7 +17,7 @@ timed_automaton::ast::timedArena parseTimedArena(std::string const &path)
     std::stringstream out;
     const std::string source = readFromFile(path);
 
-    using timed_automaton::parser::iterator_type;
+    using parser::iterator_type;
     iterator_type iter(source.begin());
     iterator_type const end(source.end());
 
@@ -26,8 +26,8 @@ timed_automaton::ast::timedArena parseTimedArena(std::string const &path)
 
     // Our error handler.
     using boost::spirit::x3::with;
-    using timed_automaton::parser::error_handler_type;
-    using timed_automaton::parser::error_handler_tag;
+    using parser::error_handler_type;
+    using parser::error_handler_tag;
     error_handler_type error_handler(iter, end, out, path);
 
     // Our parser.
@@ -57,7 +57,7 @@ timed_automaton::ast::timedAutomaton parseTimedAutomaton(std::string const &path
     std::stringstream out;
     const std::string source = readFromFile(path);
 
-    using timed_automaton::parser::iterator_type;
+    using parser::iterator_type;
     iterator_type iter(source.begin());
     iterator_type const end(source.end());
 
@@ -66,8 +66,8 @@ timed_automaton::ast::timedAutomaton parseTimedAutomaton(std::string const &path
 
     // Our error handler.
     using boost::spirit::x3::with;
-    using timed_automaton::parser::error_handler_type;
-    using timed_automaton::parser::error_handler_tag;
+    using parser::error_handler_type;
+    using parser::error_handler_tag;
     error_handler_type error_handler(iter, end, out, path);
 
     // Our parser.

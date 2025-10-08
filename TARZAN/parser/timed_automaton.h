@@ -6,42 +6,64 @@
 #include <boost/spirit/home/x3.hpp>
 
 
-namespace timed_automaton
+namespace parser
 {
-    namespace parser
-    {
-        namespace x3 = boost::spirit::x3;
+    namespace x3 = boost::spirit::x3;
 
-        struct action_pair_class;
-        struct loc_pair_class;
-        struct loc_map_class;
-        struct arena_loc_class;
-        struct arena_loc_pair_class;
-        struct arena_loc_map_class;
-        struct clockConstraint_class;
-        struct locationContent_class;
-        struct transition_class;
-        struct timedAutomaton_class;
-        struct timedArena_class;
+    struct action_pair_class;
+    struct loc_pair_class;
+    struct loc_map_class;
+    struct arena_loc_class;
+    struct arena_loc_pair_class;
+    struct arena_loc_map_class;
+    struct clockConstraint_class;
+    struct locationContent_class;
+    struct transition_class;
+    struct timedAutomaton_class;
+    struct timedArena_class;
 
-        using clockConstraint_type = x3::rule<clockConstraint_class, ast::clockConstraint>;
-        using locationContent_type = x3::rule<locationContent_class, ast::locationContent>;
-        using transition_type = x3::rule<transition_class, ast::transition>;
-        using timedAutomaton_type = x3::rule<timedAutomaton_class, ast::timedAutomaton>;
-        using timedArena_type = x3::rule<timedArena_class, ast::timedArena>;
+    using clockConstraint_type = x3::rule<clockConstraint_class, timed_automaton::ast::clockConstraint>;
+    using locationContent_type = x3::rule<locationContent_class, timed_automaton::ast::locationContent>;
+    using transition_type = x3::rule<transition_class, timed_automaton::ast::transition>;
+    using timedAutomaton_type = x3::rule<timedAutomaton_class, timed_automaton::ast::timedAutomaton>;
+    using timedArena_type = x3::rule<timedArena_class, timed_automaton::ast::timedArena>;
 
-        BOOST_SPIRIT_DECLARE(clockConstraint_type, locationContent_type, transition_type, timedAutomaton_type, timedArena_type);
-    }
+    BOOST_SPIRIT_DECLARE(clockConstraint_type, locationContent_type, transition_type, timedAutomaton_type, timedArena_type);
 
-    parser::clockConstraint_type clockConstraint();
 
-    parser::locationContent_type locationContent();
+    clockConstraint_type clockConstraint();
 
-    parser::transition_type transition();
+    locationContent_type locationContent();
 
-    parser::timedAutomaton_type timedAutomaton();
+    transition_type transition();
 
-    parser::timedArena_type timedArena();
+    timedAutomaton_type timedAutomaton();
+
+    timedArena_type timedArena();
+}
+
+
+namespace parser
+{
+    namespace x3 = boost::spirit::x3;
+
+    struct arithmeticExpr_class;
+    struct variable_class;
+    struct binaryExpr_class;
+    struct assignmentExpr_class;
+
+    using variable_type = x3::rule<variable_class, expr::ast::variable>;
+    using binaryExpr_type = x3::rule<binaryExpr_class, expr::ast::binaryExpr>;
+    using assignmentExpr_type = x3::rule<assignmentExpr_class, expr::ast::assignmentExpr>;
+
+    BOOST_SPIRIT_DECLARE(variable_type, binaryExpr_type, assignmentExpr_type);
+
+
+    variable_type variable();
+
+    binaryExpr_type binaryExpr();
+
+    assignmentExpr_type assignmentExpr();
 }
 
 #endif //TIMED_AUTOMATON_H

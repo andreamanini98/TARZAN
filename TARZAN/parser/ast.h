@@ -1,13 +1,16 @@
 #ifndef AST_H
 #define AST_H
 
+#include "enums/arithmetic_enum.h"
 #include "enums/comparison_op_enum.h"
 #include "enums/input_output_action_enum.h"
 
 #include <vector>
 #include <map>
 #include <ranges>
+#include <variant>
 #include "absl/container/flat_hash_map.h"
+#include <boost/spirit/home/x3/support/ast/variant.hpp>
 
 // TODO: avoid code duplication (if possible).
 
@@ -56,6 +59,88 @@
 //  <int> -> '1..9'('0..9')*
 //
 //  <literal> -> ('a..z' | 'A..Z' | '0..9' | '_' )+
+
+
+// TODO: chiedere a claude come fare per avere una precedenza tra * / e + -.
+
+// TODO: aggiungere espressioni unarie.
+
+// TODO: aggiornare la grammatica di Liana.
+
+// Reference examples for expression parser:
+// https://wandbox.org/permlink/YlVEPhgKPNMiKADh
+// https://www.boost.org/doc/libs/1_67_0/libs/spirit/example/x3/rexpr/rexpr_min/rexpr.cpp
+namespace expr::ast
+{
+    /// A variable appearing in an expression. It only consists of its name.
+    struct variable
+    {
+        std::string name;
+    };
+
+
+    // Forward declaring this struct so that it can be used in the structs below.
+    struct binaryExpr;
+
+
+    /// An arithmetic expression which can contain integers and variables.
+    struct arithmeticExpr
+    {
+        // The forward_ast enables the recursive definition of this ast.
+        std::variant<int, variable, boost::spirit::x3::forward_ast<binaryExpr>> value;
+
+
+        // Implicit conversions, needed since we directly synthesize variables in the grammar.
+        arithmeticExpr() = default;
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        arithmeticExpr(int v) : value(v) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        arithmeticExpr(variable v) : value(std::move(v)) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        arithmeticExpr(boost::spirit::x3::forward_ast<binaryExpr> v) : value(std::move(v)) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        arithmeticExpr(binaryExpr const &v);
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        arithmeticExpr(binaryExpr &&v);
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    /// A binary expression.
+    struct binaryExpr
+    {
+        arithmeticExpr left_expr;
+        arithmetic_op op;
+        arithmeticExpr right_expr;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    // Implementing the deferred constructors after binaryExpr is complete.
+    // Needed to break circular dependencies at compile time, as it happens, for example, when declaring a constructor of arithmeticExpr passing a binaryExpr.
+    inline arithmeticExpr::arithmeticExpr(binaryExpr const &v) : value(boost::spirit::x3::forward_ast(v)) {}
+    inline arithmeticExpr::arithmeticExpr(binaryExpr &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
+
+
+    /// An assignment expression.
+    struct assignmentExpr
+    {
+        variable lhs;
+        arithmeticExpr rhs;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+}
 
 
 namespace timed_automaton::ast
