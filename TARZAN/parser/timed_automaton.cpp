@@ -11,6 +11,10 @@ namespace parser
 
     BOOST_SPIRIT_INSTANTIATE(assignmentExpr_type, iterator_type, context_type);
 
+    BOOST_SPIRIT_INSTANTIATE(comparisonExpr_type, iterator_type, context_type);
+
+    BOOST_SPIRIT_INSTANTIATE(booleanExpr_type, iterator_type, context_type);
+
     BOOST_SPIRIT_INSTANTIATE(clockConstraint_type, iterator_type, context_type);
 
     BOOST_SPIRIT_INSTANTIATE(locationContent_type, iterator_type, context_type);

@@ -14,18 +14,18 @@ int expr::ast::arithmeticExpr::evaluate(const absl::flat_hash_map<std::string, i
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, int>)
-            // Base case: integer literal
+            // Base case: integer literal.
             return val;
         else if constexpr (std::is_same_v<T, variable>)
         {
-            // Base case: variable lookup
+            // Base case: variable lookup.
             auto it = variables.find(val.name);
             if (it == variables.end())
-                throw std::runtime_error("Variable '" + val.name + "' not found");
+                throw std::runtime_error("Variable '" + val.name + "' not found!");
             return it->second;
-        } else // boost::spirit::x3::forward_ast<binaryExpr>
+        } else
         {
-            // Recursive case: binary expression
+            // Recursive case: binary expression.
             const binaryExpr &binExpr = val.get();
 
             const int leftVal = binExpr.left_expr.evaluate(variables);
@@ -41,10 +41,10 @@ int expr::ast::arithmeticExpr::evaluate(const absl::flat_hash_map<std::string, i
                     return leftVal * rightVal;
                 case DIV:
                     if (rightVal == 0)
-                        throw std::runtime_error("Division by zero");
+                        throw std::runtime_error("Division by zero!");
                     return leftVal / rightVal;
                 default:
-                    throw std::runtime_error("Unknown arithmetic   operator");
+                    throw std::runtime_error("Unknown arithmetic operator!");
             }
         }
     }, value);
@@ -89,7 +89,7 @@ std::string expr::ast::binaryExpr::to_string() const
 // ---
 
 
-// Assignment class.
+// Assignment expr class.
 
 int expr::ast::assignmentExpr::evaluate(absl::flat_hash_map<std::string, int> &variables) const
 {
@@ -107,6 +107,119 @@ std::string expr::ast::assignmentExpr::to_string() const
 {
     std::ostringstream oss;
     oss << lhs.name << " = " << rhs.to_string();
+    return oss.str();
+}
+
+
+// ---
+
+
+// Comparison expr class.
+
+bool expr::ast::comparisonExpr::evaluate(const absl::flat_hash_map<std::string, int> &variables) const
+{
+    const int leftVal = left_expr.evaluate(variables);
+    const int rightVal = right_expr.evaluate(variables);
+
+    switch (op)
+    {
+        case LT:
+            return leftVal < rightVal;
+        case LE:
+            return leftVal <= rightVal;
+        case EQ:
+            return leftVal == rightVal;
+        case GE:
+            return leftVal >= rightVal;
+        case GT:
+            return leftVal > rightVal;
+        default:
+            throw std::runtime_error("Unknown comparison operator!");
+    }
+}
+
+
+std::string expr::ast::comparisonExpr::to_string() const
+{
+    std::ostringstream oss;
+    oss << left_expr.to_string() << " " << op << " " << right_expr.to_string();
+    return oss.str();
+}
+
+
+// ---
+
+
+// Boolean expr class.
+
+bool expr::ast::booleanExpr::evaluate(const absl::flat_hash_map<std::string, int> &variables) const
+{
+    return std::visit([&variables]<typename T0>(T0 const &val) -> bool {
+        using T = std::decay_t<T0>;
+
+        if constexpr (std::is_same_v<T, bool>)
+            // Base case: boolean literal (true/false).
+            return val;
+        else if constexpr (std::is_same_v<T, comparisonExpr>)
+        // Base case: comparison expression.
+            return val.evaluate(variables);
+        else
+        {
+            // Recursive case: boolean binary expression.
+            const booleanBinaryExpr &binExpr = val.get();
+
+            const bool leftVal = binExpr.left_expr.evaluate(variables);
+
+            if (binExpr.op == AND && !leftVal)
+                return false;
+            if (binExpr.op == OR && leftVal)
+                return true;
+
+            const bool rightVal = binExpr.right_expr.evaluate(variables);
+
+            switch (binExpr.op)
+            {
+                case AND:
+                    return leftVal && rightVal;
+                case OR:
+                    return leftVal || rightVal;
+                default:
+                    throw std::runtime_error("Unknown boolean operator!");
+            }
+        }
+    }, value);
+}
+
+
+std::string expr::ast::booleanExpr::to_string() const
+{
+    std::ostringstream oss;
+
+    oss << std::visit([]<typename T0>(T0 const &val) -> std::string {
+        using T = std::decay_t<T0>;
+
+        if constexpr (std::is_same_v<T, bool>)
+            return val ? "true" : "false";
+        else if constexpr (std::is_same_v<T, comparisonExpr>)
+            return val.to_string();
+        else
+            return "(" + val.get().to_string() + ")";
+    }, value);
+
+    return oss.str();
+}
+
+
+// ---
+
+
+// Boolean binary expr class.
+
+std::string expr::ast::booleanBinaryExpr::to_string() const
+{
+    std::ostringstream oss;
+    const std::string opStr = op == AND ? "AND" : "OR";
+    oss << left_expr.to_string() << " " << opStr << " " << right_expr.to_string();
     return oss.str();
 }
 

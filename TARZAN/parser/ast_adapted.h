@@ -6,11 +6,12 @@
 #include <boost/fusion/include/adapt_struct.hpp>
 
 
-// We do not need to adapt the 'variable' struct, as it consists only of one field (and we construct it with a semantic action).
-
-// We do not need to adapt the 'binaryExpr' struct, as we construct it with a semantic action.
+// We do not need to adapt the 'variable', 'arithmeticExpr', and 'booleanExpr' structs, as they consist only of one field (and we construct them with a semantic action).
+// We do not need to adapt the 'binaryExpr' and 'booleanBinaryExpr' structs, as we construct them with a semantic action.
 
 BOOST_FUSION_ADAPT_STRUCT(expr::ast::assignmentExpr, lhs, rhs)
+
+BOOST_FUSION_ADAPT_STRUCT(expr::ast::comparisonExpr, left_expr, op, right_expr)
 
 BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::clockConstraint, clock, constraintOperator, comparingConstant)
 

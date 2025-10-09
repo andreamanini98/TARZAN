@@ -220,7 +220,7 @@ void testExpression()
 
     // Variable context with initial values
     absl::flat_hash_map<std::string, int> variables = {
-        {"L", 0},
+        { "L", 0 },
         { "A", 10 },
         { "B", 2 }
     };
@@ -241,6 +241,62 @@ void testExpression()
 }
 
 
+void testBooleanExpression()
+{
+    using namespace expr::ast;
+
+    // Parse an expression from a file.
+    std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/expressions/simple_boolean.txt";
+    std::stringstream out;
+    const std::string source = readFromFile(path);
+
+    using parser::iterator_type;
+    iterator_type iter(source.begin());
+    iterator_type const end(source.end());
+
+    booleanExpr boolE;
+
+    // Our error handler.
+    using boost::spirit::x3::with;
+    using parser::error_handler_type;
+    using parser::error_handler_tag;
+    error_handler_type error_handler(iter, end, out, path);
+
+    // Our parser.
+    // We pass our error handler to the parser so we can access it later on in our on_error and on_success handlers.
+    auto const parser = with<error_handler_tag>(std::ref(error_handler))[expr::booleanExpr()];
+
+    // Now we parse.
+    using boost::spirit::x3::ascii::space;
+    // ReSharper disable once CppTooWideScope
+    bool success = phrase_parse(iter, end, parser, space, boolE);
+
+    if (success)
+    {
+        if (iter != end)
+            error_handler(iter, "Error! Expecting end of input here: ");
+        else
+            std::cerr << "SUCCESSFUL parsing" << std::endl;
+    } else
+        std::cerr << "Wrong parsing" << std::endl;
+
+    std::cout << boolE.to_string() << std::endl;
+
+    // --- Evaluation testing --- //
+
+    // Variable context with initial values
+    absl::flat_hash_map<std::string, int> variables = {
+        { "L", 0 },
+        { "A", 10 },
+        { "B", 9 }
+    };
+
+    bool result = boolE.evaluate(variables);
+
+    std::cout << "Evaluated with result: " << result << std::endl;
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -250,7 +306,7 @@ int main()
 #endif
 
 
-    testExpression();
+    testBooleanExpression();
 
 
 #ifdef REGION_TIMING

@@ -53,16 +53,25 @@ namespace parser
     struct arithmeticExpr_class;
     struct variable_class;
     struct assignmentExpr_class;
+    struct comparisonExpr_class;
+    struct booleanTerm_class;
+    struct booleanExpr_class;
 
     using variable_type = x3::rule<variable_class, expr::ast::variable>;
     using assignmentExpr_type = x3::rule<assignmentExpr_class, expr::ast::assignmentExpr>;
+    using comparisonExpr_type = x3::rule<comparisonExpr_class, expr::ast::comparisonExpr>;
+    using booleanExpr_type = x3::rule<booleanExpr_class, expr::ast::booleanExpr>;
 
-    BOOST_SPIRIT_DECLARE(variable_type, assignmentExpr_type);
+    BOOST_SPIRIT_DECLARE(variable_type, assignmentExpr_type, comparisonExpr_type, booleanExpr_type);
 
 
     variable_type variable();
 
     assignmentExpr_type assignmentExpr();
+
+    comparisonExpr_type comparisonExpr();
+
+    booleanExpr_type booleanExpr();
 }
 
 #endif //TIMED_AUTOMATON_H

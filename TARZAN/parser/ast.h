@@ -2,6 +2,7 @@
 #define AST_H
 
 #include "enums/arithmetic_enum.h"
+#include "enums/boolean_op_enum.h"
 #include "enums/comparison_op_enum.h"
 #include "enums/input_output_action_enum.h"
 
@@ -65,9 +66,9 @@
 
 // TODO: cambiare la chiave della mappa delle funzioni evaluate da stringa a intero (ti serve un mapping da stringhe ad interi come fai per i clock e le locations).
 
-// TODO: devi parse le variabili intere e salvarle in una mappa "globale" (la mappa globale sarà del RTS e RTSNetwork)
+// TODO: devi parse le variabili intere e salvarle in una mappa "globale" (la mappa globale sarà del RTS e RTSNetwork).
 
-// TODO: ti mancano le espressioni booleane per le variabili intere.
+// TODO: fai un overload dell'operatore << per le espressioni.
 
 // Reference examples for expression parser:
 // https://wandbox.org/permlink/YlVEPhgKPNMiKADh
@@ -162,6 +163,81 @@ namespace expr::ast
 
         [[nodiscard]] std::string to_string() const;
     };
+
+
+    /// A comparison expression between arithmetic expressions.
+    struct comparisonExpr
+    {
+        arithmeticExpr left_expr;
+        comparison_op op;
+        arithmeticExpr right_expr;
+
+
+        /**
+         * @brief Evaluates a comparison expression.
+         *
+         * @param variables a map from variables to their integer values (is updated in the function).
+         * @return the result of the comparison.
+         * @throws std::runtime_error if evaluation fails.
+         */
+        [[nodiscard]] bool evaluate(const absl::flat_hash_map<std::string, int> &variables) const;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    // Forward declaring this struct so that it can be used in the structs below.
+    struct booleanBinaryExpr;
+
+
+    /// A boolean expression which can contain booleans and comparison expressions.
+    struct booleanExpr
+    {
+        std::variant<bool, comparisonExpr, boost::spirit::x3::forward_ast<booleanBinaryExpr>> value;
+
+
+        // Implicit constructors
+        booleanExpr() = default;
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        booleanExpr(bool v) : value(v) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        booleanExpr(comparisonExpr v) : value(std::move(v)) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        booleanExpr(boost::spirit::x3::forward_ast<booleanBinaryExpr> v) : value(std::move(v)) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        booleanExpr(booleanBinaryExpr const &v);
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        booleanExpr(booleanBinaryExpr &&v);
+
+
+        [[nodiscard]] bool evaluate(const absl::flat_hash_map<std::string, int> &variables) const;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    /// A boolean binary expression.
+    struct booleanBinaryExpr
+    {
+        booleanExpr left_expr;
+        boolean_op op;
+        booleanExpr right_expr;
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    // Implementing the deferred constructors after booleanBinaryExpr is complete.
+    // Needed to break circular dependencies at compile time, as it happens, for example, when declaring a constructor of booleanExpr passing a booleanBinaryExpr.
+    inline booleanExpr::booleanExpr(booleanBinaryExpr const &v) : value(boost::spirit::x3::forward_ast(v)) {}
+    inline booleanExpr::booleanExpr(booleanBinaryExpr &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
 }
 
 
