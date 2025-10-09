@@ -507,6 +507,42 @@ namespace timed_automaton::ast
 }
 
 
+inline std::ostream &operator<<(std::ostream &os, const expr::ast::arithmeticExpr &a)
+{
+    return os << a.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const expr::ast::binaryExpr &b)
+{
+    return os << b.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const expr::ast::assignmentExpr &a)
+{
+    return os << a.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const expr::ast::comparisonExpr &c)
+{
+    return os << c.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const expr::ast::booleanExpr &b)
+{
+    return os << b.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const expr::ast::booleanBinaryExpr &b)
+{
+    return os << b.to_string();
+}
+
+
 inline std::ostream &operator<<(std::ostream &os, const timed_automaton::ast::clockConstraint &g)
 {
     return os << g.to_string();

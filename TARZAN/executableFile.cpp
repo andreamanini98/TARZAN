@@ -280,7 +280,7 @@ void testBooleanExpression()
     } else
         std::cerr << "Wrong parsing" << std::endl;
 
-    std::cout << boolE.to_string() << std::endl;
+    std::cout << boolE << std::endl;
 
     // --- Evaluation testing --- //
 
@@ -312,7 +312,7 @@ int main()
 #endif
 
 
-    testRTS();
+    testBooleanExpression();
 
 
 #ifdef REGION_TIMING
