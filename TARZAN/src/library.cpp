@@ -44,7 +44,7 @@ timed_automaton::ast::timedArena parseTimedArena(std::string const &path)
         if (iter != end)
             error_handler(iter, "Error! Expecting end of input here: ");
         else
-            std::cerr << "SUCCESSFUL parsing" << std::endl;
+            std::cout << "Successful parsing\n\n" << std::endl;
     } else
         std::cerr << "Wrong parsing" << std::endl;
 
@@ -84,7 +84,7 @@ timed_automaton::ast::timedAutomaton parseTimedAutomaton(std::string const &path
         if (iter != end)
             error_handler(iter, "Error! Expecting end of input here: ");
         else
-            std::cerr << "SUCCESSFUL parsing" << std::endl;
+            std::cout << "Successful parsing\n\n" << std::endl;
     } else
         std::cerr << "Wrong parsing" << std::endl;
 

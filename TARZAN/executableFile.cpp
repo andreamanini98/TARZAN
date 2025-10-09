@@ -210,7 +210,7 @@ void testExpression()
         if (iter != end)
             error_handler(iter, "Error! Expecting end of input here: ");
         else
-            std::cerr << "SUCCESSFUL parsing" << std::endl;
+            std::cout << "SUCCESSFUL parsing" << std::endl;
     } else
         std::cerr << "Wrong parsing" << std::endl;
 
@@ -276,7 +276,7 @@ void testBooleanExpression()
         if (iter != end)
             error_handler(iter, "Error! Expecting end of input here: ");
         else
-            std::cerr << "SUCCESSFUL parsing" << std::endl;
+            std::cout << "SUCCESSFUL parsing" << std::endl;
     } else
         std::cerr << "Wrong parsing" << std::endl;
 
@@ -312,7 +312,7 @@ int main()
 #endif
 
 
-    testBooleanExpression();
+    testRTS();
 
 
 #ifdef REGION_TIMING
