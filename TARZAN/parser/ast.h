@@ -47,7 +47,7 @@
 //                       <literal>
 //                       ')'
 //
-//  <guard_rule> -> '[' <clock_constraint_rule> (, <clock_constraint_rule>)* ']'
+//  <guard_rule> -> '[' (eps | <clock_constraint_rule> (, <clock_constraint_rule>)*) ']'
 //
 //  <actions_rule> -> <literal> (eps | <input_output_action>)
 //

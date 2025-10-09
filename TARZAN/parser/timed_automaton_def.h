@@ -284,7 +284,7 @@ namespace parser
             > literal > lit(',')
             > action_pair_rule > lit(',')
             > lit('[')
-            > clockConstraint_rule % ','
+            > -(clockConstraint_rule % ',') // A transition may not have a clock guard at all.
             > lit(']') > lit(',')
             > lit('[')
             > -(literal % ',') // Since a transition may have no clocks to reset, we put the unused - symbol to match no reset clocks at all.
@@ -440,11 +440,13 @@ namespace timed_automaton
         return parser::clockConstraint_rule;
     }
 
+
     // NOLINTNEXTLINE
     inline parser::locationContent_type locationContent()
     {
         return parser::locationContent_rule;
     }
+
 
     // NOLINTNEXTLINE
     inline parser::transition_type transition()
@@ -452,11 +454,13 @@ namespace timed_automaton
         return parser::transition_rule;
     }
 
+
     // NOLINTNEXTLINE
     inline parser::timedAutomaton_type timedAutomaton()
     {
         return parser::timedAutomaton_rule;
     }
+
 
     // NOLINTNEXTLINE
     inline parser::timedArena_type timedArena()
@@ -474,11 +478,13 @@ namespace expr
         return parser::variable_rule;
     }
 
+
     // NOLINTNEXTLINE
     inline parser::assignmentExpr_type assignmentExpr()
     {
         return parser::assignmentExpr_rule;
     }
+
 
     // NOLINTNEXTLINE
     inline parser::booleanExpr_type booleanExpr()
