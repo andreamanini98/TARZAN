@@ -180,7 +180,7 @@ void testExpression()
     // -- Parse testing --- //
 
     // Parse an expression from a file.
-    std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp";
+    std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/expressions/simple_assignment.txt";
     std::stringstream out;
     const std::string source = readFromFile(path);
 
@@ -225,7 +225,7 @@ void testExpression()
         { "B", 2 }
     };
 
-    std::cout << "\n\nL value before: " << variables["L"] << std::endl;
+    std::cout << "\nL value before: " << variables["L"] << std::endl;
 
     const auto start = std::chrono::high_resolution_clock::now();
 
