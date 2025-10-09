@@ -114,7 +114,6 @@ namespace parser
 
     constexpr x3::rule<arithmeticExpr_class, expr::ast::arithmeticExpr> arithmeticExpr_rule = "arithmeticExpr_rule";
     constexpr x3::rule<variable_class, expr::ast::variable> variable_rule = "variable_rule";
-    constexpr x3::rule<binaryExpr_class, expr::ast::binaryExpr> binaryExpr_rule = "binaryExpr_rule";
     constexpr x3::rule<assignmentExpr_class, expr::ast::assignmentExpr> assignmentExpr_rule = "assignmentExpr_rule";
 
     constexpr x3::rule<action_pair_class, timed_automaton::ast::act> action_pair_rule = "action_pair_rule";
@@ -171,12 +170,6 @@ namespace parser
 
     inline auto arithmeticExpr_rule_def =
             additive_rule;
-
-    // TODO: se funziona tutto, togliere questa definizione (da qui e dagli altri file).
-    inline auto binaryExpr_rule_def =
-            arithmeticExpr_rule
-            > arith_op
-            > arithmeticExpr_rule;
 
     inline auto assignmentExpr_rule_def =
             variable_rule
@@ -288,7 +281,6 @@ namespace parser
                         additive_rule,
                         arithmeticExpr_rule,
                         variable_rule,
-                        binaryExpr_rule,
                         assignmentExpr_rule,
                         action_pair_rule,
                         loc_pair_rule,
@@ -396,12 +388,6 @@ namespace expr
     inline parser::variable_type variable()
     {
         return parser::variable_rule;
-    }
-
-
-    inline parser::binaryExpr_type binaryExpr()
-    {
-        return parser::binaryExpr_rule;
     }
 
 

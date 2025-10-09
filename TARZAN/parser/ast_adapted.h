@@ -8,7 +8,7 @@
 
 // We do not need to adapt the 'variable' struct, as it consists only of one field (and we construct it with a semantic action).
 
-BOOST_FUSION_ADAPT_STRUCT(expr::ast::binaryExpr, left_expr, op, right_expr)
+// We do not need to adapt the 'binaryExpr' struct, as we construct it with a semantic action.
 
 BOOST_FUSION_ADAPT_STRUCT(expr::ast::assignmentExpr, lhs, rhs)
 

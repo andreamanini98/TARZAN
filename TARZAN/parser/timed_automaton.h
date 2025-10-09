@@ -52,19 +52,15 @@ namespace parser
     struct additive_class;
     struct arithmeticExpr_class;
     struct variable_class;
-    struct binaryExpr_class;
     struct assignmentExpr_class;
 
     using variable_type = x3::rule<variable_class, expr::ast::variable>;
-    using binaryExpr_type = x3::rule<binaryExpr_class, expr::ast::binaryExpr>;
     using assignmentExpr_type = x3::rule<assignmentExpr_class, expr::ast::assignmentExpr>;
 
-    BOOST_SPIRIT_DECLARE(variable_type, binaryExpr_type, assignmentExpr_type);
+    BOOST_SPIRIT_DECLARE(variable_type, assignmentExpr_type);
 
 
     variable_type variable();
-
-    binaryExpr_type binaryExpr();
 
     assignmentExpr_type assignmentExpr();
 }
