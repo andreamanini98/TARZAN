@@ -63,6 +63,12 @@
 
 // TODO: aggiornare la grammatica di Liana.
 
+// TODO: cambiare la chiave della mappa delle funzioni evaluate da stringa a intero (ti serve un mapping da stringhe ad interi come fai per i clock e le locations).
+
+// TODO: devi parse le variabili intere e salvarle in una mappa "globale" (la mappa globale sarà del RTS e RTSNetwork)
+
+// TODO: ti mancano le espressioni booleane per le variabili intere.
+
 // Reference examples for expression parser:
 // https://wandbox.org/permlink/YlVEPhgKPNMiKADh
 // https://www.boost.org/doc/libs/1_67_0/libs/spirit/example/x3/rexpr/rexpr_min/rexpr.cpp
@@ -105,11 +111,21 @@ namespace expr::ast
         arithmeticExpr(binaryExpr &&v);
 
 
+        /**
+         * @brief Evaluates an arithmetic expression given a variable context.
+         *
+         * @param variables a map from variables to their integer values.
+         * @return the integer result of the evaluation.
+         * @throws std::runtime_error if a variable is not found or division by zero occurs.
+         */
+        [[nodiscard]] int evaluate(const absl::flat_hash_map<std::string, int> &variables) const;
+
+
         [[nodiscard]] std::string to_string() const;
     };
 
 
-    /// A binary expression. We do not need to adapt it, nor define a grammar for it, since we directly generate it with semantic actions.
+    /// A binary expression. We do not need to adapt this nor define a grammar for it, since we directly generate it with semantic actions.
     struct binaryExpr
     {
         arithmeticExpr left_expr;
@@ -132,6 +148,16 @@ namespace expr::ast
     {
         variable lhs;
         arithmeticExpr rhs;
+
+
+        /**
+         * @brief Evaluates an assignment expression and updates the variable context.
+         *
+         * @param variables a map from variables to their integer values (is updated in the function).
+         * @return the integer value assigned to the left-hand side variable.
+         * @throws std::runtime_error if evaluation fails.
+         */
+        [[nodiscard]] int evaluate(absl::flat_hash_map<std::string, int> &variables) const;
 
 
         [[nodiscard]] std::string to_string() const;

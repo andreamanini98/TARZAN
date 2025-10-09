@@ -160,6 +160,8 @@ void testExpression()
 {
     using namespace expr::ast;
 
+    // --- Manual testing --- //
+
     // Build a small expression by hand: L = L + 1 * (3 + N).
     assignmentExpr a;
     a.lhs.name = "L";
@@ -169,11 +171,13 @@ void testExpression()
         binaryExpr{
             1,
             MUL,
-            binaryExpr{3, ADD, variable{ "N" } }
+            binaryExpr{ 3, ADD, variable{ "N" } }
         }
     };
 
     std::cout << a.to_string() << "\n";
+
+    // -- Parse testing --- //
 
     // Parse an expression from a file.
     std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp";
@@ -211,6 +215,29 @@ void testExpression()
         std::cerr << "Wrong parsing" << std::endl;
 
     std::cout << ass.to_string() << std::endl;
+
+    // --- Evaluation testing --- //
+
+    // Variable context with initial values
+    absl::flat_hash_map<std::string, int> variables = {
+        {"L", 0},
+        { "A", 10 },
+        { "B", 2 }
+    };
+
+    std::cout << "\n\nL value before: " << variables["L"] << std::endl;
+
+    const auto start = std::chrono::high_resolution_clock::now();
+
+    int result = ass.evaluate(variables);
+
+    const auto end_time = std::chrono::high_resolution_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start);
+    std::cout << "Evaluation took: " << duration.count() << " microseconds" << std::endl;
+
+    std::cout << "Evaluated with result: " << result << std::endl;
+
+    std::cout << "L value after: " << variables["L"] << std::endl;
 }
 
 

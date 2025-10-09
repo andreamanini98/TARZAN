@@ -8,6 +8,49 @@ using transition = timed_automaton::ast::transition;
 
 // Arithmetic expr class.
 
+int expr::ast::arithmeticExpr::evaluate(const absl::flat_hash_map<std::string, int> &variables) const
+{
+    return std::visit([&variables]<typename T0>(T0 const &val) -> int {
+        using T = std::decay_t<T0>;
+
+        if constexpr (std::is_same_v<T, int>)
+            // Base case: integer literal
+            return val;
+        else if constexpr (std::is_same_v<T, variable>)
+        {
+            // Base case: variable lookup
+            auto it = variables.find(val.name);
+            if (it == variables.end())
+                throw std::runtime_error("Variable '" + val.name + "' not found");
+            return it->second;
+        } else // boost::spirit::x3::forward_ast<binaryExpr>
+        {
+            // Recursive case: binary expression
+            const binaryExpr &binExpr = val.get();
+
+            const int leftVal = binExpr.left_expr.evaluate(variables);
+            const int rightVal = binExpr.right_expr.evaluate(variables);
+
+            switch (binExpr.op)
+            {
+                case ADD:
+                    return leftVal + rightVal;
+                case SUB:
+                    return leftVal - rightVal;
+                case MUL:
+                    return leftVal * rightVal;
+                case DIV:
+                    if (rightVal == 0)
+                        throw std::runtime_error("Division by zero");
+                    return leftVal / rightVal;
+                default:
+                    throw std::runtime_error("Unknown arithmetic   operator");
+            }
+        }
+    }, value);
+}
+
+
 std::string expr::ast::arithmeticExpr::to_string() const
 {
     std::ostringstream oss;
@@ -18,7 +61,7 @@ std::string expr::ast::arithmeticExpr::to_string() const
         if constexpr (std::is_same_v<T, int>)
             // We must print an integer.
             return std::to_string(val);
-        else if constexpr (std::is_same_v<T, expr::ast::variable>)
+        else if constexpr (std::is_same_v<T, variable>)
             // We must print a string (the variable name).
             return val.name;
         else
@@ -47,6 +90,18 @@ std::string expr::ast::binaryExpr::to_string() const
 
 
 // Assignment class.
+
+int expr::ast::assignmentExpr::evaluate(absl::flat_hash_map<std::string, int> &variables) const
+{
+    // Evaluate the right-hand side.
+    const int result = rhs.evaluate(variables);
+
+    // Assign the result to the left-hand side variable.
+    variables[lhs.name] = result;
+
+    return result;
+}
+
 
 std::string expr::ast::assignmentExpr::to_string() const
 {
