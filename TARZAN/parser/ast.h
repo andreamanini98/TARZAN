@@ -68,8 +68,6 @@
 
 // TODO: devi parse le variabili intere e salvarle in una mappa "globale" (la mappa globale sarà del RTS e RTSNetwork).
 
-// TODO: fai un overload dell'operatore << per le espressioni.
-
 // Reference examples for expression parser:
 // https://wandbox.org/permlink/YlVEPhgKPNMiKADh
 // https://www.boost.org/doc/libs/1_67_0/libs/spirit/example/x3/rexpr/rexpr_min/rexpr.cpp
