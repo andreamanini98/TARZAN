@@ -59,16 +59,25 @@ namespace parser
         }
     } assign_op;
 
-    inline struct bool_op : x3::symbols<boolean_op>
+    inline struct and_op : x3::symbols<boolean_op>
     {
-        bool_op()
+        and_op()
         {
             auto &self = add
-                    ("&&", AND)
+                    ("&&", AND);
+            (void) self;
+        }
+    } and_op;
+
+    inline struct or_op : x3::symbols<boolean_op>
+    {
+        or_op()
+        {
+            auto &self = add
                     ("||", OR);
             (void) self;
         }
-    } bool_op;
+    } or_op;
 
     inline struct comp_op : x3::symbols<comparison_op>
     {
@@ -126,6 +135,9 @@ namespace parser
     constexpr x3::rule<arithmeticExpr_class, expr::ast::arithmeticExpr> arithmeticExpr_rule = "arithmeticExpr_rule";
     constexpr x3::rule<variable_class, expr::ast::variable> variable_rule = "variable_rule";
     constexpr x3::rule<assignmentExpr_class, expr::ast::assignmentExpr> assignmentExpr_rule = "assignmentExpr_rule";
+
+    constexpr x3::rule<booleanAndTerm_class, expr::ast::booleanExpr> booleanAndTerm_rule = "booleanAndTerm_rule";
+    constexpr x3::rule<booleanOrTerm_class, expr::ast::booleanExpr> booleanOrTerm_rule = "booleanOrTerm_rule";
 
     constexpr x3::rule<comparisonExpr_class, expr::ast::comparisonExpr> comparisonExpr_rule = "comparisonExpr_rule";
     constexpr x3::rule<booleanTerm_class, expr::ast::booleanExpr> booleanTerm_rule = "booleanTerm_rule";
@@ -191,23 +203,39 @@ namespace parser
             variable_rule
             > lit('=') > arithmeticExpr_rule;
 
-    inline auto const comparisonExpr_rule_def =
-            arithmeticExpr_rule
-            > comp_op
-            > arithmeticExpr_rule;
-
+    // The parsing of booleanExpr must happen first to avoid ambiguities with primary_rule.
     inline auto booleanTerm_rule_def =
-            comparisonExpr_rule
-            | lit('(') > booleanExpr_rule > lit(')');
+            lit('(') > booleanOrTerm_rule > lit(')')
+            | comparisonExpr_rule
+            | bool_;
 
-    inline auto booleanExpr_rule_def =
+    // Logical AND (&&) has higher precedence than OR (||).
+    inline auto booleanAndTerm_rule_def =
             booleanTerm_rule[([](auto &ctx) { _val(ctx) = _attr(ctx); })]
-            > *(bool_op > booleanTerm_rule)[([](auto &ctx) {
+            > *(and_op > booleanTerm_rule)[([](auto &ctx) {
                 auto &val = _val(ctx);
                 const auto op = boost::get<boolean_op>(at_c<0>(_attr(ctx)));
                 const auto &right = at_c<1>(_attr(ctx));
                 val = expr::ast::booleanBinaryExpr{ std::move(val), op, std::move(right) };
             })];
+
+    // Logical OR (||) has lower precedence than AND (&&).
+    inline auto booleanOrTerm_rule_def =
+            booleanAndTerm_rule[([](auto &ctx) { _val(ctx) = _attr(ctx); })]
+            > *(or_op > booleanAndTerm_rule)[([](auto &ctx) {
+                auto &val = _val(ctx);
+                const auto op = boost::get<boolean_op>(at_c<0>(_attr(ctx)));
+                const auto &right = at_c<1>(_attr(ctx));
+                val = expr::ast::booleanBinaryExpr{ std::move(val), op, std::move(right) };
+            })];
+
+    inline auto const comparisonExpr_rule_def =
+            arithmeticExpr_rule
+            > comp_op
+            > arithmeticExpr_rule;
+
+    inline auto booleanExpr_rule_def =
+            booleanOrTerm_rule;
 
     // --- TIMED AUTOMATON AND ARENA RULES --- //
 
@@ -316,8 +344,10 @@ namespace parser
                         arithmeticExpr_rule,
                         variable_rule,
                         assignmentExpr_rule,
-                        comparisonExpr_rule,
                         booleanTerm_rule,
+                        booleanAndTerm_rule,
+                        booleanOrTerm_rule,
+                        comparisonExpr_rule,
                         booleanExpr_rule,
                         action_pair_rule,
                         loc_pair_rule,
@@ -340,7 +370,7 @@ namespace parser
     struct additive_class : success_handler
     {};
 
-    struct arithmetic_expr_class : success_handler
+    struct arithmeticExpr_class : success_handler
     {};
 
     struct variable_class : success_handler
@@ -352,10 +382,16 @@ namespace parser
     struct assignmentExpr_class : error_handler_base, success_handler
     {};
 
-    struct comparisonExpr_class : success_handler
+    struct booleanTerm_class : success_handler
     {};
 
-    struct booleanTerm_class : success_handler
+    struct booleanAndTerm_class : success_handler
+    {};
+
+    struct booleanOrTerm_class : success_handler
+    {};
+
+    struct comparisonExpr_class : success_handler
     {};
 
     struct booleanExpr_class : error_handler_base, success_handler

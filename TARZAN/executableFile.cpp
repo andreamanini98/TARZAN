@@ -291,7 +291,13 @@ void testBooleanExpression()
         { "B", 9 }
     };
 
+    const auto start = std::chrono::high_resolution_clock::now();
+
     bool result = boolE.evaluate(variables);
+
+    const auto end_time = std::chrono::high_resolution_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start);
+    std::cout << "Evaluation took: " << duration.count() << " microseconds" << std::endl;
 
     std::cout << "Evaluated with result: " << result << std::endl;
 }

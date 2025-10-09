@@ -55,11 +55,12 @@ namespace parser
     struct assignmentExpr_class;
     struct comparisonExpr_class;
     struct booleanTerm_class;
+    struct booleanAndTerm_class;
+    struct booleanOrTerm_class;
     struct booleanExpr_class;
 
     using variable_type = x3::rule<variable_class, expr::ast::variable>;
     using assignmentExpr_type = x3::rule<assignmentExpr_class, expr::ast::assignmentExpr>;
-    using comparisonExpr_type = x3::rule<comparisonExpr_class, expr::ast::comparisonExpr>;
     using booleanExpr_type = x3::rule<booleanExpr_class, expr::ast::booleanExpr>;
 
     BOOST_SPIRIT_DECLARE(variable_type, assignmentExpr_type, booleanExpr_type);
