@@ -104,9 +104,9 @@ namespace parser
         }
     } io_act;
 
-    inline struct is_ini_loc : x3::symbols<bool>
+    inline struct my_boolean : x3::symbols<bool>
     {
-        is_ini_loc()
+        my_boolean()
         {
             auto &self = add
                     ("T", true)
@@ -115,7 +115,7 @@ namespace parser
                     ("false", false);
             (void) self;
         }
-    } is_ini_loc;
+    } my_boolean;
 
 
     namespace x3 = boost::spirit::x3;
@@ -207,7 +207,7 @@ namespace parser
     inline auto booleanTerm_rule_def =
             lit('(') > booleanOrTerm_rule > lit(')')
             | comparisonExpr_rule
-            | bool_;
+            | my_boolean;
 
     // Logical AND (&&) has higher precedence than OR (||).
     inline auto booleanAndTerm_rule_def =
@@ -272,7 +272,7 @@ namespace parser
 
     inline auto locationContent_rule_def =
             lit('<')
-            > (lit("ini") > lit(':') > is_ini_loc
+            > (lit("ini") > lit(':') > my_boolean
                > -(lit(',') > lit("inv") > lit(':') > lit('[') > clockConstraint_rule % ',' > lit(']'))
                |
                x3::attr(false)

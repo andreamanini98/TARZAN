@@ -16,9 +16,8 @@
 // TODO: avoid code duplication (if possible).
 
 
-// The following is the grammar for the Liana DSL used to create Timed Automata (STILL NEED TO DEFINE THE TIMED ARENA ONE).
+// The following is the grammar for the Liana DSL used to create Timed Automata.
 // Whether the actions are input or output actions must be specified only in the transitions.
-// Up to now, it is better to specify clock constraints for clocks that should not appear in a guard as x >= 0.
 // T and F are syntax sugar for true and false.
 //
 //  <automaton> -> 'create' 'automaton' <literal>
@@ -60,9 +59,40 @@
 //  <int> -> '1..9'('0..9')*
 //
 //  <literal> -> ('a..z' | 'A..Z' | '0..9' | '_' )+
+//
+//
+// The following is the grammar of expressions.
+//
+//  <assignment_expr> -> <variable> '=' <arithmetic_expr>
+//
+//  <arithmetic_expr> -> <additive_expr>
+//
+//  <additive_expr> -> <multiplicative_expr> (<add_op> <multiplicative_expr>)*
+//
+//  <multiplicative_expr> -> <primary_expr> (<mult_op> <primary_expr>)*
+//
+//  <primary_expr> -> <int> | <variable> | '(' <additive_expr> ')'
+//
+//  <variable> -> <literal>
+//
+//  <add_op> -> '+' | '-'
+//
+//  <mult_op> -> '*' | '/'
+//
+//  <boolean_expr> -> <boolean_or_expr>
+//
+//  <boolean_or_expr> -> <boolean_and_expr> (<or_op> <boolean_and_expr>)*
+//
+//  <boolean_and_expr> -> <boolean_term> (<and_op> <boolean_term>)*
+//
+//  <boolean_term> -> '(' <boolean_or_expr> ')' | <comparison_expr> | <bool>
+//
+//  <comparison_expr> <arithmetic_expr> <comparison_operator> <arithmetic_expr>
+//
+//  <or_op> -> ||
+//
+//  <and_op> -> &&
 
-
-// TODO: aggiornare la grammatica di Liana.
 
 // TODO: cambiare la chiave della mappa delle funzioni evaluate da stringa a intero (ti serve un mapping da stringhe ad interi come fai per i clock e le locations).
 
