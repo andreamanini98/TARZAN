@@ -146,6 +146,7 @@ namespace parser
     constexpr x3::rule<timedAutomaton_class, timed_automaton::ast::timedAutomaton> timedAutomaton_rule = "timedAutomaton_rule";
     constexpr x3::rule<timedArena_class, timed_automaton::ast::timedArena> timedArena_rule = "timedArena_rule";
 
+
     inline auto literal =
             lexeme[+char_("a-zA-Z0-9_")];
 
@@ -439,12 +440,6 @@ namespace expr
     inline parser::assignmentExpr_type assignmentExpr()
     {
         return parser::assignmentExpr_rule;
-    }
-
-
-    inline parser::comparisonExpr_type comparisonExpr()
-    {
-        return parser::comparisonExpr_rule;
     }
 
 

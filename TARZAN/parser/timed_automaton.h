@@ -62,14 +62,12 @@ namespace parser
     using comparisonExpr_type = x3::rule<comparisonExpr_class, expr::ast::comparisonExpr>;
     using booleanExpr_type = x3::rule<booleanExpr_class, expr::ast::booleanExpr>;
 
-    BOOST_SPIRIT_DECLARE(variable_type, assignmentExpr_type, comparisonExpr_type, booleanExpr_type);
+    BOOST_SPIRIT_DECLARE(variable_type, assignmentExpr_type, booleanExpr_type);
 
 
     variable_type variable();
 
     assignmentExpr_type assignmentExpr();
-
-    comparisonExpr_type comparisonExpr();
 
     booleanExpr_type booleanExpr();
 }
