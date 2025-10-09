@@ -434,30 +434,31 @@ namespace parser
 
 namespace timed_automaton
 {
+    // NOLINTNEXTLINE
     inline parser::clockConstraint_type clockConstraint()
     {
         return parser::clockConstraint_rule;
     }
 
-
+    // NOLINTNEXTLINE
     inline parser::locationContent_type locationContent()
     {
         return parser::locationContent_rule;
     }
 
-
+    // NOLINTNEXTLINE
     inline parser::transition_type transition()
     {
         return parser::transition_rule;
     }
 
-
+    // NOLINTNEXTLINE
     inline parser::timedAutomaton_type timedAutomaton()
     {
         return parser::timedAutomaton_rule;
     }
 
-
+    // NOLINTNEXTLINE
     inline parser::timedArena_type timedArena()
     {
         return parser::timedArena_rule;
@@ -467,18 +468,19 @@ namespace timed_automaton
 
 namespace expr
 {
+    // NOLINTNEXTLINE
     inline parser::variable_type variable()
     {
         return parser::variable_rule;
     }
 
-
+    // NOLINTNEXTLINE
     inline parser::assignmentExpr_type assignmentExpr()
     {
         return parser::assignmentExpr_rule;
     }
 
-
+    // NOLINTNEXTLINE
     inline parser::booleanExpr_type booleanExpr()
     {
         return parser::booleanExpr_rule;
