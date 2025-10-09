@@ -61,10 +61,6 @@
 //  <literal> -> ('a..z' | 'A..Z' | '0..9' | '_' )+
 
 
-// TODO: chiedere a claude come fare per avere una precedenza tra * / e + -.
-
-// TODO: aggiungere espressioni unarie.
-
 // TODO: aggiornare la grammatica di Liana.
 
 // Reference examples for expression parser:
@@ -113,7 +109,7 @@ namespace expr::ast
     };
 
 
-    /// A binary expression.
+    /// A binary expression. We do not need to adapt it, nor define a grammar for it, since we directly generate it with semantic actions.
     struct binaryExpr
     {
         arithmeticExpr left_expr;

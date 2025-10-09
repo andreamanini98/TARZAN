@@ -13,6 +13,7 @@
 
 namespace parser
 {
+    // Symbol tables.
     inline struct arith_op : x3::symbols<arithmetic_op>
     {
         arith_op()
@@ -25,6 +26,28 @@ namespace parser
             (void) self;
         }
     } arith_op;
+
+    inline struct mult_op : x3::symbols<arithmetic_op>
+    {
+        mult_op()
+        {
+            auto &self = add
+                    ("*", MUL)
+                    ("/", DIV);
+            (void) self;
+        }
+    } mult_op;
+
+    inline struct add_op : x3::symbols<arithmetic_op>
+    {
+        add_op()
+        {
+            auto &self = add
+                    ("+", ADD)
+                    ("-", SUB);
+            (void) self;
+        }
+    } add_op;
 
     inline struct assign_op : x3::symbols<assignment_op>
     {
@@ -85,6 +108,10 @@ namespace parser
     using ascii::char_;
     using x3::bool_;
 
+    constexpr x3::rule<primary_class, expr::ast::arithmeticExpr> primary_rule = "primary_rule";
+    constexpr x3::rule<multiplicative_class, expr::ast::arithmeticExpr> multiplicative_rule = "multiplicative_rule";
+    constexpr x3::rule<additive_class, expr::ast::arithmeticExpr> additive_rule = "additive_rule";
+
     constexpr x3::rule<arithmeticExpr_class, expr::ast::arithmeticExpr> arithmeticExpr_rule = "arithmeticExpr_rule";
     constexpr x3::rule<variable_class, expr::ast::variable> variable_rule = "variable_rule";
     constexpr x3::rule<binaryExpr_class, expr::ast::binaryExpr> binaryExpr_rule = "binaryExpr_rule";
@@ -108,15 +135,44 @@ namespace parser
     inline auto literal =
             lexeme[+char_("a-zA-Z0-9_")];
 
+    // --- EXPRESSION RULES --- //
+
     // We explicitly construct a variable using a semantic action.
     inline auto const variable_rule_def =
             literal[([](auto &ctx) { _val(ctx) = expr::ast::variable{ _attr(ctx) }; })];
 
-    inline auto arithmeticExpr_rule_def =
+    // Primary expressions used to avoid infinite recursion during parsing.
+    inline auto primary_rule_def =
             int_
             | variable_rule
-            | lit('(') > binaryExpr_rule > lit(')');
+            | lit('(') > additive_rule > lit(')');
 
+    // Multiplicative expressions that have higher precedence than additive expressions.
+    // We directly construct a binary expression using a semantic action.
+    inline auto multiplicative_rule_def =
+            primary_rule[([](auto &ctx) { _val(ctx) = _attr(ctx); })]
+            > *(mult_op > primary_rule)[([](auto &ctx) {
+                auto &val = _val(ctx);
+                const auto op = boost::get<arithmetic_op>(at_c<0>(_attr(ctx)));
+                const auto &right = at_c<1>(_attr(ctx));
+                val = expr::ast::binaryExpr{ std::move(val), op, std::move(right) };
+            })];
+
+    // Additive expressions that have lower precedence than multiplicative expressions.
+    // We directly construct a binary expression using a semantic action.
+    inline auto additive_rule_def =
+            multiplicative_rule[([](auto &ctx) { _val(ctx) = _attr(ctx); })]
+            > *(add_op > multiplicative_rule)[([](auto &ctx) {
+                auto &val = _val(ctx);
+                const auto op = boost::get<arithmetic_op>(at_c<0>(_attr(ctx)));
+                const auto &right = at_c<1>(_attr(ctx));
+                val = expr::ast::binaryExpr{ std::move(val), op, std::move(right) };
+            })];
+
+    inline auto arithmeticExpr_rule_def =
+            additive_rule;
+
+    // TODO: se funziona tutto, togliere questa definizione (da qui e dagli altri file).
     inline auto binaryExpr_rule_def =
             arithmeticExpr_rule
             > arith_op
@@ -125,6 +181,8 @@ namespace parser
     inline auto assignmentExpr_rule_def =
             variable_rule
             > lit('=') > arithmeticExpr_rule;
+
+    // --- TIMED AUTOMATON AND ARENA RULES --- //
 
     inline auto action_pair_rule_def =
             literal
@@ -225,7 +283,10 @@ namespace parser
             > lit('}')
             > lit('}');
 
-    BOOST_SPIRIT_DEFINE(arithmeticExpr_rule,
+    BOOST_SPIRIT_DEFINE(primary_rule,
+                        multiplicative_rule,
+                        additive_rule,
+                        arithmeticExpr_rule,
                         variable_rule,
                         binaryExpr_rule,
                         assignmentExpr_rule,
@@ -240,6 +301,15 @@ namespace parser
                         transition_rule,
                         timedAutomaton_rule,
                         timedArena_rule);
+
+    struct primary_class : success_handler
+    {};
+
+    struct multiplicative_class : success_handler
+    {};
+
+    struct additive_class : success_handler
+    {};
 
     struct arithmetic_expr_class : success_handler
     {};

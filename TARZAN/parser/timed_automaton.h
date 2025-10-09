@@ -47,6 +47,9 @@ namespace parser
 {
     namespace x3 = boost::spirit::x3;
 
+    struct primary_class;
+    struct multiplicative_class;
+    struct additive_class;
     struct arithmeticExpr_class;
     struct variable_class;
     struct binaryExpr_class;
