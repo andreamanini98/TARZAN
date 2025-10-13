@@ -16,7 +16,7 @@
 
 inline region::Region getRegion(int numSteps)
 {
-    region::Region reg(3);
+    region::Region reg(3, {});
 
     const auto newH = static_cast<int *>(malloc(sizeof(int) * 3));
     newH[0] = 0;
@@ -209,7 +209,7 @@ inline void testTransitionIsSatisfiable()
 
     std::cout << "Now trying to see if the transitions are satisfied:" << std::endl;
     for (const auto &tr: automaton.transitions)
-        std::cout << tr << ": \n" << tr.isGuardSatisfied(clockValuation, clocksIndices) << std::endl;
+        std::cout << tr << ": \n" << tr.isTransitionSatisfied(clockValuation, clocksIndices, {}) << std::endl;
 }
 
 
@@ -222,7 +222,7 @@ inline void testImmediateDiscreteSuccessors()
 
     std::cout << "\n\n\n";
 
-    region::Region reg(3);
+    region::Region reg(3, {});
 
     const auto newH = static_cast<int *>(malloc(sizeof(int) * 3));
     newH[0] = 0;
@@ -247,6 +247,8 @@ inline void testImmediateDiscreteSuccessors()
     std::cout << "Initial region: " << reg.toString() << std::endl;
 
     region::Region oldSuccessor = reg;
+
+    absl::flat_hash_map<std::string, int> values{};
 
     while (true)
     {
@@ -372,7 +374,7 @@ inline void testRTS()
     const std::string automatonFileName = "test_flower_small.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
-    const region::RTS regionTransitionSystem(automaton);
+    region::RTS regionTransitionSystem(automaton);
 
     //std::cout << "Location to Integer Mapping:\n";
     //for (const auto& [location, index] : automaton.mapLocationsToInt()) {
@@ -511,7 +513,7 @@ inline void testPermRegs()
 {
     // Creating a region with numOfClocks clocks.
     constexpr int numOfClocks = 5;
-    region::Region regToPerm(numOfClocks);
+    region::Region regToPerm(numOfClocks, {});
 
     // Creating q for regToPerm;
     constexpr int q = 3;
@@ -603,9 +605,11 @@ inline void testGetDiscretePredecessors()
     std::unordered_map<std::string, int> clockIndices = automaton.getClocksIndices();
     std::unordered_map<std::string, int> locationsAsIntMap = automaton.mapLocationsToInt();
 
-    region::Region initialRegion(numOfClocks);
+    region::Region initialRegion(numOfClocks, {});
 
     std::cout << initialRegion.toString() << std::endl;
+
+    absl::flat_hash_map<std::string, int> values{};
 
     std::vector<region::Region> regs = initialRegion.getImmediateDiscretePredecessors(transitions, clockIndices, locationsAsIntMap,
                                                                                       automaton.getMaxConstants(clockIndices));
@@ -660,7 +664,7 @@ inline void testDiscretePredecessorsLightSwitch()
 
     constexpr int numOfClocks = 1;
 
-    region::Region startingRegion(numOfClocks);
+    region::Region startingRegion(numOfClocks, {});
     startingRegion.set_q(1);
 
     const auto h = static_cast<int *>(malloc(sizeof(int) * numOfClocks));
@@ -679,7 +683,7 @@ inline void testDiscretePredecessorsLightSwitch()
 
     std::cout << startingRegion.toString() << std::endl;
 
-    const region::RTS regionTransitionSystem(automaton);
+    region::RTS regionTransitionSystem(automaton);
 
     std::vector<region::Region> regs{};
     regs.push_back(startingRegion);

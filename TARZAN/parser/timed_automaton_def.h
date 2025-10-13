@@ -286,9 +286,11 @@ namespace parser
             > lit('[')
             > -(clockConstraint_rule % ',') // A transition may not have a clock guard at all.
             > lit(']') > lit(',')
+            > -(booleanExpr_rule > lit(','))
             > lit('[')
             > -(literal % ',') // Since a transition may have no clocks to reset, we put the unused - symbol to match no reset clocks at all.
             > lit(']') > lit(',')
+            > -(lit('[') > assignmentExpr_rule % ',' > lit(']') > lit(','))
             > literal
             > lit(')');
 
@@ -305,6 +307,10 @@ namespace parser
             > lit('{')
             > literal % ',' > lit(';')
             > lit('}')
+            > -(lit("integers")
+                > lit('{')
+                > literal % ',' > lit(';')
+                > lit('}'))
             > lit("locations")
             > lit('{')
             > loc_map_rule > lit(';')
@@ -328,6 +334,10 @@ namespace parser
             > lit('{')
             > literal % ',' > lit(';')
             > lit('}')
+            > -(lit("integers")
+                > lit('{')
+                > literal % ',' > lit(';')
+                > lit('}'))
             > lit("locations")
             > lit('{')
             > arena_loc_map_rule > lit(';')

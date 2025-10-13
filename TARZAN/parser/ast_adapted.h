@@ -17,10 +17,10 @@ BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::clockConstraint, clock, constrai
 
 BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::locationContent, isInitial, invariant)
 
-BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::transition, startingLocation, action, clockGuard, clocksToReset, targetLocation)
+BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::transition, startingLocation, action, clockGuard, integerGuard, clocksToReset, integerAssignments, targetLocation)
 
-BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::timedAutomaton, name, clocks, actions, locations, transitions)
+BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::timedAutomaton, name, clocks, actions, integerVariables, locations, transitions)
 
-BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::timedArena, name, clocks, actions, locations, transitions)
+BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::timedArena, name, clocks, actions, integerVariables, locations, transitions)
 
 #endif //AST_ADAPTED_H

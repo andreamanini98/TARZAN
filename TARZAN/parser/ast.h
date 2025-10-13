@@ -11,6 +11,7 @@
 #include <ranges>
 #include <variant>
 #include "absl/container/flat_hash_map.h"
+#include "absl/container/btree_map.h"
 #include <boost/spirit/home/x3/support/ast/variant.hpp>
 
 // TODO: avoid code duplication (if possible).
@@ -19,6 +20,7 @@
 // The following is the grammar for the Liana DSL used to create Timed Automata.
 // Whether the actions are input or output actions must be specified only in the transitions.
 // T and F are syntax sugar for true and false.
+// Integer variables in Timed Automata are automatically initialized to 0. To overcome this, a transition can be added to initialize them in the Timed Automaton itself.
 //
 //  <automaton> -> 'create' 'automaton' <literal>
 //                 '{'
@@ -89,14 +91,21 @@
 //
 //  <comparison_expr> <arithmetic_expr> <comparison_operator> <arithmetic_expr>
 //
-//  <or_op> -> ||
+//  <or_op> -> '||'
 //
-//  <and_op> -> &&
+//  <and_op> -> '&&'
 
+// TODO: fare in modo che automi senza clock siano disponibili (forse devi modificare i delay successor, potresti vedere se sfruttare il caso della regione di classe U)
+//       Okkio ai delay predecessors, lì mi sa che la classe U non può essere sfruttata.
+
+// TODO: !!! MI SA CHE QUANDO CALCOLI UN PREDECESSORE, DEVI CONTROLLARE SE LA TRANSIZIONE È SODDISFATTA DA QUEL PREDECESSORE E, SE SÌ, AGGIUNGI IL PREDECESSORE AL RISUTATO
+//       Se è così devi aggiustare anche il paper.
+
+// TODO: aggiornare la grammatica di Liana con gli interi nelle transizioni e automi.
 
 // TODO: cambiare la chiave della mappa delle funzioni evaluate da stringa a intero (ti serve un mapping da stringhe ad interi come fai per i clock e le locations).
 
-// TODO: devi parse le variabili intere e salvarle in una mappa "globale" (la mappa globale sarà del RTS e RTSNetwork).
+// TODO: !!! devi parsare i file in ordine alfabetico e usare gli optional per decidere su quali automi si fa il check di reachability.
 
 // Reference examples for expression parser:
 // https://wandbox.org/permlink/YlVEPhgKPNMiKADh
@@ -147,7 +156,7 @@ namespace expr::ast
          * @return the integer result of the evaluation.
          * @throws std::runtime_error if a variable is not found or division by zero occurs.
          */
-        [[nodiscard]] int evaluate(const absl::flat_hash_map<std::string, int> &variables) const;
+        [[nodiscard]] int evaluate(const absl::btree_map<std::string, int> &variables) const;
 
 
         [[nodiscard]] std::string to_string() const;
@@ -183,10 +192,9 @@ namespace expr::ast
          * @brief Evaluates an assignment expression and updates the variable context.
          *
          * @param variables a map from variables to their integer values (is updated in the function).
-         * @return the integer value assigned to the left-hand side variable.
          * @throws std::runtime_error if evaluation fails.
          */
-        [[nodiscard]] int evaluate(absl::flat_hash_map<std::string, int> &variables) const;
+        void evaluate(absl::btree_map<std::string, int> &variables) const;
 
 
         [[nodiscard]] std::string to_string() const;
@@ -204,11 +212,11 @@ namespace expr::ast
         /**
          * @brief Evaluates a comparison expression.
          *
-         * @param variables a map from variables to their integer values (is updated in the function).
+         * @param variables a map from variables to their integer values.
          * @return the result of the comparison.
          * @throws std::runtime_error if evaluation fails.
          */
-        [[nodiscard]] bool evaluate(const absl::flat_hash_map<std::string, int> &variables) const;
+        [[nodiscard]] bool evaluate(const absl::btree_map<std::string, int> &variables) const;
 
 
         [[nodiscard]] std::string to_string() const;
@@ -244,7 +252,14 @@ namespace expr::ast
         booleanExpr(booleanBinaryExpr &&v);
 
 
-        [[nodiscard]] bool evaluate(const absl::flat_hash_map<std::string, int> &variables) const;
+        /**
+         * @brief Evaluates a boolean expression.
+         *
+         * @param variables a map from variables to their integer values.
+         * @return the boolean value of the expression.
+         * @throws std::runtime_error if evaluation fails.
+         */
+        [[nodiscard]] bool evaluate(const absl::btree_map<std::string, int> &variables) const;
 
 
         [[nodiscard]] std::string to_string() const;
@@ -314,7 +329,9 @@ namespace timed_automaton::ast
         std::string startingLocation;
         act action;
         std::vector<clockConstraint> clockGuard;
+        std::optional<expr::ast::booleanExpr> integerGuard;
         std::vector<std::string> clocksToReset;
+        std::vector<expr::ast::assignmentExpr> integerAssignments;
         std::string targetLocation;
 
 
@@ -323,12 +340,14 @@ namespace timed_automaton::ast
          *
          * @param clockValuation the current clock valuation (integer values and a boolean denoting whether the fractional part is greater than zero).
          * @param clocksIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
+         * @param variables a map from variables to their integer values (is updated in the function).
          * @return true if the guard is satisfied, false otherwise.
          *
          * @attention Works only if the guard is a conjunction of clock constraints, where a clock constraint is (x ~ c), with ~ in {<, <=, =, >=, >}.
          */
-        [[nodiscard]] bool isGuardSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
-                                            const std::unordered_map<std::string, int> &clocksIndices) const;
+        [[nodiscard]] bool isTransitionSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
+                                                 const std::unordered_map<std::string, int> &clocksIndices,
+                                                 const absl::btree_map<std::string, int> &variables) const;
 
 
         [[nodiscard]] std::string to_string() const;
@@ -339,12 +358,14 @@ namespace timed_automaton::ast
     using loc_pair = std::pair<std::string, locationContent>;
     using loc_map = std::unordered_map<std::string, locationContent>;
 
+    // TODO: fare in modo che i clock possano anche essere vuoti (devi mettere un opzionale nella grammatica quando parsi il vettore di clock).
 
     struct timedAutomaton
     {
         std::string name;
         std::vector<std::string> clocks;
         std::vector<std::string> actions;
+        std::vector<std::string> integerVariables;
         loc_map locations;
         std::vector<transition> transitions;
 
@@ -430,6 +451,14 @@ namespace timed_automaton::ast
             const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
+        /**
+         * @return a map associating integer variables with their value.
+         *
+         * @warning The variables are initialized to 0. It is possible to initialize them by adding a transition to the Timed Automaton.
+         */
+        [[nodiscard]] absl::btree_map<std::string, int> getVariables() const;
+
+
         [[nodiscard]] std::string to_string() const;
     };
 
@@ -445,6 +474,7 @@ namespace timed_automaton::ast
         std::string name;
         std::vector<std::string> clocks;
         std::vector<std::string> actions;
+        std::vector<std::string> integerVariables;
         arena_loc_map locations;
         std::vector<transition> transitions;
 
@@ -528,6 +558,14 @@ namespace timed_automaton::ast
          */
         [[nodiscard]] absl::flat_hash_map<int, std::vector<clockConstraint>> getInvariants(
             const std::unordered_map<std::string, int> &locToIntMap) const;
+
+
+        /**
+         * @return a map associating integer variables with their value.
+         *
+         * @warning The variables are initialized to 0. It is possible to initialize them by adding a transition to the Timed Arena.
+         */
+        [[nodiscard]] absl::btree_map<std::string, int> getVariables() const;
 
 
         [[nodiscard]] std::string to_string() const;

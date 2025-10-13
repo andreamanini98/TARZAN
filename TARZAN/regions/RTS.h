@@ -42,8 +42,10 @@ namespace region
             invariants = automaton.getInvariants(locationsToInt);
 
             const int numOfClocks = static_cast<int>(clocksIndices.size());
+            const auto &variables = automaton.getVariables();
+
             for (const int loc: initialLocations)
-                initialRegions.emplace_back(numOfClocks, loc);
+                initialRegions.emplace_back(numOfClocks, loc, variables);
         }
 
 

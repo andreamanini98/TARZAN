@@ -219,7 +219,7 @@ void testExpression()
     // --- Evaluation testing --- //
 
     // Variable context with initial values
-    absl::flat_hash_map<std::string, int> variables = {
+    absl::btree_map<std::string, int> variables = {
         { "L", 0 },
         { "A", 10 },
         { "B", 2 }
@@ -229,13 +229,13 @@ void testExpression()
 
     const auto start = std::chrono::high_resolution_clock::now();
 
-    int result = ass.evaluate(variables);
+    ass.evaluate(variables);
 
     const auto end_time = std::chrono::high_resolution_clock::now();
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start);
     std::cout << "Evaluation took: " << duration.count() << " microseconds" << std::endl;
 
-    std::cout << "Evaluated with result: " << result << std::endl;
+    std::cout << "Evaluated with result: " << variables["L"] << std::endl;
 
     std::cout << "L value after: " << variables["L"] << std::endl;
 }
@@ -285,7 +285,7 @@ void testBooleanExpression()
     // --- Evaluation testing --- //
 
     // Variable context with initial values
-    absl::flat_hash_map<std::string, int> variables = {
+    absl::btree_map<std::string, int> variables = {
         { "L", 0 },
         { "A", 10 },
         { "B", 9 }
@@ -303,6 +303,32 @@ void testBooleanExpression()
 }
 
 
+void testIntegers()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path);
+
+    std::cout << "\n\n" << automaton << std::endl;
+}
+
+
+void testRingNetwork()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/networks_of_TA/ring";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    // Locations:
+    // Automaton [i] (6 locations): {goal -> 5, l4 -> 4, l3 -> 3, l2 -> 2, l1 -> 1, l0 -> 0}
+
+    const std::vector goalLocations = { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+
+    const auto res = net.forwardReachability(goalLocations, DFS);
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -312,7 +338,7 @@ int main()
 #endif
 
 
-    testBooleanExpression();
+    testRTS();
 
 
 #ifdef REGION_TIMING

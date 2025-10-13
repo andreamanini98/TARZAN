@@ -35,7 +35,7 @@ namespace region
          * A vector of bitsets keeping track of the order in which clocks became unbounded.
          * Index -l corresponds to the front of the deque, while -1 corresponds to the back of the deque.
          */
-        std::deque<boost::dynamic_bitset<>> unbounded;
+        std::deque<boost::dynamic_bitset<>> unbounded{};
 
         /// A bitset representing the bounded clocks with no fractional part.
         boost::dynamic_bitset<> x0{};
@@ -44,7 +44,10 @@ namespace region
          * A vector of bitsets keeping track of the fractional order of bounded clocks.
          * Index 1 corresponds to the front of the deque, while r corresponds to the back of the deque.
          */
-        std::deque<boost::dynamic_bitset<>> bounded;
+        std::deque<boost::dynamic_bitset<>> bounded{};
+
+        /// Map between integer variables and their value.
+        absl::btree_map<std::string, int> variables{};
 
 
     public:
@@ -52,8 +55,9 @@ namespace region
          * @brief Creates an initial region (all clocks are in x0 with integer value equal to zero).
          *
          * @param numClocks the number of Timed Automaton clocks from which the region is derived.
+         * @param variables a map between integer variables and their value.
          */
-        explicit Region(const int numClocks)
+        Region(const int numClocks, const absl::btree_map<std::string, int> &variables) : variables(variables)
         {
             h = static_cast<int *>(malloc(numClocks * sizeof(int)));
             x0.resize(numClocks);
@@ -66,8 +70,9 @@ namespace region
          *
          * @param numClocks the number of Timed Automaton clocks from which the region is derived.
          * @param q the location of the region.
+         * @param variables a map between integer variables and their value.
          */
-        Region(const int numClocks, const int q) : q(q)
+        Region(const int numClocks, const int q, const absl::btree_map<std::string, int> &variables) : q(q), variables(variables)
         {
             h = static_cast<int *>(malloc(numClocks * sizeof(int)));
             x0.resize(numClocks);
@@ -79,12 +84,14 @@ namespace region
                int *h,
                const std::deque<boost::dynamic_bitset<>> &unbounded,
                const boost::dynamic_bitset<> &x0,
-               const std::deque<boost::dynamic_bitset<>> &bounded)
+               const std::deque<boost::dynamic_bitset<>> &bounded,
+               const absl::btree_map<std::string, int> &variables)
             : q(q),
               h(h),
               unbounded(unbounded),
               x0(x0),
-              bounded(bounded)
+              bounded(bounded),
+              variables(variables)
         {}
 
 
@@ -92,11 +99,13 @@ namespace region
                const std::vector<int> &H,
                const std::deque<boost::dynamic_bitset<>> &unbounded,
                const boost::dynamic_bitset<> &x0,
-               const std::deque<boost::dynamic_bitset<>> &bounded)
+               const std::deque<boost::dynamic_bitset<>> &bounded,
+               const absl::btree_map<std::string, int> &variables)
             : q(q),
               unbounded(unbounded),
               x0(x0),
-              bounded(bounded)
+              bounded(bounded),
+              variables(variables)
         {
             const int numOfClocks = static_cast<int>(H.size());
 
@@ -112,7 +121,8 @@ namespace region
             : q(other.q),
               unbounded(other.unbounded),
               x0(other.x0),
-              bounded(other.bounded)
+              bounded(other.bounded),
+              variables(other.variables)
         {
             // Deep copy the h array.
             const size_t numClocks = x0.size();
@@ -165,6 +175,8 @@ namespace region
          * @return a std::vector<Region> containing immediate discrete successors of the current region.
          *         If no successors can be computed, returns an empty std::vector.
          *
+         * @warning The region must hold the current values of integer variables in order for the integer evaluation to be performed.
+         *          These values can either be directly contained if using RTS or must be set if using RTSNetwork.
          * @warning The transitions parameter must contain all and only the transitions exiting from the location of the region.
          *          To provide such transitions, the getOutTransitions() function of a Timed Automaton can be used.
          * @warning To provide the clockIndices parameter, the getClocksIndices() function of a Timed Automaton can be used.
@@ -239,6 +251,7 @@ namespace region
          * @return a std::vector<Region> containing immediate discrete predecessors of the current region.
          *         If no successors can be computed, returns an empty std::vector.
          *
+         * @warning Integer variables are not considered when computing discrete predecessors.
          * @warning The transitions parameter must contain all and only the transitions entering the location of the region.
          *          To provide such transitions, the getInTransitions() function of a Timed Automaton can be used.
          * @warning To provide the clockIndices parameter, the getClocksIndices() function of a Timed Automaton can be used.
@@ -278,6 +291,8 @@ namespace region
         [[nodiscard]] std::deque<boost::dynamic_bitset<>> getUnbounded() const { return unbounded; }
         [[nodiscard]] boost::dynamic_bitset<> getX0() const { return x0; }
         [[nodiscard]] std::deque<boost::dynamic_bitset<>> getBounded() const { return bounded; }
+        [[nodiscard]] absl::btree_map<std::string, int> &getModifiableVariables() { return variables; }
+        [[nodiscard]] const absl::btree_map<std::string, int> &getVariables() const { return variables; }
 
 
         // Setters.
@@ -286,6 +301,7 @@ namespace region
         void set_unbounded(const std::deque<boost::dynamic_bitset<>> &unbounded_p) { this->unbounded = unbounded_p; }
         void set_x0(const boost::dynamic_bitset<> &x0_p) { this->x0 = x0_p; }
         void set_bounded(const std::deque<boost::dynamic_bitset<>> &bounded_p) { this->bounded = bounded_p; }
+        void set_variables(const absl::btree_map<std::string, int> &variables_p) { this->variables = variables_p; }
 
 
         Region &operator=(const Region &other)
@@ -296,6 +312,7 @@ namespace region
                 unbounded = other.unbounded;
                 x0 = other.x0;
                 bounded = other.bounded;
+                variables = other.variables;
 
                 // Deep copy the h array.
                 free(h);
@@ -318,6 +335,8 @@ namespace region
             if (unbounded != other.unbounded)
                 return false;
             if (bounded != other.bounded)
+                return false;
+            if (variables != other.variables)
                 return false;
 
             const size_t numClocks = x0.size();
@@ -365,6 +384,14 @@ namespace region
             hash_combine(seed, region.bounded.size());
             for (const auto &bitset: region.bounded)
                 hash_combine(seed, hash_bitset(bitset));
+
+            // Hash the integer variables.
+            hash_combine(seed, region.variables.size());
+            for (const auto &[varName, varValue]: region.variables)
+            {
+                hash_combine(seed, varName);
+                hash_combine(seed, varValue);
+            }
 
             return seed;
         }

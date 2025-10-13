@@ -28,9 +28,14 @@ namespace networkOfTA
         // TODO: vedere se una deque è la struttura dati più adeguata considerando che poi devi cancellare le mappe che sono vuote.
         std::deque<absl::btree_map<int, boost::dynamic_bitset<>>> clockOrdering{};
 
+        /// Map between integer variables and their value.
+        absl::btree_map<std::string, int> networkVariables{};
+
 
     public:
-        explicit NetworkRegion(const std::vector<region::Region> &regions, const bool allRegionsAreInitial) : regions(regions)
+        NetworkRegion(const std::vector<region::Region> &regions,
+                      const absl::btree_map<std::string, int> &networkVariables,
+                      const bool allRegionsAreInitial) : regions(regions), networkVariables(networkVariables)
         {
             // If every region is initial, they must all belong to class A.
             if (allRegionsAreInitial)
@@ -92,12 +97,15 @@ namespace networkOfTA
 
         // Getters.
         [[nodiscard]] std::vector<region::Region> const &getRegions() const { return regions; }
+        [[nodiscard]] std::vector<region::Region> &getModifiableRegions() { return regions; }
         [[nodiscard]] absl::btree_set<int> &getModifiableIsAOrC() { return isAorC; }
         [[nodiscard]] std::deque<absl::btree_map<int, boost::dynamic_bitset<>>> &getModifiableClockOrdering() { return clockOrdering; }
+        [[nodiscard]] absl::btree_map<std::string, int> &getModifiableNetworkVariables() { return networkVariables; }
 
 
         // Setters.
         void setRegionGivenIndex(const int idx, const region::Region &reg) { regions[idx] = reg; }
+        void setNetworkVariables(const absl::btree_map<std::string, int> &networkVariables_p) { this->networkVariables = networkVariables_p; }
 
 
         NetworkRegion &operator=(const NetworkRegion &other)
@@ -107,6 +115,7 @@ namespace networkOfTA
                 regions = other.regions;
                 isAorC = other.isAorC;
                 clockOrdering = other.clockOrdering;
+                networkVariables = other.networkVariables;
             }
             return *this;
         }
@@ -121,6 +130,8 @@ namespace networkOfTA
             if (isAorC != other.isAorC)
                 return false;
             if (clockOrdering != other.clockOrdering)
+                return false;
+            if (networkVariables != other.networkVariables)
                 return false;
 
             return true;
@@ -166,6 +177,14 @@ namespace networkOfTA
                     hash_combine(seed, key);
                     hash_combine(seed, hash_bitset(bitset));
                 }
+            }
+
+            // Hashing the integer variables.
+            hash_combine(seed, networkRegion.networkVariables.size());
+            for (const auto &[varName, varValue]: networkRegion.networkVariables)
+            {
+                hash_combine(seed, varName);
+                hash_combine(seed, varValue);
             }
 
             return seed;

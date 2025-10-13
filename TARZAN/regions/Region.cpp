@@ -129,7 +129,8 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
 
     for (const auto &transition: transitions)
     {
-        if (transition.isGuardSatisfied(clockValuation, clockIndices))
+        // The region must hold the current values of integer variables in order for this evaluation to be performed.
+        if (transition.isTransitionSatisfied(clockValuation, clockIndices, variables))
         {
             Region reg = clone();
             reg.set_q(locationsAsIntMap.at(transition.targetLocation));
@@ -157,6 +158,11 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
                 std::erase_if(reg.unbounded, [](const auto &clockSet) { return clockSet.none(); });
                 std::erase_if(reg.bounded, [](const auto &clockSet) { return clockSet.none(); });
             }
+
+            // Evaluating all integer assignments.
+            // The region must hold the current values of integer variables in order for this evaluation to be performed.
+            for (const auto &intAss: transition.integerAssignments)
+                intAss.evaluate(reg.variables);
 
             res.emplace_back(reg);
         }
@@ -336,7 +342,8 @@ std::vector<region::Region> region::Region::permRegsBounded(const int qReg,
                 // For each obtained deque, we generate a new Region.
                 for (const auto &permutedDeque: permutedDeques)
                 {
-                    Region reg(qReg, H, unboundedReg, newX0, permutedDeque);
+                    // Putting an empty map for variables placeholder, since in discrete predecessors integer variables are not considered.
+                    Region reg(qReg, H, unboundedReg, newX0, permutedDeque, {});
                     res.emplace_back(reg);
                 }
             }
@@ -347,18 +354,6 @@ std::vector<region::Region> region::Region::permRegsBounded(const int qReg,
 }
 
 
-/**
- * @brief Auxiliary function computing the permRegs function as seen in our paper for the unbounded case.
- *
- * @param qReg the location of the Region for which we are computing discrete predecessors.
- * @param H a vector containing the values of the clocks (indices are computed as usual for Timed Automata, see the ast.h file).
- * @param unboundedReg the unbounded sets of the Region for which we are computing discrete predecessors.
- * @param x0Reg the x0 set of the Region for which we are computing discrete predecessors.
- * @param boundedReg the bounded sets of the Region for which we are computing discrete predecessors.
- * @param numOfClocks the original Timed Automaton number of clocks.
- * @param X the clocks for which we must compute all ordered partitions.
- * @return all regions returned by permRegs as described in our paper.
- */
 std::vector<region::Region> region::Region::permRegsUnbounded(const int qReg,
                                                               const std::vector<int> &H,
                                                               const std::deque<boost::dynamic_bitset<>> &unboundedReg,
@@ -509,7 +504,8 @@ std::vector<region::Region> region::Region::permRegsUnbounded(const int qReg,
             // For each obtained deque, we generate a new Region.
             for (const auto &permutedDeque: permutedDeques)
             {
-                Region reg(qReg, H, permutedDeque, x0Reg, boundedReg);
+                // Putting an empty map for variables placeholder, since in discrete predecessors integer variables are not considered.
+                Region reg(qReg, H, permutedDeque, x0Reg, boundedReg, {});
                 res.emplace_back(reg);
             }
         }
@@ -602,6 +598,8 @@ inline void handleConstraintOperator(const int clockIndex,
 }
 
 
+// TODO: (QUESTO TODO DEVI SISTEMARLO) MI SA CHE QUANDO CALCOLI UN PREDECESSORE, DEVI CONTROLLARE SE LA TRANSIZIONE È SODDISFATTA DA QUEL PREDECESSORE E, SE SÌ, AGGIUNGI IL PREDECESSORE AL RISUTATO
+// TODO: non consideriamo variabili intere per i discrete predecessors
 std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(const std::vector<transition> &transitions,
                                                                              const std::unordered_map<std::string, int> &clockIndices,
                                                                              const std::unordered_map<std::string, int> &locationsAsIntMap,
@@ -616,7 +614,8 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
         // Handling the case in which no clocks are reset.
         if (transition.clocksToReset.empty())
         {
-            if (transition.isGuardSatisfied(clockValuation, clockIndices))
+            // TODO: il controllo sulla transizione va fatto su reg.
+            if (transition.isTransitionSatisfied(clockValuation, clockIndices, {}))
             {
                 Region reg = clone();
                 reg.set_q(locationsAsIntMap.at(transition.startingLocation));
@@ -637,6 +636,7 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
 
             if (isPredecessorComputable)
             {
+                // TODO: da qui in poi, quando inserisci in res, devi controllare se la transizione è soddisfatta dal predecessore.
                 const int numOfClocks = getNumberOfClocks();
 
                 // Vector acting as the clock valuation (only integer values) for the clocks of the new regions.
@@ -913,5 +913,15 @@ std::string region::Region::toString() const
     for (const auto &i: bounded)
         oss << "  " << i;
     oss << "  ]\n";
+    bool first2 = true;
+    oss << "  variables: [";
+    for (const auto &[fst, snd]: variables)
+    {
+        if (!first2)
+            oss << ", ";
+        first2 = false;
+        oss << fst << " -> " << snd;
+    }
+    oss << "]\n";
     return oss.str();
 }

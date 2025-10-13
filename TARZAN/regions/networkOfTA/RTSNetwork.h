@@ -7,8 +7,6 @@
 #include "TARZAN/regions/enums/state_space_exploration_enum.h"
 #include "TARZAN/utilities/partition_utilities.h"
 
-// TODO: devi aggiungere la possibilità di avere degli interi nelle regioni normali (prima pensare bene a come farlo però).
-
 
 namespace networkOfTA
 {
@@ -37,6 +35,8 @@ namespace networkOfTA
     public:
         explicit RTSNetwork(const std::vector<timed_automaton::ast::timedAutomaton> &automata) : automata(automata)
         {
+            absl::btree_map<std::string, int> variables{};
+
             for (int i = 0; i < static_cast<int>(automata.size()); i++)
             {
                 const timed_automaton::ast::timedAutomaton &automaton = automata[i];
@@ -48,6 +48,9 @@ namespace networkOfTA
                 outTransitions.emplace_back(automaton.getOutTransitions(locationsToInt[i]));
                 inTransitions.emplace_back(automaton.getInTransitions(locationsToInt[i]));
                 invariants.emplace_back(automaton.getInvariants(locationsToInt[i]));
+
+                // Getting all variables from al Timed Automata.
+                variables.merge(automaton.getVariables());
             }
 
             // ReSharper disable once CppTooWideScopeInitStatement
@@ -57,10 +60,12 @@ namespace networkOfTA
             {
                 std::vector<region::Region> initRegs{};
 
+                // We insert an empty map in individual regions, as we only use the network variables.
+                // Individual region variables are still used to ensure integer updates and guards are handled correctly (see NetworkRegion.cpp).
                 for (int i = 0; i < static_cast<int>(cartesianProduct.size()); i++)
-                    initRegs.emplace_back(static_cast<int>(clocksIndices[i].size()), cartesianProduct[i]);
+                    initRegs.emplace_back(static_cast<int>(clocksIndices[i].size()), cartesianProduct[i], absl::btree_map<std::string, int>{});
 
-                initialRegions.emplace_back(initRegs, true);
+                initialRegions.emplace_back(initRegs, variables, true);
             }
         }
 

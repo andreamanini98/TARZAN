@@ -104,7 +104,7 @@ std::vector<timed_automaton::ast::timedAutomaton> parseTimedAutomataFromFolder(s
             if (entry.is_regular_file() && entry.path().extension() == ".txt")
             {
                 std::string filePath = entry.path().string();
-                std::cerr << "Parsing automaton from file: " << filePath << std::endl;
+                std::cout << "Parsing automaton from file: " << filePath << std::endl;
 
                 // Parse the automaton using the existing function.
                 timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(filePath);
@@ -132,7 +132,7 @@ std::vector<timed_automaton::ast::timedArena> parseTimedArenasFromFolder(std::st
             if (entry.is_regular_file() && entry.path().extension() == ".txt")
             {
                 std::string filePath = entry.path().string();
-                std::cerr << "Parsing arena from file: " << filePath << std::endl;
+                std::cout << "Parsing arena from file: " << filePath << std::endl;
 
                 // Parse the arena using the existing function.
                 timed_automaton::ast::timedArena arena = parseTimedArena(filePath);

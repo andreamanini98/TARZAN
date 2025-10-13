@@ -162,10 +162,16 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
             // If the action does not synchronize, we try to compute the discrete successors of the current region.
             if (!transition.action.second.has_value())
             {
+                // Creating a temporary region used to compute the discrete successor.
+                // We set the variables of this region to the variables of the network: in this way, they will be updated thanks to the discrete successor
+                // function of regions, and we can later set the region variables to this updated variables map.
+                region::Region tmpReg = regions[regIdx].clone();
+                tmpReg.set_variables(networkVariables);
+
                 // We now compute the discrete successor for the current transition, which will be used to update the regions vector.
                 // Since we pass a single transition to getImmediateDiscreteSuccessors(), the resulting vector of discrete successors will contain at most one region.
                 const std::vector<region::Region> &discreteSuccessors =
-                        regions[regIdx].getImmediateDiscreteSuccessors({ transition }, clockIndices[regIdx], locationsToInt[regIdx]);
+                        tmpReg.getImmediateDiscreteSuccessors({ transition }, clockIndices[regIdx], locationsToInt[regIdx]);
 
 #ifdef NETWORKREGION_DEBUG
 
@@ -179,6 +185,9 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                 {
                     // Cloning the current network region to keep the changes confined to this copy.
                     NetworkRegion netReg = clone();
+
+                    // We now set the integer network variables by taking the successor ones.
+                    netReg.setNetworkVariables(discreteSuccessors[0].getVariables());
 
                     updateNetRegionWithDiscSucc(netReg, discreteSuccessors[0], regIdx, transition.clocksToReset, clockIndices);
 
@@ -216,11 +225,45 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                             // For actions to synchronize, they must have the same name and a different synchronization symbol (one ! and the other ?).
                             if (transAction_i.first == transAction_j.first && transAction_i.second != transAction_j.second)
                             {
-                                // We now compute both successors for both regions.
-                                const std::vector<region::Region> &discreteSuccessors_i =
-                                        regions[regIdx_i].getImmediateDiscreteSuccessors({ transition_i }, clockIndices[regIdx_i], locationsToInt[regIdx_i]);
-                                const std::vector<region::Region> &discreteSuccessors_j =
-                                        regions[regIdx_j].getImmediateDiscreteSuccessors({ transition_j }, clockIndices[regIdx_j], locationsToInt[regIdx_j]);
+                                std::vector<region::Region> discreteSuccessors_i{};
+                                std::vector<region::Region> discreteSuccessors_j{};
+
+                                // The transition with the output action must fire first.
+                                if (transAction_i.second == OUTACT)
+                                {
+                                    auto tmpReg = regions[regIdx_i].clone();
+                                    tmpReg.set_variables(networkVariables);
+
+                                    discreteSuccessors_i =
+                                            tmpReg.getImmediateDiscreteSuccessors({ transition_i }, clockIndices[regIdx_i], locationsToInt[regIdx_i]);
+
+                                    // If a discrete successor has been found, we compute the one corresponding to the transition with an input action.
+                                    if (!discreteSuccessors_i.empty())
+                                    {
+                                        tmpReg = regions[regIdx_j].clone();
+                                        tmpReg.set_variables(discreteSuccessors_i[0].getVariables());
+
+                                        discreteSuccessors_j =
+                                                tmpReg.getImmediateDiscreteSuccessors({ transition_j }, clockIndices[regIdx_j], locationsToInt[regIdx_j]);
+                                    }
+                                } else
+                                {
+                                    // We do the same but symmetrically.
+                                    auto tmpReg = regions[regIdx_j].clone();
+                                    tmpReg.set_variables(networkVariables);
+
+                                    discreteSuccessors_j =
+                                            tmpReg.getImmediateDiscreteSuccessors({ transition_j }, clockIndices[regIdx_j], locationsToInt[regIdx_j]);
+
+                                    if (!discreteSuccessors_j.empty())
+                                    {
+                                        tmpReg = regions[regIdx_i].clone();
+                                        tmpReg.set_variables(discreteSuccessors_j[0].getVariables());
+
+                                        discreteSuccessors_i =
+                                                tmpReg.getImmediateDiscreteSuccessors({ transition_i }, clockIndices[regIdx_i], locationsToInt[regIdx_i]);
+                                    }
+                                }
 
 #ifdef NETWORKREGION_DEBUG
 
@@ -236,8 +279,21 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                                     // Cloning the current network region to keep the changes confined to this copy.
                                     NetworkRegion netReg = clone();
 
-                                    updateNetRegionWithDiscSucc(netReg, discreteSuccessors_i[0], regIdx_i, transition_i.clocksToReset, clockIndices);
-                                    updateNetRegionWithDiscSucc(netReg, discreteSuccessors_j[0], regIdx_j, transition_j.clocksToReset, clockIndices);
+                                    if (transAction_i.second == OUTACT)
+                                    {
+                                        // The last computed successor has the most recently updated integer variables.
+                                        netReg.setNetworkVariables(discreteSuccessors_j[0].getVariables());
+
+                                        updateNetRegionWithDiscSucc(netReg, discreteSuccessors_i[0], regIdx_i, transition_i.clocksToReset, clockIndices);
+                                        updateNetRegionWithDiscSucc(netReg, discreteSuccessors_j[0], regIdx_j, transition_j.clocksToReset, clockIndices);
+                                    } else
+                                    {
+                                        // The last computed successor has the most recently updated integer variables.
+                                        netReg.setNetworkVariables(discreteSuccessors_i[0].getVariables());
+
+                                        updateNetRegionWithDiscSucc(netReg, discreteSuccessors_j[0], regIdx_j, transition_j.clocksToReset, clockIndices);
+                                        updateNetRegionWithDiscSucc(netReg, discreteSuccessors_i[0], regIdx_i, transition_i.clocksToReset, clockIndices);
+                                    }
 
                                     res.emplace_back(netReg);
                                 }
@@ -299,6 +355,17 @@ std::string networkOfTA::NetworkRegion::toString() const
         }
         oss << "}\n";
     }
+
+    bool first2 = true;
+    oss << "  networkVariables: [";
+    for (const auto &[fst, snd]: networkVariables)
+    {
+        if (!first2)
+            oss << ", ";
+        first2 = false;
+        oss << fst << " -> " << snd;
+    }
+    oss << "]\n";
 
     oss << "}\n";
     return oss.str();

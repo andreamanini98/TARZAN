@@ -8,7 +8,7 @@ using transition = timed_automaton::ast::transition;
 
 // Arithmetic expr class.
 
-int expr::ast::arithmeticExpr::evaluate(const absl::flat_hash_map<std::string, int> &variables) const
+int expr::ast::arithmeticExpr::evaluate(const absl::btree_map<std::string, int> &variables) const
 {
     return std::visit([&variables]<typename T0>(T0 const &val) -> int {
         using T = std::decay_t<T0>;
@@ -91,15 +91,13 @@ std::string expr::ast::binaryExpr::to_string() const
 
 // Assignment expr class.
 
-int expr::ast::assignmentExpr::evaluate(absl::flat_hash_map<std::string, int> &variables) const
+void expr::ast::assignmentExpr::evaluate(absl::btree_map<std::string, int> &variables) const
 {
     // Evaluate the right-hand side.
     const int result = rhs.evaluate(variables);
 
     // Assign the result to the left-hand side variable.
     variables[lhs.name] = result;
-
-    return result;
 }
 
 
@@ -116,7 +114,7 @@ std::string expr::ast::assignmentExpr::to_string() const
 
 // Comparison expr class.
 
-bool expr::ast::comparisonExpr::evaluate(const absl::flat_hash_map<std::string, int> &variables) const
+bool expr::ast::comparisonExpr::evaluate(const absl::btree_map<std::string, int> &variables) const
 {
     const int leftVal = left_expr.evaluate(variables);
     const int rightVal = right_expr.evaluate(variables);
@@ -152,7 +150,7 @@ std::string expr::ast::comparisonExpr::to_string() const
 
 // Boolean expr class.
 
-bool expr::ast::booleanExpr::evaluate(const absl::flat_hash_map<std::string, int> &variables) const
+bool expr::ast::booleanExpr::evaluate(const absl::btree_map<std::string, int> &variables) const
 {
     return std::visit([&variables]<typename T0>(T0 const &val) -> bool {
         using T = std::decay_t<T0>;
@@ -293,10 +291,14 @@ std::string timed_automaton::ast::locationContent::to_string() const
 
 // Transition class.
 
-bool timed_automaton::ast::transition::isGuardSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
-                                                        const std::unordered_map<std::string, int> &clocksIndices) const
+bool timed_automaton::ast::transition::isTransitionSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
+                                                             const std::unordered_map<std::string, int> &clocksIndices,
+                                                             const absl::btree_map<std::string, int> &variables) const
 {
-    return std::ranges::all_of(clockGuard, [&](const auto &cc) {
+    bool isSatisfied{};
+
+    // all_of returns true if no elements are in the range.
+    isSatisfied = std::ranges::all_of(clockGuard, [&](const auto &cc) {
         const int clockIdx = clocksIndices.at(cc.getClockName());
 
         const int clockIntVal = clockValuation[clockIdx].first;
@@ -304,6 +306,11 @@ bool timed_automaton::ast::transition::isGuardSatisfied(const std::vector<std::p
 
         return cc.isSatisfied(clockIntVal, clockHasFracPart);
     });
+
+    if (integerGuard.has_value() && isSatisfied)
+        isSatisfied = integerGuard.value().evaluate(variables);
+
+    return isSatisfied;
 }
 
 
@@ -313,7 +320,9 @@ std::string timed_automaton::ast::transition::to_string() const
     const std::string actString = action.first + (action.second.has_value() ? in_out_act_to_string(action.second.value()) : "");
     oss << "(" << startingLocation << ", " << actString << ", "
             << "[" << join_elements(clockGuard, " and ") << "], "
+            << (integerGuard.has_value() ? integerGuard.value().to_string() + ", " : "")
             << "[" << join_elements(clocksToReset, ", ") << "], "
+            << (!integerAssignments.empty() ? "[" + join_elements(integerAssignments, ", ") + "], " : "")
             << targetLocation << ")";
     return oss.str();
 }
@@ -446,12 +455,24 @@ absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> tim
 }
 
 
+absl::btree_map<std::string, int> timed_automaton::ast::timedAutomaton::getVariables() const
+{
+    absl::btree_map<std::string, int> res{};
+
+    for (const auto &variable: integerVariables)
+        res[variable] = 0;
+
+    return res;
+}
+
+
 std::string timed_automaton::ast::timedAutomaton::to_string() const
 {
     std::ostringstream oss;
     oss << "Timed Automaton " << name << std::endl;
     oss << "Clocks:\n" << join_elements(clocks, ", ") << std::endl;
     oss << "Actions:\n" << join_elements(actions, ", ") << std::endl;
+    oss << "Integer variables:\n" << join_elements(integerVariables, ", ") << std::endl;
     oss << "Locations:\n";
     for (const auto &[key, value]: locations)
     {
@@ -591,12 +612,24 @@ absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> tim
 }
 
 
+absl::btree_map<std::string, int> timed_automaton::ast::timedArena::getVariables() const
+{
+    absl::btree_map<std::string, int> res{};
+
+    for (const auto &variable: integerVariables)
+        res[variable] = 0;
+
+    return res;
+}
+
+
 std::string timed_automaton::ast::timedArena::to_string() const
 {
     std::ostringstream oss;
     oss << "Timed Arena " << name << std::endl;
     oss << "Clocks:\n" << join_elements(clocks, ", ") << std::endl;
     oss << "Actions:\n" << join_elements(actions, ", ") << std::endl;
+    oss << "Integer variables:\n" << join_elements(integerVariables, ", ") << std::endl;
     oss << "Locations:\n";
     for (const auto &[location_name, location_info]: locations)
     {
