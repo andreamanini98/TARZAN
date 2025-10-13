@@ -343,11 +343,11 @@ void testVikings()
     // soldier (4 locations): {safe -> 3, l0 -> 2, l1 -> 1, unsafe -> 0}
     // torch (4 locations): {one -> 3, two -> 2, urgent -> 1, free -> 0}
 
-    const std::vector<std::optional<int>> goalLocations = { 3, 3, 3, 3, 3, 3, 3, 3, std::nullopt };
+    const std::vector<std::optional<int>> goalLocations = { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, std::nullopt };
 
     const auto res = net.forwardReachability(goalLocations, DFS);
 
-    //std::cout << res[0].toString() << std::endl;
+    std::cout << res[0].toString() << std::endl;
 }
 
 

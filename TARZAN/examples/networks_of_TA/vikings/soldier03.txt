@@ -26,8 +26,8 @@ create automaton soldier03
     transitions
     {
         (unsafe, take!,    [],            L == 0, [y], l0),
-        (l0,     release!, [(y, >=, 25)],         [],  safe),
+        (l0,     release!, [(y, >=, 20)],         [],  safe),
         (safe,   take!,    [],            L == 1, [y], l1),
-        (l1,     release!, [(y, >=, 25)],         [],  unsafe);
+        (l1,     release!, [(y, >=, 20)],         [],  unsafe);
     }
 }

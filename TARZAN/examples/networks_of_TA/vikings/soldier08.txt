@@ -1,4 +1,4 @@
-create automaton soldier04
+create automaton soldier08
 {
     clocks
     {
