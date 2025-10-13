@@ -16,7 +16,7 @@
  */
 inline void insertRegionInMapAndToProcess(const networkOfTA::NetworkRegion &reg,
                                           std::deque<networkOfTA::NetworkRegion> &toProcess,
-                                          absl::flat_hash_set<networkOfTA::NetworkRegion, networkOfTA::NetworkRegionHash> &regionsHashMap,
+                                          std::unordered_set<networkOfTA::NetworkRegion, networkOfTA::NetworkRegionHash> &regionsHashMap,
                                           const std::vector<std::unordered_map<std::string, int>> &clocksIndices,
                                           const std::vector<absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>>> &invariants)
 {
@@ -44,7 +44,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
 {
     // Initializing auxiliary data structures for reachability computation.
     std::deque<NetworkRegion> toProcess{};
-    absl::flat_hash_set<NetworkRegion, NetworkRegionHash> regionsHashMap{};
+    std::unordered_set<NetworkRegion, NetworkRegionHash> regionsHashMap{};
 
     for (const auto &init: getInitialRegions())
     {

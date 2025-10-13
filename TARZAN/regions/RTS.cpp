@@ -20,7 +20,7 @@
  */
 inline void insertRegionInMapAndToProcess(const region::Region &reg,
                                           std::deque<region::Region> &toProcess,
-                                          absl::flat_hash_set<region::Region, region::RegionHash> &regionsHashMap,
+                                          std::unordered_set<region::Region, region::RegionHash> &regionsHashMap,
                                           const std::unordered_map<std::string, int> &clocksIndices,
                                           const absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> &invariants)
 {
@@ -46,7 +46,7 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
 {
     // Initializing auxiliary data structures for reachability computation.
     std::deque<Region> toProcess{};
-    absl::flat_hash_set<Region, RegionHash> regionsHashMap{};
+    std::unordered_set<Region, RegionHash> regionsHashMap{};
 
     for (const auto &init: getInitialRegions())
     {
@@ -123,7 +123,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
 {
     // Initializing auxiliary data structures for reachability computation.
     std::deque<Region> toProcess{};
-    absl::flat_hash_set<Region, RegionHash> regionsHashMap{};
+    std::unordered_set<Region, RegionHash> regionsHashMap{};
 
     for (const auto &startReg: startingRegions)
     {
