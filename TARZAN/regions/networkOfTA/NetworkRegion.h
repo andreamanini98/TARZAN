@@ -108,33 +108,15 @@ namespace networkOfTA
         void setNetworkVariables(const absl::btree_map<std::string, int> &networkVariables_p) { this->networkVariables = networkVariables_p; }
 
 
-        NetworkRegion &operator=(const NetworkRegion &other)
-        {
-            if (this != &other)
-            {
-                regions = other.regions;
-                isAorC = other.isAorC;
-                clockOrdering = other.clockOrdering;
-                networkVariables = other.networkVariables;
-            }
-            return *this;
-        }
+        NetworkRegion &operator=(const NetworkRegion &other) = default;
 
 
         bool operator==(const NetworkRegion &other) const
         {
-            if (this == &other)
-                return true;
-            if (regions != other.regions)
-                return false;
-            if (isAorC != other.isAorC)
-                return false;
-            if (clockOrdering != other.clockOrdering)
-                return false;
-            if (networkVariables != other.networkVariables)
-                return false;
-
-            return true;
+            return isAorC == other.isAorC &&
+                   networkVariables == other.networkVariables &&
+                   clockOrdering == other.clockOrdering &&
+                   regions == other.regions;
         }
 
 

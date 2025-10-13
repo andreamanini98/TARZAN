@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <string>
 #include <boost/dynamic_bitset.hpp>
+#include <boost/functional/hash.hpp>
 
 
 /**
@@ -22,21 +23,14 @@ void hash_combine(std::size_t &seed, const T &v)
 
 
 /**
- * @brief Hashes a boost::dynamic_bitset exploiting its string representation.
+ * @brief Hashes a boost::dynamic_bitset using Boost's optimized hash function.
  *
  * @param bitset the boost::dynamic_bitset to hash.
  * @return the hash of bitset.
  */
 inline std::size_t hash_bitset(const boost::dynamic_bitset<> &bitset)
 {
-    std::size_t seed = 0;
-    hash_combine(seed, bitset.size());
-
-    std::string bit_string;
-    boost::to_string(bitset, bit_string);
-    hash_combine(seed, std::hash<std::string>{}(bit_string));
-
-    return seed;
+    return boost::hash<boost::dynamic_bitset<>>()(bitset);
 }
 
 #endif //TARZAN_HASH_UTILITIES_H

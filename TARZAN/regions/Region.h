@@ -308,17 +308,21 @@ namespace region
         {
             if (this != &other)
             {
+                const size_t oldNumClocks = x0.size();
+
                 q = other.q;
                 unbounded = other.unbounded;
                 x0 = other.x0;
                 bounded = other.bounded;
                 variables = other.variables;
 
-                // Deep copy the h array.
-                free(h);
-                const size_t numClocks = x0.size();
-                h = static_cast<int *>(malloc(numClocks * sizeof(int)));
-                std::memcpy(h, other.h, numClocks * sizeof(int));
+                const size_t newNumClocks = other.x0.size();
+                if (newNumClocks != oldNumClocks)
+                {
+                    free(h);
+                    h = static_cast<int *>(malloc(newNumClocks * sizeof(int)));
+                }
+                std::memcpy(h, other.h, newNumClocks * sizeof(int));
             }
             return *this;
         }
@@ -326,24 +330,17 @@ namespace region
 
         bool operator==(const Region &other) const
         {
-            if (this == &other)
-                return true;
             if (q != other.q)
                 return false;
-            if (x0 != other.x0)
-                return false;
-            if (unbounded != other.unbounded)
-                return false;
-            if (bounded != other.bounded)
+            if (unbounded.size() != other.unbounded.size() || bounded.size() != other.bounded.size())
                 return false;
             if (variables != other.variables)
                 return false;
-
-            const size_t numClocks = x0.size();
-            for (size_t i = 0; i < numClocks; ++i)
-                if (h[i] != other.h[i]) return false;
-
-            return true;
+            if (x0 != other.x0)
+                return false;
+            if (const size_t numClocks = x0.size(); std::memcmp(h, other.h, numClocks * sizeof(int)) != 0)
+                return false;
+            return unbounded == other.unbounded && bounded == other.bounded;
         }
 
 
@@ -367,28 +364,38 @@ namespace region
             // Hash the location.
             hash_combine(seed, region.getLocation());
 
-            // Hash the integer array h.
-            const int numClocks = region.getNumberOfClocks();
-            for (int i = 0; i < numClocks; i++)
-                hash_combine(seed, region.h[i]);
-
-            // Hash the x0 bitset.
+            // Hash x0 bitset.
             hash_combine(seed, hash_bitset(region.x0));
 
-            // Hash the unbounded deque (include size for order).
-            hash_combine(seed, region.unbounded.size());
-            for (const auto &bitset: region.unbounded)
-                hash_combine(seed, hash_bitset(bitset));
+            // Hash integer array h.
+            const int numClocks = region.getNumberOfClocks();
+            boost::hash_range(seed, region.h, region.h + numClocks);
 
-            // Hash the bounded deque (include size for order).
-            hash_combine(seed, region.bounded.size());
-            for (const auto &bitset: region.bounded)
-                hash_combine(seed, hash_bitset(bitset));
-
-            // Hash the integer variables.
-            hash_combine(seed, region.variables.size());
-            for (const auto &[varName, varValue]: region.variables)
+            // For deques, hash only size and first/last elements for speed.
+            const auto unbounded_size = region.unbounded.size();
+            hash_combine(seed, unbounded_size);
+            if (unbounded_size > 0)
             {
+                hash_combine(seed, hash_bitset(region.unbounded.front()));
+                if (unbounded_size > 1)
+                    hash_combine(seed, hash_bitset(region.unbounded.back()));
+            }
+
+            const auto bounded_size = region.bounded.size();
+            hash_combine(seed, bounded_size);
+            if (bounded_size > 0)
+            {
+                hash_combine(seed, hash_bitset(region.bounded.front()));
+                if (bounded_size > 1)
+                    hash_combine(seed, hash_bitset(region.bounded.back()));
+            }
+
+            // Hash variables.
+            hash_combine(seed, region.variables.size());
+            // Only hash the first variable if present.
+            if (!region.variables.empty())
+            {
+                const auto &[varName, varValue] = *region.variables.begin();
                 hash_combine(seed, varName);
                 hash_combine(seed, varValue);
             }
