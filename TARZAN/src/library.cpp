@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <filesystem>
+#include <algorithm>
 
 #include "TARZAN/parser/ast.h"
 #include "TARZAN/parser/timed_automaton_def.h"
@@ -98,18 +99,25 @@ std::vector<timed_automaton::ast::timedAutomaton> parseTimedAutomataFromFolder(s
 
     try
     {
-        // Iterate through all files in the folder.
-        for (const auto &entry: std::filesystem::directory_iterator(folderPath))
-        {
-            if (entry.is_regular_file() && entry.path().extension() == ".txt")
-            {
-                std::string filePath = entry.path().string();
-                std::cout << "Parsing automaton from file: " << filePath << std::endl;
+        // Collect all .txt file paths and sort them alphabetically.
+        std::vector<std::filesystem::path> filePaths;
 
-                // Parse the automaton using the existing function.
-                timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(filePath);
-                automata.push_back(automaton);
-            }
+        for (const auto &entry: std::filesystem::directory_iterator(folderPath))
+            if (entry.is_regular_file() && entry.path().extension() == ".txt")
+                filePaths.push_back(entry.path());
+
+        // Sort paths alphabetically by filename.
+        std::ranges::sort(filePaths);
+
+        // Parse automata in alphabetical order.
+        for (const auto &path: filePaths)
+        {
+            std::string filePath = path.string();
+            std::cout << "Parsing automaton from file: " << filePath << std::endl;
+
+            // Parse the automaton using the existing function.
+            timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(filePath);
+            automata.push_back(automaton);
         }
     } catch (const std::filesystem::filesystem_error &ex)
     {
@@ -126,18 +134,25 @@ std::vector<timed_automaton::ast::timedArena> parseTimedArenasFromFolder(std::st
 
     try
     {
-        // Iterate through all files in the folder.
-        for (const auto &entry: std::filesystem::directory_iterator(folderPath))
-        {
-            if (entry.is_regular_file() && entry.path().extension() == ".txt")
-            {
-                std::string filePath = entry.path().string();
-                std::cout << "Parsing arena from file: " << filePath << std::endl;
+        // Collect all .txt file paths and sort them alphabetically.
+        std::vector<std::filesystem::path> filePaths;
 
-                // Parse the arena using the existing function.
-                timed_automaton::ast::timedArena arena = parseTimedArena(filePath);
-                arenas.push_back(arena);
-            }
+        for (const auto &entry: std::filesystem::directory_iterator(folderPath))
+            if (entry.is_regular_file() && entry.path().extension() == ".txt")
+                filePaths.push_back(entry.path());
+
+        // Sort paths alphabetically by filename.
+        std::ranges::sort(filePaths);
+
+        // Parse automata in alphabetical order.
+        for (const auto &path: filePaths)
+        {
+            std::string filePath = path.string();
+            std::cout << "Parsing arena from file: " << filePath << std::endl;
+
+            // Parse the arena using the existing function.
+            timed_automaton::ast::timedArena arena = parseTimedArena(filePath);
+            arenas.push_back(arena);
         }
     } catch (const std::filesystem::filesystem_error &ex)
     {

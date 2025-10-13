@@ -338,7 +338,7 @@ int main()
 #endif
 
 
-    testFlowerBackwards();
+    testRingNetwork();
 
 
 #ifdef REGION_TIMING

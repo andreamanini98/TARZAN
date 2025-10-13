@@ -5,8 +5,6 @@
 
 #include "TARZAN/parser/ast.h"
 
-// TODO: insert the grammar of the parser in the comments here (or somewhere else).
-
 
 /**
  * @brief Parses a Timed Automaton from a .txt file.
