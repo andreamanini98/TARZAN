@@ -102,6 +102,13 @@
 
 // TODO: cambiare la chiave della mappa delle funzioni evaluate da stringa a intero (ti serve un mapping da stringhe ad interi come fai per i clock e le locations).
 
+// TODO: implementa le locations urgenti
+//       1) estendi il parser per gestire un flag che dica se una location è urgente
+//       2) in RTS, se la regione eè in una location urgente, non devi calcolare i delay ma solo i discrete
+//       3) in RTSNetwork, se almeno una regione della rete è in una location urgente, non devi calcolare i delay ma solo i discrete
+//       Puoi per esempio salvarti le locations urgenti in un std::unordered_set (salvale come interi)
+
+
 // Reference examples for expression parser:
 // https://wandbox.org/permlink/YlVEPhgKPNMiKADh
 // https://www.boost.org/doc/libs/1_67_0/libs/spirit/example/x3/rexpr/rexpr_min/rexpr.cpp
