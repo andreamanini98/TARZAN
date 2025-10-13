@@ -360,7 +360,7 @@ int main()
 #endif
 
 
-    testRTS();
+    testVikings();
 
 
 #ifdef REGION_TIMING

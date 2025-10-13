@@ -122,11 +122,7 @@ inline void updateNetRegionWithDiscSucc(networkOfTA::NetworkRegion &netReg,
     }
 
     // Removing empty maps to keep the clockOrdering deque consistent.
-    for (auto it = clockOrdering.begin(); it != clockOrdering.end();)
-        if (it->empty())
-            it = clockOrdering.erase(it);
-        else
-            ++it;
+    clockOrdering.erase(std::ranges::remove_if(clockOrdering, [](const auto &map) { return map.empty(); }).begin(), clockOrdering.end());
 
     // If at least one clock has been reset, the region now has clocks with zero fractional part.
     // ReSharper disable once CppTooWideScopeInitStatement
@@ -153,6 +149,10 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
 
     const int transitionSize = static_cast<int>(transitions.size());
 
+    // Pre-allocate single-element vector to avoid repeated allocations.
+    std::vector<transition> singleTransition{};
+    singleTransition.reserve(1);
+
     // First, we try if every single transition can fire (the action of the transition must not synchronize, i.e., it has no ? or ! symbol).
     // Recall that in this way only one transition fires at a given time (just like it happens in Uppaal).
     for (int regIdx = 0; regIdx < transitionSize; regIdx++)
@@ -168,10 +168,14 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                 region::Region tmpReg = regions[regIdx].clone();
                 tmpReg.set_variables(networkVariables);
 
+                // Reuse pre-allocated vector to avoid allocation overhead.
+                singleTransition.clear();
+                singleTransition.push_back(transition);
+
                 // We now compute the discrete successor for the current transition, which will be used to update the regions vector.
                 // Since we pass a single transition to getImmediateDiscreteSuccessors(), the resulting vector of discrete successors will contain at most one region.
                 const std::vector<region::Region> &discreteSuccessors =
-                        tmpReg.getImmediateDiscreteSuccessors({ transition }, clockIndices[regIdx], locationsToInt[regIdx]);
+                        tmpReg.getImmediateDiscreteSuccessors(singleTransition, clockIndices[regIdx], locationsToInt[regIdx]);
 
 #ifdef NETWORKREGION_DEBUG
 
@@ -234,8 +238,11 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                                     auto tmpReg = regions[regIdx_i].clone();
                                     tmpReg.set_variables(networkVariables);
 
+                                    singleTransition.clear();
+                                    singleTransition.push_back(transition_i);
+
                                     discreteSuccessors_i =
-                                            tmpReg.getImmediateDiscreteSuccessors({ transition_i }, clockIndices[regIdx_i], locationsToInt[regIdx_i]);
+                                            tmpReg.getImmediateDiscreteSuccessors(singleTransition, clockIndices[regIdx_i], locationsToInt[regIdx_i]);
 
                                     // If a discrete successor has been found, we compute the one corresponding to the transition with an input action.
                                     if (!discreteSuccessors_i.empty())
@@ -243,8 +250,11 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                                         tmpReg = regions[regIdx_j].clone();
                                         tmpReg.set_variables(discreteSuccessors_i[0].getVariables());
 
+                                        singleTransition.clear();
+                                        singleTransition.push_back(transition_j);
+
                                         discreteSuccessors_j =
-                                                tmpReg.getImmediateDiscreteSuccessors({ transition_j }, clockIndices[regIdx_j], locationsToInt[regIdx_j]);
+                                                tmpReg.getImmediateDiscreteSuccessors(singleTransition, clockIndices[regIdx_j], locationsToInt[regIdx_j]);
                                     }
                                 } else
                                 {
@@ -252,16 +262,22 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                                     auto tmpReg = regions[regIdx_j].clone();
                                     tmpReg.set_variables(networkVariables);
 
+                                    singleTransition.clear();
+                                    singleTransition.push_back(transition_j);
+
                                     discreteSuccessors_j =
-                                            tmpReg.getImmediateDiscreteSuccessors({ transition_j }, clockIndices[regIdx_j], locationsToInt[regIdx_j]);
+                                            tmpReg.getImmediateDiscreteSuccessors(singleTransition, clockIndices[regIdx_j], locationsToInt[regIdx_j]);
 
                                     if (!discreteSuccessors_j.empty())
                                     {
                                         tmpReg = regions[regIdx_i].clone();
                                         tmpReg.set_variables(discreteSuccessors_j[0].getVariables());
 
+                                        singleTransition.clear();
+                                        singleTransition.push_back(transition_i);
+
                                         discreteSuccessors_i =
-                                                tmpReg.getImmediateDiscreteSuccessors({ transition_i }, clockIndices[regIdx_i], locationsToInt[regIdx_i]);
+                                                tmpReg.getImmediateDiscreteSuccessors(singleTransition, clockIndices[regIdx_i], locationsToInt[regIdx_i]);
                                     }
                                 }
 
