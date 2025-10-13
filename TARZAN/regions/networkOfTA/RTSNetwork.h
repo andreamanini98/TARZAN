@@ -75,9 +75,13 @@ namespace networkOfTA
          *
          * @param targetLocs the locations of the network region that must be reached.
          * @param explorationTechnique determines the state space exploration technique (e.g., BFS, DFS).
+         *
          * @return a vector containing the target network region if it is reachable, an empty vector otherwise.
+         *
+         * @warning The size of targetLocs must match the number of automata in the network. Use std::nullopt to declare a value as missing from the reachability evaluation.
          */
-        [[nodiscard]] std::vector<NetworkRegion> forwardReachability(const std::vector<int> &targetLocs, ssee explorationTechnique) const;
+        [[nodiscard]] std::vector<NetworkRegion> forwardReachability(const std::vector<std::optional<int>> &targetLocs,
+                                                                     ssee explorationTechnique) const;
 
 
         [[nodiscard]] std::string toString() const;

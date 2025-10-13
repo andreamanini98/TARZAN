@@ -39,7 +39,8 @@ inline void insertRegionInMapAndToProcess(const networkOfTA::NetworkRegion &reg,
 }
 
 
-std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(const std::vector<int> &targetLocs, const ssee explorationTechnique) const
+std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(const std::vector<std::optional<int>> &targetLocs,
+                                                                                     const ssee explorationTechnique) const
 {
     // Initializing auxiliary data structures for reachability computation.
     std::deque<NetworkRegion> toProcess{};
@@ -82,10 +83,13 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
         bool isTargetRegionReached = true;
 
         for (int i = 0; i < static_cast<int>(targetLocs.size()); i++)
-            if (currentRegionRegions[i].getLocation() != targetLocs[i])
+            if (targetLocs[i].has_value())
             {
-                isTargetRegionReached = false;
-                break;
+                if (currentRegionRegions[i].getLocation() != targetLocs[i])
+                {
+                    isTargetRegionReached = false;
+                    break;
+                }
             }
 
         if (isTargetRegionReached)

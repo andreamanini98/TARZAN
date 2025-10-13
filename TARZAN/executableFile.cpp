@@ -93,7 +93,7 @@ void testNetworkBuildRegionGraphForeword()
     // Automaton [0] (3 locations): {dim -> 2, bright -> 1, off -> 0}
     // Automaton [1] (4 locations): {relax -> 3, t -> 2, study -> 1, idle -> 0}
 
-    const std::vector goalLocations = { 1, 3 };
+    const std::vector<std::optional<int>> goalLocations = { 1, 3 };
 
     // Reachable.
     // const std::vector goalLocations = { 1, 1 };
@@ -118,9 +118,11 @@ void testNetworkTrainGateController()
     // Automaton [1] (4 locations): {3 -> 3, 2 -> 2, 1 -> 1, 0 -> 0}
     // Automaton [2] (4 locations): {going_up -> 3, down -> 2, coming_down -> 1, up -> 0}
 
-    const std::vector goalLocations = { 2, 1, 0 };
+    const std::vector<std::optional<int>> goalLocations = { std::nullopt, std::nullopt, 1 };
 
     const auto res = net.forwardReachability(goalLocations, DFS);
+
+    std::cout << res[0].toString() << std::endl;
 }
 
 
@@ -323,7 +325,7 @@ void testRingNetwork()
     // Locations:
     // Automaton [i] (6 locations): {goal -> 5, l4 -> 4, l3 -> 3, l2 -> 2, l1 -> 1, l0 -> 0}
 
-    const std::vector goalLocations = { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+    const std::vector<std::optional<int>> goalLocations = { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
 
     const auto res = net.forwardReachability(goalLocations, DFS);
 }
@@ -338,7 +340,7 @@ int main()
 #endif
 
 
-    testRingNetwork();
+    testNetworkTrainGateController();
 
 
 #ifdef REGION_TIMING
