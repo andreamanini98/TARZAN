@@ -54,11 +54,7 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
         regionsHashMap.insert(init);
     }
 
-#ifdef RTS_DEBUG
-
     unsigned long long int totalRegions = 0;
-
-#endif
 
     // Starting the timer for measuring computation.
     const auto start = std::chrono::high_resolution_clock::now();
@@ -79,12 +75,7 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
             // Ending the timer for measuring computation.
             const auto end = std::chrono::high_resolution_clock::now();
 
-#ifdef RTS_DEBUG
-
             std::cout << "Total number of computed regions: " << totalRegions << std::endl;
-
-#endif
-
             std::cout << "Goal region is reachable!\n";
 
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
@@ -100,11 +91,7 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
         const std::vector<transition> &transitions = outTransitions[currentRegionLocation];
         const std::vector<Region> &discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
 
-#ifdef RTS_DEBUG
-
         totalRegions += discreteSuccessors.size() + 1;
-
-#endif
 
         // Removing the processed region now since we do not need it anymore.
         explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();
@@ -122,6 +109,7 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
     // Ending the timer for measuring computation.
     const auto end = std::chrono::high_resolution_clock::now();
 
+    std::cout << "Total number of computed regions: " << totalRegions << std::endl;
     std::cout << "Goal region is not reachable!\n";
 
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
@@ -143,11 +131,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
         regionsHashMap.insert(startReg);
     }
 
-#ifdef RTS_DEBUG
-
     unsigned long long int totalRegions = 0;
-
-#endif
 
     // Starting the timer for measuring computation.
     const auto start = std::chrono::high_resolution_clock::now();
@@ -183,12 +167,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
             // Ending the timer for measuring computation.
             const auto end = std::chrono::high_resolution_clock::now();
 
-#ifdef RTS_DEBUG
-
             std::cout << "Total number of computed regions: " << totalRegions << std::endl;
-
-#endif
-
             std::cout << "An initial region is reachable!\n";
 
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
@@ -204,11 +183,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
         const std::vector<transition> &transitions = inTransitions[currentRegion.getLocation()];
         const std::vector<Region> &discPreds = currentRegion.getImmediateDiscretePredecessors(transitions, clocksIndices, locationsToInt, maxConstants);
 
-#ifdef RTS_DEBUG
-
         totalRegions += delayPredecessors.size() + discPreds.size();
-
-#endif
 
         // Removing the processed region now since we do not need it anymore.
         explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();
@@ -227,6 +202,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
     // Ending the timer for measuring computation.
     const auto end = std::chrono::high_resolution_clock::now();
 
+    std::cout << "Total number of computed regions: " << totalRegions << std::endl;
     std::cout << "An initial region is not reachable!\n";
 
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);

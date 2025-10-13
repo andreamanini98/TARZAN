@@ -700,7 +700,7 @@ inline void testFlowerBackwards()
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
     // const std::string automatonFileName = "light_switch.txt";
 
-    const std::string automatonFileName = "test_flower_small.txt";
+    const std::string automatonFileName = "test_flower_tiny.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);

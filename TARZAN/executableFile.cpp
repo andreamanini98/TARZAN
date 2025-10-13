@@ -305,10 +305,10 @@ void testBooleanExpression()
 
 void testIntegers()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp.txt";
-    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path);
+    // const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp.txt";
+    // const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path);
 
-    std::cout << "\n\n" << automaton << std::endl;
+    // std::cout << "\n\n" << automaton << std::endl;
 }
 
 
@@ -338,7 +338,7 @@ int main()
 #endif
 
 
-    testRTS();
+    testFlowerBackwards();
 
 
 #ifdef REGION_TIMING
