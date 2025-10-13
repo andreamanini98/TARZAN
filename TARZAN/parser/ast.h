@@ -24,13 +24,12 @@
 //
 //  <automaton> -> 'create' 'automaton' <literal>
 //                 '{'
-//                 'clocks'      '{' <clocks_rule> '}'
-//                 'actions'     '{' <literal> (, <literal>)* '}'
-//                 'locations'   '{' <locations_rule> '}'
-//                 'transitions' '{' <transition_rule> (, <transition_rule>)* ';' '}'
+//                 'clocks'          '{' <literal> (, <literal>)* ';' '}'
+//                 'actions'         '{' <literal> (, <literal>)* ';' '}'
+//                 (eps | 'integers' '{' <literal> (, <literal>)* ';' '}')
+//                 'locations'       '{' <locations_rule> '}'
+//                 'transitions'     '{' <transition_rule> (, <transition_rule>)* ';' '}'
 //                 '}'
-//
-//  <clocks_rule> -> <literal> (, <literal>)* ';'
 //
 //  <locations_rule> -> <loc_rule> (, <loc_rule>)* ';'
 //
@@ -44,7 +43,9 @@
 //                       <literal> ','
 //                       <actions_rule> ','
 //                       <guard_rule> ','
+//                       (eps | <boolean_expr> ',')
 //                       '[' (eps | <literal> (',' <literal>)*) ']' ','
+//                       (eps | '[' <assignment_expr> (',' <assignment_expr>)* ']' ',')
 //                       <literal>
 //                       ')'
 //
@@ -97,8 +98,7 @@
 
 // TODO: fare in modo che automi senza clock siano disponibili (forse ti basta fare un check nelle classi RTS o RTSNetwork per vedere se un automa non ha clock:
 //       se non ha clock, non si calcolano i delay successor (o predecessors)).
-
-// TODO: aggiornare la grammatica di Liana con gli interi nelle transizioni e automi.
+//       per la rete di TA forse non si devono nemmeno inserire gli automi senza clock in isAorC all'inizio.
 
 // TODO: cambiare la chiave della mappa delle funzioni evaluate da stringa a intero (ti serve un mapping da stringhe ad interi come fai per i clock e le locations).
 
