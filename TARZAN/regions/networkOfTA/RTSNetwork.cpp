@@ -52,11 +52,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
         regionsHashMap.insert(init);
     }
 
-#ifdef RTSNETWORK_DEBUG
-
     unsigned long long int totalRegions = 0;
-
-#endif
 
     // Starting the timer for measuring computation.
     const auto start = std::chrono::high_resolution_clock::now();
@@ -97,12 +93,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
             // Ending the timer for measuring computation.
             const auto end = std::chrono::high_resolution_clock::now();
 
-#ifdef RTSNETWORK_DEBUG
-
             std::cout << "Total number of computed regions: " << totalRegions << std::endl;
-
-#endif
-
             std::cout << "Goal region is reachable!\n";
 
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
@@ -122,11 +113,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
         // Computing network discrete successors.
         const std::vector<NetworkRegion> discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
 
-#ifdef RTSNETWORK_DEBUG
-
         totalRegions += discreteSuccessors.size() + 1;
-
-#endif
 
         // Removing now since we do not need it anymore.
         explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();
@@ -144,12 +131,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
     // Ending the timer for measuring computation.
     const auto end = std::chrono::high_resolution_clock::now();
 
-#ifdef RTSNETWORK_DEBUG
-
     std::cout << "Total number of computed regions: " << totalRegions << std::endl;
-
-#endif
-
     std::cout << "Goal region is not reachable!\n";
 
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);

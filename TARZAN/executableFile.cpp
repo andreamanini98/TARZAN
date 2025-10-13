@@ -331,6 +331,26 @@ void testRingNetwork()
 }
 
 
+void testVikings()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/networks_of_TA/vikings";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    // Locations:
+    // soldier (4 locations): {safe -> 3, l0 -> 2, l1 -> 1, unsafe -> 0}
+    // torch (4 locations): {one -> 3, two -> 2, urgent -> 1, free -> 0}
+
+    const std::vector<std::optional<int>> goalLocations = { 3, 3, 3, 3, 3, 3, 3, 3, std::nullopt };
+
+    const auto res = net.forwardReachability(goalLocations, DFS);
+
+    std::cout << res[0].toString() << std::endl;
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -340,7 +360,7 @@ int main()
 #endif
 
 
-    testNetworkTrainGateController();
+    testVikings();
 
 
 #ifdef REGION_TIMING
