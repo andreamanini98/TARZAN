@@ -95,17 +95,12 @@
 //
 //  <and_op> -> '&&'
 
-// TODO: fare in modo che automi senza clock siano disponibili (forse devi modificare i delay successor, potresti vedere se sfruttare il caso della regione di classe U)
-//       Okkio ai delay predecessors, lì mi sa che la classe U non può essere sfruttata.
-
-// TODO: !!! MI SA CHE QUANDO CALCOLI UN PREDECESSORE, DEVI CONTROLLARE SE LA TRANSIZIONE È SODDISFATTA DA QUEL PREDECESSORE E, SE SÌ, AGGIUNGI IL PREDECESSORE AL RISUTATO
-//       Se è così devi aggiustare anche il paper.
+// TODO: fare in modo che automi senza clock siano disponibili (forse ti basta fare un check nelle classi RTS o RTSNetwork per vedere se un automa non ha clock:
+//       se non ha clock, non si calcolano i delay successor (o predecessors)).
 
 // TODO: aggiornare la grammatica di Liana con gli interi nelle transizioni e automi.
 
 // TODO: cambiare la chiave della mappa delle funzioni evaluate da stringa a intero (ti serve un mapping da stringhe ad interi come fai per i clock e le locations).
-
-// TODO: !!! devi parsare i file in ordine alfabetico e usare gli optional per decidere su quali automi si fa il check di reachability.
 
 // Reference examples for expression parser:
 // https://wandbox.org/permlink/YlVEPhgKPNMiKADh
