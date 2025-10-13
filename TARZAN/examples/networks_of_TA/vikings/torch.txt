@@ -1,0 +1,34 @@
+create automaton torch
+{
+    clocks
+    {
+        x;
+    }
+
+    actions
+    {
+        take, release, tau;
+    }
+
+    integers
+    {
+        L;
+    }
+
+    locations
+    {
+        free   <ini: T>,
+        urgent <ini: F, inv: [(x, <=, 0)]>,
+        two    <ini: F>,
+        one    <ini: F>;
+    }
+
+    transitions
+    {
+        (free,   take?,    [],           [x],             urgent),
+        (urgent, tau,      [],           [],              one),
+        (urgent, take?,    [],           [],              two),
+        (two,    release?, [],           [],              one),
+        (one,    release?, [],           [], [L = 1 - L], free);
+    }
+}

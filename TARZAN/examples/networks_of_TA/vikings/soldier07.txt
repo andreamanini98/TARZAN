@@ -1,0 +1,33 @@
+create automaton soldier06
+{
+    clocks
+    {
+        y;
+    }
+
+    actions
+    {
+        take, release;
+    }
+
+    integers
+    {
+        L;
+    }
+
+    locations
+    {
+        unsafe <ini: T>,
+        l0     <ini: F>,
+        safe   <ini: F>,
+        l1     <ini: F>;
+    }
+
+    transitions
+    {
+        (unsafe, take!,    [],            L == 0, [y], l0),
+        (l0,     release!, [(y, >=, 35)],         [],  safe),
+        (safe,   take!,    [],            L == 1, [y], l1),
+        (l1,     release!, [(y, >=, 35)],         [],  unsafe);
+    }
+}
