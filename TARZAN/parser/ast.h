@@ -24,7 +24,7 @@
 //
 //  <automaton> -> 'create' 'automaton' <literal>
 //                 '{'
-//                 'clocks'          '{' <literal> (, <literal>)* ';' '}'
+//                 'clocks'          '{' (eps | <literal> (, <literal>)* ';') '}'
 //                 'actions'         '{' <literal> (, <literal>)* ';' '}'
 //                 (eps | 'integers' '{' <literal> (, <literal>)* ';' '}')
 //                 'locations'       '{' <locations_rule> '}'
@@ -360,7 +360,6 @@ namespace timed_automaton::ast
     using loc_pair = std::pair<std::string, locationContent>;
     using loc_map = std::unordered_map<std::string, locationContent>;
 
-    // TODO: fare in modo che i clock possano anche essere vuoti (devi mettere un opzionale nella grammatica quando parsi il vettore di clock).
 
     struct timedAutomaton
     {

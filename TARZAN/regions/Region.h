@@ -51,6 +51,9 @@ namespace region
 
 
     public:
+        Region() = default;
+
+
         /**
          * @brief Creates an initial region (all clocks are in x0 with integer value equal to zero).
          *

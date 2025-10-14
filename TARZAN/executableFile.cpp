@@ -351,6 +351,24 @@ void testVikings()
 }
 
 
+void testNoClocks()
+{
+        const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+        const std::string automatonFileName = "torch_no_clocks.txt";
+        const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+        const region::RTS regionTransitionSystem(automaton);
+
+        std::cout << regionTransitionSystem.to_string() << std::endl;
+
+        std::cout << "\n\n\n";
+
+        std::cout << "Computed the following regions:" << std::endl;
+
+        const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(7, DFS);
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -360,7 +378,7 @@ int main()
 #endif
 
 
-    testVikings();
+    testNoClocks();
 
 
 #ifdef REGION_TIMING

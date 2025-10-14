@@ -3,10 +3,11 @@
 
 #include <iostream>
 #include <ranges>
+#include <sstream>
 #include <utility>
 #include "absl/container/flat_hash_set.h"
 
-// #define RTS_DEBUG
+#define RTS_DEBUG
 
 
 /**
@@ -54,6 +55,9 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
         regionsHashMap.insert(init);
     }
 
+    // Boolean used to track whether a region has clocks or not. If not, delay successors must not be computed.
+    const bool isThereAnyClock = !clocksIndices.empty();
+
     unsigned long long int totalRegions = 0;
 
     // Starting the timer for measuring computation.
@@ -84,20 +88,20 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
             return { currentRegion };
         }
 
-        // Computing immediate delay successor.
-        const Region &delaySuccessor = currentRegion.getImmediateDelaySuccessor(maxConstants);
+        // Computing immediate delay successor if there is at least one clock in the region.
+        const Region delaySuccessor = isThereAnyClock ? currentRegion.getImmediateDelaySuccessor(maxConstants) : Region{};
 
         // Computing discrete successors.
         const std::vector<transition> &transitions = outTransitions[currentRegionLocation];
         const std::vector<Region> &discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
 
-        totalRegions += discreteSuccessors.size() + 1;
+        totalRegions += discreteSuccessors.size() + (isThereAnyClock ? 1 : 0);
 
         // Removing the processed region now since we do not need it anymore.
         explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();
 
         // We insert the delay successor first and then the discrete successors.
-        if (!regionsHashMap.contains(delaySuccessor))
+        if (isThereAnyClock && !regionsHashMap.contains(delaySuccessor))
             insertRegionInMapAndToProcess(delaySuccessor, toProcess, regionsHashMap, clocksIndices, invariants);
 
         for (const auto &discreteSuccessor: discreteSuccessors)
@@ -130,6 +134,9 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
         toProcess.push_back(startReg);
         regionsHashMap.insert(startReg);
     }
+
+    // Boolean used to track whether a region has clocks or not. If not, delay successors must not be computed.
+    const bool isThereAnyClock = !clocksIndices.empty();
 
     unsigned long long int totalRegions = 0;
 
@@ -176,8 +183,8 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
             return { currentRegion };
         }
 
-        // Computing immediate delay predecessors.
-        const std::vector<Region> &delayPredecessors = currentRegion.getImmediateDelayPredecessors();
+        // Computing immediate delay predecessors if there is at least one clock in the region.
+        const std::vector<Region> delayPredecessors = isThereAnyClock ? currentRegion.getImmediateDelayPredecessors() : std::vector<Region>{};
 
         // Computing discrete predecessors.
         const std::vector<transition> &transitions = inTransitions[currentRegion.getLocation()];
@@ -209,4 +216,75 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
     std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
 
     return {};
+}
+
+
+std::string region::RTS::to_string() const
+{
+    std::ostringstream oss;
+
+    oss << "=== RTS Information ===\n\n";
+
+    // Clock indices.
+    oss << "Clocks (" << clocksIndices.size() << "):\n";
+    for (const auto &[clockName, index]: clocksIndices)
+        oss << "  " << clockName << " -> index " << index << "\n";
+    oss << "\n";
+
+    // Locations.
+    oss << "Locations (" << locationsToInt.size() << "):\n";
+    for (const auto &[locationName, index]: locationsToInt)
+        oss << "  " << locationName << " -> " << index << "\n";
+    oss << "\n";
+
+    // Max constants.
+    oss << "Max Constants (" << maxConstants.size() << "):\n";
+    for (size_t i = 0; i < maxConstants.size(); ++i)
+        oss << "  Clock " << i << ": " << maxConstants[i] << "\n";
+    oss << "\n";
+
+    // Initial locations.
+    oss << "Initial Locations (" << initialLocations.size() << "):\n";
+    for (const int loc: initialLocations)
+        oss << "  " << loc << "\n";
+    oss << "\n";
+
+    // Outgoing transitions.
+    oss << "Outgoing Transitions (" << outTransitions.size() << " locations):\n";
+    for (size_t loc = 0; loc < outTransitions.size(); ++loc)
+    {
+        if (!outTransitions[loc].empty())
+        {
+            oss << "  From location " << loc << " (" << outTransitions[loc].size() << " transitions):\n";
+            for (const auto &trans: outTransitions[loc])
+                oss << "    " << trans.startingLocation << " -> " << trans.targetLocation << "\n";
+        }
+    }
+    oss << "\n";
+
+    // Incoming transitions.
+    oss << "Incoming Transitions (" << inTransitions.size() << " locations):\n";
+    for (size_t loc = 0; loc < inTransitions.size(); ++loc)
+    {
+        if (!inTransitions[loc].empty())
+        {
+            oss << "  To location " << loc << " (" << inTransitions[loc].size() << " transitions):\n";
+            for (const auto &trans: inTransitions[loc])
+                oss << "    " << trans.startingLocation << " -> " << trans.targetLocation << "\n";
+        }
+    }
+    oss << "\n";
+
+    // Initial regions.
+    oss << "Initial Regions (" << initialRegions.size() << "):\n";
+    for (size_t i = 0; i < initialRegions.size(); ++i)
+        oss << "  Region " << i << ":\n" << initialRegions[i].toString() << "\n";
+    oss << "\n";
+
+    // Invariants.
+    oss << "Invariants (" << invariants.size() << " locations with invariants):\n";
+    for (const auto &[loc, constraints]: invariants)
+        oss << "  Location " << loc << " (" << constraints.size() << " constraints)\n";
+
+    return oss.str();
 }

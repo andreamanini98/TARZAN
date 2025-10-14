@@ -71,6 +71,9 @@ namespace region
 
         // Getters.
         [[nodiscard]] std::vector<Region> getInitialRegions() const { return initialRegions; }
+
+
+        [[nodiscard]] std::string to_string() const;
     };
 }
 

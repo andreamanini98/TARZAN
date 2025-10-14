@@ -26,14 +26,21 @@ inline bool isInvariantSatisfied(const std::vector<timed_automaton::ast::clockCo
                                  const std::vector<std::pair<int, bool>> &clockValuation,
                                  const std::unordered_map<std::string, int> &clocksIndices)
 {
-    return std::ranges::all_of(invariant, [&](const auto &cc) {
-        const int clockIdx = clocksIndices.at(cc.getClockName());
+    bool isSatisfied = true;
 
-        const int clockIntVal = clockValuation[clockIdx].first;
-        const int clockHasFracPart = clockValuation[clockIdx].second;
+    if (!clocksIndices.empty())
+    {
+        isSatisfied = std::ranges::all_of(invariant, [&](const auto &cc) {
+            const int clockIdx = clocksIndices.at(cc.getClockName());
 
-        return cc.isSatisfied(clockIntVal, clockHasFracPart);
-    });
+            const int clockIntVal = clockValuation[clockIdx].first;
+            const int clockHasFracPart = clockValuation[clockIdx].second;
+
+            return cc.isSatisfied(clockIntVal, clockHasFracPart);
+        });
+    }
+
+    return isSatisfied;
 }
 
 #endif //TARZAN_FUNCTION_UTILITIES_H
