@@ -133,7 +133,7 @@ inline void updateNetRegionWithDiscSucc(networkOfTA::NetworkRegion &netReg,
 
 
 std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediateDiscreteSuccessors(
-    const std::vector<std::vector<transition>> &transitions,
+    const std::vector<std::reference_wrapper<const std::vector<transition>>> &transitions,
     const std::vector<std::unordered_map<std::string, int>> &clockIndices,
     const std::vector<std::unordered_map<std::string, int>> &locationsToInt) const
 {
@@ -157,7 +157,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
     // Recall that in this way only one transition fires at a given time (just like it happens in Uppaal).
     for (int regIdx = 0; regIdx < transitionSize; regIdx++)
     {
-        for (const auto &transition: transitions[regIdx])
+        for (const auto &transition: transitions[regIdx].get())
         {
             // If the action does not synchronize, we try to compute the discrete successors of the current region.
             if (!transition.action.second.has_value())
@@ -204,7 +204,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
     // Next, we check whether every pair of transitions is synchronized and whether it can fire in pairs with the other synchronizing transition.
     for (int regIdx_i = 0; regIdx_i < transitionSize - 1; regIdx_i++)
     {
-        for (const auto &transition_i: transitions[regIdx_i])
+        for (const auto &transition_i: transitions[regIdx_i].get())
         {
             // If the action i synchronizes, we try to compute the discrete successors with other synchronizing actions.
             if (transition_i.action.second.has_value())
@@ -216,7 +216,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                 // For each remaining region, we must check whether there is an action synchronizing with the one above.
                 for (int regIdx_j = regIdx_i + 1; regIdx_j < transitionSize; regIdx_j++)
                 {
-                    for (const auto &transition_j: transitions[regIdx_j])
+                    for (const auto &transition_j: transitions[regIdx_j].get())
                     {
                         // If the action j synchronizes, we check whether it matches the other one in the outer loop.
                         if (transition_j.action.second.has_value())

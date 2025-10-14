@@ -98,14 +98,7 @@
 //
 //  <and_op> -> '&&'
 
-// TODO: aggiustare liana con le locations urgenti.
-
-// TODO: cambiare la chiave della mappa delle funzioni evaluate da stringa a intero (ti serve un mapping da stringhe ad interi come fai per i clock e le locations).
-
-// TODO: implementa le locations urgenti
-//       3) in RTSNetwork, se almeno una regione della rete è in una location urgente, non devi calcolare i delay ma solo i discrete
-//          quando inizializzi una rete, crea un set di indici dove ogni indice rappresenta una regione che potrebbe avere una location urgente.
-//          Poi controlla solo quelle e se la location corrente di una di qulle regioni è urgente skippi il calcolo dei delay successor.
+// TODO: aggiustare liana con le locations urgenti. wrong parsing: AGGIUSTARE nel parser <ini: F, inv: [(x, <=, 0)]>
 
 
 // Reference examples for expression parser:

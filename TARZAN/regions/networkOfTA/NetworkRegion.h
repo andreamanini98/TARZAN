@@ -81,7 +81,7 @@ namespace networkOfTA
          *          from its current location, otherwise index ordering will be lost.
          */
         [[nodiscard]] std::vector<NetworkRegion> getImmediateDiscreteSuccessors(
-            const std::vector<std::vector<transition>> &transitions,
+            const std::vector<std::reference_wrapper<const std::vector<transition>>> &transitions,
             const std::vector<std::unordered_map<std::string, int>> &clockIndices,
             const std::vector<std::unordered_map<std::string, int>> &locationsToInt) const;
 

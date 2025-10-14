@@ -108,9 +108,10 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
         const NetworkRegion delaySuccessor = isDelayComputable ? currentRegion.getImmediateDelaySuccessor(maxConstants) : NetworkRegion{};
 
         // Setting up the transitions for the network discrete successor computation.
-        std::vector<std::vector<transition>> transitions{};
+        std::vector<std::reference_wrapper<const std::vector<transition>>> transitions{};
+        transitions.reserve(currentRegionRegions.size());
         for (int i = 0; i < static_cast<int>(currentRegionRegions.size()); i++)
-            transitions.push_back(outTransitions[i][currentRegionRegions[i].getLocation()]);
+            transitions.emplace_back(std::cref(outTransitions[i][currentRegionRegions[i].getLocation()]));
 
         // Computing network discrete successors.
         const std::vector<NetworkRegion> discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
