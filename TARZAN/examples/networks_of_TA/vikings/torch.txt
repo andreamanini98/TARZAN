@@ -15,7 +15,7 @@ create automaton torch
     locations
     {
         free   <ini: T>,
-        urgent <ini: F>,
+        urgent <ini: F, urg: T>,
         two    <ini: F>,
         one    <ini: F>;
     }

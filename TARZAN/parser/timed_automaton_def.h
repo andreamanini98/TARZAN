@@ -272,14 +272,39 @@ namespace parser
 
     inline auto locationContent_rule_def =
             lit('<')
-            > (lit("ini") > lit(':') > my_boolean
-               > (lit(',') > lit("urg") > lit(':') > my_boolean | x3::attr(false))
-               > -(lit(',') > lit("inv") > lit(':') > lit('[') > clockConstraint_rule % ',' > lit(']'))
-               |
-               x3::attr(false)
-               > (lit(',') > lit("urg") > lit(':') > my_boolean | x3::attr(false))
-               > -(lit("inv") > lit(':') > lit('[') > clockConstraint_rule % ',' > lit(']')))
+            >> (
+                // ini, urg, -inv
+                lit("ini") >> lit(':') >> my_boolean
+                >> lit(',') >> lit("urg") >> lit(':') >> my_boolean
+                >> -(lit(',') >> lit("inv") >> lit(':') >> lit('[') >> clockConstraint_rule % ',' >> lit(']'))
+                |
+                // ini, inv (no urg)
+                lit("ini") >> lit(':') >> my_boolean
+                >> x3::attr(false)
+                >> lit(',') >> lit("inv") >> lit(':') >> lit('[') >> clockConstraint_rule % ',' >> lit(']')
+                |
+                // ini (no urg, no inv)
+                lit("ini") >> lit(':') >> my_boolean
+                >> x3::attr(false)
+                >> x3::attr(std::vector<timed_automaton::ast::clockConstraint>{})
+                |
+                // urg, -inv (no ini)
+                x3::attr(false)
+                >> lit("urg") >> lit(':') >> my_boolean
+                >> -(lit(',') >> lit("inv") >> lit(':') >> lit('[') >> clockConstraint_rule % ',' >> lit(']'))
+                |
+                // inv (no ini, no urg)
+                x3::attr(false)
+                >> x3::attr(false)
+                >> lit("inv") >> lit(':') >> lit('[') >> clockConstraint_rule % ',' >> lit(']')
+                |
+                // urg (no ini, no inv)
+                x3::attr(false)
+                >> lit("urg") >> lit(':') >> my_boolean
+                >> x3::attr(std::vector<timed_automaton::ast::clockConstraint>{})
+            )
             > lit('>');
+
 
     inline auto transition_rule_def =
             lit('(')
