@@ -43,8 +43,10 @@ namespace networkOfTA
                 const int numRegions = static_cast<int>(regions.size());
 
                 // We insert values from 0 to numRegions - 1 since every region is initial.
+                // We do not insert the index of regions with no clocks, since the computation of delay successors relies on the content of isAorC.
                 for (int i = 0; i < numRegions; i++)
-                    isAorC.insert(i);
+                    if (regions[i].getNumberOfClocks() > 0)
+                        isAorC.insert(i);
             }
         }
 

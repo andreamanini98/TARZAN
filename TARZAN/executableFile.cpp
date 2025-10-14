@@ -351,21 +351,35 @@ void testVikings()
 }
 
 
-void testNoClocks()
+void testNoClocksSingleAutomata()
 {
-        const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
-        const std::string automatonFileName = "torch_no_clocks.txt";
-        const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+    const std::string automatonFileName = "torch_no_clocks.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
-        const region::RTS regionTransitionSystem(automaton);
+    const region::RTS regionTransitionSystem(automaton);
 
-        std::cout << regionTransitionSystem.to_string() << std::endl;
+    std::cout << regionTransitionSystem.to_string() << std::endl;
 
-        std::cout << "\n\n\n";
+    std::cout << "\n\n\n";
 
-        std::cout << "Computed the following regions:" << std::endl;
+    std::cout << "Computed the following regions:" << std::endl;
 
-        const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(7, DFS);
+    const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(7, DFS);
+}
+
+
+void testNoClocksNetwork()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/networks_of_TA/test_no_clocks";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    const std::vector<std::optional<int>> goalLocations = { 3, std::nullopt };
+
+    const auto res = net.forwardReachability(goalLocations, DFS);
 }
 
 
@@ -378,7 +392,7 @@ int main()
 #endif
 
 
-    testNoClocks();
+    testNoClocksNetwork();
 
 
 #ifdef REGION_TIMING

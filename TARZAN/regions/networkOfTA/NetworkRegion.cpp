@@ -97,7 +97,7 @@ inline void updateNetRegionWithDiscSucc(networkOfTA::NetworkRegion &netReg,
     netReg.setRegionGivenIndex(regIdx, discSuccReg);
 
     // If no clocks must be reset, we can return without affecting clockOrdering.
-    if (resetClocks.empty())
+    if (resetClocks.empty() || numOfClocks == 0)
         return;
 
     // We must remove the clocks that have been reset.
