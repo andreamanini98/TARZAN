@@ -98,7 +98,7 @@
 //
 //  <and_op> -> '&&'
 
-// TODO: aggiustare liana con le locations urgenti. wrong parsing: AGGIUSTARE nel parser <ini: F, inv: [(x, <=, 0)]>
+// TODO: aggiustare liana con le locations urgenti. NEL PARSER VEDERE SE È AMMESSO LASCIARE UNA LOCATION SENZA INI, URG, E INV.
 
 
 // Reference examples for expression parser:
