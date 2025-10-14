@@ -279,6 +279,7 @@ std::string timed_automaton::ast::locationContent::to_string() const
     std::ostringstream oss;
     oss << "<";
     oss << "initial: " << (isInitial ? "true" : "false");
+    oss << "urgent: " << (isUrgent ? "true" : "false");
     oss << ", ";
     oss << "invariant: [" << join_elements(invariant, " and ") << "]";
     oss << ">";
@@ -347,8 +348,8 @@ int timed_automaton::ast::timedAutomaton::getMaxConstant() const
                 maxConstant = cc.comparingConstant;
 
     // Checking for maximum constant in invariants.
-    for (const auto &[isInitial, invariant]: locations | std::views::values)
-        for (const clockConstraint &cc: invariant)
+    for (const auto &loc: locations | std::views::values)
+        for (const clockConstraint &cc: loc.invariant)
             if (maxConstant < cc.comparingConstant)
                 maxConstant = cc.comparingConstant;
 
@@ -371,12 +372,18 @@ std::vector<int> timed_automaton::ast::timedAutomaton::getMaxConstants(const std
                     maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
 
         // Checking for maximum constants in invariants.
-        for (const auto &[isInitial, invariant]: locations | std::views::values)
-            for (const clockConstraint &cc: invariant)
+        for (const auto &loc: locations | std::views::values)
+            for (const clockConstraint &cc: loc.invariant)
                 if (maxConstants[clocksIndices.at(cc.clock)] < cc.comparingConstant)
                     maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
     }
     return maxConstants;
+}
+
+
+bool timed_automaton::ast::timedAutomaton::hasUrgentLocations() const
+{
+    return std::ranges::any_of(locations | std::views::values, &locationContent::isUrgent);
 }
 
 
@@ -461,6 +468,18 @@ absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> tim
 }
 
 
+absl::flat_hash_set<int> timed_automaton::ast::timedAutomaton::getUrgentLocations(const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    absl::flat_hash_set<int> urgentLocations;
+
+    for (const auto &[locName, locContent]: locations)
+        if (locContent.isUrgent)
+            urgentLocations.insert(locToIntMap.at(locName));
+
+    return urgentLocations;
+}
+
+
 absl::btree_map<std::string, int> timed_automaton::ast::timedAutomaton::getVariables() const
 {
     absl::btree_map<std::string, int> res{};
@@ -538,6 +557,12 @@ std::vector<int> timed_automaton::ast::timedArena::getMaxConstants(const std::un
     }
 
     return maxConstants;
+}
+
+
+bool timed_automaton::ast::timedArena::hasUrgentLocations() const
+{
+    return std::ranges::any_of(locations | std::views::values, [](const auto &pair) { return pair.second.isUrgent; });
 }
 
 
@@ -619,6 +644,18 @@ absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> tim
             invariants[locToIntMap.at(locName)] = locContent.second.invariant;
 
     return invariants;
+}
+
+
+absl::flat_hash_set<int> timed_automaton::ast::timedArena::getUrgentLocations(const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    absl::flat_hash_set<int> urgentLocations;
+
+    for (const auto &[locName, locContent]: locations)
+        if (locContent.second.isUrgent)
+            urgentLocations.insert(locToIntMap.at(locName));
+
+    return urgentLocations;
 }
 
 

@@ -29,6 +29,8 @@ namespace region
 
         absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> invariants{};
 
+        absl::flat_hash_set<int> urgentLocations{};
+
 
     public:
         explicit RTS(const timed_automaton::ast::timedAutomaton &automaton) : automaton(automaton)
@@ -40,6 +42,7 @@ namespace region
             outTransitions = automaton.getOutTransitions(locationsToInt);
             inTransitions = automaton.getInTransitions(locationsToInt);
             invariants = automaton.getInvariants(locationsToInt);
+            urgentLocations = automaton.getUrgentLocations(locationsToInt);
 
             const int numOfClocks = static_cast<int>(clocksIndices.size());
             const auto &variables = automaton.getVariables();

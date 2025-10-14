@@ -273,9 +273,11 @@ namespace parser
     inline auto locationContent_rule_def =
             lit('<')
             > (lit("ini") > lit(':') > my_boolean
+               > (lit(',') > lit("urg") > lit(':') > my_boolean | x3::attr(false))
                > -(lit(',') > lit("inv") > lit(':') > lit('[') > clockConstraint_rule % ',' > lit(']'))
                |
                x3::attr(false)
+               > (lit(',') > lit("urg") > lit(':') > my_boolean | x3::attr(false))
                > -(lit("inv") > lit(':') > lit('[') > clockConstraint_rule % ',' > lit(']')))
             > lit('>');
 

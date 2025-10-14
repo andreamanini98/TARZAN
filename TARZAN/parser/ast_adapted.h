@@ -15,7 +15,7 @@ BOOST_FUSION_ADAPT_STRUCT(expr::ast::comparisonExpr, left_expr, op, right_expr)
 
 BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::clockConstraint, clock, constraintOperator, comparingConstant)
 
-BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::locationContent, isInitial, invariant)
+BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::locationContent, isInitial, isUrgent, invariant)
 
 BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::transition, startingLocation, action, clockGuard, integerGuard, clocksToReset, integerAssignments, targetLocation)
 

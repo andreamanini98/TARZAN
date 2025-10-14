@@ -10,6 +10,8 @@
 #include <map>
 #include <ranges>
 #include <variant>
+#include <absl/container/flat_hash_set.h>
+
 #include "absl/container/flat_hash_map.h"
 #include "absl/container/btree_map.h"
 #include <boost/spirit/home/x3/support/ast/variant.hpp>
@@ -96,17 +98,14 @@
 //
 //  <and_op> -> '&&'
 
-// TODO: fare in modo che automi senza clock siano disponibili (forse ti basta fare un check nelle classi RTS o RTSNetwork per vedere se un automa non ha clock:
-//       se non ha clock, non si calcolano i delay successor (o predecessors)).
-//       per la rete di TA forse non si devono nemmeno inserire gli automi senza clock in isAorC all'inizio.
+// TODO: aggiustare liana con le locations urgenti.
 
 // TODO: cambiare la chiave della mappa delle funzioni evaluate da stringa a intero (ti serve un mapping da stringhe ad interi come fai per i clock e le locations).
 
 // TODO: implementa le locations urgenti
-//       1) estendi il parser per gestire un flag che dica se una location è urgente
-//       2) in RTS, se la regione eè in una location urgente, non devi calcolare i delay ma solo i discrete
 //       3) in RTSNetwork, se almeno una regione della rete è in una location urgente, non devi calcolare i delay ma solo i discrete
-//       Puoi per esempio salvarti le locations urgenti in un std::unordered_set (salvale come interi)
+//          quando inizializzi una rete, crea un set di indici dove ogni indice rappresenta una regione che potrebbe avere una location urgente.
+//          Poi controlla solo quelle e se la location corrente di una di qulle regioni è urgente skippi il calcolo dei delay successor.
 
 
 // Reference examples for expression parser:
@@ -315,6 +314,7 @@ namespace timed_automaton::ast
     struct locationContent
     {
         bool isInitial;
+        bool isUrgent;
         std::vector<clockConstraint> invariant;
 
 
@@ -387,6 +387,12 @@ namespace timed_automaton::ast
 
 
         /**
+         * @return true if the Timed Automaton has at least one urgent location, false otherwise.
+         */
+        [[nodiscard]] bool hasUrgentLocations() const;
+
+
+        /**
          * @return a std::unordered_map from clock names to their index in the clocks vector.
          *
          * @warning To be used at the beginning, right after parsing a Timed Automaton, since at the current time of development this is
@@ -450,6 +456,15 @@ namespace timed_automaton::ast
          */
         [[nodiscard]] absl::flat_hash_map<int, std::vector<clockConstraint>> getInvariants(
             const std::unordered_map<std::string, int> &locToIntMap) const;
+
+
+        /**
+         * @brief Collects the urgent locations.
+         *
+         * @param locToIntMap a mapping from locations (represented by std::string) to int.
+         * @return a map from integers representing the urgent locations.
+         */
+        [[nodiscard]] absl::flat_hash_set<int> getUrgentLocations(const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
         /**
@@ -496,6 +511,12 @@ namespace timed_automaton::ast
 
 
         /**
+         * @return true if the Timed Arena has at least one urgent location, false otherwise.
+         */
+        [[nodiscard]] bool hasUrgentLocations() const;
+
+
+        /**
          * @return a std::unordered_map from clock names to their index in the clocks vector.
          *
          * @warning To be used at the beginning, right after parsing a Timed Arena, since at the current time of development this is
@@ -559,6 +580,15 @@ namespace timed_automaton::ast
          */
         [[nodiscard]] absl::flat_hash_map<int, std::vector<clockConstraint>> getInvariants(
             const std::unordered_map<std::string, int> &locToIntMap) const;
+
+
+        /**
+         * @brief Collects the urgent locations.
+         *
+         * @param locToIntMap a mapping from locations (represented by std::string) to int.
+         * @return a map from integers representing the urgent locations.
+         */
+        [[nodiscard]] absl::flat_hash_set<int> getUrgentLocations(const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
         /**

@@ -88,8 +88,9 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
             return { currentRegion };
         }
 
-        // Computing immediate delay successor if there is at least one clock in the region.
-        const Region delaySuccessor = isThereAnyClock ? currentRegion.getImmediateDelaySuccessor(maxConstants) : Region{};
+        // Computing immediate delay successor if there is at least one clock in the region and the current location is not urgent.
+        const bool isDelayComputable = isThereAnyClock && !urgentLocations.contains(currentRegionLocation);
+        const Region delaySuccessor = isDelayComputable ? currentRegion.getImmediateDelaySuccessor(maxConstants) : Region{};
 
         // Computing discrete successors.
         const std::vector<transition> &transitions = outTransitions[currentRegionLocation];
@@ -101,7 +102,7 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
         explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();
 
         // We insert the delay successor first and then the discrete successors.
-        if (isThereAnyClock && !regionsHashMap.contains(delaySuccessor))
+        if (isDelayComputable && !regionsHashMap.contains(delaySuccessor))
             insertRegionInMapAndToProcess(delaySuccessor, toProcess, regionsHashMap, clocksIndices, invariants);
 
         for (const auto &discreteSuccessor: discreteSuccessors)
@@ -146,6 +147,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
     while (!toProcess.empty())
     {
         const Region &currentRegion = explorationTechnique == BFS ? toProcess.front() : toProcess.back();
+        const int currentRegionLocation = currentRegion.getLocation();
 
 #ifdef RTS_DEBUG
 
@@ -167,7 +169,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
 
         // TODO: ogni volta scansioni un vettore, magari potrebbe essere meglio un set.
         if (isInitialRegionReached)
-            isInitialRegionReached = std::ranges::find(initialLocations, currentRegion.getLocation()) != initialLocations.end();
+            isInitialRegionReached = std::ranges::find(initialLocations, currentRegionLocation) != initialLocations.end();
 
         if (isInitialRegionReached)
         {
@@ -183,8 +185,9 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
             return { currentRegion };
         }
 
-        // Computing immediate delay predecessors if there is at least one clock in the region.
-        const std::vector<Region> delayPredecessors = isThereAnyClock ? currentRegion.getImmediateDelayPredecessors() : std::vector<Region>{};
+        // Computing immediate delay predecessors if there is at least one clock in the region and the current location is not urgent.
+        const bool isDelayComputable = isThereAnyClock && !urgentLocations.contains(currentRegionLocation);
+        const std::vector<Region> delayPredecessors = isDelayComputable ? currentRegion.getImmediateDelayPredecessors() : std::vector<Region>{};
 
         // Computing discrete predecessors.
         const std::vector<transition> &transitions = inTransitions[currentRegion.getLocation()];
