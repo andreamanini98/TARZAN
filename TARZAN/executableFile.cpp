@@ -392,7 +392,7 @@ int main()
 #endif
 
 
-    testNoClocksNetwork();
+    testVikings();
 
 
 #ifdef REGION_TIMING

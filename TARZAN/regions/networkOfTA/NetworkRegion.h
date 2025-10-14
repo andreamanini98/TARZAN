@@ -33,6 +33,9 @@ namespace networkOfTA
 
 
     public:
+        NetworkRegion() = default;
+
+
         NetworkRegion(const std::vector<region::Region> &regions,
                       const absl::btree_map<std::string, int> &networkVariables,
                       const bool allRegionsAreInitial) : regions(regions), networkVariables(networkVariables)

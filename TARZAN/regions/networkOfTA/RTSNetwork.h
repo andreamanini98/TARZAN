@@ -31,6 +31,12 @@ namespace networkOfTA
 
         std::vector<absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>>> invariants{};
 
+        /**
+         * The key of the external map represents an automaton which has at least one urgent location.
+         * Urgent locations are contained in the inner set.
+         */
+        absl::flat_hash_map<int, absl::flat_hash_set<int>> automataWithUrgentLocations{};
+
 
     public:
         explicit RTSNetwork(const std::vector<timed_automaton::ast::timedAutomaton> &automata) : automata(automata)
@@ -51,6 +57,9 @@ namespace networkOfTA
 
                 // Getting all variables from al Timed Automata.
                 variables.merge(automaton.getVariables());
+
+                if (automaton.hasUrgentLocations())
+                    automataWithUrgentLocations[i] = automaton.getUrgentLocations(locationsToInt[i]);
             }
 
             // ReSharper disable once CppTooWideScopeInitStatement

@@ -96,7 +96,7 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
         const std::vector<transition> &transitions = outTransitions[currentRegionLocation];
         const std::vector<Region> &discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
 
-        totalRegions += discreteSuccessors.size() + (isThereAnyClock ? 1 : 0);
+        totalRegions += discreteSuccessors.size() + (isDelayComputable ? 1 : 0);
 
         // Removing the processed region now since we do not need it anymore.
         explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();

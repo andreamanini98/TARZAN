@@ -1,7 +1,5 @@
 #include "RTSNetwork.h"
 
-#include "absl/container/flat_hash_set.h"
-
 // #define RTSNETWORK_DEBUG
 
 
@@ -102,8 +100,12 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
             return { currentRegion };
         }
 
-        // Computing network immediate delay successor.
-        const NetworkRegion &delaySuccessor = currentRegion.getImmediateDelaySuccessor(maxConstants);
+        // Computing a network immediate delay successor if no region is in an urgent location.
+        const bool isDelayComputable = !std::ranges::any_of(automataWithUrgentLocations, [&](const auto &pair) {
+            return pair.second.contains(currentRegionRegions[pair.first].getLocation());
+        });
+
+        const NetworkRegion delaySuccessor = isDelayComputable ? currentRegion.getImmediateDelaySuccessor(maxConstants) : NetworkRegion{};
 
         // Setting up the transitions for the network discrete successor computation.
         std::vector<std::vector<transition>> transitions{};
@@ -113,13 +115,13 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
         // Computing network discrete successors.
         const std::vector<NetworkRegion> discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
 
-        totalRegions += discreteSuccessors.size() + 1;
+        totalRegions += discreteSuccessors.size() + (isDelayComputable ? 1 : 0);
 
         // Removing now since we do not need it anymore.
         explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();
 
         // We insert the delay successor first and then the discrete successors.
-        if (!regionsHashMap.contains(delaySuccessor))
+        if (isDelayComputable && !regionsHashMap.contains(delaySuccessor))
             insertRegionInMapAndToProcess(delaySuccessor, toProcess, regionsHashMap, clocksIndices, invariants);
 
         for (const auto &discreteSuccessor: discreteSuccessors)

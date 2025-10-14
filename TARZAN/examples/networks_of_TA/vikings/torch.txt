@@ -1,9 +1,6 @@
 create automaton torch
 {
-    clocks
-    {
-        x;
-    }
+    clocks {}
 
     actions
     {
@@ -18,14 +15,14 @@ create automaton torch
     locations
     {
         free   <ini: T>,
-        urgent <ini: F, inv: [(x, <=, 0)]>,
+        urgent <ini: F>,
         two    <ini: F>,
         one    <ini: F>;
     }
 
     transitions
     {
-        (free,   take?,    [],           [x],             urgent),
+        (free,   take?,    [],           [],              urgent),
         (urgent, tau,      [],           [],              one),
         (urgent, take?,    [],           [],              two),
         (two,    release?, [],           [],              one),
