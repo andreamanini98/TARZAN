@@ -1,0 +1,24 @@
+create automaton A
+{
+  clocks { x1, x2; }
+
+  actions { a; }
+
+  locations {
+    q0   <ini: T, inv: [(x1, <=, 20)]>,
+    q1   <ini: F>,
+    q2   <ini: F, inv: [(x1, <=, 50)]>,
+    q3   <ini: F>,
+    qBad <ini: F>;
+  }
+
+  transitions {
+    (q3, a, [],             [],   q2),
+    (q0, a, [(x1, >=, 50)], [],   qBad),
+    (q2, a, [(x2, >, 50)],   [],   q3),
+    (q1, a, [],             [x2], q1),
+    (q1, a, [(x1, >=, 10)], [],   q2),
+    (q0, a, [],             [x2], q1),
+    (q2, a, [(x1, >=, 40)], [],   qBad);
+  }
+}

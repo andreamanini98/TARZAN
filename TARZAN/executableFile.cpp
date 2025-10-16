@@ -400,6 +400,132 @@ void testFischer()
 }
 
 
+void test_exSITH()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/";
+
+    const std::string automatonFileName = "exSITH.txt";
+
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const region::RTS regionTransitionSystem(automaton);
+
+    std::cout << regionTransitionSystem.to_string() << std::endl;
+
+    // Locations (5):
+    // q0 -> 4
+    // q1 -> 3
+    // q2 -> 2
+    // q3 -> 1
+    // qBad -> 0
+
+    std::cout << "Computed the following regions:" << std::endl;
+
+    const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(1, DFS);
+
+    for (const auto &region: rts) std::cout << region.toString() << std::endl;
+}
+
+
+void test_rcp()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/rcp";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    // Locations:
+    // Automaton [0] (11 locations): {N1almost_child -> 10, N1rec_idle_slow -> 9, N1rec_idle_fast -> 8, N1rec_idle -> 7, N1root -> 6, N1child -> 5, N1almost_root -> 4, N1snt_req -> 3, N1rec_req_slow -> 2, N1rec_req_fast -> 1, N1root_contention -> 0}
+    // Automaton [1] (11 locations): {N2almost_child -> 10, N2rec_idle_slow -> 9, N2snt_req -> 8, N2rec_req_fast -> 7, N2almost_root -> 6, N2rec_idle_fast -> 5, N2rec_req_slow -> 4, N2root -> 2, N2child -> 3, N2rec_idle -> 1, N2root_contention -> 0}
+    // Automaton [2] (6 locations): {S1o4 -> 5, S1o2 -> 4, S1o1 -> 2, S1oEnd -> 3, S1o3 -> 1, S1oStart -> 0}
+    // Automaton [3] (10 locations): {W12rec_ack_req -> 9, W12rec_req_ack -> 8, W12rec_req_idle -> 7, W12rec_ack_idle -> 6, W12rec_req -> 5, W12rec_idle -> 4, W12rec_ack -> 1, W12rec_idle_ack -> 3, W12rec_idle_req -> 2, W12empty -> 0}
+    // Automaton [4] (10 locations): {W21rec_req_idle -> 9, W21rec_idle_ack -> 8, W21rec_ack_req -> 7, W21rec_req_ack -> 6, W21rec_idle_req -> 5, W21rec_req -> 4, W21rec_ack_idle -> 3, W21rec_idle -> 2, W21rec_ack -> 1, W21empty -> 0}
+
+    const std::vector<std::optional<int>> goalLocations = { std::nullopt, std::nullopt, 3, std::nullopt, std::nullopt };
+    const auto res = net.forwardReachability(goalLocations, DFS);
+    //std::cout << res[0].toString() << std::endl;
+}
+
+
+void test_AndOr_original()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/AndOr_original";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    // Locations:
+    // Automaton [0] (8 locations): {And111 -> 7, And110 -> 6, And101 -> 5, And100 -> 4, And011 -> 3, And010 -> 2, And001 -> 1, And000 -> 0}
+    // Automaton [1] (4 locations): {Input4 -> 3, Input3 -> 2, Input2 -> 1, InputInit -> 0}
+    // Automaton [2] (8 locations): {Or110 -> 7, Or101 -> 6, Or111 -> 5, Or011 -> 4, Or100 -> 3, Or010 -> 2, Or001 -> 1, Or000 -> 0}
+
+    const std::vector<std::optional<int>> goalLocations = { 2, 3, 4 };
+    const auto res = net.forwardReachability(goalLocations, DFS);
+    //std::cout << res[0].toString() << std::endl;
+}
+
+
+void test_csma_20n()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/csma_20N";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    // Locations:
+    // Automaton [0] (22 locations): {bus_collision17 -> 21, bus_collision20 -> 20, bus_collision15 -> 19, bus_collision14 -> 18, bus_collision19 -> 17, bus_collision12 -> 16, bus_collision10 -> 15, bus_collision2 -> 14, bus_collision9 -> 13, bus_collision8 -> 12, bus_idle -> 11, bus_collision6 -> 10, bus_collision7 -> 9, bus_collision5 -> 8, bus_collision4 -> 7, bus_collision11 -> 6, bus_collision3 -> 5, bus_active -> 0, bus_collision18 -> 3, bus_collision16 -> 2, bus_collision13 -> 1, bus_collision1 -> 4}
+    // Automaton [1] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [2] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [3] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [4] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [5] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [6] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [7] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [8] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [9] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [10] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [11] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [12] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [13] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [14] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [15] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [16] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [17] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [18] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [19] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+    // Automaton [20] (3 locations): {sender_retry -> 2, sender_transm -> 1, sender_wait -> 0}
+
+    std::cout << net.toString() << std::endl;
+
+    const std::vector<std::optional<int>> goalLocations = {
+        std::nullopt,
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        2,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt
+    };
+
+    const auto res = net.forwardReachability(goalLocations, DFS);
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -409,7 +535,7 @@ int main()
 #endif
 
 
-    testFischer();
+    test_csma_20n();
 
 
 #ifdef REGION_TIMING

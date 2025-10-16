@@ -1,0 +1,17 @@
+create automaton input
+{
+  clocks { cka, ckb; }
+  actions { aDown, aUp, bDown, bUp; }
+  locations {
+    InputInit <ini: T, inv: [(ckb, <=, 8)] >,
+    Input2    <ini: F, inv: [(cka, <=, 14)]>,
+    Input3    <ini: F, inv: [(ckb, <=, 20)]>,
+    Input4    <ini: F, inv: [(cka, <=, 18)]>;
+  }
+  transitions {
+    (InputInit, bDown!, [(ckb, >=, 7)] , [ckb]     , Input2),
+    (Input3   , bUp!  , [(ckb, >=, 19)], [ckb]     , Input4),
+    (Input2   , aDown!, [(cka, >=, 13)], [cka]     , Input3),
+    (Input4   , aUp!  , [(cka, >=, 16)], [cka, ckb], InputInit);
+  }
+}

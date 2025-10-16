@@ -1,0 +1,46 @@
+create automaton wire12
+{
+  clocks { ckW12y, ckW12x; }
+  actions { rec_ack12, rec_idle12, rec_req12, snd_ack12, snd_idle12, snd_req12; }
+  locations {
+    W12empty        <ini: T                         >,
+    W12rec_ack      <ini: F, inv: [(ckW12y, <=, 30)]>,
+    W12rec_idle     <ini: F, inv: [(ckW12y, <=, 30)]>,
+    W12rec_req      <ini: F, inv: [(ckW12y, <=, 30)]>,
+    W12rec_ack_idle <ini: F, inv: [(ckW12x, <=, 30)]>,
+    W12rec_idle_req <ini: F, inv: [(ckW12x, <=, 30)]>,
+    W12rec_req_ack  <ini: F, inv: [(ckW12x, <=, 30)]>,
+    W12rec_ack_req  <ini: F, inv: [(ckW12x, <=, 30)]>,
+    W12rec_idle_ack <ini: F, inv: [(ckW12x, <=, 30)]>,
+    W12rec_req_idle <ini: F, inv: [(ckW12x, <=, 30)]>;
+  }
+  transitions {
+    (W12rec_req_ack , rec_req12! , [], []              , W12rec_ack),
+    (W12rec_req_idle, rec_req12! , [], []              , W12rec_idle),
+    (W12empty       , snd_idle12?, [], [ckW12x, ckW12y], W12rec_idle),
+    (W12rec_idle    , snd_req12? , [], [ckW12y]        , W12rec_idle_req),
+    (W12empty       , snd_ack12? , [], [ckW12x, ckW12y], W12rec_ack),
+    (W12rec_idle    , snd_idle12?, [], []              , W12rec_idle),
+    (W12rec_req     , rec_req12! , [], []              , W12empty),
+    (W12rec_idle_ack, snd_ack12? , [], []              , W12rec_idle_ack),
+    (W12rec_req_idle, snd_idle12?, [], []              , W12rec_req_idle),
+    (W12empty       , snd_req12? , [], [ckW12x, ckW12y], W12rec_req),
+    (W12rec_req     , snd_idle12?, [], [ckW12y]        , W12rec_req_idle),
+    (W12rec_req     , snd_ack12? , [], [ckW12y]        , W12rec_req_ack),
+    (W12rec_idle_req, snd_req12? , [], []              , W12rec_idle_req),
+    (W12rec_ack     , snd_idle12?, [], [ckW12y]        , W12rec_ack_idle),
+    (W12rec_idle    , snd_ack12? , [], [ckW12y]        , W12rec_idle_ack),
+    (W12rec_ack_idle, snd_idle12?, [], []              , W12rec_ack_idle),
+    (W12rec_ack     , rec_ack12? , [], []              , W12empty),
+    (W12rec_ack_req , rec_ack12? , [], []              , W12rec_req),
+    (W12rec_idle_req, rec_idle12?, [], []              , W12rec_req),
+    (W12rec_req_ack , snd_ack12? , [], []              , W12rec_req_ack),
+    (W12rec_ack_idle, rec_ack12? , [], []              , W12rec_idle),
+    (W12rec_idle    , rec_idle12?, [], []              , W12empty),
+    (W12rec_ack     , snd_ack12? , [], []              , W12rec_ack),
+    (W12rec_ack_req , snd_req12? , [], []              , W12rec_ack_req),
+    (W12rec_idle_ack, rec_idle12?, [], []              , W12rec_ack),
+    (W12rec_ack     , snd_req12? , [], [ckW12y]        , W12rec_ack_req),
+    (W12rec_req     , snd_req12? , [], []              , W12rec_req);
+  }
+}

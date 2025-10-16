@@ -1,0 +1,23 @@
+create automaton s1o
+{
+  clocks {  }
+  actions { child1, child2, root1, root2; }
+  locations {
+    S1oStart <ini: T>,
+    S1o1     <ini: F>,
+    S1o2     <ini: F>,
+    S1o3     <ini: F>,
+    S1o4     <ini: F>,
+    S1oEnd   <ini: F>;
+  }
+  transitions {
+    (S1o1    , child2?, [], [], S1oEnd),
+    (S1oStart, child1?, [], [], S1o2),
+    (S1oStart, child2?, [], [], S1o3),
+    (S1oStart, root1? , [], [], S1o1),
+    (S1oStart, root2? , [], [], S1o4),
+    (S1o2    , root2? , [], [], S1oEnd),
+    (S1o3    , root1? , [], [], S1oEnd),
+    (S1o4    , child1?, [], [], S1oEnd);
+  }
+}

@@ -1,0 +1,38 @@
+create automaton node1
+{
+  clocks { ckN1; }
+  actions { child1, rec_ack21, rec_idle21, rec_req21, root1, snd_ack12, snd_idle12, snd_req12; }
+  locations {
+    N1root_contention <ini: T, inv: [(ckN1, <=, 0)]  >,
+    N1rec_req_fast    <ini: F, inv: [(ckN1, <=, 85)] >,
+    N1rec_req_slow    <ini: F, inv: [(ckN1, <=, 167)]>,
+    N1almost_root     <ini: F, inv: [(ckN1, <=, 0)]  >,
+    N1root            <ini: F                        >,
+    N1rec_idle        <ini: F, inv: [(ckN1, <=, 0)]  >,
+    N1rec_idle_fast   <ini: F, inv: [(ckN1, <=, 85)] >,
+    N1rec_idle_slow   <ini: F, inv: [(ckN1, <=, 167)]>,
+    N1snt_req         <ini: F                        >,
+    N1almost_child    <ini: F, inv: [(ckN1, <=, 0)]  >,
+    N1child           <ini: F                        >;
+  }
+  transitions {
+    (N1rec_req_slow   , snd_ack12! , [(ckN1, >=, 159)], [ckN1], N1almost_root),
+    (N1snt_req        , rec_ack21! , []               , [ckN1], N1almost_child),
+    (N1almost_child   , child1!    , []               , []    , N1child),
+    (N1rec_idle       , rec_req21? , []               , [ckN1], N1root_contention),
+    (N1root_contention, snd_idle12!, []               , [ckN1], N1rec_req_slow),
+    (N1root_contention, snd_idle12!, []               , [ckN1], N1rec_req_fast),
+    (N1root_contention, rec_idle21!, []               , [ckN1], N1rec_idle),
+    (N1rec_idle_fast  , rec_req21? , []               , []    , N1rec_req_fast),
+    (N1snt_req        , rec_req21? , []               , [ckN1], N1root_contention),
+    (N1rec_req_fast   , rec_idle21!, []               , []    , N1rec_idle_fast),
+    (N1rec_idle_slow  , snd_req12! , [(ckN1, >=, 159)], []    , N1snt_req),
+    (N1rec_req_fast   , snd_ack12! , [(ckN1, >=, 76)] , [ckN1], N1almost_root),
+    (N1rec_idle_slow  , rec_req21? , []               , []    , N1rec_req_slow),
+    (N1almost_root    , root1!     , []               , []    , N1root),
+    (N1rec_req_slow   , rec_idle21!, []               , []    , N1rec_idle_slow),
+    (N1rec_idle_fast  , snd_req12! , [(ckN1, >=, 76)] , []    , N1snt_req),
+    (N1rec_idle       , snd_idle12!, []               , [ckN1], N1rec_idle_fast),
+    (N1rec_idle       , snd_idle12!, []               , [ckN1], N1rec_idle_slow);
+  }
+}

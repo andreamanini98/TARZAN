@@ -1,0 +1,37 @@
+create automaton orGate
+{
+  clocks { ckOr; }
+  actions { aDown, aUp, tDown, tUp, xDown, xUp; }
+  locations {
+    Or000 <ini: F, inv: [(ckOr, >=, 0)]               >,
+    Or001 <ini: F, inv: [(ckOr, >=, 0), (ckOr, <=, 4)]>,
+    Or010 <ini: F, inv: [(ckOr, >=, 0), (ckOr, <=, 4)]>,
+    Or011 <ini: F, inv: [(ckOr, >=, 0)]               >,
+    Or100 <ini: F, inv: [(ckOr, >=, 0), (ckOr, <=, 4)]>,
+    Or101 <ini: F, inv: [(ckOr, >=, 0)]               >,
+    Or110 <ini: F, inv: [(ckOr, >=, 0), (ckOr, <=, 4)]>,
+    Or111 <ini: T, inv: [(ckOr, >=, 0)]               >;
+  }
+  transitions {
+    (Or101, aUp?  , []             , []    , Or111),
+    (Or101, xDown?, []             , [ckOr], Or001),
+    (Or100, xDown?, []             , []    , Or000),
+    (Or000, aUp?  , []             , [ckOr], Or010),
+    (Or001, xUp?  , []             , []    , Or101),
+    (Or010, xUp?  , []             , [ckOr], Or110),
+    (Or111, xDown?, []             , []    , Or011),
+    (Or100, aUp?  , []             , [ckOr], Or110),
+    (Or001, tDown!, [(ckOr, >=, 3)], []    , Or000),
+    (Or000, xUp?  , []             , [ckOr], Or100),
+    (Or001, aUp?  , []             , []    , Or011),
+    (Or110, aDown?, []             , [ckOr], Or100),
+    (Or010, tUp!  , [(ckOr, >=, 3)], []    , Or011),
+    (Or100, tUp!  , [(ckOr, >=, 3)], []    , Or101),
+    (Or111, aDown?, []             , []    , Or101),
+    (Or011, aDown?, []             , [ckOr], Or001),
+    (Or110, tUp!  , [(ckOr, >=, 3)], []    , Or111),
+    (Or011, xUp?  , []             , []    , Or111),
+    (Or110, xDown?, []             , [ckOr], Or010),
+    (Or010, aDown?, []             , []    , Or000);
+  }
+}

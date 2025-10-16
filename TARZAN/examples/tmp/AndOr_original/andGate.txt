@@ -1,0 +1,37 @@
+create automaton andGate
+{
+  clocks { ckAnd; }
+  actions { bDown, bUp, tDown, tUp, xDown, xUp; }
+  locations {
+    And000 <ini: F, inv: [(ckAnd, >=, 0)]                >,
+    And001 <ini: F, inv: [(ckAnd, >=, 0), (ckAnd, <=, 4)]>,
+    And010 <ini: F, inv: [(ckAnd, >=, 0)]                >,
+    And011 <ini: F, inv: [(ckAnd, >=, 0), (ckAnd, <=, 4)]>,
+    And100 <ini: F, inv: [(ckAnd, >=, 0)]                >,
+    And101 <ini: F, inv: [(ckAnd, >=, 0), (ckAnd, <=, 4)]>,
+    And110 <ini: F, inv: [(ckAnd, >=, 0), (ckAnd, <=, 4)]>,
+    And111 <ini: T, inv: [(ckAnd, >=, 0)]                >;
+  }
+  transitions {
+    (And001, tUp?  , []              , [ckAnd], And101),
+    (And011, tUp?  , []              , []     , And111),
+    (And100, tDown?, []              , []     , And000),
+    (And110, tDown?, []              , []     , And010),
+    (And000, bUp?  , []              , []     , And010),
+    (And100, bUp?  , []              , [ckAnd], And110),
+    (And001, bUp?  , []              , [ckAnd], And011),
+    (And101, bUp?  , []              , []     , And111),
+    (And010, bDown?, []              , []     , And000),
+    (And111, bDown?, []              , [ckAnd], And101),
+    (And011, xDown!, [(ckAnd, >=, 3)], []     , And010),
+    (And110, xUp!  , [(ckAnd, >=, 3)], []     , And111),
+    (And110, bDown?, []              , []     , And100),
+    (And001, xDown!, [(ckAnd, >=, 3)], []     , And000),
+    (And111, tDown?, []              , [ckAnd], And011),
+    (And101, tDown?, []              , [ckAnd], And001),
+    (And010, tUp?  , []              , [ckAnd], And110),
+    (And011, bDown?, []              , [ckAnd], And001),
+    (And101, xDown!, [(ckAnd, >=, 3)], []     , And100),
+    (And000, tUp?  , []              , []     , And100);
+  }
+}

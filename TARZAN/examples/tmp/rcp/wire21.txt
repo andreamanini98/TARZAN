@@ -1,0 +1,46 @@
+create automaton wire21
+{
+  clocks { ckW21y, ckW21x; }
+  actions { rec_ack21, rec_idle21, rec_req21, snd_ack21, snd_idle21, snd_req21; }
+  locations {
+    W21empty        <ini: T                         >,
+    W21rec_ack      <ini: F, inv: [(ckW21y, <=, 30)]>,
+    W21rec_idle     <ini: F, inv: [(ckW21y, <=, 30)]>,
+    W21rec_req      <ini: F, inv: [(ckW21y, <=, 30)]>,
+    W21rec_ack_idle <ini: F, inv: [(ckW21x, <=, 30)]>,
+    W21rec_idle_req <ini: F, inv: [(ckW21x, <=, 30)]>,
+    W21rec_req_ack  <ini: F, inv: [(ckW21x, <=, 30)]>,
+    W21rec_ack_req  <ini: F, inv: [(ckW21x, <=, 30)]>,
+    W21rec_idle_ack <ini: F, inv: [(ckW21x, <=, 30)]>,
+    W21rec_req_idle <ini: F, inv: [(ckW21x, <=, 30)]>;
+  }
+  transitions {
+    (W21rec_ack     , snd_idle21?, [], [ckW21y]        , W21rec_ack_idle),
+    (W21rec_ack_req , rec_ack21? , [], []              , W21rec_req),
+    (W21rec_idle_req, rec_idle21?, [], []              , W21rec_req),
+    (W21rec_req_ack , snd_ack21? , [], []              , W21rec_req_ack),
+    (W21empty       , snd_ack21? , [], [ckW21x, ckW21y], W21rec_ack),
+    (W21rec_req     , snd_idle21?, [], [ckW21y]        , W21rec_req_idle),
+    (W21rec_ack     , rec_ack21? , [], []              , W21empty),
+    (W21rec_ack_idle, snd_idle21?, [], []              , W21rec_ack_idle),
+    (W21rec_ack     , snd_ack21? , [], []              , W21rec_ack),
+    (W21rec_ack_idle, rec_ack21? , [], []              , W21rec_idle),
+    (W21empty       , snd_req21? , [], [ckW21x, ckW21y], W21rec_req),
+    (W21rec_req     , snd_ack21? , [], [ckW21y]        , W21rec_req_ack),
+    (W21rec_idle    , rec_idle21?, [], []              , W21empty),
+    (W21rec_ack_req , snd_req21? , [], []              , W21rec_ack_req),
+    (W21rec_idle_ack, rec_idle21?, [], []              , W21rec_ack),
+    (W21rec_req     , snd_req21? , [], []              , W21rec_req),
+    (W21rec_req_ack , rec_req21! , [], []              , W21rec_ack),
+    (W21rec_req     , rec_req21! , [], []              , W21empty),
+    (W21rec_idle_ack, snd_ack21? , [], []              , W21rec_idle_ack),
+    (W21rec_idle    , snd_idle21?, [], []              , W21rec_idle),
+    (W21rec_ack     , snd_req21? , [], [ckW21y]        , W21rec_ack_req),
+    (W21rec_req_idle, snd_idle21?, [], []              , W21rec_req_idle),
+    (W21empty       , snd_idle21?, [], [ckW21x, ckW21y], W21rec_idle),
+    (W21rec_idle    , snd_ack21? , [], [ckW21y]        , W21rec_idle_ack),
+    (W21rec_req_idle, rec_req21! , [], []              , W21rec_idle),
+    (W21rec_idle    , snd_req21? , [], [ckW21y]        , W21rec_idle_req),
+    (W21rec_idle_req, snd_req21? , [], []              , W21rec_idle_req);
+  }
+}
