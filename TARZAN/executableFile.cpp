@@ -193,6 +193,7 @@ void test_csma_20n()
     const auto res = net.forwardReachability(goalLocations, DFS);
 }
 
+
 void test_csma_50n()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/csma_50N";
@@ -263,6 +264,45 @@ void test_csma_50n()
 }
 
 
+void test_maler()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/maler";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    // Locations:
+    // Automaton [0] (9 locations): {End1 -> 8, P1 -> 7, Q1 -> 6, N1 -> 5, L1 -> 4, K1 -> 3, J1 -> 2, M1 -> 1, I1 -> 0}
+    // Automaton [1] (9 locations): {P2 -> 8, N2 -> 7, Q2 -> 6, L2 -> 5, M2 -> 4, J2 -> 3, I2 -> 0, End2 -> 1, K2 -> 2}
+    // Automaton [2] (9 locations): {End3 -> 8, P3 -> 7, N3 -> 6, M3 -> 5, Q3 -> 4, K3 -> 3, J3 -> 2, L3 -> 1, I3 -> 0}
+    // Automaton [3] (9 locations): {End4 -> 8, Q4 -> 7, N4 -> 6, M4 -> 5, L4 -> 4, K4 -> 3, J4 -> 1, P4 -> 2, I4 -> 0}
+
+    const std::vector<std::optional<int>> goalLocations = { 8, 1, 8, 8 };
+    const auto res = net.forwardReachability(goalLocations, DFS);
+}
+
+
+void test_soldiers()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/soldiers";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    // Locations:
+    // Automaton [0] (2 locations): {Escape -> 1, Wait -> 0}
+    // Automaton [1] (4 locations): {OnWayBack -> 3, OnBridge -> 2, Safety -> 1, Peril -> 0}
+    // Automaton [2] (4 locations): {OnWayBack -> 3, OnBridge -> 2, Safety -> 1, Peril -> 0}
+    // Automaton [3] (4 locations): {OnWayBack -> 3, OnBridge -> 2, Safety -> 1, Peril -> 0}
+    // Automaton [4] (4 locations): {OnWayBack -> 3, OnBridge -> 2, Safety -> 1, Peril -> 0}
+
+    const std::vector<std::optional<int>> goalLocations = { 1, std::nullopt, std::nullopt, std::nullopt, std::nullopt };
+    const auto res = net.forwardReachability(goalLocations, DFS);
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -272,7 +312,7 @@ int main()
 #endif
 
 
-    test_AndOr_original();
+    test_soldiers();
 
 
 #ifdef REGION_TIMING

@@ -11,23 +11,29 @@
  * @param regionsHashMap a map containing already processed network regions.
  * @param clocksIndices a vector of maps from clock names to their index in the clocks vector.
  * @param invariants the invariants of the original Timed Automata.
+ * @param isInvariantFree a boolean telling whether there are no invariants at all to be checked.
  */
 inline void insertRegionInMapAndToProcess(const networkOfTA::NetworkRegion &reg,
                                           std::deque<networkOfTA::NetworkRegion> &toProcess,
                                           std::unordered_set<networkOfTA::NetworkRegion, networkOfTA::NetworkRegionHash> &regionsHashMap,
                                           const std::vector<std::unordered_map<std::string, int>> &clocksIndices,
-                                          const std::vector<absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>>> &invariants)
+                                          const std::vector<absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>>> &invariants,
+                                          const bool isInvariantFree)
 {
     bool isRegionLegal = true;
-    const auto &regRegs = reg.getRegions();
 
-    for (int i = 0; i < static_cast<int>(regRegs.size()); i++)
-        if (invariants[i].contains(regRegs[i].getLocation()))
-            if (!isInvariantSatisfied(invariants[i].at(regRegs[i].getLocation()), regRegs[i].getClockValuation(), clocksIndices[i]))
-            {
-                isRegionLegal = false;
-                break;
-            }
+    if (!isInvariantFree)
+    {
+        const auto &regRegs = reg.getRegions();
+
+        for (int i = 0; i < static_cast<int>(regRegs.size()); i++)
+            if (invariants[i].contains(regRegs[i].getLocation()))
+                if (!isInvariantSatisfied(invariants[i].at(regRegs[i].getLocation()), regRegs[i].getClockValuation(), clocksIndices[i]))
+                {
+                    isRegionLegal = false;
+                    break;
+                }
+    }
 
     if (isRegionLegal)
     {
@@ -40,6 +46,9 @@ inline void insertRegionInMapAndToProcess(const networkOfTA::NetworkRegion &reg,
 std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(const std::vector<std::optional<int>> &targetLocs,
                                                                                      const ssee explorationTechnique) const
 {
+    // Starting the timer for measuring computation.
+    const auto start = std::chrono::high_resolution_clock::now();
+
     // Initializing auxiliary data structures for reachability computation.
     std::deque<NetworkRegion> toProcess{};
     std::unordered_set<NetworkRegion, NetworkRegionHash> regionsHashMap{};
@@ -51,9 +60,6 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
     }
 
     unsigned long long int totalRegions = 0;
-
-    // Starting the timer for measuring computation.
-    const auto start = std::chrono::high_resolution_clock::now();
 
     while (!toProcess.empty())
     {
@@ -123,11 +129,11 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
 
         // We insert the delay successor first and then the discrete successors.
         if (isDelayComputable && !regionsHashMap.contains(delaySuccessor))
-            insertRegionInMapAndToProcess(delaySuccessor, toProcess, regionsHashMap, clocksIndices, invariants);
+            insertRegionInMapAndToProcess(delaySuccessor, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
 
         for (const auto &discreteSuccessor: discreteSuccessors)
             if (!regionsHashMap.contains(discreteSuccessor))
-                insertRegionInMapAndToProcess(discreteSuccessor, toProcess, regionsHashMap, clocksIndices, invariants);
+                insertRegionInMapAndToProcess(discreteSuccessor, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
     }
 
     // No target region has been reached if the while loop ends.

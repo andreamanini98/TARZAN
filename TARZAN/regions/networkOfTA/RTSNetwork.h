@@ -31,6 +31,10 @@ namespace networkOfTA
 
         std::vector<absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>>> invariants{};
 
+        /// A boolean telling whether there are no invariants at all to be checked.
+        bool isInvariantFree;
+
+
         /**
          * The key of the external map represents an automaton which has at least one urgent location.
          * Urgent locations are contained in the inner set.
@@ -61,6 +65,8 @@ namespace networkOfTA
                 if (automaton.hasUrgentLocations())
                     automataWithUrgentLocations[i] = automaton.getUrgentLocations(locationsToInt[i]);
             }
+
+            isInvariantFree = std::ranges::all_of(invariants, [](const auto &inv) { return inv.empty(); });
 
             // ReSharper disable once CppTooWideScopeInitStatement
             const std::vector<std::vector<int>> &initialLocationsCartesianProduct = vectorsCartesianProduct(initialLocations);

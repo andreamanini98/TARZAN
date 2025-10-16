@@ -45,6 +45,9 @@ inline void insertRegionInMapAndToProcess(const region::Region &reg,
 
 std::vector<region::Region> region::RTS::forwardReachability(const int targetLocation, const ssee explorationTechnique) const
 {
+    // Starting the timer for measuring computation.
+    const auto start = std::chrono::high_resolution_clock::now();
+
     // Initializing auxiliary data structures for reachability computation.
     std::deque<Region> toProcess{};
     std::unordered_set<Region, RegionHash> regionsHashMap{};
@@ -59,9 +62,6 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
     const bool isThereAnyClock = !clocksIndices.empty();
 
     unsigned long long int totalRegions = 0;
-
-    // Starting the timer for measuring computation.
-    const auto start = std::chrono::high_resolution_clock::now();
 
     while (!toProcess.empty())
     {
@@ -126,6 +126,9 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
 
 std::vector<region::Region> region::RTS::backwardReachability(const std::vector<Region> &startingRegions, const ssee explorationTechnique) const
 {
+    // Starting the timer for measuring computation.
+    const auto start = std::chrono::high_resolution_clock::now();
+
     // Initializing auxiliary data structures for reachability computation.
     std::deque<Region> toProcess{};
     std::unordered_set<Region, RegionHash> regionsHashMap{};
@@ -140,9 +143,6 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
     const bool isThereAnyClock = !clocksIndices.empty();
 
     unsigned long long int totalRegions = 0;
-
-    // Starting the timer for measuring computation.
-    const auto start = std::chrono::high_resolution_clock::now();
 
     while (!toProcess.empty())
     {
