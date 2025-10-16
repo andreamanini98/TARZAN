@@ -1,0 +1,20 @@
+create automaton P39
+{
+  clocks { x; }
+  actions { begin, busy, cd39, end; }
+  locations {
+    sender_wait   <ini: T                     >,
+    sender_transm <ini: F, inv: [(x, <=, 808)]>,
+    sender_retry  <ini: F, inv: [(x, <, 52)]  >;
+  }
+  transitions {
+    (sender_wait  , begin!, []            , [], sender_transm),
+    (sender_wait  , cd39? , []            , [], sender_wait),
+    (sender_wait  , cd39? , []            , [], sender_retry),
+    (sender_wait  , busy? , []            , [], sender_retry),
+    (sender_transm, end!  , [(x, ==, 808)], [], sender_wait),
+    (sender_transm, cd39? , [(x, <, 52)]  , [], sender_retry),
+    (sender_retry , begin!, [(x, <, 52)]  , [], sender_transm),
+    (sender_retry , cd39? , [(x, <, 52)]  , [], sender_retry);
+  }
+}

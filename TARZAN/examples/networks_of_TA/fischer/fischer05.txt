@@ -1,4 +1,4 @@
-create automaton fischer04
+create automaton fischer05
 {
 	clocks
 	{
@@ -26,9 +26,9 @@ create automaton fischer04
 	transitions
 	{
 		(A,    a, [],           id == 0, [x],           req),
-		(req,  a, [(x, <=, 2)],          [x], [id = 5], wait),
+		(req,  a, [(x, <=, 2)],          [x], [id = 6], wait),
 		(wait, a, [],           id == 0, [x],           req),
-		(wait, a, [(x, >, 2)],  id == 5, [],            cs),
+		(wait, a, [(x, >, 2)],  id == 6, [],            cs),
 		(cs,   a, [],                    [],  [id = 0], A);
 	}
 }

@@ -1,4 +1,4 @@
-create automaton fischer00
+create automaton fischer03
 {
 	clocks
 	{
