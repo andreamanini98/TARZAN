@@ -1,0 +1,13 @@
+create automaton Observer
+{
+    clocks { y; }
+    actions { a; }
+    integers { InSafety, back, first, second; }
+    locations {
+        Wait   <ini: T>,
+        Escape <ini: F>;
+    }
+    transitions {
+        (Wait, a, [(y, ==, 60)], InSafety == 4, [], Escape);
+    }
+}

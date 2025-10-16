@@ -1,0 +1,27 @@
+create automaton job4
+{
+    clocks { x4; }
+    actions { a; }
+    integers { m1, m2, m3, m4; }
+    locations {
+        I4   <ini: T                    >,
+        J4   <ini: F, inv: [(x4, <=, 1)]>,
+        K4   <ini: F                    >,
+        L4   <ini: F, inv: [(x4, <=, 1)]>,
+        M4   <ini: F                    >,
+        N4   <ini: F, inv: [(x4, <=, 1)]>,
+        P4   <ini: F                    >,
+        Q4   <ini: F, inv: [(x4, <=, 1)]>,
+        End4 <ini: F                    >;
+    }
+    transitions {
+        (M4, a, [], m3 == 0, [x4], [m3 = 1], N4),
+        (N4, a, [(x4, ==, 1)], [], [m3 = 0], P4),
+        (Q4, a, [(x4, ==, 1)], [], [m4 = 0], End4),
+        (K4, a, [], m1 == 0, [x4], [m1 = 1], L4),
+        (P4, a, [], m4 == 0, [x4], [m4 = 1], Q4),
+        (L4, a, [(x4, ==, 1)], [], [m1 = 0], M4),
+        (I4, a, [], m2 == 0, [x4], [m2 = 1], J4),
+        (J4, a, [(x4, ==, 1)], [], [m2 = 0], K4);
+    }
+}

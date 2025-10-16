@@ -1,0 +1,19 @@
+create automaton Soldier4
+{
+    clocks { x; }
+    actions { a; }
+    integers { InSafety, back, first, second; }
+    locations {
+        Peril     <ini: T>,
+        Safety    <ini: F>,
+        OnBridge  <ini: F>,
+        OnWayBack <ini: F>;
+    }
+    transitions {
+        (Peril, a, [], first == 0, [], [first = 4, InSafety = InSafety + 1], Safety),
+        (Peril, a, [], second == 0 && first > 4, [x], [second = 4], OnBridge),
+        (OnBridge, a, [(x, ==, 5)], [], [InSafety = InSafety + 1, back = 1], Safety),
+        (OnWayBack, a, [(x, ==, 5)], [], [first = 0, second = 0], Peril),
+        (Safety, a, [], back == 1, [x], [back = 0, InSafety = InSafety - 1], OnWayBack);
+    }
+}
