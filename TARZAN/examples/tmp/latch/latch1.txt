@@ -1,0 +1,26 @@
+create automaton latch1
+{
+    clocks { ckLatch; }
+    actions { a, andDown1, andUp1, dDown1, dUp1; }
+    integers { q; }
+    locations {
+        LatchD0E0  <ini: T, inv: [(ckLatch, >=, 0)]  >,
+        LatchD0E1  <ini: F, inv: [(ckLatch, >=, 0)]  >,
+        LatchD1E0  <ini: F, inv: [(ckLatch, >=, 0)]  >,
+        LatchD1E1  <ini: F, inv: [(ckLatch, <=, 240)]>,
+        LatchD1E1B <ini: F, inv: [(ckLatch, >=, 0)]  >;
+    }
+    transitions {
+        (LatchD0E1, dUp1?, [], [ckLatch], LatchD1E1),
+        (LatchD0E0, andUp1?, [], [ckLatch], LatchD0E1),
+        (LatchD1E0, dDown1?, [], [], LatchD0E0),
+        (LatchD1E1, dDown1?, [], [], LatchD0E1),
+        (LatchD1E1B, andDown1?, [], [], LatchD1E0),
+        (LatchD1E1B, dDown1?, [], [], LatchD0E1),
+        (LatchD0E1, andDown1?, [], [], LatchD0E0),
+        (LatchD1E1, andDown1?, [], [], LatchD1E0),
+        (LatchD0E0, dUp1?, [], [], LatchD1E0),
+        (LatchD1E0, andUp1?, [], [ckLatch], LatchD1E1),
+        (LatchD1E1, a, [(ckLatch, >=, 240)], [], [q = 1], LatchD1E1B);
+    }
+}

@@ -1,0 +1,15 @@
+create automaton not2
+{
+    clocks { ckNot2; }
+    actions { not1Down1, not2Up1; }
+    integers { q; }
+    locations {
+        Not2Low1    <ini: T, inv: [(ckNot2, >=, 0)]  >,
+        Not2Low1bis <ini: F, inv: [(ckNot2, <=, 155)]>,
+        Not2High1   <ini: F, inv: [(ckNot2, >=, 0)]  >;
+    }
+    transitions {
+        (Not2Low1bis, not2Up1!, [(ckNot2, >=, 155)], [], Not2High1),
+        (Not2Low1, not1Down1?, [], [ckNot2], Not2Low1bis);
+    }
+}

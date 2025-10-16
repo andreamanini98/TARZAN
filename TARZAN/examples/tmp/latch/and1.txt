@@ -1,0 +1,19 @@
+create automaton and1
+{
+    clocks { ckAnd; }
+    actions { andDown1, andUp1, clockUp1, xorDown1; }
+    integers { q; }
+    locations {
+        AndLow1     <ini: T, inv: [(ckAnd, >=, 0)]  >,
+        AndLow1bis  <ini: F, inv: [(ckAnd, <=, 80)] >,
+        AndHigh1    <ini: F, inv: [(ckAnd, >=, 0)]  >,
+        AndHigh1bis <ini: F, inv: [(ckAnd, <=, 155)]>,
+        AndLow2     <ini: F, inv: [(ckAnd, >=, 0)]  >;
+    }
+    transitions {
+        (AndLow1, clockUp1?, [], [ckAnd], AndLow1bis),
+        (AndLow1bis, andUp1!, [(ckAnd, >=, 80)], [], AndHigh1),
+        (AndHigh1bis, andDown1!, [(ckAnd, >=, 155)], [], AndLow2),
+        (AndHigh1, xorDown1?, [], [ckAnd], AndHigh1bis);
+    }
+}

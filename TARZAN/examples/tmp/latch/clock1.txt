@@ -1,0 +1,13 @@
+create automaton clock1
+{
+    clocks { ckClock; }
+    actions { clockUp1; }
+    integers { q; }
+    locations {
+        ClockLow1  <ini: T, inv: [(ckClock, <=, 1000)]>,
+        ClockHigh1 <ini: F, inv: [(ckClock, <=, 1000)]>;
+    }
+    transitions {
+        (ClockLow1, clockUp1!, [(ckClock, >=, 1000)], [ckClock], ClockHigh1);
+    }
+}

@@ -1,0 +1,19 @@
+create automaton xor1
+{
+    clocks { ckXor; }
+    actions { a, clockUp1, not2Up1, xorDown1; }
+    integers { q; }
+    locations {
+        XorLow1     <ini: T, inv: [(ckXor, >=, 0)]  >,
+        XorLow1bis  <ini: F, inv: [(ckXor, <=, 147)]>,
+        XorHigh1    <ini: F, inv: [(ckXor, >=, 0)]  >,
+        XorHigh1bis <ini: F, inv: [(ckXor, <=, 416)]>,
+        XorLow2     <ini: F, inv: [(ckXor, >=, 0)]  >;
+    }
+    transitions {
+        (XorHigh1, not2Up1?, [], [ckXor], XorHigh1bis),
+        (XorLow1bis, a, [(ckXor, >=, 147)], [], XorHigh1),
+        (XorHigh1bis, xorDown1!, [(ckXor, >=, 416)], [], XorLow2),
+        (XorLow1, clockUp1?, [], [ckXor], XorLow1bis);
+    }
+}

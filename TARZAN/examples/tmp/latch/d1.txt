@@ -1,0 +1,17 @@
+create automaton d1
+{
+    clocks { ckD; }
+    actions { clockUp1, dDown1, dUp1; }
+    integers { q; }
+    locations {
+        DLow1  <ini: T, inv: [(ckD, <=, 1001)]>,
+        DHigh1 <ini: F, inv: [(ckD, <=, 1)]   >,
+        DHigh2 <ini: F, inv: [(ckD, <=, 350)] >,
+        DLow2  <ini: F, inv: [(ckD, >=, 0)]   >;
+    }
+    transitions {
+        (DHigh1, clockUp1?, [(ckD, ==, 1)], [ckD], DHigh2),
+        (DHigh2, dDown1!, [(ckD, ==, 350)], [], DLow2),
+        (DLow1, dUp1!, [(ckD, ==, 1001)], [ckD], DHigh1);
+    }
+}

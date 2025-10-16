@@ -1,0 +1,33 @@
+create automaton norGate1
+{
+    clocks { ckNor1; }
+    actions { Q_Down, Q_Up, R_Down, overQ_Down, overQ_Up; }
+    locations {
+        Nor1_000 <ini: F, inv: [(ckNor1, <=, 2)]>,
+        Nor1_001 <ini: F                        >,
+        Nor1_010 <ini: F                        >,
+        Nor1_011 <ini: F, inv: [(ckNor1, <=, 2)]>,
+        Nor1_100 <ini: T                        >,
+        Nor1_101 <ini: F, inv: [(ckNor1, <=, 2)]>,
+        Nor1_110 <ini: F                        >,
+        Nor1_111 <ini: F, inv: [(ckNor1, <=, 2)]>;
+    }
+    transitions {
+        (Nor1_111, Q_Down!, [(ckNor1, >=, 1)], [], Nor1_110),
+        (Nor1_011, Q_Down!, [(ckNor1, >=, 1)], [], Nor1_010),
+        (Nor1_110, overQ_Down?, [], [], Nor1_100),
+        (Nor1_101, Q_Down!, [(ckNor1, >=, 1)], [], Nor1_100),
+        (Nor1_111, overQ_Down?, [], [ckNor1], Nor1_101),
+        (Nor1_100, R_Down?, [], [ckNor1], Nor1_000),
+        (Nor1_101, R_Down?, [], [], Nor1_001),
+        (Nor1_010, overQ_Down?, [], [ckNor1], Nor1_000),
+        (Nor1_100, overQ_Up?, [], [], Nor1_110),
+        (Nor1_011, overQ_Down?, [], [], Nor1_001),
+        (Nor1_000, Q_Up!, [(ckNor1, >=, 1)], [], Nor1_001),
+        (Nor1_101, overQ_Up?, [], [ckNor1], Nor1_111),
+        (Nor1_111, R_Down?, [], [ckNor1], Nor1_011),
+        (Nor1_001, overQ_Up?, [], [ckNor1], Nor1_011),
+        (Nor1_110, R_Down?, [], [], Nor1_010),
+        (Nor1_000, overQ_Up?, [], [], Nor1_010);
+    }
+}

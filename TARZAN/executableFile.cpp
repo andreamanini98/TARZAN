@@ -303,6 +303,65 @@ void test_soldiers()
 }
 
 
+void test_SRlatch()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/SRlatch";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    // Locations:
+    // Automaton [0] (3 locations): {env_final -> 2, env_10 -> 1, env_11 -> 0}
+    // Automaton [1] (8 locations): {Nor1_110 -> 7, Nor1_101 -> 6, Nor1_111 -> 5, Nor1_000 -> 4, Nor1_010 -> 3, Nor1_001 -> 2, Nor1_100 -> 1, Nor1_011 -> 0}
+    // Automaton [2] (8 locations): {Nor2_110 -> 7, Nor2_101 -> 6, Nor2_011 -> 5, Nor2_010 -> 4, Nor2_100 -> 3, Nor2_001 -> 1, Nor2_111 -> 2, Nor2_000 -> 0}
+
+    const std::vector<std::optional<int>> goalLocations = { 23, std::nullopt, std::nullopt };
+    const auto res = net.forwardReachability(goalLocations, DFS);
+}
+
+
+void test_latch()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/latch";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    // Locations:
+    // Automaton [0] (5 locations): {AndHigh1 -> 4, AndLow2 -> 3, AndHigh1bis -> 2, AndLow1bis -> 1, AndLow1 -> 0}
+    // Automaton [1] (2 locations): {ClockHigh1 -> 1, ClockLow1 -> 0}
+    // Automaton [2] (4 locations): {DLow2 -> 3, DHigh1 -> 2, DHigh2 -> 1, DLow1 -> 0}
+    // Automaton [3] (5 locations): {LatchD1E1B -> 4, LatchD1E0 -> 3, LatchD0E1 -> 2, LatchD1E1 -> 1, LatchD0E0 -> 0}
+    // Automaton [4] (3 locations): {Not1High1bis -> 2, Not1Low1 -> 1, Not1High1 -> 0}
+    // Automaton [5] (3 locations): {Not2High1 -> 2, Not2Low1bis -> 1, Not2Low1 -> 0}
+    // Automaton [6] (5 locations): {XorLow2 -> 4, XorHigh1bis -> 3, XorHigh1 -> 2, XorLow1bis -> 1, XorLow1 -> 0}
+
+    const std::vector<std::optional<int>> goalLocations = { std::nullopt, std::nullopt, 2, std::nullopt, std::nullopt, std::nullopt, std::nullopt };
+    const auto res = net.forwardReachability(goalLocations, DFS);
+}
+
+
+void test_lynch_4_16()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/lynch_4_16";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    // Locations:
+    // Automaton [0] (9 locations): {L3 -> 8, L2 -> 7, CS7 -> 6, L5 -> 5, L6 -> 4, L8 -> 3, L1 -> 2, L4 -> 1, L9 -> 0}
+    // Automaton [1] (9 locations): {L3 -> 8, L2 -> 7, CS7 -> 6, L5 -> 5, L6 -> 4, L8 -> 3, L1 -> 2, L4 -> 1, L9 -> 0}
+    // Automaton [2] (9 locations): {L3 -> 8, L2 -> 7, CS7 -> 6, L5 -> 5, L6 -> 4, L8 -> 3, L1 -> 2, L4 -> 1, L9 -> 0}
+    // Automaton [3] (9 locations): {L3 -> 8, L2 -> 7, CS7 -> 6, L5 -> 5, L6 -> 4, L8 -> 3, L1 -> 2, L4 -> 1, L9 -> 0}
+
+    const std::vector<std::optional<int>> goalLocations = { 6, 6, std::nullopt, std::nullopt };
+    const auto res = net.forwardReachability(goalLocations, DFS);
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -312,7 +371,7 @@ int main()
 #endif
 
 
-    test_soldiers();
+    test_lynch_4_16();
 
 
 #ifdef REGION_TIMING
