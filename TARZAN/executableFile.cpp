@@ -89,7 +89,7 @@ void testFischer()
 
 void test_exSITH()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/exSITH";
 
     const std::string automatonFileName = "exSITH.txt";
 
@@ -362,6 +362,52 @@ void test_lynch_4_16()
 }
 
 
+void test_simple()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/simple/";
+    const std::string automatonFileName = "simple.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const region::RTS regionTransitionSystem(automaton);
+
+    std::cout << regionTransitionSystem.to_string() << std::endl;
+
+
+    //std::cout << "Computed the following regions:" << std::endl;
+    const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(10, DFS);
+}
+
+
+void test_TrainAHV93_9()
+{
+    // Per ora solo due treni perchè se no esplode. Questo va calcolato in BFS.
+
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/TrainAHV93_9";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    // Locations:
+    // Automaton [0] (4 locations): {controller2 -> 3, controller1 -> 2, controller3 -> 1, controller0 -> 0}
+    // Automaton [1] (4 locations): {gate3 -> 3, gate1 -> 2, gate2 -> 1, gate0 -> 0}
+    // Automaton [2...10] (4 locations): {train3 -> 3, train2 -> 2, train1 -> 1, train0 -> 0}
+
+    const std::vector<std::optional<int>> goalLocations = {
+        1,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt
+    };
+
+    std::vector<timed_automaton::ast::clockConstraint>  intVarConstr{};
+    intVarConstr.emplace_back("cnt", GT, 0);
+
+    const auto res = net.forwardReachability(intVarConstr, goalLocations, DFS);
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -371,7 +417,7 @@ int main()
 #endif
 
 
-    test_lynch_4_16();
+    test_TrainAHV93_9();
 
 
 #ifdef REGION_TIMING
@@ -379,6 +425,7 @@ int main()
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
 #endif
+
 
     return 0;
 }
