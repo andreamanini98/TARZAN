@@ -404,7 +404,7 @@ void test_TrainAHV93_9()
     std::vector<timed_automaton::ast::clockConstraint>  intVarConstr{};
     intVarConstr.emplace_back("cnt", GT, 0);
 
-    const auto res = net.forwardReachability(intVarConstr, goalLocations, DFS);
+    const auto res = net.forwardReachability(intVarConstr, goalLocations, BFS);
 }
 
 
@@ -417,7 +417,7 @@ int main()
 #endif
 
 
-    test_TrainAHV93_9();
+    test_soldiers();
 
 
 #ifdef REGION_TIMING

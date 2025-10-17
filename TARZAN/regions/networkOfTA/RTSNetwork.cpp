@@ -43,7 +43,8 @@ inline void insertRegionInMapAndToProcess(const networkOfTA::NetworkRegion &reg,
 }
 
 
-std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(const std::vector<std::optional<int>> &targetLocs,
+std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr,
+                                                                                     const std::vector<std::optional<int>> &targetLocs,
                                                                                      const ssee explorationTechnique) const
 {
     // Starting the timer for measuring computation.
@@ -83,6 +84,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
         bool isTargetRegionReached = true;
 
         for (int i = 0; i < static_cast<int>(targetLocs.size()); i++)
+        {
             if (targetLocs[i].has_value())
             {
                 if (currentRegionRegions[i].getLocation() != targetLocs[i])
@@ -91,6 +93,22 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
                     break;
                 }
             }
+        }
+
+        // Checking whether constraints on integer variables are satisfied.
+        if (!intVarConstr.empty() && isTargetRegionReached)
+        {
+            const auto &intValues = currentRegion.getNetworkVariables();
+
+            for (const auto &integerValue: intVarConstr)
+            {
+                if (!integerValue.isSatisfied(intValues.at(integerValue.clock), false))
+                {
+                    isTargetRegionReached = false;
+                    break;
+                }
+            }
+        }
 
         if (isTargetRegionReached)
         {
@@ -147,6 +165,13 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
     std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
 
     return {};
+}
+
+
+std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(const std::vector<std::optional<int>> &targetLocs,
+                                                                                     const ssee explorationTechnique) const
+{
+    return forwardReachability(std::vector<timed_automaton::ast::clockConstraint>{}, targetLocs, explorationTechnique);
 }
 
 

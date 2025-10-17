@@ -106,6 +106,7 @@ namespace networkOfTA
         [[nodiscard]] absl::btree_set<int> &getModifiableIsAOrC() { return isAorC; }
         [[nodiscard]] std::deque<absl::btree_map<int, boost::dynamic_bitset<>>> &getModifiableClockOrdering() { return clockOrdering; }
         [[nodiscard]] absl::btree_map<std::string, int> &getModifiableNetworkVariables() { return networkVariables; }
+        [[nodiscard]] absl::btree_map<std::string, int> const &getNetworkVariables() const { return networkVariables; }
 
 
         // Setters.
