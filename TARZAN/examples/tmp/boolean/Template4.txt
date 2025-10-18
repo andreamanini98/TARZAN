@@ -1,0 +1,14 @@
+create automaton Template4
+{
+    clocks { x; }
+    actions { a; }
+    integers { ctr1, ctr10, ctr11, ctr12, ctr13, ctr14, ctr15, ctr16, ctr2, ctr3, ctr4, ctr5, ctr6, ctr7, ctr8, ctr9; }
+    locations {
+        s0 <ini: T>,
+        s1 <ini: F>;
+    }
+    transitions {
+        (s0, a, [(x, ==, 4)], [x], [ctr4 = 1 - ctr4], s1),
+        (s1, a, [(x, ==, 4)], [x], [ctr4 = 1 - ctr4], s0);
+    }
+}

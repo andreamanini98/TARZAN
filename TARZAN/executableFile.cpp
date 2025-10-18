@@ -401,10 +401,59 @@ void test_TrainAHV93_9()
         std::nullopt
     };
 
-    std::vector<timed_automaton::ast::clockConstraint>  intVarConstr{};
+    std::vector<timed_automaton::ast::clockConstraint> intVarConstr{};
     intVarConstr.emplace_back("cnt", GT, 0);
 
     const auto res = net.forwardReachability(intVarConstr, goalLocations, BFS);
+}
+
+
+void test_boolean()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/boolean";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    const std::vector<std::optional<int>> goalLocations = {
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt
+    };
+
+    std::vector<timed_automaton::ast::clockConstraint>  intVarConstr{};
+    intVarConstr.emplace_back("ctr1", EQ, 1);
+    intVarConstr.emplace_back("ctr2", EQ, 1);
+    intVarConstr.emplace_back("ctr3", EQ, 1);
+    intVarConstr.emplace_back("ctr4", EQ, 1);
+    intVarConstr.emplace_back("ctr5", EQ, 1);
+    intVarConstr.emplace_back("ctr6", EQ, 1);
+    intVarConstr.emplace_back("ctr7", EQ, 1);
+    intVarConstr.emplace_back("ctr8", EQ, 1);
+    intVarConstr.emplace_back("ctr9", EQ, 1);
+    intVarConstr.emplace_back("ctr10", EQ, 1);
+    intVarConstr.emplace_back("ctr11", EQ, 1);
+    intVarConstr.emplace_back("ctr12", EQ, 1);
+    intVarConstr.emplace_back("ctr13", EQ, 1);
+    intVarConstr.emplace_back("ctr14", EQ, 1);
+    intVarConstr.emplace_back("ctr15", EQ, 1);
+    intVarConstr.emplace_back("ctr16", EQ, 1);
+
+    const auto res = net.forwardReachability(intVarConstr, goalLocations, DFS);
 }
 
 
@@ -417,7 +466,7 @@ int main()
 #endif
 
 
-    test_soldiers();
+    test_boolean();
 
 
 #ifdef REGION_TIMING
