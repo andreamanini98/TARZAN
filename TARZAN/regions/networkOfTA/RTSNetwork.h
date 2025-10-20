@@ -34,6 +34,12 @@ namespace networkOfTA
         /// A boolean telling whether there are no invariants at all to be checked.
         bool isInvariantFree;
 
+        /**
+         * Groups of automaton indices that are structurally symmetric.
+         * Each inner vector contains indices of automata that are identical.
+         */
+        std::vector<std::vector<int>> symmetryGroups{};
+
 
         /**
          * The key of the external map represents an automaton which has at least one urgent location.
@@ -123,6 +129,7 @@ namespace networkOfTA
         // Getters.
         [[nodiscard]] const std::vector<NetworkRegion> &getInitialRegions() const { return initialRegions; }
         [[nodiscard]] const std::vector<std::vector<int>> &getMaxConstants() const { return maxConstants; }
+        [[nodiscard]] const std::vector<std::vector<int>>& getSymmetryGroups() const { return symmetryGroups; }
     };
 }
 

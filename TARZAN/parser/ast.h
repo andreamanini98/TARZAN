@@ -98,7 +98,7 @@
 //
 //  <and_op> -> '&&'
 
-// TODO: aggiustare liana con le locations urgenti. NEL PARSER VEDERE SE È AMMESSO LASCIARE UNA LOCATION SENZA INI, URG, E INV.
+// TODO: aggiustare liana con le locations urgenti. NEL PARSER NON È AMMESSO LASCIARE UNA LOCATION SENZA INI, URG, E INV.
 
 
 // Reference examples for expression parser:
@@ -357,6 +357,7 @@ namespace timed_automaton::ast
     struct timedAutomaton
     {
         std::string name;
+        std::optional<int> symmetryGroup;
         std::vector<std::string> clocks;
         std::vector<std::string> actions;
         std::vector<std::string> integerVariables;
@@ -481,6 +482,7 @@ namespace timed_automaton::ast
     struct timedArena
     {
         std::string name;
+        std::optional<int> symmetryGroup;
         std::vector<std::string> clocks;
         std::vector<std::string> actions;
         std::vector<std::string> integerVariables;

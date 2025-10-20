@@ -321,10 +321,15 @@ namespace parser
             > literal
             > lit(')');
 
+    inline auto symm_rule =
+            lit("::") > lit("symm") > lit('<') > int_ > lit('>');
+
+
     inline auto timedAutomaton_rule_def =
             lit("create")
             > lit("automaton")
             > literal
+            > -symm_rule
             > lit('{')
             > lit("clocks")
             > lit('{')
@@ -352,6 +357,7 @@ namespace parser
             lit("create")
             > lit("arena")
             > literal
+            > -symm_rule
             > lit('{')
             > lit("clocks")
             > lit('{')

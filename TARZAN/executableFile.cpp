@@ -435,7 +435,7 @@ void test_boolean()
         std::nullopt
     };
 
-    std::vector<timed_automaton::ast::clockConstraint>  intVarConstr{};
+    std::vector<timed_automaton::ast::clockConstraint> intVarConstr{};
     intVarConstr.emplace_back("ctr1", EQ, 1);
     intVarConstr.emplace_back("ctr2", EQ, 1);
     intVarConstr.emplace_back("ctr3", EQ, 1);
@@ -457,6 +457,21 @@ void test_boolean()
 }
 
 
+// --- symmetry reduction implementation tests
+
+void testSymmetryGroups()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/networks_of_TA/vikings";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    // const std::vector<std::optional<int>> goalLocations = { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, std::nullopt };
+    // const auto res = net.forwardReachability(goalLocations, DFS);
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -466,7 +481,7 @@ int main()
 #endif
 
 
-    test_boolean();
+    testSymmetryGroups();
 
 
 #ifdef REGION_TIMING

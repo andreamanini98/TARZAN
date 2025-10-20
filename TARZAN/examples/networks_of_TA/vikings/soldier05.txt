@@ -1,4 +1,4 @@
-create automaton soldier05
+create automaton soldier05 :: symm <1>
 {
     clocks
     {
