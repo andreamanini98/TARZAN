@@ -1,4 +1,4 @@
-create automaton train2 :: symm<1>
+create automaton train6 :: symm<1>
 {
     clocks { x; }
     actions { a, approach, exito; }

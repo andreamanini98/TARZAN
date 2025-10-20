@@ -381,12 +381,15 @@ void test_simple()
 void test_TrainAHV93_9()
 {
     // Per ora solo due treni perchè se no esplode. Questo va calcolato in BFS.
+    // Uppaal esplode anche lui con 9 treni e con l'intero (sia BFS che DFS).
 
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/TrainAHV93_9";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
-    const networkOfTA::RTSNetwork net(automata);
+    networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
+
+    net.enableSymmetryReduction();
 
     // Locations:
     // Automaton [0] (4 locations): {controller2 -> 3, controller1 -> 2, controller3 -> 1, controller0 -> 0}
@@ -398,13 +401,18 @@ void test_TrainAHV93_9()
         std::nullopt,
         std::nullopt,
         std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
         std::nullopt
     };
 
     std::vector<timed_automaton::ast::clockConstraint> intVarConstr{};
     intVarConstr.emplace_back("cnt", GT, 0);
 
-    const auto res = net.forwardReachability(intVarConstr, goalLocations, BFS);
+    const auto res = net.forwardReachability(goalLocations, BFS);
 }
 
 
@@ -457,23 +465,6 @@ void test_boolean()
 }
 
 
-// --- symmetry reduction implementation tests
-
-void testSymmetryGroups()
-{
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/networks_of_TA/vikings";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
-    networkOfTA::RTSNetwork net(automata);
-
-    std::cout << net.toString() << std::endl;
-
-    net.enableSymmetryReduction();
-
-    const std::vector<std::optional<int>> goalLocations = { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, std::nullopt };
-    const auto res = net.forwardReachability(goalLocations, DFS);
-}
-
-
 int main()
 {
 #ifdef REGION_TIMING
@@ -483,7 +474,7 @@ int main()
 #endif
 
 
-    testSymmetryGroups();
+    test_TrainAHV93_9();
 
 
 #ifdef REGION_TIMING
