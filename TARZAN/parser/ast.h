@@ -24,7 +24,7 @@
 // T and F are syntax sugar for true and false.
 // Integer variables in Timed Automata are automatically initialized to 0. To overcome this, a transition can be added to initialize them in the Timed Automaton itself.
 //
-//  <automaton> -> 'create' 'automaton' <literal>
+//  <automaton> -> 'create' 'automaton' <literal> (eps | <symm_rule>)
 //                 '{'
 //                 'clocks'          '{' (eps | <literal> (, <literal>)* ';') '}'
 //                 'actions'         '{' <literal> (, <literal>)* ';' '}'
@@ -33,11 +33,19 @@
 //                 'transitions'     '{' <transition_rule> (, <transition_rule>)* ';' '}'
 //                 '}'
 //
+//  <symm_rule> -> '::' 'symm' '<' <int> '>'
+//
 //  <locations_rule> -> <loc_rule> (, <loc_rule>)* ';'
 //
 //  <loc_rule> -> <literal> <loc_content_rule>
 //
-//  <loc_content_rule> -> '<' (eps | 'ini' ':' <bool> (eps | ',' 'inv' ':' <guard_rule>) | 'inv' ':' <guard_rule>) '>'
+//  <loc_content_rule> -> '<' (eps | <ini> | <urg> | <inv> | <ini> ',' <urg> | <ini> ',' <inv> | <urg> ',' <inv> | <ini> ',' <urg> ',' <inv>) '>'
+//
+//  <ini> -> 'ini' ':' <bool>
+//
+//  <urg> -> 'urg' ':' <bool>
+//
+//  <inv> -> 'inv' ':' <guard_rule>
 //
 //  <bool> -> 'T' | 'F' | 'true' | 'false'
 //
@@ -97,9 +105,6 @@
 //  <or_op> -> '||'
 //
 //  <and_op> -> '&&'
-
-// TODO: aggiustare liana con le locations urgenti. NEL PARSER NON È AMMESSO LASCIARE UNA LOCATION SENZA INI, URG, E INV.
-// TODO: aggiustare grammatica con i symmetry groups.
 
 
 // Reference examples for expression parser:

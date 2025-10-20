@@ -302,6 +302,11 @@ namespace parser
                 x3::attr(false)
                 >> lit("urg") >> lit(':') >> my_boolean
                 >> x3::attr(std::vector<timed_automaton::ast::clockConstraint>{})
+                |
+                // no ini, no urg, no inv
+                x3::attr(false)
+                >> x3::attr(false)
+                >> x3::attr(std::vector<timed_automaton::ast::clockConstraint>{})
             )
             > lit('>');
 
