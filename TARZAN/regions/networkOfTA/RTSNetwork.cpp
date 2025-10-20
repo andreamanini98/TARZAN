@@ -54,11 +54,16 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
     std::deque<NetworkRegion> toProcess{};
     std::unordered_set<NetworkRegion, NetworkRegionHash> regionsHashMap{};
 
+    const bool useSymmetryReduction = !symmetryGroups.empty() && symmetryReduction;
+
+    // Apply symmetry reduction to initial regions if enabled
     for (const auto &init: getInitialRegions())
     {
-        toProcess.push_back(init);
-        regionsHashMap.insert(init);
+        const NetworkRegion &regionToInsert = useSymmetryReduction ? init.getCanonicalForm(symmetryGroups) : init;
+        toProcess.push_back(regionToInsert);
+        regionsHashMap.insert(regionToInsert);
     }
+
 
     unsigned long long int totalRegions = 0;
 
@@ -146,12 +151,36 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
         explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();
 
         // We insert the delay successor first and then the discrete successors.
-        if (isDelayComputable && !regionsHashMap.contains(delaySuccessor))
-            insertRegionInMapAndToProcess(delaySuccessor, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
+        // Apply canonical form if symmetry reduction is enabled
+        if (isDelayComputable)
+        {
+            if (useSymmetryReduction)
+            {
+                // ReSharper disable once CppTooWideScopeInitStatement
+                const NetworkRegion canonicalDelaySucc = delaySuccessor.getCanonicalForm(symmetryGroups);
+                if (!regionsHashMap.contains(canonicalDelaySucc))
+                    insertRegionInMapAndToProcess(canonicalDelaySucc, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
+            } else
+            {
+                if (!regionsHashMap.contains(delaySuccessor))
+                    insertRegionInMapAndToProcess(delaySuccessor, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
+            }
+        }
 
         for (const auto &discreteSuccessor: discreteSuccessors)
-            if (!regionsHashMap.contains(discreteSuccessor))
-                insertRegionInMapAndToProcess(discreteSuccessor, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
+        {
+            if (useSymmetryReduction)
+            {
+                // ReSharper disable once CppTooWideScopeInitStatement
+                const NetworkRegion canonicalDiscSucc = discreteSuccessor.getCanonicalForm(symmetryGroups);
+                if (!regionsHashMap.contains(canonicalDiscSucc))
+                    insertRegionInMapAndToProcess(canonicalDiscSucc, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
+            } else
+            {
+                if (!regionsHashMap.contains(discreteSuccessor))
+                    insertRegionInMapAndToProcess(discreteSuccessor, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
+            }
+        }
     }
 
     // No target region has been reached if the while loop ends.

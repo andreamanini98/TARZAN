@@ -325,6 +325,78 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
 }
 
 
+networkOfTA::NetworkRegion networkOfTA::NetworkRegion::getCanonicalForm(const std::vector<std::vector<int>> &symmetryGroups) const
+{
+    // If no symmetry groups, return a copy.
+    if (symmetryGroups.empty())
+        return clone();
+
+    NetworkRegion canonical = clone();
+
+    // For each group of symmetric processes.
+    for (const auto &group: symmetryGroups)
+    {
+        if (group.size() <= 1)
+            continue;
+
+        // Extract regions and their original indices.
+        std::vector<std::pair<int, region::Region>> groupRegions;
+        groupRegions.reserve(group.size());
+        for (const int idx: group)
+            groupRegions.emplace_back(idx, regions[idx]);
+
+        // Sort by region content to get canonical form using Region's operator<.
+        std::ranges::sort(groupRegions, [](const auto &a, const auto &b) {
+            return a.second < b.second;
+        });
+
+        // Build a permutation map: original_idx -> sorted_idx (permutation contains the original index of the sorted regions).
+        std::vector<int> permutation(group.size());
+        for (int i = 0; i < static_cast<int>(group.size()); i++)
+            permutation[i] = groupRegions[i].first;
+
+        // Write back regions in canonical order.
+        for (int i = 0; i < static_cast<int>(group.size()); i++)
+            canonical.regions[group[i]] = groupRegions[i].second;
+
+        // Update isAorC with the permutation.
+        absl::btree_set<int> newIsAorC;
+        for (int i = 0; i < static_cast<int>(group.size()); i++)
+        {
+            int oldIdx = permutation[i];
+            int newIdx = group[i];
+            if (isAorC.contains(oldIdx))
+                newIsAorC.insert(newIdx);
+        }
+        // Remove old entries and add new ones for this group.
+        for (const int idx: group)
+            canonical.isAorC.erase(idx);
+        for (const int idx: newIsAorC)
+            canonical.isAorC.insert(idx);
+
+        // Update clockOrdering with the permutation.
+        for (auto &clockMap: canonical.clockOrdering)
+        {
+            absl::btree_map<int, boost::dynamic_bitset<>> newClockMap{};
+            for (int i = 0; i < static_cast<int>(group.size()); i++)
+            {
+                int oldIdx = permutation[i];
+                int newIdx = group[i];
+                if (clockMap.contains(oldIdx))
+                    newClockMap[newIdx] = clockMap[oldIdx];
+            }
+            // Replace the entries for this symmetry group.
+            for (const int idx: group)
+                clockMap.erase(idx);
+            for (const auto &[idx, bitset]: newClockMap)
+                clockMap[idx] = bitset;
+        }
+    }
+
+    return canonical;
+}
+
+
 std::string networkOfTA::NetworkRegion::toString() const
 {
     std::ostringstream oss;

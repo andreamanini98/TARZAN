@@ -291,6 +291,7 @@ namespace region
 
         // Getters.
         [[nodiscard]] int getLocation() const { return q; }
+        [[nodiscard]] int *getH() const { return h; }
         [[nodiscard]] std::deque<boost::dynamic_bitset<>> getUnbounded() const { return unbounded; }
         [[nodiscard]] boost::dynamic_bitset<> getX0() const { return x0; }
         [[nodiscard]] std::deque<boost::dynamic_bitset<>> getBounded() const { return bounded; }
@@ -350,6 +351,38 @@ namespace region
         bool operator!=(const Region &other) const
         {
             return !(*this == other);
+        }
+
+
+        /**
+         * @brief Lexicographic comparison operator for regions.
+         *
+         * Comparison order:
+         * 1. Location (q)
+         * 2. x0 (clocks with no fractional part)
+         * 3. h (integer clock values)
+         * 4. bounded (bounded clocks ordering)
+         * 5. unbounded (unbounded clocks ordering)
+         *
+         * @warning: Up to now, integer variables are only global, and local integer variables serve only the purpose of computing successors,
+         *           but they may not correspond to global ones. For now, better to not compare variables as well.
+         */
+        bool operator<(const Region &other) const
+        {
+            if (q != other.q)
+                return q < other.q;
+
+            if (x0 != other.x0)
+                return x0 < other.x0;
+
+            const int numClocks = getNumberOfClocks();
+            if (const int hCmp = std::memcmp(h, other.h, numClocks * sizeof(int)); hCmp != 0)
+                return hCmp < 0;
+
+            if (bounded != other.bounded)
+                return bounded < other.bounded;
+
+            return unbounded < other.unbounded;
         }
 
 

@@ -463,12 +463,14 @@ void testSymmetryGroups()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/networks_of_TA/vikings";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
-    const networkOfTA::RTSNetwork net(automata);
+    networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
 
-    // const std::vector<std::optional<int>> goalLocations = { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, std::nullopt };
-    // const auto res = net.forwardReachability(goalLocations, DFS);
+    net.enableSymmetryReduction();
+
+    const std::vector<std::optional<int>> goalLocations = { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, std::nullopt };
+    const auto res = net.forwardReachability(goalLocations, DFS);
 }
 
 

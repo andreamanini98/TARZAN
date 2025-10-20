@@ -46,6 +46,9 @@ namespace networkOfTA
          */
         std::vector<std::vector<int>> symmetryGroups{};
 
+        /// Enables symmetry reduction during computation.
+        bool symmetryReduction{};
+
 
     public:
         explicit RTSNetwork(const std::vector<timed_automaton::ast::timedAutomaton> &automata) : automata(automata)
@@ -129,6 +132,12 @@ namespace networkOfTA
          */
         [[nodiscard]] std::vector<NetworkRegion> forwardReachability(const std::vector<std::optional<int>> &targetLocs,
                                                                      ssee explorationTechnique) const;
+
+
+        void enableSymmetryReduction()
+        {
+            symmetryReduction = true;
+        }
 
 
         [[nodiscard]] std::string toString() const;

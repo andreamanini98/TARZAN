@@ -87,6 +87,15 @@ namespace networkOfTA
 
 
         /**
+         * @brief Computes the canonical form of this network region by sorting symmetric processes to the lexicographically smallest permutation.
+         *
+         * @param symmetryGroups groups of automaton indices that are symmetric. Each inner vector contains indices of automata that are structurally identical.
+         * @return canonical NetworkRegion representing the equivalence class.
+         */
+        [[nodiscard]] NetworkRegion getCanonicalForm(const std::vector<std::vector<int>> &symmetryGroups) const;
+
+
+        /**
          * @brief Creates a deep copy of this region.
          *
          * @return a new NetworkRegion object that is a copy of this one.
