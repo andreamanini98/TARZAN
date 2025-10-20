@@ -35,23 +35,23 @@ namespace networkOfTA
         bool isInvariantFree;
 
         /**
+         * The key of the external map represents an automaton which has at least one urgent location.
+         * Urgent locations are contained in the inner set.
+         */
+        absl::flat_hash_map<int, absl::flat_hash_set<int>> automataWithUrgentLocations{};
+
+        /**
          * Groups of automaton indices that are structurally symmetric.
          * Each inner vector contains indices of automata that are identical.
          */
         std::vector<std::vector<int>> symmetryGroups{};
 
 
-        /**
-         * The key of the external map represents an automaton which has at least one urgent location.
-         * Urgent locations are contained in the inner set.
-         */
-        absl::flat_hash_map<int, absl::flat_hash_set<int>> automataWithUrgentLocations{};
-
-
     public:
         explicit RTSNetwork(const std::vector<timed_automaton::ast::timedAutomaton> &automata) : automata(automata)
         {
             absl::btree_map<std::string, int> variables{};
+            absl::btree_map<int, std::vector<int>> groups{};
 
             for (int i = 0; i < static_cast<int>(automata.size()); i++)
             {
@@ -70,6 +70,9 @@ namespace networkOfTA
 
                 if (automaton.hasUrgentLocations())
                     automataWithUrgentLocations[i] = automaton.getUrgentLocations(locationsToInt[i]);
+
+                if (automaton.symmetryGroup.has_value())
+                    groups[automaton.symmetryGroup.value()].push_back(i);
             }
 
             isInvariantFree = std::ranges::all_of(invariants, [](const auto &inv) { return inv.empty(); });
@@ -88,6 +91,11 @@ namespace networkOfTA
 
                 initialRegions.emplace_back(initRegs, variables, true);
             }
+
+            // Setting symmetry groups. Only keep groups with 2+ elements (actual symmetry).
+            for (const auto &indices: groups | std::views::values)
+                if (indices.size() > 1)
+                    symmetryGroups.push_back(indices);
         }
 
 
@@ -129,7 +137,7 @@ namespace networkOfTA
         // Getters.
         [[nodiscard]] const std::vector<NetworkRegion> &getInitialRegions() const { return initialRegions; }
         [[nodiscard]] const std::vector<std::vector<int>> &getMaxConstants() const { return maxConstants; }
-        [[nodiscard]] const std::vector<std::vector<int>>& getSymmetryGroups() const { return symmetryGroups; }
+        [[nodiscard]] const std::vector<std::vector<int>> &getSymmetryGroups() const { return symmetryGroups; }
     };
 }
 

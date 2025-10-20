@@ -99,6 +99,7 @@
 //  <and_op> -> '&&'
 
 // TODO: aggiustare liana con le locations urgenti. NEL PARSER NON È AMMESSO LASCIARE UNA LOCATION SENZA INI, URG, E INV.
+// TODO: aggiustare grammatica con i symmetry groups.
 
 
 // Reference examples for expression parser:

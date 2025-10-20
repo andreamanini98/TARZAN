@@ -260,7 +260,7 @@ std::string networkOfTA::RTSNetwork::toString() const
                 oss << "      " << line << "\n";
     }
 
-    // Display transitions counts
+    // Display transitions counts.
     oss << "  Transitions:\n";
     for (size_t i = 0; i < outTransitions.size(); i++)
     {
@@ -277,6 +277,26 @@ std::string networkOfTA::RTSNetwork::toString() const
                 << totalOut << " outgoing transitions, "
                 << totalIn << " incoming transitions\n";
     }
+
+    // Display symmetry groups.
+    oss << "  Symmetry groups:\n";
+    if (symmetryGroups.empty())
+        oss << "    (none)\n";
+    else
+    {
+        for (size_t i = 0; i < symmetryGroups.size(); i++)
+        {
+            oss << "    Group [" << i << "]: {";
+            for (size_t j = 0; j < symmetryGroups[i].size(); j++)
+            {
+                oss << symmetryGroups[i][j];
+                if (j < symmetryGroups[i].size() - 1)
+                    oss << ", ";
+            }
+            oss << "}\n";
+        }
+    }
+
 
     oss << "}\n";
     return oss.str();
