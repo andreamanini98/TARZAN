@@ -54,7 +54,9 @@ void testVikings()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/networks_of_TA/vikings";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
-    const networkOfTA::RTSNetwork net(automata);
+    networkOfTA::RTSNetwork net(automata);
+
+    net.enableSymmetryReduction();
 
     std::cout << net.toString() << std::endl;
 
@@ -406,6 +408,7 @@ void test_TrainAHV93_9()
         std::nullopt,
         std::nullopt,
         std::nullopt,
+        std::nullopt,
         std::nullopt
     };
 
@@ -511,7 +514,7 @@ int main()
 #endif
 
 
-    test_pagerank();
+    testVikings();
 
 
 #ifdef REGION_TIMING

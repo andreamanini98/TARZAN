@@ -336,12 +336,14 @@ networkOfTA::NetworkRegion networkOfTA::NetworkRegion::getCanonicalForm(const st
     // For each group of symmetric processes.
     for (const auto &group: symmetryGroups)
     {
-        if (group.size() <= 1)
+        const int groupSize = static_cast<int>(group.size());
+
+        if (groupSize <= 1)
             continue;
 
         // Extract regions and their original indices.
         std::vector<std::pair<int, region::Region>> groupRegions;
-        groupRegions.reserve(group.size());
+        groupRegions.reserve(groupSize);
         for (const int idx: group)
             groupRegions.emplace_back(idx, regions[idx]);
 
@@ -351,17 +353,17 @@ networkOfTA::NetworkRegion networkOfTA::NetworkRegion::getCanonicalForm(const st
         });
 
         // Build a permutation map: original_idx -> sorted_idx (permutation contains the original index of the sorted regions).
-        std::vector<int> permutation(group.size());
-        for (int i = 0; i < static_cast<int>(group.size()); i++)
+        std::vector<int> permutation(groupSize);
+        for (int i = 0; i < groupSize; i++)
             permutation[i] = groupRegions[i].first;
 
         // Write back regions in canonical order.
-        for (int i = 0; i < static_cast<int>(group.size()); i++)
+        for (int i = 0; i < groupSize; i++)
             canonical.regions[group[i]] = groupRegions[i].second;
 
         // Update isAorC with the permutation.
         absl::btree_set<int> newIsAorC;
-        for (int i = 0; i < static_cast<int>(group.size()); i++)
+        for (int i = 0; i < groupSize; i++)
         {
             int oldIdx = permutation[i];
             int newIdx = group[i];
@@ -378,7 +380,7 @@ networkOfTA::NetworkRegion networkOfTA::NetworkRegion::getCanonicalForm(const st
         for (auto &clockMap: canonical.clockOrdering)
         {
             absl::btree_map<int, boost::dynamic_bitset<>> newClockMap{};
-            for (int i = 0; i < static_cast<int>(group.size()); i++)
+            for (int i = 0; i < groupSize; i++)
             {
                 int oldIdx = permutation[i];
                 int newIdx = group[i];
@@ -390,6 +392,23 @@ networkOfTA::NetworkRegion networkOfTA::NetworkRegion::getCanonicalForm(const st
                 clockMap.erase(idx);
             for (const auto &[idx, bitset]: newClockMap)
                 clockMap[idx] = bitset;
+        }
+
+        // Update targetLocations indices with the permutation.
+        if (!canonical.targetLocations.empty())
+        {
+            std::vector<std::optional<int>> newTargetLocations(groupSize);
+            for (int i = 0; i < groupSize; i++)
+            {
+                const int oldIdx = permutation[i];
+                newTargetLocations[i] = canonical.targetLocations[oldIdx];
+            }
+            // Replace the entries for this symmetry group.
+            for (int i = 0; i < groupSize; i++)
+            {
+                const int newIdx = group[i];
+                canonical.targetLocations[newIdx] = newTargetLocations[i];
+            }
         }
     }
 

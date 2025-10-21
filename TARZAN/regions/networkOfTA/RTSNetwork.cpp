@@ -59,7 +59,15 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
     // Apply symmetry reduction to initial regions if enabled
     for (const auto &init: getInitialRegions())
     {
-        const NetworkRegion &regionToInsert = useSymmetryReduction ? init.getCanonicalForm(symmetryGroups) : init;
+        NetworkRegion regionToInsert = init.clone();
+
+        // Setting target locations for network regions.
+        regionToInsert.setTargetLocations(targetLocs);
+
+        // Apply canonical form if symmetry reduction is enabled.
+        if (useSymmetryReduction)
+            regionToInsert = regionToInsert.getCanonicalForm(symmetryGroups);
+
         toProcess.push_back(regionToInsert);
         regionsHashMap.insert(regionToInsert);
     }
@@ -86,13 +94,17 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
         const auto &currentRegionRegions = currentRegion.getRegions();
 
         // Checking if the target region has been reached.
+        // With symmetry reduction, targetLocations has been permuted with regions during canonicalization,
+        // so we can directly check each region against its corresponding target location.
         bool isTargetRegionReached = true;
 
-        for (int i = 0; i < static_cast<int>(targetLocs.size()); i++)
+        const auto &currentTargetLocations = currentRegion.getTargetLocations();
+
+        for (int i = 0; i < static_cast<int>(currentTargetLocations.size()); i++)
         {
-            if (targetLocs[i].has_value())
+            if (currentTargetLocations[i].has_value())
             {
-                if (currentRegionRegions[i].getLocation() != targetLocs[i])
+                if (currentRegionRegions[i].getLocation() != currentTargetLocations[i])
                 {
                     isTargetRegionReached = false;
                     break;

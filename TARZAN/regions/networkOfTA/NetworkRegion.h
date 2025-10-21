@@ -31,6 +31,14 @@ namespace networkOfTA
         /// Map between integer variables and their value.
         absl::btree_map<std::string, int> networkVariables{};
 
+        /**
+         * Target locations for reachability checking, where the i-th element contains the target location for the i-th automaton,
+         * or std::nullopt if no target is specified for that automaton. This vector is permuted along with regions during canonicalization.
+         *
+         * @note This field does NOT participate in equality/hash comparisons as it's only used for reachability objectives.
+         */
+        std::vector<std::optional<int>> targetLocations{};
+
 
     public:
         NetworkRegion() = default;
@@ -116,11 +124,14 @@ namespace networkOfTA
         [[nodiscard]] std::deque<absl::btree_map<int, boost::dynamic_bitset<>>> &getModifiableClockOrdering() { return clockOrdering; }
         [[nodiscard]] absl::btree_map<std::string, int> &getModifiableNetworkVariables() { return networkVariables; }
         [[nodiscard]] absl::btree_map<std::string, int> const &getNetworkVariables() const { return networkVariables; }
+        [[nodiscard]] std::vector<std::optional<int>> const &getTargetLocations() const { return targetLocations; }
+        [[nodiscard]] std::vector<std::optional<int>> &getModifiableTargetLocations() { return targetLocations; }
 
 
         // Setters.
         void setRegionGivenIndex(const int idx, const region::Region &reg) { regions[idx] = reg; }
         void setNetworkVariables(const absl::btree_map<std::string, int> &networkVariables_p) { this->networkVariables = networkVariables_p; }
+        void setTargetLocations(const std::vector<std::optional<int>> &targetLocations_p) { this->targetLocations = targetLocations_p; }
 
 
         NetworkRegion &operator=(const NetworkRegion &other) = default;
