@@ -465,6 +465,43 @@ void test_boolean()
 }
 
 
+void test_pagerank()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/pagerank";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    // Locations:
+    // Automaton [0] (31 locations): {Batch_finished -> 30, a_26_run_tc -> 29, a_23_run_tc -> 28, a_3_run_tc -> 27, a_20_run_tc -> 26, a_16_run_tc -> 25, a_19_run_tc -> 24, a_18_run_tc -> 23, a_21_run_tc -> 22, a_17_run_tc -> 21, a_15_run_tc -> 19, Init -> 20, a_12_run_tc -> 18, a_28_run_tc -> 17, a_13_run_tc -> 16, a_11_run_tc -> 15, a_1_run_tc -> 10, a_25_run_tc -> 12, a_5_run_tc -> 11, a_9_run_tc -> 9, a_8_run_tc -> 8, a_24_run_tc -> 7, a_6_run_tc -> 6, a_14_run_tc -> 14, a_10_run_tc -> 13, a_22_run_tc -> 5, a_4_run_tc -> 4, a_2_run_tc -> 3, a_27_run_tc -> 2, Completed -> 1, a_7_run_tc -> 0}
+    // Automaton [1] (31 locations): {Batch_finished -> 30, a_26_run_tc -> 29, a_23_run_tc -> 28, a_3_run_tc -> 27, a_20_run_tc -> 26, a_16_run_tc -> 25, a_19_run_tc -> 24, a_18_run_tc -> 23, a_21_run_tc -> 22, a_17_run_tc -> 21, a_15_run_tc -> 19, Init -> 20, a_12_run_tc -> 18, a_28_run_tc -> 17, a_13_run_tc -> 16, a_11_run_tc -> 15, a_1_run_tc -> 10, a_25_run_tc -> 12, a_5_run_tc -> 11, a_9_run_tc -> 9, a_8_run_tc -> 8, a_24_run_tc -> 7, a_6_run_tc -> 6, a_14_run_tc -> 14, a_10_run_tc -> 13, a_22_run_tc -> 5, a_4_run_tc -> 4, a_2_run_tc -> 3, a_27_run_tc -> 2, Completed -> 1, a_7_run_tc -> 0}
+    // Automaton [2] (31 locations): {Batch_finished -> 30, a_26_run_tc -> 29, a_23_run_tc -> 28, a_3_run_tc -> 27, a_20_run_tc -> 26, a_16_run_tc -> 25, a_19_run_tc -> 24, a_18_run_tc -> 23, a_21_run_tc -> 22, a_17_run_tc -> 21, a_15_run_tc -> 19, Init -> 20, a_12_run_tc -> 18, a_28_run_tc -> 17, a_13_run_tc -> 16, a_11_run_tc -> 15, a_1_run_tc -> 10, a_25_run_tc -> 12, a_5_run_tc -> 11, a_9_run_tc -> 9, a_8_run_tc -> 8, a_24_run_tc -> 7, a_6_run_tc -> 6, a_14_run_tc -> 14, a_10_run_tc -> 13, a_22_run_tc -> 5, a_4_run_tc -> 4, a_2_run_tc -> 3, a_27_run_tc -> 2, Completed -> 1, a_7_run_tc -> 0}
+    // Automaton [3] (31 locations): {Batch_finished -> 30, a_26_run_tc -> 29, a_23_run_tc -> 28, a_3_run_tc -> 27, a_20_run_tc -> 26, a_16_run_tc -> 25, a_19_run_tc -> 24, a_18_run_tc -> 23, a_21_run_tc -> 22, a_17_run_tc -> 21, a_15_run_tc -> 19, Init -> 20, a_12_run_tc -> 18, a_28_run_tc -> 17, a_13_run_tc -> 16, a_11_run_tc -> 15, a_1_run_tc -> 10, a_25_run_tc -> 12, a_5_run_tc -> 11, a_9_run_tc -> 9, a_8_run_tc -> 8, a_24_run_tc -> 7, a_6_run_tc -> 6, a_14_run_tc -> 14, a_10_run_tc -> 13, a_22_run_tc -> 5, a_4_run_tc -> 4, a_2_run_tc -> 3, a_27_run_tc -> 2, Completed -> 1, a_7_run_tc -> 0}
+    // Automaton [4] (31 locations): {Batch_finished -> 30, a_26_run_tc -> 29, a_23_run_tc -> 28, a_3_run_tc -> 27, a_20_run_tc -> 26, a_16_run_tc -> 25, a_19_run_tc -> 24, a_18_run_tc -> 23, a_21_run_tc -> 22, a_17_run_tc -> 21, a_15_run_tc -> 19, Init -> 20, a_12_run_tc -> 18, a_28_run_tc -> 17, a_13_run_tc -> 16, a_11_run_tc -> 15, a_1_run_tc -> 10, a_25_run_tc -> 12, a_5_run_tc -> 11, a_9_run_tc -> 9, a_8_run_tc -> 8, a_24_run_tc -> 7, a_6_run_tc -> 6, a_14_run_tc -> 14, a_10_run_tc -> 13, a_22_run_tc -> 5, a_4_run_tc -> 4, a_2_run_tc -> 3, a_27_run_tc -> 2, Completed -> 1, a_7_run_tc -> 0}
+    // Automaton [5] (31 locations): {Batch_finished -> 30, a_26_run_tc -> 29, a_23_run_tc -> 28, a_3_run_tc -> 27, a_20_run_tc -> 26, a_16_run_tc -> 25, a_19_run_tc -> 24, a_18_run_tc -> 23, a_21_run_tc -> 22, a_17_run_tc -> 21, a_15_run_tc -> 19, Init -> 20, a_12_run_tc -> 18, a_28_run_tc -> 17, a_13_run_tc -> 16, a_11_run_tc -> 15, a_1_run_tc -> 10, a_25_run_tc -> 12, a_5_run_tc -> 11, a_9_run_tc -> 9, a_8_run_tc -> 8, a_24_run_tc -> 7, a_6_run_tc -> 6, a_14_run_tc -> 14, a_10_run_tc -> 13, a_22_run_tc -> 5, a_4_run_tc -> 4, a_2_run_tc -> 3, a_27_run_tc -> 2, Completed -> 1, a_7_run_tc -> 0}
+    // Automaton [6] (31 locations): {Batch_finished -> 30, a_26_run_tc -> 29, a_23_run_tc -> 28, a_3_run_tc -> 27, a_20_run_tc -> 26, a_16_run_tc -> 25, a_19_run_tc -> 24, a_18_run_tc -> 23, a_21_run_tc -> 22, a_17_run_tc -> 21, a_15_run_tc -> 19, Init -> 20, a_12_run_tc -> 18, a_28_run_tc -> 17, a_13_run_tc -> 16, a_11_run_tc -> 15, a_1_run_tc -> 10, a_25_run_tc -> 12, a_5_run_tc -> 11, a_9_run_tc -> 9, a_8_run_tc -> 8, a_24_run_tc -> 7, a_6_run_tc -> 6, a_14_run_tc -> 14, a_10_run_tc -> 13, a_22_run_tc -> 5, a_4_run_tc -> 4, a_2_run_tc -> 3, a_27_run_tc -> 2, Completed -> 1, a_7_run_tc -> 0}
+    // Automaton [7] (31 locations): {Batch_finished -> 30, a_26_run_tc -> 29, a_23_run_tc -> 28, a_3_run_tc -> 27, a_20_run_tc -> 26, a_16_run_tc -> 25, a_19_run_tc -> 24, a_18_run_tc -> 23, a_21_run_tc -> 22, a_17_run_tc -> 21, a_15_run_tc -> 19, Init -> 20, a_12_run_tc -> 18, a_28_run_tc -> 17, a_13_run_tc -> 16, a_11_run_tc -> 15, a_1_run_tc -> 10, a_25_run_tc -> 12, a_5_run_tc -> 11, a_9_run_tc -> 9, a_8_run_tc -> 8, a_24_run_tc -> 7, a_6_run_tc -> 6, a_14_run_tc -> 14, a_10_run_tc -> 13, a_22_run_tc -> 5, a_4_run_tc -> 4, a_2_run_tc -> 3, a_27_run_tc -> 2, Completed -> 1, a_7_run_tc -> 0}
+    // Automaton [8] (31 locations): {Batch_finished -> 30, a_26_run_tc -> 29, a_23_run_tc -> 28, a_3_run_tc -> 27, a_20_run_tc -> 26, a_16_run_tc -> 25, a_19_run_tc -> 24, a_18_run_tc -> 23, a_21_run_tc -> 22, a_17_run_tc -> 21, a_15_run_tc -> 19, Init -> 20, a_12_run_tc -> 18, a_28_run_tc -> 17, a_13_run_tc -> 16, a_11_run_tc -> 15, a_1_run_tc -> 10, a_25_run_tc -> 12, a_5_run_tc -> 11, a_9_run_tc -> 9, a_8_run_tc -> 8, a_24_run_tc -> 7, a_6_run_tc -> 6, a_14_run_tc -> 14, a_10_run_tc -> 13, a_22_run_tc -> 5, a_4_run_tc -> 4, a_2_run_tc -> 3, a_27_run_tc -> 2, Completed -> 1, a_7_run_tc -> 0}
+
+    const std::vector<std::optional<int>> goalLocations = {
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        1,
+        std::nullopt
+    };
+
+    const auto res = net.forwardReachability(goalLocations, DFS);
+
+    // std::cout << res[0].toString() << std::endl;
+}
+
+
 int main()
 {
 #ifdef REGION_TIMING
@@ -474,7 +511,7 @@ int main()
 #endif
 
 
-    test_TrainAHV93_9();
+    test_pagerank();
 
 
 #ifdef REGION_TIMING
