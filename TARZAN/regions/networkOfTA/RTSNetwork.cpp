@@ -43,6 +43,53 @@ inline void insertRegionInMapAndToProcess(const networkOfTA::NetworkRegion &reg,
 }
 
 
+/**
+ * @brief Auxiliary function checking whether the reachability objective has been reached.
+ *
+ * @param currentRegionRegions the regions of the current network region.
+ * @param currentNetworkVariables the variables of the current network region.
+ * @param currentTargetLocations the locations of the current network region.
+ * @param intVarConstr the constraints to be satisfied for the integer variables of the current network region.
+ * @return true if the reachability objective has been reached, false otherwise.
+ */
+inline bool checkIfTargetRegionReached(const std::vector<region::Region> &currentRegionRegions,
+                                       const std::vector<std::optional<int>> &currentTargetLocations,
+                                       const absl::btree_map<std::string, int> &currentNetworkVariables,
+                                       const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr)
+{
+    // With symmetry reduction, targetLocations has been permuted with regions during canonicalization,
+    // so we can directly check each region against its corresponding target location.
+    bool isTargetRegionReached = true;
+
+    for (int i = 0; i < static_cast<int>(currentTargetLocations.size()); i++)
+    {
+        if (currentTargetLocations[i].has_value())
+        {
+            if (currentRegionRegions[i].getLocation() != currentTargetLocations[i])
+            {
+                isTargetRegionReached = false;
+                break;
+            }
+        }
+    }
+
+    // Checking whether constraints on integer variables are satisfied.
+    if (!intVarConstr.empty() && isTargetRegionReached)
+    {
+        for (const auto &integerValue: intVarConstr)
+        {
+            if (!integerValue.isSatisfied(currentNetworkVariables.at(integerValue.clock), false))
+            {
+                isTargetRegionReached = false;
+                break;
+            }
+        }
+    }
+
+    return isTargetRegionReached;
+}
+
+
 std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr,
                                                                                      const std::vector<std::optional<int>> &targetLocs,
                                                                                      const ssee explorationTechnique) const
@@ -93,39 +140,10 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
         // Getting the regions of the network region currentRegion.
         const auto &currentRegionRegions = currentRegion.getRegions();
 
-        // Checking if the target region has been reached.
-        // With symmetry reduction, targetLocations has been permuted with regions during canonicalization,
-        // so we can directly check each region against its corresponding target location.
-        bool isTargetRegionReached = true;
-
-        const auto &currentTargetLocations = currentRegion.getTargetLocations();
-
-        for (int i = 0; i < static_cast<int>(currentTargetLocations.size()); i++)
-        {
-            if (currentTargetLocations[i].has_value())
-            {
-                if (currentRegionRegions[i].getLocation() != currentTargetLocations[i])
-                {
-                    isTargetRegionReached = false;
-                    break;
-                }
-            }
-        }
-
-        // Checking whether constraints on integer variables are satisfied.
-        if (!intVarConstr.empty() && isTargetRegionReached)
-        {
-            const auto &intValues = currentRegion.getNetworkVariables();
-
-            for (const auto &integerValue: intVarConstr)
-            {
-                if (!integerValue.isSatisfied(intValues.at(integerValue.clock), false))
-                {
-                    isTargetRegionReached = false;
-                    break;
-                }
-            }
-        }
+        const bool isTargetRegionReached = checkIfTargetRegionReached(currentRegionRegions,
+                                                                      currentRegion.getTargetLocations(),
+                                                                      currentRegion.getNetworkVariables(),
+                                                                      intVarConstr);
 
         if (isTargetRegionReached)
         {

@@ -68,7 +68,7 @@ void testVikings()
 
     const auto res = net.forwardReachability(goalLocations, DFS);
 
-    std::cout << res[0].toString() << std::endl;
+    //std::cout << res[0].toString() << std::endl;
 }
 
 
