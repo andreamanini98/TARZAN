@@ -499,7 +499,19 @@ void test_pagerank()
         std::nullopt
     };
 
-    const auto res = net.forwardReachability(goalLocations, DFS);
+    const std::vector<std::vector<timed_automaton::ast::clockConstraint>> goalClockConstraints = {
+        { { "timer", LT, 1300 } },
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+    };
+
+    const auto res = net.forwardReachability(goalClockConstraints, goalLocations, DFS);
 
     // std::cout << res[0].toString() << std::endl;
 }
@@ -514,7 +526,7 @@ int main()
 #endif
 
 
-    testVikings();
+    test_pagerank();
 
 
 #ifdef REGION_TIMING

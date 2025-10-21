@@ -410,6 +410,23 @@ networkOfTA::NetworkRegion networkOfTA::NetworkRegion::getCanonicalForm(const st
                 canonical.targetLocations[newIdx] = newTargetLocations[i];
             }
         }
+
+        // Update goalClockConstraints indices with the permutation.
+        if (!canonical.goalClockConstraints.empty())
+        {
+            std::vector<std::vector<timed_automaton::ast::clockConstraint>> newGoalClockConstraints(groupSize);
+            for (int i = 0; i < groupSize; i++)
+            {
+                const int oldIdx = permutation[i];
+                newGoalClockConstraints[i] = canonical.goalClockConstraints[oldIdx];
+            }
+            // Replace the entries for this symmetry group.
+            for (int i = 0; i < groupSize; i++)
+            {
+                const int newIdx = group[i];
+                canonical.goalClockConstraints[newIdx] = newGoalClockConstraints[i];
+            }
+        }
     }
 
     return canonical;

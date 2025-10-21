@@ -48,14 +48,18 @@ inline void insertRegionInMapAndToProcess(const networkOfTA::NetworkRegion &reg,
  *
  * @param currentRegionRegions the regions of the current network region.
  * @param currentNetworkVariables the variables of the current network region.
- * @param currentTargetLocations the locations of the current network region.
+ * @param currentTargetLocations the target locations of the current network region (permuted with regions during canonicalization).
+ * @param currentGoalClockConstraints the goal clock constraints of the current network region (permuted with regions during canonicalization).
  * @param intVarConstr the constraints to be satisfied for the integer variables of the current network region.
+ * @param clocksIndices a map, for each automaton, from clock names to clock indices.
  * @return true if the reachability objective has been reached, false otherwise.
  */
 inline bool checkIfTargetRegionReached(const std::vector<region::Region> &currentRegionRegions,
                                        const std::vector<std::optional<int>> &currentTargetLocations,
+                                       const std::vector<std::vector<timed_automaton::ast::clockConstraint>> &currentGoalClockConstraints,
                                        const absl::btree_map<std::string, int> &currentNetworkVariables,
-                                       const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr)
+                                       const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr,
+                                       const std::vector<std::unordered_map<std::string, int>> &clocksIndices)
 {
     // With symmetry reduction, targetLocations has been permuted with regions during canonicalization,
     // so we can directly check each region against its corresponding target location.
@@ -86,13 +90,46 @@ inline bool checkIfTargetRegionReached(const std::vector<region::Region> &curren
         }
     }
 
+    // Checking whether constraints on clocks are satisfied.
+    // With symmetry reduction, goalClockConstraints has been permuted with regions during canonicalization,
+    // so we can directly check each region against its corresponding clock constraints.
+    if (!currentGoalClockConstraints.empty() && isTargetRegionReached)
+    {
+        for (int i = 0; i < static_cast<int>(currentGoalClockConstraints.size()); i++)
+        {
+            if (!currentGoalClockConstraints[i].empty())
+            {
+                const auto &cv = currentRegionRegions[i].getClockValuation();
+
+                for (const auto &clockConstraint: currentGoalClockConstraints[i])
+                {
+                    // ReSharper disable once CppTooWideScopeInitStatement
+                    const int clockIdx = clocksIndices[i].at(clockConstraint.clock);
+
+                    if (!clockConstraint.isSatisfied(cv[clockIdx].first, cv[clockIdx].second))
+                    {
+                        isTargetRegionReached = false;
+                        break;
+                    }
+                }
+
+                // Break from the outer loop if any constraint was not satisfied.
+                if (!isTargetRegionReached)
+                    break;
+            }
+        }
+    }
+
     return isTargetRegionReached;
 }
 
 
-std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr,
-                                                                                     const std::vector<std::optional<int>> &targetLocs,
-                                                                                     const ssee explorationTechnique) const
+// TODO: i nuovi campi li usi solo se la symmetry reduction è attiva, magari si può ederitare dalla classe RTSNetwork una RTSNetworkSymmetric?
+std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(
+    const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr,
+    const std::vector<std::vector<timed_automaton::ast::clockConstraint>> &goalClockConstraints,
+    const std::vector<std::optional<int>> &targetLocs,
+    const ssee explorationTechnique) const
 {
     // Starting the timer for measuring computation.
     const auto start = std::chrono::high_resolution_clock::now();
@@ -110,6 +147,9 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
 
         // Setting target locations for network regions.
         regionToInsert.setTargetLocations(targetLocs);
+
+        // Setting goal clock constraints for network regions.
+        regionToInsert.setGoalClockConstraints(goalClockConstraints);
 
         // Apply canonical form if symmetry reduction is enabled.
         if (useSymmetryReduction)
@@ -142,8 +182,10 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
 
         const bool isTargetRegionReached = checkIfTargetRegionReached(currentRegionRegions,
                                                                       currentRegion.getTargetLocations(),
+                                                                      currentRegion.getGoalClockConstraints(),
                                                                       currentRegion.getNetworkVariables(),
-                                                                      intVarConstr);
+                                                                      intVarConstr,
+                                                                      clocksIndices);
 
         if (isTargetRegionReached)
         {
@@ -227,10 +269,36 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
 }
 
 
+std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr,
+                                                                                     const std::vector<std::optional<int>> &targetLocs,
+                                                                                     const ssee explorationTechnique) const
+{
+    return forwardReachability(intVarConstr,
+                               std::vector<std::vector<timed_automaton::ast::clockConstraint>>{},
+                               targetLocs,
+                               explorationTechnique);
+}
+
+
+std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(
+    const std::vector<std::vector<timed_automaton::ast::clockConstraint>> &goalClockConstraints,
+    const std::vector<std::optional<int>> &targetLocs,
+    const ssee explorationTechnique) const
+{
+    return forwardReachability(std::vector<timed_automaton::ast::clockConstraint>{},
+                               goalClockConstraints,
+                               targetLocs,
+                               explorationTechnique);
+}
+
+
 std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(const std::vector<std::optional<int>> &targetLocs,
                                                                                      const ssee explorationTechnique) const
 {
-    return forwardReachability(std::vector<timed_automaton::ast::clockConstraint>{}, targetLocs, explorationTechnique);
+    return forwardReachability(std::vector<timed_automaton::ast::clockConstraint>{},
+                               std::vector<std::vector<timed_automaton::ast::clockConstraint>>{},
+                               targetLocs,
+                               explorationTechnique);
 }
 
 

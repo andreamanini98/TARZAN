@@ -36,8 +36,22 @@ namespace networkOfTA
          * or std::nullopt if no target is specified for that automaton. This vector is permuted along with regions during canonicalization.
          *
          * @note This field does NOT participate in equality/hash comparisons as it's only used for reachability objectives.
+         *
+         * @warning Must be permuted along with regions in symmetry reduction.
          */
+        // TODO: vedere se si riesce a togliere questo attributo da questa classe mantenendo sempre però gli ordinamenti coerenti nella symmetry reduction.
         std::vector<std::optional<int>> targetLocations{};
+
+        /**
+         * Goal clock constraints for reachability checking, where the i-th element contains clock constraints
+         * that must be satisfied for the i-th automaton's clocks. This vector is permuted along with regions during canonicalization.
+         *
+         * @note This field does NOT participate in equality/hash comparisons as it's only used for reachability objectives.
+         *
+         * @warning Must be permuted along with regions in symmetry reduction.
+         */
+        // TODO: vedere se si riesce a togliere questo attributo da questa classe mantenendo sempre però gli ordinamenti coerenti nella symmetry reduction.
+        std::vector<std::vector<timed_automaton::ast::clockConstraint>> goalClockConstraints{};
 
 
     public:
@@ -126,12 +140,20 @@ namespace networkOfTA
         [[nodiscard]] absl::btree_map<std::string, int> const &getNetworkVariables() const { return networkVariables; }
         [[nodiscard]] std::vector<std::optional<int>> const &getTargetLocations() const { return targetLocations; }
         [[nodiscard]] std::vector<std::optional<int>> &getModifiableTargetLocations() { return targetLocations; }
+        [[nodiscard]] std::vector<std::vector<timed_automaton::ast::clockConstraint>> const &getGoalClockConstraints() const { return goalClockConstraints; }
+        [[nodiscard]] std::vector<std::vector<timed_automaton::ast::clockConstraint>> &getModifiableGoalClockConstraints() { return goalClockConstraints; }
 
 
         // Setters.
         void setRegionGivenIndex(const int idx, const region::Region &reg) { regions[idx] = reg; }
         void setNetworkVariables(const absl::btree_map<std::string, int> &networkVariables_p) { this->networkVariables = networkVariables_p; }
         void setTargetLocations(const std::vector<std::optional<int>> &targetLocations_p) { this->targetLocations = targetLocations_p; }
+
+
+        void setGoalClockConstraints(const std::vector<std::vector<timed_automaton::ast::clockConstraint>> &goalClockConstraints_p)
+        {
+            this->goalClockConstraints = goalClockConstraints_p;
+        }
 
 
         NetworkRegion &operator=(const NetworkRegion &other) = default;
