@@ -8,6 +8,7 @@
 #include "absl/container/flat_hash_set.h"
 
 // #define RTS_DEBUG
+#define EARLY_EXIT
 
 
 /**
@@ -142,6 +143,13 @@ std::vector<region::Region> region::RTS::forwardReachability(const std::vector<t
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
             std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
 
+#ifdef EARLY_EXIT
+
+            std::cout << "Exiting program without calling destructors." << std::endl;
+            std::quick_exit(EXIT_SUCCESS);
+
+#endif
+
             return { currentRegion };
         }
 
@@ -259,6 +267,13 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
 
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
             std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
+
+#ifdef EARLY_EXIT
+
+            std::cout << "Exiting program without calling destructors." << std::endl;
+            std::quick_exit(EXIT_SUCCESS);
+
+#endif
 
             return { currentRegion };
         }
