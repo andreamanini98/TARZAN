@@ -53,6 +53,10 @@ inline void insertRegionInMapAndToProcess(const networkOfTA::NetworkRegion &reg,
  * @param intVarConstr the constraints to be satisfied for the integer variables of the current network region.
  * @param clocksIndices a map, for each automaton, from clock names to clock indices.
  * @return true if the reachability objective has been reached, false otherwise.
+ *
+ * @warning clocksIndices is NOT permuted during canonicalization. This is correct because symmetry reduction only groups structurally identical automata that
+ *          share the same clock name-to-index mappings. When regions are permuted within a symmetry group, clocksIndices[i] remains valid since all automata
+ *          in that group have identical clock mappings.
  */
 inline bool checkIfTargetRegionReached(const std::vector<region::Region> &currentRegionRegions,
                                        const std::vector<std::optional<int>> &currentTargetLocations,
@@ -61,7 +65,6 @@ inline bool checkIfTargetRegionReached(const std::vector<region::Region> &curren
                                        const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr,
                                        const std::vector<std::unordered_map<std::string, int>> &clocksIndices)
 {
-    // TODO: forse vanno permutati anche i clock indices, o forse ti conviene direttamente usare l'intero per i clock
     // With symmetry reduction, targetLocations has been permuted with regions during canonicalization,
     // so we can directly check each region against its corresponding target location.
     bool isTargetRegionReached = true;
