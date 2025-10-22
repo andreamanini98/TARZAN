@@ -43,7 +43,58 @@ inline void insertRegionInMapAndToProcess(const region::Region &reg,
 }
 
 
-std::vector<region::Region> region::RTS::forwardReachability(const int targetLocation, const ssee explorationTechnique) const
+/**
+ * @brief Auxiliary function checking whether the reachability objective has been reached.
+ *
+ * @param currentRegion the current region.
+ * @param targetLocation the target locations of the current region.
+ * @param goalClockConstraints the goal clock constraints of the current region.
+ * @param intVarConstr the constraints to be satisfied for the integer variables of the current region.
+ * @param clocksIndices a map from clock names to clock indices.
+ * @return true if the reachability objective has been reached, false otherwise.
+ */
+inline bool checkIfTargetRegionReached(const region::Region &currentRegion,
+                                       const int &targetLocation,
+                                       const std::vector<timed_automaton::ast::clockConstraint> &goalClockConstraints,
+                                       const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr,
+                                       const std::unordered_map<std::string, int> &clocksIndices)
+{
+    if (currentRegion.getLocation() != targetLocation)
+        return false;
+
+    // Checking whether constraints on integer variables are satisfied.
+    if (!intVarConstr.empty())
+    {
+        for (const auto &integerValue: intVarConstr)
+        {
+            if (!integerValue.isSatisfied(currentRegion.getVariables().at(integerValue.clock), false))
+                return false;
+        }
+    }
+
+    // Checking whether constraints on clocks are satisfied.
+    if (!goalClockConstraints.empty())
+    {
+        const auto &cv = currentRegion.getClockValuation();
+
+        for (const auto &clockConstraint: goalClockConstraints)
+        {
+            // ReSharper disable once CppTooWideScopeInitStatement
+            const int clockIdx = clocksIndices.at(clockConstraint.clock);
+
+            if (!clockConstraint.isSatisfied(cv[clockIdx].first, cv[clockIdx].second))
+                return false;
+        }
+    }
+
+    return true;
+}
+
+
+std::vector<region::Region> region::RTS::forwardReachability(const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr,
+                                                             const std::vector<timed_automaton::ast::clockConstraint> &goalClockConstraints,
+                                                             const int targetLocation,
+                                                             const ssee explorationTechnique) const
 {
     // Starting the timer for measuring computation.
     const auto start = std::chrono::high_resolution_clock::now();
@@ -74,7 +125,13 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
 
 #endif
 
-        if (currentRegionLocation == targetLocation)
+        const bool isTargetRegionReached = checkIfTargetRegionReached(currentRegion,
+                                                                      targetLocation,
+                                                                      goalClockConstraints,
+                                                                      intVarConstr,
+                                                                      clocksIndices);
+
+        if (isTargetRegionReached)
         {
             // Ending the timer for measuring computation.
             const auto end = std::chrono::high_resolution_clock::now();
@@ -121,6 +178,27 @@ std::vector<region::Region> region::RTS::forwardReachability(const int targetLoc
     std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
 
     return {};
+}
+
+
+std::vector<region::Region> region::RTS::forwardReachability(const std::vector<timed_automaton::ast::clockConstraint> &intVarOrClockConstr,
+                                                             const int targetLocation,
+                                                             const ssee explorationTechnique,
+                                                             const bool isIntVarConstr) const
+{
+    if (isIntVarConstr)
+        return forwardReachability(intVarOrClockConstr, std::vector<timed_automaton::ast::clockConstraint>{}, targetLocation, explorationTechnique);
+    return forwardReachability(std::vector<timed_automaton::ast::clockConstraint>{}, intVarOrClockConstr, targetLocation, explorationTechnique);
+}
+
+
+std::vector<region::Region> region::RTS::forwardReachability(const int targetLocation,
+                                                             const ssee explorationTechnique) const
+{
+    return forwardReachability(std::vector<timed_automaton::ast::clockConstraint>{},
+                               std::vector<timed_automaton::ast::clockConstraint>{},
+                               targetLocation,
+                               explorationTechnique);
 }
 
 

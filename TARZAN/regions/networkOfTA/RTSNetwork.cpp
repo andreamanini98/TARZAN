@@ -61,6 +61,7 @@ inline bool checkIfTargetRegionReached(const std::vector<region::Region> &curren
                                        const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr,
                                        const std::vector<std::unordered_map<std::string, int>> &clocksIndices)
 {
+    // TODO: forse vanno permutati anche i clock indices, o forse ti conviene direttamente usare l'intero per i clock
     // With symmetry reduction, targetLocations has been permuted with regions during canonicalization,
     // so we can directly check each region against its corresponding target location.
     bool isTargetRegionReached = true;
