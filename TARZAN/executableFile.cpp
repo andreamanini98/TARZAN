@@ -91,7 +91,7 @@ void testFischer()
 
 void test_exSITH()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/exSITH";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/exSITH";
 
     const std::string automatonFileName = "exSITH.txt";
 
@@ -118,7 +118,7 @@ void test_exSITH()
 
 void test_rcp()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/rcp";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/rcp";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -139,7 +139,7 @@ void test_rcp()
 
 void test_AndOr_original()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/AndOr_original";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/AndOr_original";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -158,7 +158,7 @@ void test_AndOr_original()
 
 void test_csma_20n()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/csma_20N";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/csma_20N";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -198,7 +198,7 @@ void test_csma_20n()
 
 void test_csma_50n()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/csma_50N";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/csma_50N";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -268,7 +268,7 @@ void test_csma_50n()
 
 void test_maler()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/maler";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/maler";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -287,7 +287,7 @@ void test_maler()
 
 void test_soldiers()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/soldiers";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/soldiers";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -307,7 +307,7 @@ void test_soldiers()
 
 void test_SRlatch()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/SRlatch";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/SRlatch";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -325,7 +325,7 @@ void test_SRlatch()
 
 void test_latch()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/latch";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/latch";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -347,7 +347,7 @@ void test_latch()
 
 void test_lynch_4_16()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/lynch_4_16";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/lynch_4_16";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -366,7 +366,7 @@ void test_lynch_4_16()
 
 void test_simple()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/simple/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/simple/";
     const std::string automatonFileName = "simple.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
@@ -385,7 +385,7 @@ void test_TrainAHV93_9()
     // Per ora solo due treni perchè se no esplode. Questo va calcolato in BFS.
     // Uppaal esplode anche lui con 9 treni e con l'intero (sia BFS che DFS).
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/TrainAHV93_9";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/TrainAHV93_9";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     networkOfTA::RTSNetwork net(automata);
 
@@ -421,7 +421,7 @@ void test_TrainAHV93_9()
 
 void test_boolean()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/boolean";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/boolean";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -470,7 +470,7 @@ void test_boolean()
 
 void test_pagerank()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/tmp/pagerank";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/pagerank";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 

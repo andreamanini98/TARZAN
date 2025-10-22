@@ -1,0 +1,34 @@
+create automaton fischer05
+{
+	clocks
+	{
+		x;
+	}
+
+	actions
+	{
+		a;
+	}
+
+	integers
+	{
+	    id;
+	}
+
+	locations
+	{
+		A    <ini: T>,
+		req  <ini: F, inv: [(x, <=, 2)]>,
+		wait <ini: F>,
+		cs   <ini: F>;
+	}
+
+	transitions
+	{
+		(A,    a, [],           id == 0, [x],           req),
+		(req,  a, [(x, <=, 2)],          [x], [id = 6], wait),
+		(wait, a, [],           id == 0, [x],           req),
+		(wait, a, [(x, >, 2)],  id == 6, [],            cs),
+		(cs,   a, [],                    [],  [id = 0], A);
+	}
+}
