@@ -177,6 +177,25 @@ foreach (source IN LISTS LIBRARY_EXECUTABLES)
 endforeach ()
 
 
+# Collect all .cpp files from benchmarkExecutables directory.
+file(GLOB BENCHMARK_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarkExecutables/*.cpp)
+
+# Create benchmark executables in executables/benchmarkExecutables subdirectory.
+if (BENCHMARK_EXECUTABLES)
+    foreach (source IN LISTS BENCHMARK_EXECUTABLES)
+        get_filename_component(executable_name ${source} NAME_WE)
+        add_executable(${executable_name} ${source})
+
+        # Targeting the source with libraries.
+        target_link_libraries(${executable_name} PRIVATE TARZAN)
+
+        # Set output directory to executables/benchmarkExecutables.
+        set_target_properties(${executable_name} PROPERTIES
+                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/benchmarkExecutables)
+    endforeach ()
+endif ()
+
+
 #########################################################################
 ###   The following code deals with the installation of the library   ###
 #########################################################################
