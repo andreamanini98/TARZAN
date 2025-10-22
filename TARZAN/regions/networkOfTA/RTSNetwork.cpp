@@ -67,37 +67,29 @@ inline bool checkIfTargetRegionReached(const std::vector<region::Region> &curren
 {
     // With symmetry reduction, targetLocations has been permuted with regions during canonicalization,
     // so we can directly check each region against its corresponding target location.
-    bool isTargetRegionReached = true;
-
     for (int i = 0; i < static_cast<int>(currentTargetLocations.size()); i++)
     {
         if (currentTargetLocations[i].has_value())
         {
             if (currentRegionRegions[i].getLocation() != currentTargetLocations[i])
-            {
-                isTargetRegionReached = false;
-                break;
-            }
+                return false;
         }
     }
 
     // Checking whether constraints on integer variables are satisfied.
-    if (!intVarConstr.empty() && isTargetRegionReached)
+    if (!intVarConstr.empty())
     {
         for (const auto &integerValue: intVarConstr)
         {
             if (!integerValue.isSatisfied(currentNetworkVariables.at(integerValue.clock), false))
-            {
-                isTargetRegionReached = false;
-                break;
-            }
+                return false;
         }
     }
 
     // Checking whether constraints on clocks are satisfied.
     // With symmetry reduction, goalClockConstraints has been permuted with regions during canonicalization,
     // so we can directly check each region against its corresponding clock constraints.
-    if (!currentGoalClockConstraints.empty() && isTargetRegionReached)
+    if (!currentGoalClockConstraints.empty())
     {
         for (int i = 0; i < static_cast<int>(currentGoalClockConstraints.size()); i++)
         {
@@ -111,24 +103,17 @@ inline bool checkIfTargetRegionReached(const std::vector<region::Region> &curren
                     const int clockIdx = clocksIndices[i].at(clockConstraint.clock);
 
                     if (!clockConstraint.isSatisfied(cv[clockIdx].first, cv[clockIdx].second))
-                    {
-                        isTargetRegionReached = false;
-                        break;
-                    }
+                        return false;
                 }
-
-                // Break from the outer loop if any constraint was not satisfied.
-                if (!isTargetRegionReached)
-                    break;
             }
         }
     }
 
-    return isTargetRegionReached;
+    return true;
 }
 
 
-// TODO: i nuovi campi li usi solo se la symmetry reduction è attiva, magari si può ederitare dalla classe RTSNetwork una RTSNetworkSymmetric?
+// TODO: i nuovi campi li usi solo se la symmetry reduction è attiva, magari si può ereditare dalla classe RTSNetwork una RTSNetworkSymmetric?
 std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachability(
     const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr,
     const std::vector<std::vector<timed_automaton::ast::clockConstraint>> &goalClockConstraints,
