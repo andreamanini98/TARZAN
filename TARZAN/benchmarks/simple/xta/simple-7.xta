@@ -1,0 +1,28 @@
+/**
+The articial example from "An Integer Static Analysis for Better Extrapolation in Uppaal" by S. Lund et al,
+designed to showcase the issues of relying purely on type information for extrapolation in XTA.
+*/
+
+const int N = 7;
+
+clock x;
+clock y;
+int i;
+
+process Template() {
+
+state
+    loc0 { y <= 1 },
+    loc1;
+init
+    loc0;
+trans
+    loc1 -> loc0 { assign x=0,
+y=0; },
+    loc0 -> loc1 { guard x >= 7; },
+    loc0 -> loc0 { guard y >= 1; assign y := 0, i := N; };
+}
+
+Process = Template();
+system Process;
+    

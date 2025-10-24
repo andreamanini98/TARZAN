@@ -1,19 +1,15 @@
 create automaton Template
 {
     clocks { x, y; }
-
     actions { a; }
-    
     integers { i; }
-    
     locations {
         loc0 <ini: T, inv: [(y, <=, 1)]>,
         loc1 <ini: F                   >;
     }
-    
     transitions {
-        (loc1, a, [],             [x, y],            loc0),
-        (loc0, a, [(x, >=, 1000)], [],                loc1),
-        (loc0, a, [(y, >=, 1)],   [y],    [i = 1000], loc0);
+        (loc1, a, [], [x, y], loc0),
+        (loc0, a, [(x, >=, 7)], [], loc1),
+        (loc0, a, [(y, >=, 1)], [y], [i = 7], loc0);
     }
 }
