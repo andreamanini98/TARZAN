@@ -1,0 +1,30 @@
+// Automatically generated XTA flower model for N=12 clocks
+
+process Flower() {
+clock x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, y;
+state
+    Start,
+    Goal;
+init
+    Start;
+trans
+    Start -> Start { guard x12 == 12; assign x12 = 0; },
+    Start -> Start { guard x11 == 11; assign x11 = 0; },
+    Start -> Start { guard x10 == 10; assign x10 = 0; },
+    Start -> Start { guard x9 == 9; assign x9 = 0; },
+    Start -> Start { guard x8 == 8; assign x8 = 0; },
+    Start -> Start { guard x7 == 7; assign x7 = 0; },
+    Start -> Start { guard x6 == 6; assign x6 = 0; },
+    Start -> Start { guard x5 == 5; assign x5 = 0; },
+    Start -> Start { guard x4 == 4; assign x4 = 0; },
+    Start -> Start { guard x3 == 3; assign x3 = 0; },
+    Start -> Start { guard x2 == 2; assign x2 = 0; },
+    Start -> Start { guard x1 == 1; assign x1 = 0; },
+    Start -> Goal { guard x1 == 0 and x2 == 0 and x3 == 0 and x4 == 0 and x5 == 0 and x6 == 0 and x7 == 0 and x8 == 0 and x9 == 0 and x10 == 0 and x11 == 0 and x12 == 0 and y >= 1; };
+}
+
+// Template instantiation
+Process = Flower();
+
+// System definition
+system Process;

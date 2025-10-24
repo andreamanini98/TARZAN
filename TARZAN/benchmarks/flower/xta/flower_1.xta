@@ -1,0 +1,19 @@
+// Automatically generated XTA flower model for N=1 clocks
+
+process Flower() {
+clock x1, y;
+state
+    Start,
+    Goal;
+init
+    Start;
+trans
+    Start -> Start { guard x1 == 1; assign x1 = 0; },
+    Start -> Goal { guard x1 == 0 and y >= 1; };
+}
+
+// Template instantiation
+Process = Flower();
+
+// System definition
+system Process;

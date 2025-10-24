@@ -28,4 +28,30 @@ inline std::string readFromFile(const std::string &path)
 }
 
 
+namespace benchmark
+{
+    inline std::string benchmarkName;
+
+
+    /**
+     * @brief Writes the benchmarks results on file.
+     *
+     * @param benchmarkResults the strings to write on file.
+     */
+    inline void writeBenchmarkResult(const std::vector<std::string> &benchmarkResults)
+    {
+        const std::string benchmarkFilePath = "/Users/echo/Desktop/PhD/Tools/TARZAN/output/";
+        const std::string benchmarkFileName = "benchmark_results.txt";
+
+        std::ofstream results(benchmarkFilePath + benchmarkFileName, std::ios::app);
+
+        results << benchmarkName << std::endl;
+        for (const auto &result: benchmarkResults)
+            results << result << std::endl;
+        results << std::endl;
+
+        results.close();
+    }
+}
+
 #endif //FILE_UTILITIES_H

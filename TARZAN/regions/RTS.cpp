@@ -6,9 +6,11 @@
 #include <sstream>
 #include <utility>
 #include "absl/container/flat_hash_set.h"
+#include "TARZAN/utilities/file_utilities.h"
 
 // #define RTS_DEBUG
 #define EARLY_EXIT
+#define WRITE_TO_FILE
 
 
 /**
@@ -142,6 +144,17 @@ std::vector<region::Region> region::RTS::forwardReachability(const std::vector<t
 
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
             std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
+
+#ifdef WRITE_TO_FILE
+
+            // TODO: fare lo stesso anche in backward reachability e nelle reti di automi.
+
+            std::vector<std::string> benchmarkResults{};
+            benchmarkResults.emplace_back("Number of regions: " + std::to_string(totalRegions));
+            benchmarkResults.emplace_back("Total time:        " + std::to_string(duration.count()) + " ms");
+            benchmark::writeBenchmarkResult(benchmarkResults);
+
+#endif
 
 #ifdef EARLY_EXIT
 
