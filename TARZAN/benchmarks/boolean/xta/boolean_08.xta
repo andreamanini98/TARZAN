@@ -1,0 +1,120 @@
+// ========================================================
+// Global declarations
+// ========================================================
+int ctr1;
+int ctr2;
+int ctr3;
+int ctr4;
+int ctr5;
+int ctr6;
+int ctr7;
+int ctr8;
+
+// ========================================================
+// Boolean01
+// ========================================================
+process Boolean01() {
+  clock x;
+  state s0, s1;
+  init s0;
+  trans
+    s0 -> s1 { guard x == 1; assign x = 0, ctr1 = 1 - ctr1; },
+    s1 -> s0 { guard x == 1; assign x = 0, ctr1 = 1 - ctr1; };
+}
+
+// ========================================================
+// Boolean02
+// ========================================================
+process Boolean02() {
+  clock x;
+  state s0, s1;
+  init s0;
+  trans
+    s0 -> s1 { guard x == 2; assign x = 0, ctr2 = 1 - ctr2; },
+    s1 -> s0 { guard x == 2; assign x = 0, ctr2 = 1 - ctr2; };
+}
+
+// ========================================================
+// Boolean03
+// ========================================================
+process Boolean03() {
+  clock x;
+  state s0, s1;
+  init s0;
+  trans
+    s0 -> s1 { guard x == 3; assign x = 0, ctr3 = 1 - ctr3; },
+    s1 -> s0 { guard x == 3; assign x = 0, ctr3 = 1 - ctr3; };
+}
+
+// ========================================================
+// Boolean04
+// ========================================================
+process Boolean04() {
+  clock x;
+  state s0, s1;
+  init s0;
+  trans
+    s0 -> s1 { guard x == 4; assign x = 0, ctr4 = 1 - ctr4; },
+    s1 -> s0 { guard x == 4; assign x = 0, ctr4 = 1 - ctr4; };
+}
+
+// ========================================================
+// Boolean05
+// ========================================================
+process Boolean05() {
+  clock x;
+  state s0, s1;
+  init s0;
+  trans
+    s0 -> s1 { guard x == 5; assign x = 0, ctr5 = 1 - ctr5; },
+    s1 -> s0 { guard x == 5; assign x = 0, ctr5 = 1 - ctr5; };
+}
+
+// ========================================================
+// Boolean06
+// ========================================================
+process Boolean06() {
+  clock x;
+  state s0, s1;
+  init s0;
+  trans
+    s0 -> s1 { guard x == 6; assign x = 0, ctr6 = 1 - ctr6; },
+    s1 -> s0 { guard x == 6; assign x = 0, ctr6 = 1 - ctr6; };
+}
+
+// ========================================================
+// Boolean07
+// ========================================================
+process Boolean07() {
+  clock x;
+  state s0, s1;
+  init s0;
+  trans
+    s0 -> s1 { guard x == 7; assign x = 0, ctr7 = 1 - ctr7; },
+    s1 -> s0 { guard x == 7; assign x = 0, ctr7 = 1 - ctr7; };
+}
+
+// ========================================================
+// Boolean08
+// ========================================================
+process Boolean08() {
+  clock x;
+  state s0, s1;
+  init s0;
+  trans
+    s0 -> s1 { guard x == 8; assign x = 0, ctr8 = 1 - ctr8; },
+    s1 -> s0 { guard x == 8; assign x = 0, ctr8 = 1 - ctr8; };
+}
+
+// ========================================================
+// Boolean instantiations and system
+// ========================================================
+P01 = Boolean01();
+P02 = Boolean02();
+P03 = Boolean03();
+P04 = Boolean04();
+P05 = Boolean05();
+P06 = Boolean06();
+P07 = Boolean07();
+P08 = Boolean08();
+system P01, P02, P03, P04, P05, P06, P07, P08;

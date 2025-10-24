@@ -1,0 +1,14 @@
+create automaton Boolean07
+{
+    clocks { x; }
+    actions { a; }
+    integers { ctr1, ctr2, ctr3, ctr4, ctr5, ctr6, ctr7; }
+    locations {
+        s0 <ini: T>,
+        s1 <ini: F>;
+    }
+    transitions {
+        (s0, a, [(x, ==, 7)], [x], [ctr7 = 1 - ctr7], s1),
+        (s1, a, [(x, ==, 7)], [x], [ctr7 = 1 - ctr7], s0);
+    }
+}
