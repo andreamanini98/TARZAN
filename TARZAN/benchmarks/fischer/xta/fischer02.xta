@@ -1,0 +1,37 @@
+int id;
+
+process fischer01() {
+    clock x;
+    state
+        wait,
+        req { x <= 2 },
+        A,
+        cs;
+    init
+        A;
+    trans
+        A -> req { guard id == 0; assign x = 0; },
+        req -> wait { guard x <= 2; assign x = 0, id = 1; },
+        wait -> req { guard id == 0; assign x = 0; },
+        wait -> cs { guard x > 2 && id == 1; },
+        cs -> A { assign id = 0; };
+}
+
+process fischer02() {
+    clock x;
+    state
+        wait,
+        req { x <= 2 },
+        A,
+        cs;
+    init
+        A;
+    trans
+        A -> req { guard id == 0; assign x = 0; },
+        req -> wait { guard x <= 2; assign x = 0, id = 2; },
+        wait -> req { guard id == 0; assign x = 0; },
+        wait -> cs { guard x > 2 && id == 2; },
+        cs -> A { assign id = 0; };
+}
+
+system P01, P02;
