@@ -101,8 +101,18 @@ echo "Timestamp:      $(date)" >> "$OUTPUT_FILE"
 echo "========================================" >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
-# Iterate through each subdirectory in the root directory.
-for dir in "$ROOT_DIR"*/; do
+# Check if ROOT_DIR contains subdirectories or is itself a benchmark directory.
+shopt -s nullglob
+subdirs=("$ROOT_DIR"*/)
+shopt -u nullglob
+
+# If no subdirectories found, treat ROOT_DIR itself as the benchmark directory.
+if [[ ${#subdirs[@]} -eq 0 ]]; then
+    subdirs=("$ROOT_DIR")
+fi
+
+# Iterate through each subdirectory (or the root directory itself).
+for dir in "${subdirs[@]}"; do
     # Check if it's actually a directory.
     if [[ -d "$dir" ]]; then
         # Get the folder name (basename).
@@ -137,7 +147,7 @@ for dir in "$ROOT_DIR"*/; do
             timed_out=0
             if [[ "$TIMEOUT" -gt 0 ]]; then
                 # Wrap timeout with /usr/bin/time so we can capture memory even on timeout.
-                /usr/bin/time -l timeout "$TIMEOUT" "$EXECUTABLE" "$dir" "$folder_name" "$BENCHMARK_KEY" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
+                /usr/bin/time -l timeout "$TIMEOUT" "$EXECUTABLE" "$dir" "$BENCHMARK_KEY" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
                 exit_code=$?
 
                 # Exit code 124 means timeout was reached.
@@ -147,7 +157,7 @@ for dir in "$ROOT_DIR"*/; do
                 fi
             else
                 # No timeout - run normally.
-                /usr/bin/time -l "$EXECUTABLE" "$dir" "$folder_name" "$BENCHMARK_KEY" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
+                /usr/bin/time -l "$EXECUTABLE" "$dir" "$BENCHMARK_KEY" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
                 exit_code=$?
             fi
 

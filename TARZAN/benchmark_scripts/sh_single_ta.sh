@@ -135,7 +135,7 @@ for dir in "$ROOT_DIR"*/; do
             timed_out=0
             if [[ "$TIMEOUT" -gt 0 ]]; then
                 # Wrap timeout with /usr/bin/time so we can capture memory even on timeout.
-                /usr/bin/time -l timeout "$TIMEOUT" "$EXECUTABLE" "$dir" "$folder_name" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
+                /usr/bin/time -l timeout "$TIMEOUT" "$EXECUTABLE" "$dir" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
                 exit_code=$?
 
                 # Exit code 124 means timeout was reached.
@@ -145,7 +145,7 @@ for dir in "$ROOT_DIR"*/; do
                 fi
             else
                 # No timeout - run normally.
-                /usr/bin/time -l "$EXECUTABLE" "$dir" "$folder_name" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
+                /usr/bin/time -l "$EXECUTABLE" "$dir" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
                 exit_code=$?
             fi
 
