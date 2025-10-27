@@ -58,17 +58,53 @@ for dir in "$ROOT_DIR"*/; do
         echo "----------------------------------------" >> "$OUTPUT_FILE"
         echo "Benchmark: $folder_name" >> "$OUTPUT_FILE"
         echo "Path: $dir" >> "$OUTPUT_FILE"
-        echo "$OUTPUT_FILE"
+        echo "" >> "$OUTPUT_FILE"
 
-        # Call the executable with time measurement and capture memory stats
-        /usr/bin/time -l "$EXECUTABLE" "$dir" "$folder_name" 2>&1 | tee -a "$OUTPUT_FILE"
+        # Temporary files to capture time output and program output
+        TEMP_TIME_FILE=$(mktemp)
+        TEMP_OUTPUT_FILE=$(mktemp)
 
-        exit_code=${PIPESTATUS[0]}
-        echo "Exit code: $exit_code" >> "$OUTPUT_FILE"
+        # Call the executable with time measurement and capture both stdout/stderr and memory stats
+        /usr/bin/time -l "$EXECUTABLE" "$dir" "$folder_name" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
+
+        exit_code=$?
+
+        # Log the executable output
+        echo "Executable Output:" >> "$OUTPUT_FILE"
+        if [ -s "$TEMP_OUTPUT_FILE" ]; then
+            cat "$TEMP_OUTPUT_FILE" >> "$OUTPUT_FILE"
+        else
+            echo "  (no output)" >> "$OUTPUT_FILE"
+        fi
+        echo "" >> "$OUTPUT_FILE"
+
+        # Parse and format the memory metrics
+        if [ -f "$TEMP_TIME_FILE" ]; then
+            # Extract key metrics from time output
+            max_rss=$(grep "maximum resident set size" "$TEMP_TIME_FILE" | awk '{print $1}')
+
+            # Convert memory from bytes to human-readable format
+            if [ -n "$max_rss" ]; then
+                mem_mb=$(echo "scale=2; $max_rss / 1048576" | bc)
+                mem_gb=$(echo "scale=2; $max_rss / 1073741824" | bc)
+
+                echo "Memory Usage:" >> "$OUTPUT_FILE"
+                echo "  Peak Memory (RSS): ${mem_mb} MB (${mem_gb} GB)" >> "$OUTPUT_FILE"
+                echo "  Peak Memory (bytes): ${max_rss}" >> "$OUTPUT_FILE"
+                echo "" >> "$OUTPUT_FILE"
+            fi
+        fi
+
+        # Clean up temp files
+        rm -f "$TEMP_TIME_FILE" "$TEMP_OUTPUT_FILE"
+
+        echo "Exit Code: $exit_code" >> "$OUTPUT_FILE"
 
         if [ $exit_code -ne 0 ]; then
             echo "Warning: Executable returned non-zero exit code ($exit_code) for $folder_name"
-            echo "Warning: Non-zero exit code ($exit_code)" >> "$OUTPUT_FILE"
+            echo "Status: FAILED" >> "$OUTPUT_FILE"
+        else
+            echo "Status: SUCCESS" >> "$OUTPUT_FILE"
         fi
 
         echo "" >> "$OUTPUT_FILE"
