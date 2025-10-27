@@ -1,0 +1,96 @@
+
+    // Global clocks used only for observer if needed
+    int first, second, back, InSafety;
+    const int delay1 = 25;
+    const int delay2 = 20;
+    const int delay3 = 10;
+    const int delay4 = 5;
+    const int obsDelay = 60;
+  
+
+process Soldier1() {
+clock x;
+state
+    Peril,
+    Safety,
+    OnBridge,
+    OnWayBack;
+init
+    Peril;
+trans
+    Peril -> Safety { guard first == 0; assign first = 1, InSafety = InSafety + 1; },
+    Peril -> OnBridge { guard second == 0 && first > 1; assign second = 1, x = 0; },
+    OnBridge -> Safety { guard x == delay1; assign InSafety = InSafety + 1, back = 1; },
+    OnWayBack -> Peril { guard x == delay1; assign first = 0, second = 0; },
+    Safety -> OnWayBack { guard back == 1; assign back = 0, x = 0, InSafety = InSafety - 1; };
+}
+
+process Soldier2() {
+clock x;
+state
+    Peril,
+    Safety,
+    OnBridge,
+    OnWayBack;
+init
+    Peril;
+trans
+    Peril -> Safety { guard first == 0; assign first = 2, InSafety = InSafety + 1; },
+    Peril -> OnBridge { guard second == 0 && first > 2; assign second = 2, x = 0; },
+    OnBridge -> Safety { guard x == delay2; assign InSafety = InSafety + 1, back = 1; },
+    OnWayBack -> Peril { guard x == delay2; assign first = 0, second = 0; },
+    Safety -> OnWayBack { guard back == 1; assign back = 0, x = 0, InSafety = InSafety - 1; };
+}
+
+process Soldier3() {
+clock x;
+state
+    Peril,
+    Safety,
+    OnBridge,
+    OnWayBack;
+init
+    Peril;
+trans
+    Peril -> Safety { guard first == 0; assign first = 3, InSafety = InSafety + 1; },
+    Peril -> OnBridge { guard second == 0 && first > 3; assign second = 3, x = 0; },
+    OnBridge -> Safety { guard x == delay3; assign InSafety = InSafety + 1, back = 1; },
+    OnWayBack -> Peril { guard x == delay3; assign first = 0, second = 0; },
+    Safety -> OnWayBack { guard back == 1; assign back = 0, x = 0, InSafety = InSafety - 1; };
+}
+
+process Soldier4() {
+clock x;
+state
+    Peril,
+    Safety,
+    OnBridge,
+    OnWayBack;
+init
+    Peril;
+trans
+    Peril -> Safety { guard first == 0; assign first = 4, InSafety = InSafety + 1; },
+    Peril -> OnBridge { guard second == 0 && first > 4; assign second = 4, x = 0; },
+    OnBridge -> Safety { guard x == delay4; assign InSafety = InSafety + 1, back = 1; },
+    OnWayBack -> Peril { guard x == delay4; assign first = 0, second = 0; },
+    Safety -> OnWayBack { guard back == 1; assign back = 0, x = 0, InSafety = InSafety - 1; };
+}
+
+process Observer() {
+clock y;
+state
+    Wait,
+    Escape;
+init
+    Wait;
+trans
+    Wait -> Escape { guard y == obsDelay && InSafety == 4; };
+}
+
+S1 = Soldier1();
+S2 = Soldier2();
+S3 = Soldier3();
+S4 = Soldier4();
+E = Observer();
+system S1, S2, S3, S4, E;
+  
