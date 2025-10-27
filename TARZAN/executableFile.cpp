@@ -158,7 +158,7 @@ void test_AndOr_original()
 
 void test_csma_20n()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/csma_20N";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/csma/liana/csma_20N";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -325,7 +325,7 @@ void test_SRlatch()
 
 void test_latch()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/latch";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/latch/liana/latch";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -366,8 +366,8 @@ void test_lynch_4_16()
 
 void test_simple()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/simple/";
-    const std::string automatonFileName = "simple.txt";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/simple/liana/simple_1000/";
+    const std::string automatonFileName = "Template.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -526,7 +526,8 @@ int main()
 #endif
 
 
-    test_pagerank();
+    // TODO: questo ora ha tutti i path sballati devi usare quelli nella cartella benchmark.
+    test_latch();
 
 
 #ifdef REGION_TIMING

@@ -253,3 +253,10 @@ install(FILES
 
 # Add permissions to the install_library.sh script.
 execute_process(COMMAND chmod 777 ${CMAKE_CURRENT_SOURCE_DIR}/install_library.sh)
+
+
+# Add executable permissions to all shell scripts in TARZAN/benchmark_scripts.
+file(GLOB BENCHMARK_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmark_scripts/*.sh)
+foreach(script ${BENCHMARK_SCRIPTS})
+    execute_process(COMMAND chmod +x ${script})
+endforeach()
