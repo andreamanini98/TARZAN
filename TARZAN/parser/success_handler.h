@@ -4,6 +4,8 @@
 #include <iostream>
 #include <regex>
 
+// #define PARSER_LOG
+
 
 namespace parser
 {
@@ -18,9 +20,13 @@ namespace parser
 
             const std::string input(first, last);
 
+#ifdef PARSER_LOG
+
             std::cout << "[PARSER] Successful match!" << std::endl;
             std::cout << "Rule: " << name << std::endl;
             std::cout << "Parsed input:\n" << input << std::endl;
+
+#endif
         }
     };
 }

@@ -28,6 +28,7 @@ inline std::string readFromFile(const std::string &path)
 }
 
 
+//  TODO: vedere se fare funzioni generiche di scrittura a file generici.
 namespace benchmark
 {
     inline std::string benchmarkName;
