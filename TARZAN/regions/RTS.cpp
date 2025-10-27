@@ -147,7 +147,7 @@ std::vector<region::Region> region::RTS::forwardReachability(const std::vector<t
 
 #ifdef WRITE_TO_FILE
 
-            // TODO: fare lo stesso anche in backward reachability e nelle reti di automi.
+            // TODO: fare lo stesso anche in backward reachability e anche nelle reti di automi.
 
             std::vector<std::string> benchmarkResults{};
             benchmarkResults.emplace_back("Number of regions: " + std::to_string(totalRegions));
