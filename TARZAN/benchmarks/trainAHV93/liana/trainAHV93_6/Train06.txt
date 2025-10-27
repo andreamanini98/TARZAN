@@ -1,7 +1,7 @@
-create automaton train6 :: symm<1>
+create automaton Train06
 {
     clocks { x; }
-    actions { a, approach, exito; }
+    actions { a, approach, texit; }
     integers { cnt; }
     locations {
         train0 <ini: T                   >,
@@ -11,7 +11,7 @@ create automaton train6 :: symm<1>
     }
     transitions {
         (train2, a, [], [], train3),
-        (train3, exito?, [(x, <=, 5)], [], train0),
+        (train3, texit?, [(x, <=, 5)], [], train0),
         (train1, a, [(x, >, 2)], [], train2),
         (train0, approach?, [], [x], train1);
     }
