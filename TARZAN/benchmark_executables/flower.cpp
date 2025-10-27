@@ -5,13 +5,18 @@
 #include "TARZAN/utilities/file_utilities.h"
 
 
-inline void testFlower(const std::string& path, const std::string& benchmarkName)
+/**
+ * @param path the path to the directory containing all benchmark subdirectories.
+ * @param benchmarkName the name used to denote the benchmark in the logged .txt files.
+ */
+inline void testFlower(const std::string &path, const std::string &benchmarkName)
 {
     const std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
     benchmark::benchmarkName = benchmarkName;
 
+    // Query: it is possible to reach the goal location.
     constexpr int targetLocation = 0;
 
     const region::RTS regionTransitionSystem(automaton);
@@ -20,9 +25,10 @@ inline void testFlower(const std::string& path, const std::string& benchmarkName
 }
 
 
-int main(const int argc, char* argv[])
+int main(const int argc, char *argv[])
 {
-    if (argc != 3) {
+    if (argc != 3)
+    {
         std::cerr << "Usage: " << argv[0] << " <path> <benchmarkName>" << std::endl;
         return 1;
     }
