@@ -178,7 +178,7 @@ endforeach ()
 
 
 # Collect all .cpp files from benchmarkExecutables directory.
-file(GLOB BENCHMARK_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarkExecutables/*.cpp)
+file(GLOB BENCHMARK_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmark_executables/*.cpp)
 
 # Create benchmark executables in executables/benchmarkExecutables subdirectory.
 if (BENCHMARK_EXECUTABLES)
@@ -191,7 +191,7 @@ if (BENCHMARK_EXECUTABLES)
 
         # Set output directory to executables/benchmarkExecutables.
         set_target_properties(${executable_name} PROPERTIES
-                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/benchmarkExecutables)
+                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/benchmark_executables)
     endforeach ()
 endif ()
 
