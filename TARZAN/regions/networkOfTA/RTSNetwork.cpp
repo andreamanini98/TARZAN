@@ -182,15 +182,14 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
             // Ending the timer for measuring computation.
             const auto end = std::chrono::high_resolution_clock::now();
 
-            std::cout << "Total number of computed regions: " << totalRegions << std::endl;
-            std::cout << "Goal region is reachable!\n";
+            std::cout << "Goal is reachable\n";
+            std::cout << "Number of regions: " << totalRegions << std::endl;
 
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-            std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
+            std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
 
 #ifdef EARLY_EXIT
 
-            std::cout << "Exiting program without calling destructors." << std::endl;
             std::quick_exit(EXIT_SUCCESS);
 
 #endif
@@ -256,11 +255,11 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
     // Ending the timer for measuring computation.
     const auto end = std::chrono::high_resolution_clock::now();
 
-    std::cout << "Total number of computed regions: " << totalRegions << std::endl;
-    std::cout << "Goal region is not reachable!\n";
+    std::cout << "Goal is not reachable\n";
+    std::cout << "Number of regions: " << totalRegions << std::endl;
 
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
+    std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
 
     return {};
 }

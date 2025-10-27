@@ -10,7 +10,6 @@
 
 // #define RTS_DEBUG
 #define EARLY_EXIT
-#define WRITE_TO_FILE
 
 
 /**
@@ -139,26 +138,14 @@ std::vector<region::Region> region::RTS::forwardReachability(const std::vector<t
             // Ending the timer for measuring computation.
             const auto end = std::chrono::high_resolution_clock::now();
 
-            std::cout << "Total number of computed regions: " << totalRegions << std::endl;
-            std::cout << "Goal region is reachable!\n";
+            std::cout << "Goal is reachable\n";
+            std::cout << "Number of regions: " << totalRegions << std::endl;
 
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-            std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
-
-#ifdef WRITE_TO_FILE
-
-            // TODO: fare lo stesso anche in backward reachability e anche nelle reti di automi.
-
-            std::vector<std::string> benchmarkResults{};
-            benchmarkResults.emplace_back("Number of regions: " + std::to_string(totalRegions));
-            benchmarkResults.emplace_back("Total time:        " + std::to_string(duration.count()) + " ms");
-            benchmark::writeBenchmarkResult(benchmarkResults);
-
-#endif
+            std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
 
 #ifdef EARLY_EXIT
 
-            std::cout << "Exiting program without calling destructors." << std::endl;
             std::quick_exit(EXIT_SUCCESS);
 
 #endif
@@ -192,11 +179,11 @@ std::vector<region::Region> region::RTS::forwardReachability(const std::vector<t
     // Ending the timer for measuring computation.
     const auto end = std::chrono::high_resolution_clock::now();
 
-    std::cout << "Total number of computed regions: " << totalRegions << std::endl;
-    std::cout << "Goal region is not reachable!\n";
+    std::cout << "Goal is not reachable\n";
+    std::cout << "Number of regions: " << totalRegions << std::endl;
 
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
+    std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
 
     return {};
 }
@@ -275,15 +262,14 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
             // Ending the timer for measuring computation.
             const auto end = std::chrono::high_resolution_clock::now();
 
-            std::cout << "Total number of computed regions: " << totalRegions << std::endl;
-            std::cout << "An initial region is reachable!\n";
+            std::cout << "Goal is reachable\n";
+            std::cout << "Number of regions: " << totalRegions << std::endl;
 
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-            std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
+            std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
 
 #ifdef EARLY_EXIT
 
-            std::cout << "Exiting program without calling destructors." << std::endl;
             std::quick_exit(EXIT_SUCCESS);
 
 #endif
@@ -318,11 +304,11 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
     // Ending the timer for measuring computation.
     const auto end = std::chrono::high_resolution_clock::now();
 
-    std::cout << "Total number of computed regions: " << totalRegions << std::endl;
-    std::cout << "An initial region is not reachable!\n";
+    std::cout << "Goal is not reachable\n";
+    std::cout << "Number of regions: " << totalRegions << std::endl;
 
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "Function took: " << duration.count() << " microseconds." << std::endl;
+    std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
 
     return {};
 }
