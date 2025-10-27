@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./flower.sh /Users/echo/Desktop/PhD/Tools/TARZAN/executables/benchmark_executables/flower /Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana
+./flower.sh ../../executables/benchmark_executables/flower ../benchmarks/flower/liana 2 ../../output/benchmark_results flower
