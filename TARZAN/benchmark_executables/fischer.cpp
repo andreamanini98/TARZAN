@@ -21,7 +21,6 @@ inline void testFischer(const std::string &path, const std::string &benchmarkKey
 
     // Locations are not important here, hence each automaton is assigned std::nullopt.
     auto goal = std::vector<std::optional<int>>(numElements, std::nullopt);
-
     goal[0] = locationsToInt[0].at("cs");
     goal[1] = locationsToInt[1].at("cs");
 

@@ -2,7 +2,7 @@
 
 EXECUTABLES_PATH="../../executables/benchmark_executables"
 BENCHMARKS_PATH="../benchmarks"
-TOTAL_RUNS=1
+TOTAL_RUNS=100
 OUTPUT_PATH="../../output/benchmark_results"
 TIMEOUT=1
 
@@ -60,7 +60,7 @@ TIMEOUT=1
 
 # exSITH
 
-# ./sh_single_ta.sh "${EXECUTABLES_PATH}/exSITH" "${BENCHMARKS_PATH}/exSITH/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/exSITH" "exSITH" "${TIMEOUT}"
+## ./sh_single_ta.sh "${EXECUTABLES_PATH}/exSITH" "${BENCHMARKS_PATH}/exSITH/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/exSITH" "exSITH" "${TIMEOUT}"
 
 
 # ---
@@ -88,14 +88,16 @@ TIMEOUT=1
 
 # flower
 
-./sh_single_ta.sh "${EXECUTABLES_PATH}/flower" "${BENCHMARKS_PATH}/flower/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/flower" "flower" "${TIMEOUT}"
+## ./sh_single_ta.sh "${EXECUTABLES_PATH}/flower" "${BENCHMARKS_PATH}/flower/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/flower" "flower" "${TIMEOUT}"
 
 
+# ---
 
 
-# TODO: per come è strutturato il file sh_network_ta.sh, se una directory  contiene più directory le fa passare tutte (se data come benchmark_path),
-#       altrimenti considera solo i file all'interno di quella specifica cartella (linee 104-114) [questo è solo un reminder].
-#       and_or_original per processare ogni subdirectory automaticamente (magari ti può servire se scarti la chiave)
-#       boolean devi passare le directory a mano (utile per test di scalabilità con chiave)
+# latch
 
+num_dirs=$(find "${BENCHMARKS_PATH}/latch/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+for ((key=0; key<num_dirs; key++)); do
+  ./sh_network_ta.sh "${EXECUTABLES_PATH}/latch" "${BENCHMARKS_PATH}/latch/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/latch" "latch" "${TIMEOUT}" "${key}"
+done
 
