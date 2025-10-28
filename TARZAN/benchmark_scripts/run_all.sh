@@ -40,19 +40,27 @@ TIMEOUT=5
 
 # csma
 
-subdirs=()
-while IFS= read -r dir; do
-    subdirs+=("$dir")
-done < <(find "${BENCHMARKS_PATH}/csma/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+## subdirs=()
+## while IFS= read -r dir; do
+##     subdirs+=("$dir")
+## done < <(find "${BENCHMARKS_PATH}/csma/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+##
+## num_dirs=${#subdirs[@]}
+##
+## for ((key=0; key<num_dirs; key++)); do
+##     current_dir="${subdirs[$key]}"
+##     folder_name=$(basename "$current_dir")
+##
+##     ./sh_network_ta.sh "${EXECUTABLES_PATH}/csma" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/csma" "${folder_name}" "${TIMEOUT}" "${key}"
+## done
 
-num_dirs=${#subdirs[@]}
 
-for ((key=0; key<num_dirs; key++)); do
-    current_dir="${subdirs[$key]}"
-    folder_name=$(basename "$current_dir")
+# ---
 
-    ./sh_network_ta.sh "${EXECUTABLES_PATH}/csma" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/csma" "${folder_name}" "${TIMEOUT}" "${key}"
-done
+
+# exSITH
+
+./sh_single_ta.sh "${EXECUTABLES_PATH}/exSITH" "${BENCHMARKS_PATH}/exSITH/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/exSITH" "exSITH" "${TIMEOUT}"
 
 
 # ---
@@ -60,7 +68,7 @@ done
 
 # flower
 
-##./sh_single_ta.sh "${EXECUTABLES_PATH}/flower" "${BENCHMARKS_PATH}/flower/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/flower" "flower" "${TIMEOUT}"
+## ./sh_single_ta.sh "${EXECUTABLES_PATH}/flower" "${BENCHMARKS_PATH}/flower/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/flower" "flower" "${TIMEOUT}"
 
 
 
