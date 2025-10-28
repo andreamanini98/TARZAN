@@ -2,9 +2,9 @@
 
 EXECUTABLES_PATH="../../executables/benchmark_executables"
 BENCHMARKS_PATH="../benchmarks"
-TOTAL_RUNS=5
+TOTAL_RUNS=1
 OUTPUT_PATH="../../output/benchmark_results"
-TIMEOUT=5
+TIMEOUT=1
 
 
 # and_or_original
@@ -60,7 +60,27 @@ TIMEOUT=5
 
 # exSITH
 
-./sh_single_ta.sh "${EXECUTABLES_PATH}/exSITH" "${BENCHMARKS_PATH}/exSITH/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/exSITH" "exSITH" "${TIMEOUT}"
+# ./sh_single_ta.sh "${EXECUTABLES_PATH}/exSITH" "${BENCHMARKS_PATH}/exSITH/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/exSITH" "exSITH" "${TIMEOUT}"
+
+
+# ---
+
+
+# fischer
+
+## subdirs=()
+## while IFS= read -r dir; do
+##     subdirs+=("$dir")
+## done < <(find "${BENCHMARKS_PATH}/fischer/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+##
+## num_dirs=${#subdirs[@]}
+##
+## for ((key=0; key<num_dirs; key++)); do
+##     current_dir="${subdirs[$key]}"
+##     folder_name=$(basename "$current_dir")
+##
+##     ./sh_network_ta.sh "${EXECUTABLES_PATH}/fischer" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/fischer" "${folder_name}" "${TIMEOUT}" "${key}"
+## done
 
 
 # ---
@@ -68,7 +88,7 @@ TIMEOUT=5
 
 # flower
 
-## ./sh_single_ta.sh "${EXECUTABLES_PATH}/flower" "${BENCHMARKS_PATH}/flower/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/flower" "flower" "${TIMEOUT}"
+./sh_single_ta.sh "${EXECUTABLES_PATH}/flower" "${BENCHMARKS_PATH}/flower/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/flower" "flower" "${TIMEOUT}"
 
 
 

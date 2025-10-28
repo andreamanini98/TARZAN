@@ -122,6 +122,7 @@ for dir in "$ROOT_DIR"*/; do
         successful_runs=0
         timeout_count=0
         memory_data_count=0
+        goal_reachable=""
 
         # Run the executable NUM_RUNS times.
         for ((run=1; run<=NUM_RUNS; run++)); do
@@ -167,6 +168,15 @@ for dir in "$ROOT_DIR"*/; do
                     if [[ -n "$exec_time" ]]; then
                         total_time=$((total_time + exec_time))
                     fi
+
+                    # Check if goal is reachable (only capture on first successful run).
+                    if [[ -z "$goal_reachable" ]]; then
+                        if grep -q "Goal is reachable" "$TEMP_OUTPUT_FILE"; then
+                            goal_reachable="reachable"
+                        elif grep -q "Goal is not reachable" "$TEMP_OUTPUT_FILE"; then
+                            goal_reachable="not reachable"
+                        fi
+                    fi
                 fi
             else
                 echo "  Warning: Run $run failed with exit code $exit_code"
@@ -201,6 +211,16 @@ for dir in "$ROOT_DIR"*/; do
             echo "  Number of regions: $avg_regions" >> "$OUTPUT_FILE"
             echo "  Total time       : $avg_time_seconds s" >> "$OUTPUT_FILE"
             echo "" >> "$OUTPUT_FILE"
+
+            # Add goal reachability information if available.
+            if [[ -n "$goal_reachable" ]]; then
+                if [[ "$goal_reachable" == "reachable" ]]; then
+                    echo "Goal status: REACHABLE" >> "$OUTPUT_FILE"
+                else
+                    echo "Goal status: UNREACHABLE" >> "$OUTPUT_FILE"
+                fi
+                echo "" >> "$OUTPUT_FILE"
+            fi
 
             # Calculate memory average from all runs with memory data.
             if [[ $memory_data_count -gt 0 ]]; then
