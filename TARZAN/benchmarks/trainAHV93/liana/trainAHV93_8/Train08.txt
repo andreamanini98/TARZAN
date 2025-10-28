@@ -1,4 +1,4 @@
-create automaton Train08
+create automaton Train08 :: symm<1>
 {
     clocks { x; }
     actions { a, approach, texit; }

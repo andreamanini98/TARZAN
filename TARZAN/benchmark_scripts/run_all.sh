@@ -4,7 +4,7 @@ EXECUTABLES_PATH="../../executables/benchmark_executables"
 BENCHMARKS_PATH="../benchmarks"
 TOTAL_RUNS=1
 OUTPUT_PATH="../../output/benchmark_results"
-TIMEOUT=100
+TIMEOUT=20
 
 
 # and_or_original
@@ -199,7 +199,27 @@ TIMEOUT=100
 
 # SRlatch
 
-num_dirs=$(find "${BENCHMARKS_PATH}/SRlatch/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+## num_dirs=$(find "${BENCHMARKS_PATH}/SRlatch/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+## for ((key=0; key<num_dirs; key++)); do
+##   ./sh_network_ta.sh "${EXECUTABLES_PATH}/SRlatch" "${BENCHMARKS_PATH}/SRlatch/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/SRlatch" "SRlatch" "${TIMEOUT}" "${key}"
+## done
+
+
+# ---
+
+
+# trainAHV93
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/trainAHV93/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
 for ((key=0; key<num_dirs; key++)); do
-  ./sh_network_ta.sh "${EXECUTABLES_PATH}/SRlatch" "${BENCHMARKS_PATH}/SRlatch/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/SRlatch" "SRlatch" "${TIMEOUT}" "${key}"
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./sh_network_ta.sh "${EXECUTABLES_PATH}/trainAHV93" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/trainAHV93" "${folder_name}" "${TIMEOUT}" "${key}"
 done

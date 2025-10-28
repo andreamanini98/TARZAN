@@ -385,7 +385,7 @@ void test_TrainAHV93_9()
     // Per ora solo due treni perchè se no esplode. Questo va calcolato in BFS.
     // Uppaal esplode anche lui con 9 treni e con l'intero (sia BFS che DFS).
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/TrainAHV93_9";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/TrainAHV93/liana/TrainAHV93_9";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     networkOfTA::RTSNetwork net(automata);
 
@@ -399,16 +399,16 @@ void test_TrainAHV93_9()
     // Automaton [2...10] (4 locations): {train3 -> 3, train2 -> 2, train1 -> 1, train0 -> 0}
 
     const std::vector<std::optional<int>> goalLocations = {
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
         1,
-        std::nullopt,
-        std::nullopt,
-        std::nullopt,
-        std::nullopt,
-        std::nullopt,
-        std::nullopt,
-        std::nullopt,
-        std::nullopt,
-        std::nullopt,
         std::nullopt
     };
 
@@ -527,7 +527,7 @@ int main()
 
 
     // TODO: questo ora ha tutti i path sballati devi usare quelli nella cartella benchmark.
-    testRingNetwork();
+    test_TrainAHV93_9();
 
 
 #ifdef REGION_TIMING
