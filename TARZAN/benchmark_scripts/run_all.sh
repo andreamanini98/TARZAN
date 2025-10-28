@@ -160,16 +160,24 @@ TIMEOUT=100
 
 # ring
 
-subdirs=()
-while IFS= read -r dir; do
-    subdirs+=("$dir")
-done < <(find "${BENCHMARKS_PATH}/ring/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+## subdirs=()
+## while IFS= read -r dir; do
+##     subdirs+=("$dir")
+## done < <(find "${BENCHMARKS_PATH}/ring/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+##
+## num_dirs=${#subdirs[@]}
+##
+## for ((key=0; key<num_dirs; key++)); do
+##     current_dir="${subdirs[$key]}"
+##     folder_name=$(basename "$current_dir")
+##
+##     ./sh_network_ta.sh "${EXECUTABLES_PATH}/ring" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/ring" "${folder_name}" "${TIMEOUT}" "${key}"
+## done
 
-num_dirs=${#subdirs[@]}
 
-for ((key=0; key<num_dirs; key++)); do
-    current_dir="${subdirs[$key]}"
-    folder_name=$(basename "$current_dir")
+# ---
 
-    ./sh_network_ta.sh "${EXECUTABLES_PATH}/ring" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/ring" "${folder_name}" "${TIMEOUT}" "${key}"
-done
+
+# simple
+
+./sh_single_ta.sh "${EXECUTABLES_PATH}/simple" "${BENCHMARKS_PATH}/simple/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/simple" "simple" "${TIMEOUT}"
