@@ -198,7 +198,7 @@ void test_csma_20n()
 
 void test_csma_50n()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/csma_50N";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/csma/liana/csma_50N";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -527,7 +527,7 @@ int main()
 
 
     // TODO: questo ora ha tutti i path sballati devi usare quelli nella cartella benchmark.
-    test_latch();
+    test_csma_50n();
 
 
 #ifdef REGION_TIMING
