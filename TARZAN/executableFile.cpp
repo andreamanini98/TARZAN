@@ -35,7 +35,7 @@ inline void testFlower()
 
 void testRingNetwork()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/networks_of_TA/ring";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/ring/liana/ring_2";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -44,7 +44,7 @@ void testRingNetwork()
     // Locations:
     // Automaton [i] (6 locations): {goal -> 5, l4 -> 4, l3 -> 3, l2 -> 2, l1 -> 1, l0 -> 0}
 
-    const std::vector<std::optional<int>> goalLocations = { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+    const std::vector<std::optional<int>> goalLocations = { 5, 5 };
 
     const auto res = net.forwardReachability(goalLocations, DFS);
 }
@@ -527,7 +527,7 @@ int main()
 
 
     // TODO: questo ora ha tutti i path sballati devi usare quelli nella cartella benchmark.
-    test_csma_50n();
+    testRingNetwork();
 
 
 #ifdef REGION_TIMING

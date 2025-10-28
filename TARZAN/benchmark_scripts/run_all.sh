@@ -4,7 +4,7 @@ EXECUTABLES_PATH="../../executables/benchmark_executables"
 BENCHMARKS_PATH="../benchmarks"
 TOTAL_RUNS=1
 OUTPUT_PATH="../../output/benchmark_results"
-TIMEOUT=1
+TIMEOUT=100
 
 
 # and_or_original
@@ -149,7 +149,27 @@ TIMEOUT=1
 
 # rcp
 
-num_dirs=$(find "${BENCHMARKS_PATH}/rcp/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+## num_dirs=$(find "${BENCHMARKS_PATH}/rcp/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+## for ((key=0; key<num_dirs; key++)); do
+##   ./sh_network_ta.sh "${EXECUTABLES_PATH}/rcp" "${BENCHMARKS_PATH}/rcp/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/rcp" "rcp" "${TIMEOUT}" "${key}"
+## done
+
+
+# ---
+
+
+# ring
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/ring/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
 for ((key=0; key<num_dirs; key++)); do
-  ./sh_network_ta.sh "${EXECUTABLES_PATH}/rcp" "${BENCHMARKS_PATH}/rcp/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/rcp" "rcp" "${TIMEOUT}" "${key}"
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./sh_network_ta.sh "${EXECUTABLES_PATH}/ring" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/ring" "${folder_name}" "${TIMEOUT}" "${key}"
 done
