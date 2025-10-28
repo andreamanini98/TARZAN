@@ -2,7 +2,7 @@
 
 EXECUTABLES_PATH="../../executables/benchmark_executables"
 BENCHMARKS_PATH="../benchmarks"
-TOTAL_RUNS=1
+TOTAL_RUNS=30
 OUTPUT_PATH="../../output/benchmark_results"
 TIMEOUT=100
 
@@ -180,4 +180,15 @@ TIMEOUT=100
 
 # simple
 
-./sh_single_ta.sh "${EXECUTABLES_PATH}/simple" "${BENCHMARKS_PATH}/simple/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/simple" "simple" "${TIMEOUT}"
+## ./sh_single_ta.sh "${EXECUTABLES_PATH}/simple" "${BENCHMARKS_PATH}/simple/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/simple" "simple" "${TIMEOUT}"
+
+
+# ---
+
+
+# soldiers
+
+num_dirs=$(find "${BENCHMARKS_PATH}/soldiers/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+for ((key=0; key<num_dirs; key++)); do
+  ./sh_network_ta.sh "${EXECUTABLES_PATH}/soldiers" "${BENCHMARKS_PATH}/soldiers/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/soldiers" "soldiers" "${TIMEOUT}" "${key}"
+done
