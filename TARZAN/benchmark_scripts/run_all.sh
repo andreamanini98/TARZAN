@@ -2,7 +2,7 @@
 
 EXECUTABLES_PATH="../../executables/benchmark_executables"
 BENCHMARKS_PATH="../benchmarks"
-TOTAL_RUNS=100
+TOTAL_RUNS=1
 OUTPUT_PATH="../../output/benchmark_results"
 TIMEOUT=1
 
@@ -138,7 +138,18 @@ TIMEOUT=1
 
 # pagerank
 
-num_dirs=$(find "${BENCHMARKS_PATH}/pagerank/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+## num_dirs=$(find "${BENCHMARKS_PATH}/pagerank/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+## for ((key=0; key<num_dirs; key++)); do
+##   ./sh_network_ta.sh "${EXECUTABLES_PATH}/pagerank" "${BENCHMARKS_PATH}/pagerank/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/pagerank" "pagerank" "${TIMEOUT}" "${key}"
+## done
+
+
+# ---
+
+
+# rcp
+
+num_dirs=$(find "${BENCHMARKS_PATH}/rcp/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
 for ((key=0; key<num_dirs; key++)); do
-  ./sh_network_ta.sh "${EXECUTABLES_PATH}/pagerank" "${BENCHMARKS_PATH}/pagerank/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/pagerank" "pagerank" "${TIMEOUT}" "${key}"
+  ./sh_network_ta.sh "${EXECUTABLES_PATH}/rcp" "${BENCHMARKS_PATH}/rcp/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/rcp" "rcp" "${TIMEOUT}" "${key}"
 done
