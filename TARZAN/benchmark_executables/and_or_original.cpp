@@ -13,6 +13,7 @@ inline void testAndOrOriginal(const std::string &path)
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
+    // Inserting placeholder values such that the entire state space is explored.
     const std::vector<std::optional<int>> goal{ 30, 30, 30 };
 
     const auto res = net.forwardReachability(goal, DFS);

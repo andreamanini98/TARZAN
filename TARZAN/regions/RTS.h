@@ -110,6 +110,7 @@ namespace region
 
         // Getters.
         [[nodiscard]] std::vector<Region> getInitialRegions() const { return initialRegions; }
+        [[nodiscard]] const std::unordered_map<std::string, int> &getLocationsToInt() const { return locationsToInt; }
 
 
         [[nodiscard]] std::string to_string() const;

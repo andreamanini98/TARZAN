@@ -194,6 +194,7 @@ namespace networkOfTA
         [[nodiscard]] const std::vector<NetworkRegion> &getInitialRegions() const { return initialRegions; }
         [[nodiscard]] const std::vector<std::vector<int>> &getMaxConstants() const { return maxConstants; }
         [[nodiscard]] const std::vector<std::vector<int>> &getSymmetryGroups() const { return symmetryGroups; }
+        [[nodiscard]] const std::vector<std::unordered_map<std::string, int>> &getLocationsToInt() const { return locationsToInt; }
     };
 }
 

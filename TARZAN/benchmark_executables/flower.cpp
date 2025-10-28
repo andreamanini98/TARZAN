@@ -13,9 +13,11 @@ inline void testFlower(const std::string &path)
     const std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
-    constexpr int goal = 0;
-
     const region::RTS regionTransitionSystem(automaton);
+
+    const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
+
+    const int goal = locToIntMap.at("Goal");
 
     const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(goal, DFS);
 }

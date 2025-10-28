@@ -16,6 +16,7 @@ inline void testBoolean(const std::string &path, const std::string &benchmarkKey
 
     const int numElements = std::stoi(benchmarkKey) + 2;
 
+    // Locations are not important here, hence each automaton is assigned std::nullopt.
     const auto goal = std::vector<std::optional<int>>(numElements, std::nullopt);
 
     std::vector<timed_automaton::ast::clockConstraint> intVarConstr{};
