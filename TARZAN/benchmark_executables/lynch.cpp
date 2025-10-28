@@ -9,9 +9,8 @@
  * @param path the path to the directory containing all benchmark subdirectories.
  * @param benchmarkKey a string used to retrieve the necessary auxiliary data for the benchmark at hand.
  */
-inline void testFischer(const std::string &path, const std::string &benchmarkKey)
+inline void testLynch(const std::string &path, const std::string &benchmarkKey)
 {
-    // Symmetry reduction (carefully handling the pid variable) should help.
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -19,9 +18,9 @@ inline void testFischer(const std::string &path, const std::string &benchmarkKey
 
     const auto &locationsToInt = net.getLocationsToInt();
 
-    auto goal = std::vector<std::optional<int>>(numElements, std::nullopt);
-    goal[0] = locationsToInt[0].at("cs");
-    goal[1] = locationsToInt[1].at("cs");
+    std::vector<std::optional<int>> goal(numElements, std::nullopt);
+    goal[0] = locationsToInt[0].at("CS7");
+    goal[1] = locationsToInt[1].at("CS7");
 
     const auto res = net.forwardReachability(goal, DFS);
 }
@@ -38,8 +37,8 @@ int main(const int argc, char *argv[])
     const std::string path = argv[1];
     const std::string benchmarkKey = argv[2];
 
-    // Query: E<> ( P(1).cs and P(2).cs ), maybe can be extended to account for every process.
-    testFischer(path, benchmarkKey);
+    // Query: E<> P(1).CS7 && P(2).CS7
+    testLynch(path, benchmarkKey);
 
     return 0;
 }

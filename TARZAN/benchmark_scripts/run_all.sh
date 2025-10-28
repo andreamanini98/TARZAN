@@ -2,7 +2,7 @@
 
 EXECUTABLES_PATH="../../executables/benchmark_executables"
 BENCHMARKS_PATH="../benchmarks"
-TOTAL_RUNS=100
+TOTAL_RUNS=1
 OUTPUT_PATH="../../output/benchmark_results"
 TIMEOUT=1
 
@@ -96,8 +96,27 @@ TIMEOUT=1
 
 # latch
 
-num_dirs=$(find "${BENCHMARKS_PATH}/latch/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
-for ((key=0; key<num_dirs; key++)); do
-  ./sh_network_ta.sh "${EXECUTABLES_PATH}/latch" "${BENCHMARKS_PATH}/latch/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/latch" "latch" "${TIMEOUT}" "${key}"
-done
+## num_dirs=$(find "${BENCHMARKS_PATH}/latch/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+## for ((key=0; key<num_dirs; key++)); do
+##   ./sh_network_ta.sh "${EXECUTABLES_PATH}/latch" "${BENCHMARKS_PATH}/latch/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/latch" "latch" "${TIMEOUT}" "${key}"
+## done
 
+
+# ---
+
+
+# lynch
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/lynch/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
+for ((key=0; key<num_dirs; key++)); do
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./sh_network_ta.sh "${EXECUTABLES_PATH}/lynch" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/lynch" "${folder_name}" "${TIMEOUT}" "${key}"
+done

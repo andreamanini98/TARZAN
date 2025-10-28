@@ -1,0 +1,33 @@
+create automaton P3
+{
+    clocks { c; }
+    actions { a; }
+    integers { v1, v2; }
+    locations {
+        L9  <ini: F, inv: [(c, <=, 16)]>,
+        L8  <ini: F, inv: [(c, <=, 16)]>,
+        CS7 <ini: F                    >,
+        L6  <ini: F                    >,
+        L5  <ini: F, inv: [(c, <=, 16)]>,
+        L4  <ini: F                    >,
+        L3  <ini: F                    >,
+        L2  <ini: F, inv: [(c, <=, 16)]>,
+        L1  <ini: T                    >;
+    }
+    transitions {
+        (L9, a, [], [], [v1 = 0], L1),
+        (L8, a, [], [c], [v2 = 0], L9),
+        (CS7, a, [], [c], L8),
+        (L4, a, [], v2 == 1, [], L1),
+        (L6, a, [], v1 < 3, [], L1),
+        (L6, a, [], v1 > 3, [], L1),
+        (L3, a, [], v1 < 3, [], L1),
+        (L3, a, [], v1 > 3, [], L1),
+        (L6, a, [], v1 == 3, [], CS7),
+        (L5, a, [], [c], [v2 = 1], L6),
+        (L4, a, [], v2 == 0, [c], L5),
+        (L3, a, [(c, >, 16)], v1 == 3, [], L4),
+        (L2, a, [], [c], [v1 = 3], L3),
+        (L1, a, [], v1 == 0, [c], L2);
+    }
+}
