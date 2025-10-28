@@ -4,7 +4,7 @@ EXECUTABLES_PATH="../../executables/benchmark_executables"
 BENCHMARKS_PATH="../benchmarks"
 TOTAL_RUNS=1
 OUTPUT_PATH="../../output/benchmark_results"
-TIMEOUT=20
+TIMEOUT=1
 
 
 # and_or_original
@@ -210,10 +210,30 @@ TIMEOUT=20
 
 # trainAHV93
 
+## subdirs=()
+## while IFS= read -r dir; do
+##     subdirs+=("$dir")
+## done < <(find "${BENCHMARKS_PATH}/trainAHV93/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+##
+## num_dirs=${#subdirs[@]}
+##
+## for ((key=0; key<num_dirs; key++)); do
+##     current_dir="${subdirs[$key]}"
+##     folder_name=$(basename "$current_dir")
+##
+##     ./sh_network_ta.sh "${EXECUTABLES_PATH}/trainAHV93" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/trainAHV93" "${folder_name}" "${TIMEOUT}" "${key}"
+## done
+
+
+# ---
+
+
+# vikings
+
 subdirs=()
 while IFS= read -r dir; do
     subdirs+=("$dir")
-done < <(find "${BENCHMARKS_PATH}/trainAHV93/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+done < <(find "${BENCHMARKS_PATH}/vikings/liana" -mindepth 1 -maxdepth 1 -type d | sort)
 
 num_dirs=${#subdirs[@]}
 
@@ -221,5 +241,5 @@ for ((key=0; key<num_dirs; key++)); do
     current_dir="${subdirs[$key]}"
     folder_name=$(basename "$current_dir")
 
-    ./sh_network_ta.sh "${EXECUTABLES_PATH}/trainAHV93" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/trainAHV93" "${folder_name}" "${TIMEOUT}" "${key}"
+    ./sh_network_ta.sh "${EXECUTABLES_PATH}/vikings" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/vikings" "${folder_name}" "${TIMEOUT}" "${key}"
 done
