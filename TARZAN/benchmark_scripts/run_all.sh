@@ -2,7 +2,7 @@
 
 EXECUTABLES_PATH="../../executables/benchmark_executables"
 BENCHMARKS_PATH="../benchmarks"
-TOTAL_RUNS=30
+TOTAL_RUNS=1
 OUTPUT_PATH="../../output/benchmark_results"
 TIMEOUT=100
 
@@ -188,7 +188,18 @@ TIMEOUT=100
 
 # soldiers
 
-num_dirs=$(find "${BENCHMARKS_PATH}/soldiers/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+## num_dirs=$(find "${BENCHMARKS_PATH}/soldiers/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+## for ((key=0; key<num_dirs; key++)); do
+##   ./sh_network_ta.sh "${EXECUTABLES_PATH}/soldiers" "${BENCHMARKS_PATH}/soldiers/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/soldiers" "soldiers" "${TIMEOUT}" "${key}"
+## done
+
+
+# ---
+
+
+# SRlatch
+
+num_dirs=$(find "${BENCHMARKS_PATH}/SRlatch/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
 for ((key=0; key<num_dirs; key++)); do
-  ./sh_network_ta.sh "${EXECUTABLES_PATH}/soldiers" "${BENCHMARKS_PATH}/soldiers/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/soldiers" "soldiers" "${TIMEOUT}" "${key}"
+  ./sh_network_ta.sh "${EXECUTABLES_PATH}/SRlatch" "${BENCHMARKS_PATH}/SRlatch/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/SRlatch" "SRlatch" "${TIMEOUT}" "${key}"
 done
