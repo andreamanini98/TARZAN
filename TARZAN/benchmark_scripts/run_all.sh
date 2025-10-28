@@ -127,7 +127,18 @@ TIMEOUT=1
 
 # maler
 
-num_dirs=$(find "${BENCHMARKS_PATH}/maler/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+## num_dirs=$(find "${BENCHMARKS_PATH}/maler/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+## for ((key=0; key<num_dirs; key++)); do
+##   ./sh_network_ta.sh "${EXECUTABLES_PATH}/maler" "${BENCHMARKS_PATH}/maler/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/maler" "maler" "${TIMEOUT}" "${key}"
+## done
+
+
+# ---
+
+
+# pagerank
+
+num_dirs=$(find "${BENCHMARKS_PATH}/pagerank/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
 for ((key=0; key<num_dirs; key++)); do
-  ./sh_network_ta.sh "${EXECUTABLES_PATH}/maler" "${BENCHMARKS_PATH}/maler/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/maler" "maler" "${TIMEOUT}" "${key}"
+  ./sh_network_ta.sh "${EXECUTABLES_PATH}/pagerank" "${BENCHMARKS_PATH}/pagerank/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/pagerank" "pagerank" "${TIMEOUT}" "${key}"
 done
