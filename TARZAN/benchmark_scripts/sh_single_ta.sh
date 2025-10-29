@@ -63,16 +63,6 @@ fi
 # Remove .txt extension if user provided it, we'll add it ourselves.
 OUTPUT_FILENAME="${OUTPUT_FILENAME%.txt}"
 
-# Set output file path.
-OUTPUT_FILE="${OUTPUT_DIR}${OUTPUT_FILENAME}.txt"
-
-# Create the output file (overwrites if exists).
-> "$OUTPUT_FILE"
-if [[ $? -ne 0 ]]; then
-    echo "Error: Failed to create output file: $OUTPUT_FILE"
-    exit 1
-fi
-
 echo "Running executable: $EXECUTABLE"
 echo "Root directory: $ROOT_DIR"
 echo "Number of runs per benchmark: $NUM_RUNS"
@@ -81,23 +71,7 @@ if [[ "$TIMEOUT" -gt 0 ]]; then
 else
     echo "Timeout: disabled"
 fi
-
-# Write header to output file.
-echo "===============================================================" >> "$OUTPUT_FILE"
-echo "Benchmark Results: ${OUTPUT_FILENAME}" >> "$OUTPUT_FILE"
-echo "===============================================================" >> "$OUTPUT_FILE"
-echo "Executable:     $EXECUTABLE" >> "$OUTPUT_FILE"
-echo "Root directory: $ROOT_DIR" >> "$OUTPUT_FILE"
-echo "Number of runs: $NUM_RUNS" >> "$OUTPUT_FILE"
-if [[ "$TIMEOUT" -gt 0 ]]; then
-    echo "Timeout:        $TIMEOUT seconds" >> "$OUTPUT_FILE"
-else
-    echo "Timeout:       disabled" >> "$OUTPUT_FILE"
-fi
-echo "Output file:    $OUTPUT_FILE" >> "$OUTPUT_FILE"
-echo "Timestamp:      $(date)" >> "$OUTPUT_FILE"
-echo "========================================" >> "$OUTPUT_FILE"
-echo "" >> "$OUTPUT_FILE"
+echo "Output directory: $OUTPUT_DIR"
 
 # Iterate through each subdirectory in the root directory.
 for dir in "$ROOT_DIR"*/; do
@@ -106,13 +80,35 @@ for dir in "$ROOT_DIR"*/; do
         # Get the folder name (basename).
         folder_name=$(basename "$dir")
 
+        # Create a separate output file for this subdirectory.
+        OUTPUT_FILE="${OUTPUT_DIR}${folder_name}.txt"
+
+        # Create the output file (overwrites if exists).
+        > "$OUTPUT_FILE"
+        if [[ $? -ne 0 ]]; then
+            echo "Error: Failed to create output file: $OUTPUT_FILE"
+            continue
+        fi
+
         echo "Processing: $folder_name (running $NUM_RUNS times)"
         echo "Path: $dir"
+        echo "Output file: $OUTPUT_FILE"
 
-        # Log to file.
-        echo "----------------------------------------" >> "$OUTPUT_FILE"
-        echo "Benchmark: $folder_name" >> "$OUTPUT_FILE"
-        echo "Path:      $dir" >> "$OUTPUT_FILE"
+        # Write header to output file.
+        echo "===============================================================" >> "$OUTPUT_FILE"
+        echo "Benchmark Results: ${folder_name}" >> "$OUTPUT_FILE"
+        echo "===============================================================" >> "$OUTPUT_FILE"
+        echo "Executable:     $EXECUTABLE" >> "$OUTPUT_FILE"
+        echo "Benchmark path: $dir" >> "$OUTPUT_FILE"
+        echo "Number of runs: $NUM_RUNS" >> "$OUTPUT_FILE"
+        if [[ "$TIMEOUT" -gt 0 ]]; then
+            echo "Timeout:        $TIMEOUT seconds" >> "$OUTPUT_FILE"
+        else
+            echo "Timeout:        disabled" >> "$OUTPUT_FILE"
+        fi
+        echo "Output file:    $OUTPUT_FILE" >> "$OUTPUT_FILE"
+        echo "Timestamp:      $(date)" >> "$OUTPUT_FILE"
+        echo "========================================" >> "$OUTPUT_FILE"
         echo "" >> "$OUTPUT_FILE"
 
         # Initialize accumulators
@@ -299,9 +295,10 @@ for dir in "$ROOT_DIR"*/; do
 
         echo "" >> "$OUTPUT_FILE"
         echo "----------------------------------------"
+        echo "Results saved to: $OUTPUT_FILE"
+        echo ""
     fi
 done
 
 echo "Done processing all subdirectories"
-echo "Memory usage report saved to: $OUTPUT_FILE"
-echo "Exiting Benchmark ${OUTPUT_FILENAME}"
+echo "All benchmark results saved to: $OUTPUT_DIR"
