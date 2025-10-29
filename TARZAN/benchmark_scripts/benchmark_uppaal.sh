@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Timeout configuration (in seconds).
-TIMEOUT=3
+TIMEOUT=1
 
 # Number of runs for averaging results.
-NUM_RUNS=10
+NUM_RUNS=1
 
 # Benchmarks that should use --search-order 0 instead of 1.
 SEARCH_ORDER_0_BENCHMARKS=("trainAHV93")
@@ -26,7 +26,7 @@ if [[ ! -f "$UPPAAL_PATH" ]]; then
 fi
 
 BENCHMARK_DIR="../benchmarks"
-OUTPUT_DIR="../../output/benchmark_tchecker_results"
+OUTPUT_DIR="../../output/benchmark_uppaal_results"
 
 # Create output directory if it doesn't exist.
 mkdir -p "$OUTPUT_DIR"

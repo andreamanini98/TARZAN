@@ -1,0 +1,1 @@
+E<> ( ctr1 == 1 and ctr2 == 1 and ctr3 == 1 and ctr4 == 1 )
