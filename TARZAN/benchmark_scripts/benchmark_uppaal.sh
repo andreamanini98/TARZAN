@@ -154,6 +154,9 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                         avg_resident_mem_mb=$(awk "BEGIN {printf \"%.2f\", $avg_resident_mem / 1024}")
                         avg_resident_mem_gb=$(awk "BEGIN {printf \"%.2f\", $avg_resident_mem / 1048576}")
 
+                        # Convert milliseconds to seconds.
+                        avg_cpu_time_sec=$(awk "BEGIN {printf \"%.3f\", $avg_cpu_time / 1000}")
+
                         # Get the header from the first run.
                         head -n 7 "$temp_output_dir/run_1.txt" > "$output_file"
 
@@ -165,7 +168,7 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                         fi
                         echo " -- States stored : $avg_states_stored states" >> "$output_file"
                         echo " -- States explored : $avg_states_explored states" >> "$output_file"
-                        echo " -- CPU user time used : $avg_cpu_time ms" >> "$output_file"
+                        echo " -- CPU user time used : $avg_cpu_time ms ($avg_cpu_time_sec s)" >> "$output_file"
                         echo " -- Virtual memory used : $avg_virtual_mem KiB ($avg_virtual_mem_mb MB, $avg_virtual_mem_gb GB)" >> "$output_file"
                         echo " -- Resident memory used : $avg_resident_mem KiB ($avg_resident_mem_mb MB, $avg_resident_mem_gb GB)" >> "$output_file"
                     else
