@@ -6,6 +6,10 @@ TIMEOUT=3
 # Number of runs for averaging results.
 NUM_RUNS=10
 
+# Benchmarks that should use --search-order 0 instead of 1.
+SEARCH_ORDER_0_BENCHMARKS=("trainAHV93")
+
+
 # Check if UPPAAL path argument is provided.
 if [[ $# -ne 1 ]]; then
     echo "Usage: $0 <path_to_uppaal_verifyta>"
@@ -71,6 +75,16 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                     echo "    Running: $(basename "$xta_file") with $(basename "$q_file") ($NUM_RUNS times)"
                     echo "    Output will be saved to: $output_file"
 
+                    # Determine search order based on benchmark name.
+                    search_order=1
+                    for benchmark_pattern in "${SEARCH_ORDER_0_BENCHMARKS[@]}"; do
+                        if [[ "$benchmark_name" == "$benchmark_pattern" ]]; then
+                            search_order=0
+                            break
+                        fi
+                    done
+                    echo "    Using --search-order $search_order"
+
                     # Initialize accumulator variables.
                     total_states_stored=0
                     total_states_explored=0
@@ -89,7 +103,7 @@ for benchmark in "$BENCHMARK_DIR"/*; do
 
                         # Execute UPPAAL verification with timeout and capture output.
                         # Strip ANSI escape codes from the output using sed.
-                        timeout "$TIMEOUT" time "$UPPAAL_PATH" --search-order 1 -u "$xta_file" "$q_file" 2>&1 | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' > "$temp_file"
+                        timeout "$TIMEOUT" "$UPPAAL_PATH" --search-order $search_order -u "$xta_file" "$q_file" 2>&1 | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' > "$temp_file"
                         exit_code=${PIPESTATUS[0]}
 
                         # Check if timeout occurred.
