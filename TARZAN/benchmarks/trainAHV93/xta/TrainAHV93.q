@@ -1,1 +1,0 @@
-A[] not (controller.controller3 && cnt>0)
