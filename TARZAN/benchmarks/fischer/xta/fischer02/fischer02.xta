@@ -34,4 +34,4 @@ process fischer02() {
         cs -> A { assign id = 0; };
 }
 
-system P01, P02;
+system fischer01, fischer02;

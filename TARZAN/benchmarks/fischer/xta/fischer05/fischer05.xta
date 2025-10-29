@@ -68,4 +68,21 @@ process fischer04() {
         cs -> A { assign id = 0; };
 }
 
-system P01, P02, P03, P04;
+process fischer05() {
+    clock x;
+    state
+        wait,
+        req { x <= 2 },
+        A,
+        cs;
+    init
+        A;
+    trans
+        A -> req { guard id == 0; assign x = 0; },
+        req -> wait { guard x <= 2; assign x = 0, id = 5; },
+        wait -> req { guard id == 0; assign x = 0; },
+        wait -> cs { guard x > 2 && id == 5; },
+        cs -> A { assign id = 0; };
+}
+
+system fischer01, fischer02, fischer03, fischer04, fischer05;
