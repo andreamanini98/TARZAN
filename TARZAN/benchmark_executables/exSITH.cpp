@@ -33,7 +33,7 @@ int main(const int argc, char *argv[])
 
     const std::string path = argv[1];
 
-    // Query: A[] not A.qBad, equivalent to: E<> qBad
+    // Query: A[] not A.qBad, equivalent to: E<> A.qBad
     testExSITH(path);
 
     return 0;
