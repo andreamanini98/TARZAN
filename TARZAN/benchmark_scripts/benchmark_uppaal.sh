@@ -113,6 +113,27 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                             break
                         fi
 
+                        # Check for other error conditions.
+                        if [[ $exit_code -ne 0 ]]; then
+                            echo "      WARNING: UPPAAL exited with error code $exit_code on run $run"
+                            # Check for common error patterns.
+                            if grep -qi "out of memory\|OutOfMemoryError\|Cannot allocate memory" "$temp_file"; then
+                                echo "      ERROR: Out of memory detected"
+                                echo "ERROR: Out of memory during execution" > "$output_file"
+                                cat "$temp_file" >> "$output_file"
+                                rm -rf "$temp_output_dir"
+                                break 2  # Break out of both loops
+                            elif grep -qi "error\|exception\|failed" "$temp_file"; then
+                                echo "      ERROR: Execution error detected"
+                                echo "ERROR: Execution failed on run $run with exit code $exit_code" > "$output_file"
+                                cat "$temp_file" >> "$output_file"
+                                rm -rf "$temp_output_dir"
+                                break 2  # Break out of both loops.
+                            fi
+                            # If no specific error pattern, skip this run and continue.
+                            continue
+                        fi
+
                         # Extract metrics from the output.
                         if grep -q "Formula is NOT satisfied" "$temp_file"; then
                             formula_result="NOT satisfied"
@@ -134,6 +155,8 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                             total_virtual_mem=$((total_virtual_mem + virtual_mem))
                             total_resident_mem=$((total_resident_mem + resident_mem))
                             successful_runs=$((successful_runs + 1))
+                        else
+                            echo "      WARNING: Could not extract metrics from run $run output"
                         fi
                     done
 
