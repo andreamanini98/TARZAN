@@ -3,7 +3,7 @@
 EXECUTABLES_PATH="../../executables/benchmark_executables"
 BENCHMARKS_PATH="../benchmarks"
 TOTAL_RUNS=1
-OUTPUT_PATH="../../output/benchmark_results"
+OUTPUT_PATH="../../output/benchmark_tarzan_results"
 TIMEOUT=1
 
 
