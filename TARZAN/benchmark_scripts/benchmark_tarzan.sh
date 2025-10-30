@@ -11,7 +11,7 @@ TIMEOUT=1
 
 num_dirs=$(find "${BENCHMARKS_PATH}/and_or_original/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
 for ((key=0; key<num_dirs; key++)); do
-  ./sh_network_ta.sh "${EXECUTABLES_PATH}/and_or_original" "${BENCHMARKS_PATH}/and_or_original/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/and_or_original" "and_or_original" "${TIMEOUT}" "${key}"
+  ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/and_or_original" "${BENCHMARKS_PATH}/and_or_original/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/and_or_original" "and_or_original" "${TIMEOUT}" "${key}"
 done
 
 
@@ -31,7 +31,7 @@ for ((key=0; key<num_dirs; key++)); do
     current_dir="${subdirs[$key]}"
     folder_name=$(basename "$current_dir")
 
-    ./sh_network_ta.sh "${EXECUTABLES_PATH}/boolean" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/boolean" "${folder_name}" "${TIMEOUT}" "${key}"
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/boolean" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/boolean" "${folder_name}" "${TIMEOUT}" "${key}"
 done
 
 
@@ -51,7 +51,7 @@ for ((key=0; key<num_dirs; key++)); do
     current_dir="${subdirs[$key]}"
     folder_name=$(basename "$current_dir")
 
-    ./sh_network_ta.sh "${EXECUTABLES_PATH}/csma" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/csma" "${folder_name}" "${TIMEOUT}" "${key}"
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/csma" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/csma" "${folder_name}" "${TIMEOUT}" "${key}"
 done
 
 
@@ -60,7 +60,7 @@ done
 
 # exSITH
 
-./sh_single_ta.sh "${EXECUTABLES_PATH}/exSITH" "${BENCHMARKS_PATH}/exSITH/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/exSITH" "exSITH" "${TIMEOUT}"
+./helpers/sh_single_ta.sh "${EXECUTABLES_PATH}/exSITH" "${BENCHMARKS_PATH}/exSITH/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/exSITH" "exSITH" "${TIMEOUT}"
 
 # ---
 
@@ -78,7 +78,7 @@ for ((key=0; key<num_dirs; key++)); do
     current_dir="${subdirs[$key]}"
     folder_name=$(basename "$current_dir")
 
-    ./sh_network_ta.sh "${EXECUTABLES_PATH}/fischer" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/fischer" "${folder_name}" "${TIMEOUT}" "${key}"
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/fischer" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/fischer" "${folder_name}" "${TIMEOUT}" "${key}"
 done
 
 
@@ -87,7 +87,7 @@ done
 
 # flower
 
-./sh_single_ta.sh "${EXECUTABLES_PATH}/flower" "${BENCHMARKS_PATH}/flower/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/flower" "flower" "${TIMEOUT}"
+./helpers/sh_single_ta.sh "${EXECUTABLES_PATH}/flower" "${BENCHMARKS_PATH}/flower/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/flower" "flower" "${TIMEOUT}"
 
 
 # ---
@@ -97,7 +97,7 @@ done
 
 num_dirs=$(find "${BENCHMARKS_PATH}/latch/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
 for ((key=0; key<num_dirs; key++)); do
-  ./sh_network_ta.sh "${EXECUTABLES_PATH}/latch" "${BENCHMARKS_PATH}/latch/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/latch" "latch" "${TIMEOUT}" "${key}"
+  ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/latch" "${BENCHMARKS_PATH}/latch/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/latch" "latch" "${TIMEOUT}" "${key}"
 done
 
 
@@ -117,7 +117,7 @@ for ((key=0; key<num_dirs; key++)); do
     current_dir="${subdirs[$key]}"
     folder_name=$(basename "$current_dir")
 
-    ./sh_network_ta.sh "${EXECUTABLES_PATH}/lynch" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/lynch" "${folder_name}" "${TIMEOUT}" "${key}"
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/lynch" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/lynch" "${folder_name}" "${TIMEOUT}" "${key}"
 done
 
 
@@ -128,7 +128,7 @@ done
 
 num_dirs=$(find "${BENCHMARKS_PATH}/maler/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
 for ((key=0; key<num_dirs; key++)); do
-  ./sh_network_ta.sh "${EXECUTABLES_PATH}/maler" "${BENCHMARKS_PATH}/maler/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/maler" "maler" "${TIMEOUT}" "${key}"
+  ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/maler" "${BENCHMARKS_PATH}/maler/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/maler" "maler" "${TIMEOUT}" "${key}"
 done
 
 
@@ -139,7 +139,7 @@ done
 
 num_dirs=$(find "${BENCHMARKS_PATH}/pagerank/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
 for ((key=0; key<num_dirs; key++)); do
-  ./sh_network_ta.sh "${EXECUTABLES_PATH}/pagerank" "${BENCHMARKS_PATH}/pagerank/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/pagerank" "pagerank" "${TIMEOUT}" "${key}"
+  ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/pagerank" "${BENCHMARKS_PATH}/pagerank/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/pagerank" "pagerank" "${TIMEOUT}" "${key}"
 done
 
 
@@ -150,7 +150,7 @@ done
 
 num_dirs=$(find "${BENCHMARKS_PATH}/rcp/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
 for ((key=0; key<num_dirs; key++)); do
-  ./sh_network_ta.sh "${EXECUTABLES_PATH}/rcp" "${BENCHMARKS_PATH}/rcp/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/rcp" "rcp" "${TIMEOUT}" "${key}"
+  ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/rcp" "${BENCHMARKS_PATH}/rcp/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/rcp" "rcp" "${TIMEOUT}" "${key}"
 done
 
 
@@ -170,7 +170,7 @@ for ((key=0; key<num_dirs; key++)); do
     current_dir="${subdirs[$key]}"
     folder_name=$(basename "$current_dir")
 
-    ./sh_network_ta.sh "${EXECUTABLES_PATH}/ring" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/ring" "${folder_name}" "${TIMEOUT}" "${key}"
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/ring" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/ring" "${folder_name}" "${TIMEOUT}" "${key}"
 done
 
 
@@ -179,7 +179,7 @@ done
 
 # simple
 
-./sh_single_ta.sh "${EXECUTABLES_PATH}/simple" "${BENCHMARKS_PATH}/simple/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/simple" "simple" "${TIMEOUT}"
+./helpers/sh_single_ta.sh "${EXECUTABLES_PATH}/simple" "${BENCHMARKS_PATH}/simple/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/simple" "simple" "${TIMEOUT}"
 
 
 # ---
@@ -189,7 +189,7 @@ done
 
 num_dirs=$(find "${BENCHMARKS_PATH}/soldiers/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
 for ((key=0; key<num_dirs; key++)); do
-  ./sh_network_ta.sh "${EXECUTABLES_PATH}/soldiers" "${BENCHMARKS_PATH}/soldiers/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/soldiers" "soldiers" "${TIMEOUT}" "${key}"
+  ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/soldiers" "${BENCHMARKS_PATH}/soldiers/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/soldiers" "soldiers" "${TIMEOUT}" "${key}"
 done
 
 
@@ -200,7 +200,7 @@ done
 
 num_dirs=$(find "${BENCHMARKS_PATH}/SRlatch/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
 for ((key=0; key<num_dirs; key++)); do
-  ./sh_network_ta.sh "${EXECUTABLES_PATH}/SRlatch" "${BENCHMARKS_PATH}/SRlatch/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/SRlatch" "SRlatch" "${TIMEOUT}" "${key}"
+  ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/SRlatch" "${BENCHMARKS_PATH}/SRlatch/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/SRlatch" "SRlatch" "${TIMEOUT}" "${key}"
 done
 
 
@@ -220,7 +220,7 @@ for ((key=0; key<num_dirs; key++)); do
     current_dir="${subdirs[$key]}"
     folder_name=$(basename "$current_dir")
 
-    ./sh_network_ta.sh "${EXECUTABLES_PATH}/trainAHV93" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/trainAHV93" "${folder_name}" "${TIMEOUT}" "${key}"
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/trainAHV93" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/trainAHV93" "${folder_name}" "${TIMEOUT}" "${key}"
 done
 
 
@@ -240,5 +240,5 @@ for ((key=0; key<num_dirs; key++)); do
     current_dir="${subdirs[$key]}"
     folder_name=$(basename "$current_dir")
 
-    ./sh_network_ta.sh "${EXECUTABLES_PATH}/vikings" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/vikings" "${folder_name}" "${TIMEOUT}" "${key}"
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/vikings" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/vikings" "${folder_name}" "${TIMEOUT}" "${key}"
 done
