@@ -1,0 +1,202 @@
+system:boolean_12
+
+# Events
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:0:ctr1
+int:1:0:1000:0:ctr2
+int:1:0:1000:0:ctr3
+int:1:0:1000:0:ctr4
+int:1:0:1000:0:ctr5
+int:1:0:1000:0:ctr6
+int:1:0:1000:0:ctr7
+int:1:0:1000:0:ctr8
+int:1:0:1000:0:ctr9
+int:1:0:1000:0:ctr10
+int:1:0:1000:0:ctr11
+int:1:0:1000:0:ctr12
+
+
+
+# Processes
+process:Boolean01
+process:Boolean02
+process:Boolean03
+process:Boolean04
+process:Boolean05
+process:Boolean06
+process:Boolean07
+process:Boolean08
+process:Boolean09
+process:Boolean10
+process:Boolean11
+process:Boolean12
+
+# Process: Boolean01
+## Clocks for Boolean01
+clock:1:Boolean01_x
+
+## Locations for Boolean01
+location:Boolean01:s0{initial:}
+location:Boolean01:s1
+
+## Edges for Boolean01
+edge:Boolean01:s0:s1:tau{provided:Boolean01_x == 1; do:Boolean01_x = 0; ctr1 = 1 - ctr1}
+edge:Boolean01:s1:s0:tau{provided:Boolean01_x == 1; do:Boolean01_x = 0; ctr1 = 1 - ctr1}
+
+
+
+# Process: Boolean02
+## Clocks for Boolean02
+clock:1:Boolean02_x
+
+## Locations for Boolean02
+location:Boolean02:s0{initial:}
+location:Boolean02:s1
+
+## Edges for Boolean02
+edge:Boolean02:s0:s1:tau{provided:Boolean02_x == 2; do:Boolean02_x = 0; ctr2 = 1 - ctr2}
+edge:Boolean02:s1:s0:tau{provided:Boolean02_x == 2; do:Boolean02_x = 0; ctr2 = 1 - ctr2}
+
+
+
+# Process: Boolean03
+## Clocks for Boolean03
+clock:1:Boolean03_x
+
+## Locations for Boolean03
+location:Boolean03:s0{initial:}
+location:Boolean03:s1
+
+## Edges for Boolean03
+edge:Boolean03:s0:s1:tau{provided:Boolean03_x == 3; do:Boolean03_x = 0; ctr3 = 1 - ctr3}
+edge:Boolean03:s1:s0:tau{provided:Boolean03_x == 3; do:Boolean03_x = 0; ctr3 = 1 - ctr3}
+
+
+
+# Process: Boolean04
+## Clocks for Boolean04
+clock:1:Boolean04_x
+
+## Locations for Boolean04
+location:Boolean04:s0{initial:}
+location:Boolean04:s1
+
+## Edges for Boolean04
+edge:Boolean04:s0:s1:tau{provided:Boolean04_x == 4; do:Boolean04_x = 0; ctr4 = 1 - ctr4}
+edge:Boolean04:s1:s0:tau{provided:Boolean04_x == 4; do:Boolean04_x = 0; ctr4 = 1 - ctr4}
+
+
+
+# Process: Boolean05
+## Clocks for Boolean05
+clock:1:Boolean05_x
+
+## Locations for Boolean05
+location:Boolean05:s0{initial:}
+location:Boolean05:s1
+
+## Edges for Boolean05
+edge:Boolean05:s0:s1:tau{provided:Boolean05_x == 5; do:Boolean05_x = 0; ctr5 = 1 - ctr5}
+edge:Boolean05:s1:s0:tau{provided:Boolean05_x == 5; do:Boolean05_x = 0; ctr5 = 1 - ctr5}
+
+
+
+# Process: Boolean06
+## Clocks for Boolean06
+clock:1:Boolean06_x
+
+## Locations for Boolean06
+location:Boolean06:s0{initial:}
+location:Boolean06:s1
+
+## Edges for Boolean06
+edge:Boolean06:s0:s1:tau{provided:Boolean06_x == 6; do:Boolean06_x = 0; ctr6 = 1 - ctr6}
+edge:Boolean06:s1:s0:tau{provided:Boolean06_x == 6; do:Boolean06_x = 0; ctr6 = 1 - ctr6}
+
+
+
+# Process: Boolean07
+## Clocks for Boolean07
+clock:1:Boolean07_x
+
+## Locations for Boolean07
+location:Boolean07:s0{initial:}
+location:Boolean07:s1
+
+## Edges for Boolean07
+edge:Boolean07:s0:s1:tau{provided:Boolean07_x == 7; do:Boolean07_x = 0; ctr7 = 1 - ctr7}
+edge:Boolean07:s1:s0:tau{provided:Boolean07_x == 7; do:Boolean07_x = 0; ctr7 = 1 - ctr7}
+
+
+
+# Process: Boolean08
+## Clocks for Boolean08
+clock:1:Boolean08_x
+
+## Locations for Boolean08
+location:Boolean08:s0{initial:}
+location:Boolean08:s1
+
+## Edges for Boolean08
+edge:Boolean08:s0:s1:tau{provided:Boolean08_x == 8; do:Boolean08_x = 0; ctr8 = 1 - ctr8}
+edge:Boolean08:s1:s0:tau{provided:Boolean08_x == 8; do:Boolean08_x = 0; ctr8 = 1 - ctr8}
+
+
+
+# Process: Boolean09
+## Clocks for Boolean09
+clock:1:Boolean09_x
+
+## Locations for Boolean09
+location:Boolean09:s0{initial:}
+location:Boolean09:s1
+
+## Edges for Boolean09
+edge:Boolean09:s0:s1:tau{provided:Boolean09_x == 9; do:Boolean09_x = 0; ctr9 = 1 - ctr9}
+edge:Boolean09:s1:s0:tau{provided:Boolean09_x == 9; do:Boolean09_x = 0; ctr9 = 1 - ctr9}
+
+
+
+# Process: Boolean10
+## Clocks for Boolean10
+clock:1:Boolean10_x
+
+## Locations for Boolean10
+location:Boolean10:s0{initial:}
+location:Boolean10:s1
+
+## Edges for Boolean10
+edge:Boolean10:s0:s1:tau{provided:Boolean10_x == 10; do:Boolean10_x = 0; ctr10 = 1 - ctr10}
+edge:Boolean10:s1:s0:tau{provided:Boolean10_x == 10; do:Boolean10_x = 0; ctr10 = 1 - ctr10}
+
+
+
+# Process: Boolean11
+## Clocks for Boolean11
+clock:1:Boolean11_x
+
+## Locations for Boolean11
+location:Boolean11:s0{initial:}
+location:Boolean11:s1
+
+## Edges for Boolean11
+edge:Boolean11:s0:s1:tau{provided:Boolean11_x == 11; do:Boolean11_x = 0; ctr11 = 1 - ctr11}
+edge:Boolean11:s1:s0:tau{provided:Boolean11_x == 11; do:Boolean11_x = 0; ctr11 = 1 - ctr11}
+
+
+
+# Process: Boolean12
+## Clocks for Boolean12
+clock:1:Boolean12_x
+
+## Locations for Boolean12
+location:Boolean12:s0{initial:}
+location:Boolean12:s1
+
+## Edges for Boolean12
+edge:Boolean12:s0:s1:tau{provided:Boolean12_x == 12; do:Boolean12_x = 0; ctr12 = 1 - ctr12}
+edge:Boolean12:s1:s0:tau{provided:Boolean12_x == 12; do:Boolean12_x = 0; ctr12 = 1 - ctr12}
