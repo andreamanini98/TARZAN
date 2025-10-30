@@ -1,0 +1,124 @@
+system:AndOr_original
+
+# Events
+event:aDown
+event:aUp
+event:bDown
+event:bUp
+event:tDown
+event:tUp
+event:tau
+event:xDown
+event:xUp
+
+
+
+# Processes
+process:andGate
+process:orGate
+process:input
+
+# Process: andGate
+## Clocks for andGate
+clock:1:andGate_ckAnd
+
+## Locations for andGate
+location:andGate:And000{invariant:andGate_ckAnd >= 0}
+location:andGate:And001{invariant:andGate_ckAnd >= 0 && andGate_ckAnd <= 4}
+location:andGate:And010{invariant:andGate_ckAnd >= 0}
+location:andGate:And011{invariant:andGate_ckAnd >= 0 && andGate_ckAnd <= 4}
+location:andGate:And100{invariant:andGate_ckAnd >= 0}
+location:andGate:And101{invariant:andGate_ckAnd >= 0 && andGate_ckAnd <= 4}
+location:andGate:And110{invariant:andGate_ckAnd >= 0 && andGate_ckAnd <= 4}
+location:andGate:And111{initial: invariant:andGate_ckAnd >= 0}
+
+## Edges for andGate
+edge:andGate:And001:And101:tUp{do:andGate_ckAnd = 0}
+edge:andGate:And011:And111:tUp
+edge:andGate:And100:And000:tDown
+edge:andGate:And110:And010:tDown
+edge:andGate:And000:And010:bUp
+edge:andGate:And100:And110:bUp{do:andGate_ckAnd = 0}
+edge:andGate:And001:And011:bUp{do:andGate_ckAnd = 0}
+edge:andGate:And101:And111:bUp
+edge:andGate:And010:And000:bDown
+edge:andGate:And111:And101:bDown{do:andGate_ckAnd = 0}
+edge:andGate:And011:And010:xDown{provided:andGate_ckAnd >= 3}
+edge:andGate:And110:And111:xUp{provided:andGate_ckAnd >= 3}
+edge:andGate:And110:And100:bDown
+edge:andGate:And001:And000:xDown{provided:andGate_ckAnd >= 3}
+edge:andGate:And111:And011:tDown{do:andGate_ckAnd = 0}
+edge:andGate:And101:And001:tDown{do:andGate_ckAnd = 0}
+edge:andGate:And010:And110:tUp{do:andGate_ckAnd = 0}
+edge:andGate:And011:And001:bDown{do:andGate_ckAnd = 0}
+edge:andGate:And101:And100:xDown{provided:andGate_ckAnd >= 3}
+edge:andGate:And000:And100:tUp
+
+
+
+# Process: orGate
+## Clocks for orGate
+clock:1:orGate_ckOr
+
+## Locations for orGate
+location:orGate:Or000{invariant:orGate_ckOr >= 0}
+location:orGate:Or001{invariant:orGate_ckOr >= 0 && orGate_ckOr <= 4}
+location:orGate:Or010{invariant:orGate_ckOr >= 0 && orGate_ckOr <= 4}
+location:orGate:Or011{invariant:orGate_ckOr >= 0}
+location:orGate:Or100{invariant:orGate_ckOr >= 0 && orGate_ckOr <= 4}
+location:orGate:Or101{invariant:orGate_ckOr >= 0}
+location:orGate:Or110{invariant:orGate_ckOr >= 0 && orGate_ckOr <= 4}
+location:orGate:Or111{initial: invariant:orGate_ckOr >= 0}
+
+## Edges for orGate
+edge:orGate:Or101:Or111:aUp
+edge:orGate:Or101:Or001:xDown{do:orGate_ckOr = 0}
+edge:orGate:Or100:Or000:xDown
+edge:orGate:Or000:Or010:aUp{do:orGate_ckOr = 0}
+edge:orGate:Or001:Or101:xUp
+edge:orGate:Or010:Or110:xUp{do:orGate_ckOr = 0}
+edge:orGate:Or111:Or011:xDown
+edge:orGate:Or100:Or110:aUp{do:orGate_ckOr = 0}
+edge:orGate:Or001:Or000:tDown{provided:orGate_ckOr >= 3}
+edge:orGate:Or000:Or100:xUp{do:orGate_ckOr = 0}
+edge:orGate:Or001:Or011:aUp
+edge:orGate:Or110:Or100:aDown{do:orGate_ckOr = 0}
+edge:orGate:Or010:Or011:tUp{provided:orGate_ckOr >= 3}
+edge:orGate:Or100:Or101:tUp{provided:orGate_ckOr >= 3}
+edge:orGate:Or111:Or101:aDown
+edge:orGate:Or011:Or001:aDown{do:orGate_ckOr = 0}
+edge:orGate:Or110:Or111:tUp{provided:orGate_ckOr >= 3}
+edge:orGate:Or011:Or111:xUp
+edge:orGate:Or110:Or010:xDown{do:orGate_ckOr = 0}
+edge:orGate:Or010:Or000:aDown
+
+
+
+# Process: input
+## Clocks for input
+clock:1:input_cka
+clock:1:input_ckb
+
+## Locations for input
+location:input:InputInit{initial: invariant:input_ckb <= 8}
+location:input:Input2{invariant:input_cka <= 14}
+location:input:Input3{invariant:input_ckb <= 20}
+location:input:Input4{invariant:input_cka <= 18}
+
+## Edges for input
+edge:input:InputInit:Input2:bDown{provided:input_ckb >= 7; do:input_ckb = 0}
+edge:input:Input3:Input4:bUp{provided:input_ckb >= 19; do:input_ckb = 0}
+edge:input:Input2:Input3:aDown{provided:input_cka >= 13; do:input_cka = 0}
+edge:input:Input4:InputInit:aUp{provided:input_cka >= 16; do:input_cka = 0; input_ckb = 0}
+
+
+
+# Synchronizations
+sync:input@aDown:orGate@aDown
+sync:input@aUp:orGate@aUp
+sync:input@bDown:andGate@bDown
+sync:input@bUp:andGate@bUp
+sync:orGate@tDown:andGate@tDown
+sync:orGate@tUp:andGate@tUp
+sync:andGate@xDown:orGate@xDown
+sync:andGate@xUp:orGate@xUp
