@@ -112,23 +112,50 @@ class XTAParser:
                     process['urgent_states'].add(loc)
 
         # Parse states with invariants
-        state_section = re.search(r'state\s+(.*?)(?:urgent|init|trans)', body, re.DOTALL)
+        state_section = re.search(r'state\s+(.*?)(?:\burgent\b|\binit\b|\btrans\b)', body, re.DOTALL)
         if state_section:
             state_text = state_section.group(1)
-            # Parse state declarations
-            for line in state_text.split(','):
-                line = line.strip()
-                if not line:
+            # Remove any semicolons at the end
+            state_text = state_text.rstrip(';').strip()
+
+            # Parse state declarations - they are comma-separated
+            # Each state can be: "name" or "name { invariant }"
+            states_list = []
+            current_state = ""
+            brace_count = 0
+
+            for char in state_text:
+                if char == '{':
+                    brace_count += 1
+                    current_state += char
+                elif char == '}':
+                    brace_count -= 1
+                    current_state += char
+                elif char == ',' and brace_count == 0:
+                    # End of a state declaration
+                    states_list.append(current_state.strip())
+                    current_state = ""
+                else:
+                    current_state += char
+
+            # Don't forget the last state
+            if current_state.strip():
+                states_list.append(current_state.strip())
+
+            # Now parse each state
+            for state_decl in states_list:
+                if not state_decl:
                     continue
 
                 # Check for invariant
-                inv_match = re.match(r'(\w+)\s*\{([^}]+)\}', line)
+                inv_match = re.match(r'(\w+)\s*\{([^}]+)\}', state_decl)
                 if inv_match:
                     state_name = inv_match.group(1)
                     invariant = inv_match.group(2).strip()
                     process['states'][state_name] = {'invariant': invariant}
                 else:
-                    state_name = line.strip().rstrip(';,')
+                    # Remove any trailing semicolons and whitespace from state name
+                    state_name = state_decl.strip().rstrip(';').strip()
                     if state_name:
                         process['states'][state_name] = {'invariant': None}
 
@@ -321,7 +348,12 @@ class TCKGenerator:
 
             # Format location declaration
             # Use " : " (space-colon-space) as separator between attributes
-            attr_str = "{" + " : ".join(attrs) + "}" if attrs else ""
+            # If there are attributes, use {}, otherwise no braces
+            if attrs:
+                attr_str = "{" + " : ".join(attrs) + "}"
+            else:
+                attr_str = ""
+
             lines.append(f"location:{process['name']}:{state_name}{attr_str}\n")
 
         return lines
