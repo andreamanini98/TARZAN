@@ -449,6 +449,13 @@ class TCKGenerator:
         # Convert 'or' keyword to '||' operator
         result = re.sub(r'\bor\b', '||', result)
 
+        # Add spaces around operators for better readability
+        # First, normalize any existing spacing around operators
+        result = re.sub(r'\s*([+\-*/=!<>]+)\s*', r' \1 ', result)
+
+        # Clean up multiple spaces
+        result = re.sub(r'\s+', ' ', result)
+
         # Note: Arithmetic operators (+, -, *, /) are already compatible with TChecker
         # Note: Comparison operators (==, !=, <, <=, >, >=) are already compatible
 
