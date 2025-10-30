@@ -1,0 +1,74 @@
+system:boolean_04
+
+# Events
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:0:ctr1
+int:1:0:1000:0:ctr2
+int:1:0:1000:0:ctr3
+int:1:0:1000:0:ctr4
+
+
+
+# Processes
+process:Boolean01
+process:Boolean02
+process:Boolean03
+process:Boolean04
+
+# Process: Boolean01
+## Clocks for Boolean01
+clock:1:Boolean01_x
+
+## Locations for Boolean01
+location:Boolean01:s0{initial:}
+location:Boolean01:s1
+
+## Edges for Boolean01
+edge:Boolean01:s0:s1:tau{provided:Boolean01_x == 1 : do:Boolean01_x = 0; ctr1 = 1 - ctr1}
+edge:Boolean01:s1:s0:tau{provided:Boolean01_x == 1 : do:Boolean01_x = 0; ctr1 = 1 - ctr1}
+
+
+
+# Process: Boolean02
+## Clocks for Boolean02
+clock:1:Boolean02_x
+
+## Locations for Boolean02
+location:Boolean02:s0{initial:}
+location:Boolean02:s1
+
+## Edges for Boolean02
+edge:Boolean02:s0:s1:tau{provided:Boolean02_x == 2 : do:Boolean02_x = 0; ctr2 = 1 - ctr2}
+edge:Boolean02:s1:s0:tau{provided:Boolean02_x == 2 : do:Boolean02_x = 0; ctr2 = 1 - ctr2}
+
+
+
+# Process: Boolean03
+## Clocks for Boolean03
+clock:1:Boolean03_x
+
+## Locations for Boolean03
+location:Boolean03:s0{initial:}
+location:Boolean03:s1
+
+## Edges for Boolean03
+edge:Boolean03:s0:s1:tau{provided:Boolean03_x == 3 : do:Boolean03_x = 0; ctr3 = 1 - ctr3}
+edge:Boolean03:s1:s0:tau{provided:Boolean03_x == 3 : do:Boolean03_x = 0; ctr3 = 1 - ctr3}
+
+
+
+# Process: Boolean04
+## Clocks for Boolean04
+clock:1:Boolean04_x
+
+## Locations for Boolean04
+location:Boolean04:s0{initial:}
+location:Boolean04:s1
+
+## Edges for Boolean04
+edge:Boolean04:s0:s1:tau{provided:Boolean04_x == 4 : do:Boolean04_x = 0; ctr4 = 1 - ctr4}
+edge:Boolean04:s1:s0:tau{provided:Boolean04_x == 4 : do:Boolean04_x = 0; ctr4 = 1 - ctr4}
