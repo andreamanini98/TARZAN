@@ -336,7 +336,8 @@ class TCKGenerator:
                 attrs.append(f"do:{assign}")
 
             # Format edge declaration
-            attr_str = "{" + "; ".join(attrs) + "}" if attrs else ""
+            # Use " : " (space-colon-space) as separator between attributes
+            attr_str = "{" + " : ".join(attrs) + "}" if attrs else ""
             lines.append(f"edge:{process['name']}:{source}:{target}:{event}{attr_str}\n")
 
         return lines

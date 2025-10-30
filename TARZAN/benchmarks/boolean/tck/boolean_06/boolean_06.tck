@@ -32,8 +32,8 @@ location:Boolean01:s0{initial:}
 location:Boolean01:s1
 
 ## Edges for Boolean01
-edge:Boolean01:s0:s1:tau{provided:Boolean01_x == 1; do:Boolean01_x = 0; ctr1 = 1 - ctr1}
-edge:Boolean01:s1:s0:tau{provided:Boolean01_x == 1; do:Boolean01_x = 0; ctr1 = 1 - ctr1}
+edge:Boolean01:s0:s1:tau{provided:Boolean01_x == 1 : do:Boolean01_x = 0; ctr1 = 1 - ctr1}
+edge:Boolean01:s1:s0:tau{provided:Boolean01_x == 1 : do:Boolean01_x = 0; ctr1 = 1 - ctr1}
 
 
 
@@ -46,8 +46,8 @@ location:Boolean02:s0{initial:}
 location:Boolean02:s1
 
 ## Edges for Boolean02
-edge:Boolean02:s0:s1:tau{provided:Boolean02_x == 2; do:Boolean02_x = 0; ctr2 = 1 - ctr2}
-edge:Boolean02:s1:s0:tau{provided:Boolean02_x == 2; do:Boolean02_x = 0; ctr2 = 1 - ctr2}
+edge:Boolean02:s0:s1:tau{provided:Boolean02_x == 2 : do:Boolean02_x = 0; ctr2 = 1 - ctr2}
+edge:Boolean02:s1:s0:tau{provided:Boolean02_x == 2 : do:Boolean02_x = 0; ctr2 = 1 - ctr2}
 
 
 
@@ -60,8 +60,8 @@ location:Boolean03:s0{initial:}
 location:Boolean03:s1
 
 ## Edges for Boolean03
-edge:Boolean03:s0:s1:tau{provided:Boolean03_x == 3; do:Boolean03_x = 0; ctr3 = 1 - ctr3}
-edge:Boolean03:s1:s0:tau{provided:Boolean03_x == 3; do:Boolean03_x = 0; ctr3 = 1 - ctr3}
+edge:Boolean03:s0:s1:tau{provided:Boolean03_x == 3 : do:Boolean03_x = 0; ctr3 = 1 - ctr3}
+edge:Boolean03:s1:s0:tau{provided:Boolean03_x == 3 : do:Boolean03_x = 0; ctr3 = 1 - ctr3}
 
 
 
@@ -74,8 +74,8 @@ location:Boolean04:s0{initial:}
 location:Boolean04:s1
 
 ## Edges for Boolean04
-edge:Boolean04:s0:s1:tau{provided:Boolean04_x == 4; do:Boolean04_x = 0; ctr4 = 1 - ctr4}
-edge:Boolean04:s1:s0:tau{provided:Boolean04_x == 4; do:Boolean04_x = 0; ctr4 = 1 - ctr4}
+edge:Boolean04:s0:s1:tau{provided:Boolean04_x == 4 : do:Boolean04_x = 0; ctr4 = 1 - ctr4}
+edge:Boolean04:s1:s0:tau{provided:Boolean04_x == 4 : do:Boolean04_x = 0; ctr4 = 1 - ctr4}
 
 
 
@@ -88,8 +88,8 @@ location:Boolean05:s0{initial:}
 location:Boolean05:s1
 
 ## Edges for Boolean05
-edge:Boolean05:s0:s1:tau{provided:Boolean05_x == 5; do:Boolean05_x = 0; ctr5 = 1 - ctr5}
-edge:Boolean05:s1:s0:tau{provided:Boolean05_x == 5; do:Boolean05_x = 0; ctr5 = 1 - ctr5}
+edge:Boolean05:s0:s1:tau{provided:Boolean05_x == 5 : do:Boolean05_x = 0; ctr5 = 1 - ctr5}
+edge:Boolean05:s1:s0:tau{provided:Boolean05_x == 5 : do:Boolean05_x = 0; ctr5 = 1 - ctr5}
 
 
 
@@ -102,5 +102,5 @@ location:Boolean06:s0{initial:}
 location:Boolean06:s1
 
 ## Edges for Boolean06
-edge:Boolean06:s0:s1:tau{provided:Boolean06_x == 6; do:Boolean06_x = 0; ctr6 = 1 - ctr6}
-edge:Boolean06:s1:s0:tau{provided:Boolean06_x == 6; do:Boolean06_x = 0; ctr6 = 1 - ctr6}
+edge:Boolean06:s0:s1:tau{provided:Boolean06_x == 6 : do:Boolean06_x = 0; ctr6 = 1 - ctr6}
+edge:Boolean06:s1:s0:tau{provided:Boolean06_x == 6 : do:Boolean06_x = 0; ctr6 = 1 - ctr6}

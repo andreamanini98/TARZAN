@@ -106,10 +106,10 @@ location:input:Input3{invariant:input_ckb <= 20}
 location:input:Input4{invariant:input_cka <= 18}
 
 ## Edges for input
-edge:input:InputInit:Input2:bDown{provided:input_ckb >= 7; do:input_ckb = 0}
-edge:input:Input3:Input4:bUp{provided:input_ckb >= 19; do:input_ckb = 0}
-edge:input:Input2:Input3:aDown{provided:input_cka >= 13; do:input_cka = 0}
-edge:input:Input4:InputInit:aUp{provided:input_cka >= 16; do:input_cka = 0; input_ckb = 0}
+edge:input:InputInit:Input2:bDown{provided:input_ckb >= 7 : do:input_ckb = 0}
+edge:input:Input3:Input4:bUp{provided:input_ckb >= 19 : do:input_ckb = 0}
+edge:input:Input2:Input3:aDown{provided:input_cka >= 13 : do:input_cka = 0}
+edge:input:Input4:InputInit:aUp{provided:input_cka >= 16 : do:input_cka = 0; input_ckb = 0}
 
 
 
