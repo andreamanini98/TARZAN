@@ -13,6 +13,22 @@ event:xUp
 
 
 
+# Global declarations
+int:1:0:1000:19:dB_Low_l
+int:1:0:1000:18:dA_Low_u
+int:1:0:1000:3:dOr_l
+int:1:0:1000:8:dB_High_u
+int:1:0:1000:16:dA_Low_l
+int:1:0:1000:4:dAnd_u
+int:1:0:1000:14:dA_High_u
+int:1:0:1000:20:dB_Low_u
+int:1:0:1000:4:dOr_u
+int:1:0:1000:3:dAnd_l
+int:1:0:1000:13:dA_High_l
+int:1:0:1000:7:dB_High_l
+
+
+
 # Processes
 process:andGate
 process:orGate
@@ -24,13 +40,13 @@ clock:1:andGate_ckAnd
 
 ## Locations for andGate
 location:andGate:And000{invariant:andGate_ckAnd >= 0}
-location:andGate:And001{invariant:andGate_ckAnd >= 0 && andGate_ckAnd <= 4}
+location:andGate:And001{invariant:andGate_ckAnd >= 0 && andGate_ckAnd <= dAnd_u}
 location:andGate:And010{invariant:andGate_ckAnd >= 0}
-location:andGate:And011{invariant:andGate_ckAnd >= 0 && andGate_ckAnd <= 4}
+location:andGate:And011{invariant:andGate_ckAnd >= 0 && andGate_ckAnd <= dAnd_u}
 location:andGate:And100{invariant:andGate_ckAnd >= 0}
-location:andGate:And101{invariant:andGate_ckAnd >= 0 && andGate_ckAnd <= 4}
-location:andGate:And110{invariant:andGate_ckAnd >= 0 && andGate_ckAnd <= 4}
-location:andGate:And111{initial: invariant:andGate_ckAnd >= 0}
+location:andGate:And101{invariant:andGate_ckAnd >= 0 && andGate_ckAnd <= dAnd_u}
+location:andGate:And110{invariant:andGate_ckAnd >= 0 && andGate_ckAnd <= dAnd_u}
+location:andGate:And111{initial: : invariant:andGate_ckAnd >= 0}
 
 ## Edges for andGate
 edge:andGate:And001:And101:tUp{do:andGate_ckAnd = 0}
@@ -43,15 +59,15 @@ edge:andGate:And001:And011:bUp{do:andGate_ckAnd = 0}
 edge:andGate:And101:And111:bUp
 edge:andGate:And010:And000:bDown
 edge:andGate:And111:And101:bDown{do:andGate_ckAnd = 0}
-edge:andGate:And011:And010:xDown{provided:andGate_ckAnd >= 3}
-edge:andGate:And110:And111:xUp{provided:andGate_ckAnd >= 3}
+edge:andGate:And011:And010:xDown{provided:andGate_ckAnd >= dAnd_l}
+edge:andGate:And110:And111:xUp{provided:andGate_ckAnd >= dAnd_l}
 edge:andGate:And110:And100:bDown
-edge:andGate:And001:And000:xDown{provided:andGate_ckAnd >= 3}
+edge:andGate:And001:And000:xDown{provided:andGate_ckAnd >= dAnd_l}
 edge:andGate:And111:And011:tDown{do:andGate_ckAnd = 0}
 edge:andGate:And101:And001:tDown{do:andGate_ckAnd = 0}
 edge:andGate:And010:And110:tUp{do:andGate_ckAnd = 0}
 edge:andGate:And011:And001:bDown{do:andGate_ckAnd = 0}
-edge:andGate:And101:And100:xDown{provided:andGate_ckAnd >= 3}
+edge:andGate:And101:And100:xDown{provided:andGate_ckAnd >= dAnd_l}
 edge:andGate:And000:And100:tUp
 
 
@@ -62,13 +78,13 @@ clock:1:orGate_ckOr
 
 ## Locations for orGate
 location:orGate:Or000{invariant:orGate_ckOr >= 0}
-location:orGate:Or001{invariant:orGate_ckOr >= 0 && orGate_ckOr <= 4}
-location:orGate:Or010{invariant:orGate_ckOr >= 0 && orGate_ckOr <= 4}
+location:orGate:Or001{invariant:orGate_ckOr >= 0 && orGate_ckOr <= dOr_u}
+location:orGate:Or010{invariant:orGate_ckOr >= 0 && orGate_ckOr <= dOr_u}
 location:orGate:Or011{invariant:orGate_ckOr >= 0}
-location:orGate:Or100{invariant:orGate_ckOr >= 0 && orGate_ckOr <= 4}
+location:orGate:Or100{invariant:orGate_ckOr >= 0 && orGate_ckOr <= dOr_u}
 location:orGate:Or101{invariant:orGate_ckOr >= 0}
-location:orGate:Or110{invariant:orGate_ckOr >= 0 && orGate_ckOr <= 4}
-location:orGate:Or111{initial: invariant:orGate_ckOr >= 0}
+location:orGate:Or110{invariant:orGate_ckOr >= 0 && orGate_ckOr <= dOr_u}
+location:orGate:Or111{initial: : invariant:orGate_ckOr >= 0}
 
 ## Edges for orGate
 edge:orGate:Or101:Or111:aUp
@@ -79,15 +95,15 @@ edge:orGate:Or001:Or101:xUp
 edge:orGate:Or010:Or110:xUp{do:orGate_ckOr = 0}
 edge:orGate:Or111:Or011:xDown
 edge:orGate:Or100:Or110:aUp{do:orGate_ckOr = 0}
-edge:orGate:Or001:Or000:tDown{provided:orGate_ckOr >= 3}
+edge:orGate:Or001:Or000:tDown{provided:orGate_ckOr >= dOr_l}
 edge:orGate:Or000:Or100:xUp{do:orGate_ckOr = 0}
 edge:orGate:Or001:Or011:aUp
 edge:orGate:Or110:Or100:aDown{do:orGate_ckOr = 0}
-edge:orGate:Or010:Or011:tUp{provided:orGate_ckOr >= 3}
-edge:orGate:Or100:Or101:tUp{provided:orGate_ckOr >= 3}
+edge:orGate:Or010:Or011:tUp{provided:orGate_ckOr >= dOr_l}
+edge:orGate:Or100:Or101:tUp{provided:orGate_ckOr >= dOr_l}
 edge:orGate:Or111:Or101:aDown
 edge:orGate:Or011:Or001:aDown{do:orGate_ckOr = 0}
-edge:orGate:Or110:Or111:tUp{provided:orGate_ckOr >= 3}
+edge:orGate:Or110:Or111:tUp{provided:orGate_ckOr >= dOr_l}
 edge:orGate:Or011:Or111:xUp
 edge:orGate:Or110:Or010:xDown{do:orGate_ckOr = 0}
 edge:orGate:Or010:Or000:aDown
@@ -100,16 +116,16 @@ clock:1:input_cka
 clock:1:input_ckb
 
 ## Locations for input
-location:input:InputInit{initial: invariant:input_ckb <= 8}
-location:input:Input2{invariant:input_cka <= 14}
-location:input:Input3{invariant:input_ckb <= 20}
-location:input:Input4{invariant:input_cka <= 18}
+location:input:InputInit{initial: : invariant:input_ckb <= dB_High_u}
+location:input:Input2{invariant:input_cka <= dA_High_u}
+location:input:Input3{invariant:input_ckb <= dB_Low_u}
+location:input:Input4{invariant:input_cka <= dA_Low_u}
 
 ## Edges for input
-edge:input:InputInit:Input2:bDown{provided:input_ckb >= 7 : do:input_ckb = 0}
-edge:input:Input3:Input4:bUp{provided:input_ckb >= 19 : do:input_ckb = 0}
-edge:input:Input2:Input3:aDown{provided:input_cka >= 13 : do:input_cka = 0}
-edge:input:Input4:InputInit:aUp{provided:input_cka >= 16 : do:input_cka = 0; input_ckb = 0}
+edge:input:InputInit:Input2:bDown{provided:input_ckb >= dB_High_l : do:input_ckb = 0}
+edge:input:Input3:Input4:bUp{provided:input_ckb >= dB_Low_l : do:input_ckb = 0}
+edge:input:Input2:Input3:aDown{provided:input_cka >= dA_High_l : do:input_cka = 0}
+edge:input:Input4:InputInit:aUp{provided:input_cka >= dA_Low_l : do:input_cka = 0; input_ckb = 0}
 
 
 

@@ -271,6 +271,19 @@ class TCKGenerator:
         """Generate global clock and variable declarations."""
         lines = []
 
+        # Constants (const int) - declare as initialized integer variables
+        for const_name, const_value in self.parser.constants.items():
+            # Parse the constant value (should be an integer)
+            try:
+                init_value = int(const_value)
+                # Use a reasonable range: allow the value itself and some flexibility
+                # For TChecker, we use min=0 and max as a reasonable upper bound
+                max_value = max(1000, init_value * 2)
+                lines.append(f"int:1:0:{max_value}:{init_value}:{const_name}\n")
+            except ValueError:
+                # If it's not a simple integer, use default range
+                lines.append(f"int:1:0:1000:0:{const_name}\n")
+
         # Global clocks
         for clock_name in self.parser.global_clocks:
             lines.append(f"clock:1:{clock_name}\n")
@@ -307,7 +320,8 @@ class TCKGenerator:
                 attrs.append(f"invariant:{invariant}")
 
             # Format location declaration
-            attr_str = "{" + " ".join(attrs) + "}" if attrs else ""
+            # Use " : " (space-colon-space) as separator between attributes
+            attr_str = "{" + " : ".join(attrs) + "}" if attrs else ""
             lines.append(f"location:{process['name']}:{state_name}{attr_str}\n")
 
         return lines
@@ -388,8 +402,8 @@ class TCKGenerator:
 
     def convert_expression(self, expr: str, process: Dict) -> str:
         """Convert XTA expression to TChecker expression."""
-        # Substitute constants
-        result = self.parser.substitute_constants(expr)
+        # Do NOT substitute constants - they are now declared as variables
+        result = expr
 
         # Replace local clock references with process-prefixed names
         # (but not global clocks)
@@ -410,8 +424,8 @@ class TCKGenerator:
 
     def convert_assignment(self, assign: str, process: Dict) -> str:
         """Convert XTA assignment to TChecker assignment."""
-        # Substitute constants
-        result = self.parser.substitute_constants(assign)
+        # Do NOT substitute constants - they are now declared as variables
+        result = assign
 
         # Replace local clock references with process-prefixed names
         # (but not global clocks)
