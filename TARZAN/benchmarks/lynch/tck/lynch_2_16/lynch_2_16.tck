@@ -1,0 +1,81 @@
+system:lynch_2_16
+
+# Events
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:16:T
+int:1:0:1000:0:v1
+int:1:0:1:0:v2
+
+
+
+# Processes
+process:P1
+process:P2
+
+# Process: P1
+## Clocks for P1
+clock:1:P1_c
+
+## Locations for P1
+location:P1:L9{invariant:P1_c <= T}
+location:P1:L8{invariant:P1_c <= T}
+location:P1:CS7
+location:P1:L6
+location:P1:L5{invariant:P1_c <= T}
+location:P1:L4
+location:P1:L3
+location:P1:L2{invariant:P1_c <= T}
+location:P1:L1{initial:}
+
+## Edges for P1
+edge:P1:L9:L1:tau{do:v1 = 0}
+edge:P1:L8:L9:tau{do:v2 = false; P1_c = 0}
+edge:P1:CS7:L8:tau{do:P1_c = 0}
+edge:P1:L4:L1:tau{provided:v2 == true}
+edge:P1:L6:L1:tau{provided:v1 < 1}
+edge:P1:L6:L1:tau{provided:v1 > 1}
+edge:P1:L3:L1:tau{provided:v1 < 1}
+edge:P1:L3:L1:tau{provided:v1 > 1}
+edge:P1:L6:CS7:tau{provided:v1 == 1}
+edge:P1:L5:L6:tau{do:v2 = true; P1_c = 0}
+edge:P1:L4:L5:tau{provided:v2 == false : do:P1_c = 0}
+edge:P1:L3:L4:tau{provided:v1 == 1 && P1_c > T}
+edge:P1:L2:L3:tau{do:v1 = 1; P1_c = 0}
+edge:P1:L1:L2:tau{provided:v1 == 0 : do:P1_c = 0}
+
+
+
+# Process: P2
+## Clocks for P2
+clock:1:P2_c
+
+## Locations for P2
+location:P2:L9{invariant:P2_c <= T}
+location:P2:L8{invariant:P2_c <= T}
+location:P2:CS7
+location:P2:L6
+location:P2:L5{invariant:P2_c <= T}
+location:P2:L4
+location:P2:L3
+location:P2:L2{invariant:P2_c <= T}
+location:P2:L1{initial:}
+
+## Edges for P2
+edge:P2:L9:L1:tau{do:v1 = 0}
+edge:P2:L8:L9:tau{do:v2 = false; P2_c = 0}
+edge:P2:CS7:L8:tau{do:P2_c = 0}
+edge:P2:L4:L1:tau{provided:v2 == true}
+edge:P2:L6:L1:tau{provided:v1 < 2}
+edge:P2:L6:L1:tau{provided:v1 > 2}
+edge:P2:L3:L1:tau{provided:v1 < 2}
+edge:P2:L3:L1:tau{provided:v1 > 2}
+edge:P2:L6:CS7:tau{provided:v1 == 2}
+edge:P2:L5:L6:tau{do:v2 = true; P2_c = 0}
+edge:P2:L4:L5:tau{provided:v2 == false : do:P2_c = 0}
+edge:P2:L3:L4:tau{provided:v1 == 2 && P2_c > T}
+edge:P2:L2:L3:tau{do:v1 = 2; P2_c = 0}
+edge:P2:L1:L2:tau{provided:v1 == 0 : do:P2_c = 0}
