@@ -1,0 +1,27 @@
+system:simple_0100
+
+# Events
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:100:N
+clock:1:x
+clock:1:y
+int:1:0:1000:0:i
+
+
+
+# Processes
+process:Template
+
+# Process: Template
+## Locations for Template
+location:Template:loc0{initial: : invariant:y <= 1}
+location:Template:loc1
+
+## Edges for Template
+edge:Template:loc1:loc0:tau{do:x=0; y=0}
+edge:Template:loc0:loc1:tau{provided:x >= 100}
+edge:Template:loc0:loc0:tau{provided:y >= 1 : do:y = 0; i = N}
