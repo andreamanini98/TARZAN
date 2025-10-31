@@ -1,0 +1,251 @@
+system:rcp
+
+# Events
+event:child1
+event:child2
+event:rec_ack12
+event:rec_ack21
+event:rec_idle12
+event:rec_idle21
+event:rec_req12
+event:rec_req21
+event:root1
+event:root2
+event:snd_ack12
+event:snd_ack21
+event:snd_idle12
+event:snd_idle21
+event:snd_req12
+event:snd_req21
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:30:delay
+int:1:0:1000:76:rc_fast_min
+int:1:0:1000:85:rc_fast_max
+int:1:0:1000:167:rc_slow_max
+int:1:0:1000:159:rc_slow_min
+
+
+
+# Processes
+process:node1
+process:node2
+process:wire12
+process:wire21
+process:s1o
+
+# Process: node1
+## Clocks for node1
+clock:1:node1_ckN1
+
+## Locations for node1
+location:node1:N1root_contention{initial: : invariant:node1_ckN1 <= 0}
+location:node1:N1rec_req_fast{invariant:node1_ckN1 <= rc_fast_max}
+location:node1:N1rec_req_slow{invariant:node1_ckN1 <= rc_slow_max}
+location:node1:N1almost_root{invariant:node1_ckN1 <= 0}
+location:node1:N1root
+location:node1:N1rec_idle{invariant:node1_ckN1 <= 0}
+location:node1:N1rec_idle_fast{invariant:node1_ckN1 <= rc_fast_max}
+location:node1:N1rec_idle_slow{invariant:node1_ckN1 <= rc_slow_max}
+location:node1:N1snt_req
+location:node1:N1almost_child{invariant:node1_ckN1 <= 0}
+location:node1:N1child
+
+## Edges for node1
+edge:node1:N1rec_req_slow:N1almost_root:snd_ack12{provided:node1_ckN1 >= rc_slow_min : do:node1_ckN1 = 0}
+edge:node1:N1snt_req:N1almost_child:rec_ack21{do:node1_ckN1 = 0}
+edge:node1:N1almost_child:N1child:child1
+edge:node1:N1rec_idle:N1root_contention:rec_req21{do:node1_ckN1 = 0}
+edge:node1:N1root_contention:N1rec_req_slow:snd_idle12{do:node1_ckN1 = 0}
+edge:node1:N1root_contention:N1rec_req_fast:snd_idle12{do:node1_ckN1 = 0}
+edge:node1:N1root_contention:N1rec_idle:rec_idle21{do:node1_ckN1 = 0}
+edge:node1:N1rec_idle_fast:N1rec_req_fast:rec_req21
+edge:node1:N1snt_req:N1root_contention:rec_req21{do:node1_ckN1 = 0}
+edge:node1:N1rec_req_fast:N1rec_idle_fast:rec_idle21
+edge:node1:N1rec_idle_slow:N1snt_req:snd_req12{provided:node1_ckN1 >= rc_slow_min}
+edge:node1:N1rec_req_fast:N1almost_root:snd_ack12{provided:node1_ckN1 >= rc_fast_min : do:node1_ckN1 = 0}
+edge:node1:N1rec_idle_slow:N1rec_req_slow:rec_req21
+edge:node1:N1almost_root:N1root:root1
+edge:node1:N1rec_req_slow:N1rec_idle_slow:rec_idle21
+edge:node1:N1rec_idle_fast:N1snt_req:snd_req12{provided:node1_ckN1 >= rc_fast_min}
+edge:node1:N1rec_idle:N1rec_idle_fast:snd_idle12{do:node1_ckN1 = 0}
+edge:node1:N1rec_idle:N1rec_idle_slow:snd_idle12{do:node1_ckN1 = 0}
+
+
+
+# Process: node2
+## Clocks for node2
+clock:1:node2_ckN2
+
+## Locations for node2
+location:node2:N2root_contention{initial: : invariant:node2_ckN2 <= 0}
+location:node2:N2rec_req_fast{invariant:node2_ckN2 <= rc_fast_max}
+location:node2:N2rec_req_slow{invariant:node2_ckN2 <= rc_slow_max}
+location:node2:N2almost_root{invariant:node2_ckN2 <= 0}
+location:node2:N2root
+location:node2:N2rec_idle{invariant:node2_ckN2 <= 0}
+location:node2:N2rec_idle_fast{invariant:node2_ckN2 <= rc_fast_max}
+location:node2:N2rec_idle_slow{invariant:node2_ckN2 <= rc_slow_max}
+location:node2:N2snt_req
+location:node2:N2almost_child{invariant:node2_ckN2 <= 0}
+location:node2:N2child
+
+## Edges for node2
+edge:node2:N2rec_idle:N2rec_idle_slow:snd_idle21{do:node2_ckN2 = 0}
+edge:node2:N2almost_child:N2child:child2
+edge:node2:N2rec_idle:N2rec_idle_fast:snd_idle21{do:node2_ckN2 = 0}
+edge:node2:N2rec_idle_slow:N2snt_req:snd_req21{provided:node2_ckN2 >= rc_slow_min}
+edge:node2:N2rec_idle_fast:N2rec_req_fast:rec_req12
+edge:node2:N2rec_req_fast:N2rec_idle_fast:rec_idle12
+edge:node2:N2root_contention:N2rec_req_slow:snd_idle21{do:node2_ckN2 = 0}
+edge:node2:N2snt_req:N2root_contention:rec_req12{do:node2_ckN2 = 0}
+edge:node2:N2rec_idle_fast:N2snt_req:snd_req21{provided:node2_ckN2 >= rc_fast_min}
+edge:node2:N2snt_req:N2almost_child:rec_ack12{do:node2_ckN2 = 0}
+edge:node2:N2rec_req_slow:N2rec_idle_slow:rec_idle12
+edge:node2:N2root_contention:N2rec_req_fast:snd_idle21{do:node2_ckN2 = 0}
+edge:node2:N2almost_root:N2root:root2
+edge:node2:N2rec_idle_slow:N2rec_req_slow:rec_req12
+edge:node2:N2rec_req_fast:N2almost_root:snd_ack21{provided:node2_ckN2 >= rc_fast_min : do:node2_ckN2 = 0}
+edge:node2:N2root_contention:N2rec_idle:rec_idle12{do:node2_ckN2 = 0}
+edge:node2:N2rec_req_slow:N2almost_root:snd_ack21{provided:node2_ckN2 >= rc_slow_min : do:node2_ckN2 = 0}
+edge:node2:N2rec_idle:N2root_contention:rec_req12{do:node2_ckN2 = 0}
+
+
+
+# Process: wire12
+## Clocks for wire12
+clock:1:wire12_ckW12y
+clock:1:wire12_ckW12x
+
+## Locations for wire12
+location:wire12:W12empty{initial:}
+location:wire12:W12rec_ack{invariant:wire12_ckW12y <= delay}
+location:wire12:W12rec_idle{invariant:wire12_ckW12y <= delay}
+location:wire12:W12rec_req{invariant:wire12_ckW12y <= delay}
+location:wire12:W12rec_ack_idle{invariant:wire12_ckW12x <= delay}
+location:wire12:W12rec_idle_req{invariant:wire12_ckW12x <= delay}
+location:wire12:W12rec_req_ack{invariant:wire12_ckW12x <= delay}
+location:wire12:W12rec_ack_req{invariant:wire12_ckW12x <= delay}
+location:wire12:W12rec_idle_ack{invariant:wire12_ckW12x <= delay}
+location:wire12:W12rec_req_idle{invariant:wire12_ckW12x <= delay}
+
+## Edges for wire12
+edge:wire12:W12rec_req_ack:W12rec_ack:rec_req12
+edge:wire12:W12rec_req_idle:W12rec_idle:rec_req12
+edge:wire12:W12empty:W12rec_idle:snd_idle12{do:wire12_ckW12x = 0; wire12_ckW12y = 0}
+edge:wire12:W12rec_idle:W12rec_idle_req:snd_req12{do:wire12_ckW12y = 0}
+edge:wire12:W12empty:W12rec_ack:snd_ack12{do:wire12_ckW12x = 0; wire12_ckW12y = 0}
+edge:wire12:W12rec_idle:W12rec_idle:snd_idle12
+edge:wire12:W12rec_req:W12empty:rec_req12
+edge:wire12:W12rec_idle_ack:W12rec_idle_ack:snd_ack12
+edge:wire12:W12rec_req_idle:W12rec_req_idle:snd_idle12
+edge:wire12:W12empty:W12rec_req:snd_req12{do:wire12_ckW12x = 0; wire12_ckW12y = 0}
+edge:wire12:W12rec_req:W12rec_req_idle:snd_idle12{do:wire12_ckW12y = 0}
+edge:wire12:W12rec_req:W12rec_req_ack:snd_ack12{do:wire12_ckW12y = 0}
+edge:wire12:W12rec_idle_req:W12rec_idle_req:snd_req12
+edge:wire12:W12rec_ack:W12rec_ack_idle:snd_idle12{do:wire12_ckW12y = 0}
+edge:wire12:W12rec_idle:W12rec_idle_ack:snd_ack12{do:wire12_ckW12y = 0}
+edge:wire12:W12rec_ack_idle:W12rec_ack_idle:snd_idle12
+edge:wire12:W12rec_ack:W12empty:rec_ack12
+edge:wire12:W12rec_ack_req:W12rec_req:rec_ack12
+edge:wire12:W12rec_idle_req:W12rec_req:rec_idle12
+edge:wire12:W12rec_req_ack:W12rec_req_ack:snd_ack12
+edge:wire12:W12rec_ack_idle:W12rec_idle:rec_ack12
+edge:wire12:W12rec_idle:W12empty:rec_idle12
+edge:wire12:W12rec_ack:W12rec_ack:snd_ack12
+edge:wire12:W12rec_ack_req:W12rec_ack_req:snd_req12
+edge:wire12:W12rec_idle_ack:W12rec_ack:rec_idle12
+edge:wire12:W12rec_ack:W12rec_ack_req:snd_req12{do:wire12_ckW12y = 0}
+edge:wire12:W12rec_req:W12rec_req:snd_req12
+
+
+
+# Process: wire21
+## Clocks for wire21
+clock:1:wire21_ckW21y
+clock:1:wire21_ckW21x
+
+## Locations for wire21
+location:wire21:W21empty{initial:}
+location:wire21:W21rec_ack{invariant:wire21_ckW21y <= delay}
+location:wire21:W21rec_idle{invariant:wire21_ckW21y <= delay}
+location:wire21:W21rec_req{invariant:wire21_ckW21y <= delay}
+location:wire21:W21rec_ack_idle{invariant:wire21_ckW21x <= delay}
+location:wire21:W21rec_idle_req{invariant:wire21_ckW21x <= delay}
+location:wire21:W21rec_req_ack{invariant:wire21_ckW21x <= delay}
+location:wire21:W21rec_ack_req{invariant:wire21_ckW21x <= delay}
+location:wire21:W21rec_idle_ack{invariant:wire21_ckW21x <= delay}
+location:wire21:W21rec_req_idle{invariant:wire21_ckW21x <= delay}
+
+## Edges for wire21
+edge:wire21:W21rec_ack:W21rec_ack_idle:snd_idle21{do:wire21_ckW21y = 0}
+edge:wire21:W21rec_ack_req:W21rec_req:rec_ack21
+edge:wire21:W21rec_idle_req:W21rec_req:rec_idle21
+edge:wire21:W21rec_req_ack:W21rec_req_ack:snd_ack21
+edge:wire21:W21empty:W21rec_ack:snd_ack21{do:wire21_ckW21x = 0; wire21_ckW21y = 0}
+edge:wire21:W21rec_req:W21rec_req_idle:snd_idle21{do:wire21_ckW21y = 0}
+edge:wire21:W21rec_ack:W21empty:rec_ack21
+edge:wire21:W21rec_ack_idle:W21rec_ack_idle:snd_idle21
+edge:wire21:W21rec_ack:W21rec_ack:snd_ack21
+edge:wire21:W21rec_ack_idle:W21rec_idle:rec_ack21
+edge:wire21:W21empty:W21rec_req:snd_req21{do:wire21_ckW21x = 0; wire21_ckW21y = 0}
+edge:wire21:W21rec_req:W21rec_req_ack:snd_ack21{do:wire21_ckW21y = 0}
+edge:wire21:W21rec_idle:W21empty:rec_idle21
+edge:wire21:W21rec_ack_req:W21rec_ack_req:snd_req21
+edge:wire21:W21rec_idle_ack:W21rec_ack:rec_idle21
+edge:wire21:W21rec_req:W21rec_req:snd_req21
+edge:wire21:W21rec_req_ack:W21rec_ack:rec_req21
+edge:wire21:W21rec_req:W21empty:rec_req21
+edge:wire21:W21rec_idle_ack:W21rec_idle_ack:snd_ack21
+edge:wire21:W21rec_idle:W21rec_idle:snd_idle21
+edge:wire21:W21rec_ack:W21rec_ack_req:snd_req21{do:wire21_ckW21y = 0}
+edge:wire21:W21rec_req_idle:W21rec_req_idle:snd_idle21
+edge:wire21:W21empty:W21rec_idle:snd_idle21{do:wire21_ckW21x = 0; wire21_ckW21y = 0}
+edge:wire21:W21rec_idle:W21rec_idle_ack:snd_ack21{do:wire21_ckW21y = 0}
+edge:wire21:W21rec_req_idle:W21rec_idle:rec_req21
+edge:wire21:W21rec_idle:W21rec_idle_req:snd_req21{do:wire21_ckW21y = 0}
+edge:wire21:W21rec_idle_req:W21rec_idle_req:snd_req21
+
+
+
+# Process: s1o
+## Locations for s1o
+location:s1o:S1oStart{initial:}
+location:s1o:S1o1
+location:s1o:S1o2
+location:s1o:S1o3
+location:s1o:S1o4
+location:s1o:S1oEnd
+
+## Edges for s1o
+edge:s1o:S1o1:S1oEnd:child2
+edge:s1o:S1oStart:S1o2:child1
+edge:s1o:S1oStart:S1o3:child2
+edge:s1o:S1oStart:S1o1:root1
+edge:s1o:S1oStart:S1o4:root2
+edge:s1o:S1o2:S1oEnd:root2
+edge:s1o:S1o3:S1oEnd:root1
+edge:s1o:S1o4:S1oEnd:child1
+
+
+
+# Synchronizations
+sync:node1@child1:s1o@child1
+sync:node2@child2:s1o@child2
+sync:node2@rec_ack12:wire12@rec_ack12
+sync:node1@rec_ack21:wire21@rec_ack21
+sync:node2@rec_idle12:wire12@rec_idle12
+sync:node1@rec_idle21:wire21@rec_idle21
+sync:wire12@rec_req12:node2@rec_req12
+sync:wire21@rec_req21:node1@rec_req21
+sync:node1@root1:s1o@root1
+sync:node2@root2:s1o@root2
+sync:node1@snd_ack12:wire12@snd_ack12
+sync:node2@snd_ack21:wire21@snd_ack21
+sync:node1@snd_idle12:wire12@snd_idle12
+sync:node2@snd_idle21:wire21@snd_idle21
+sync:node1@snd_req12:wire12@snd_req12
+sync:node2@snd_req21:wire21@snd_req21
