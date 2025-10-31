@@ -1,0 +1,133 @@
+system:trainAHV93_3
+
+# Events
+event:approach
+event:lower
+event:raise
+event:tau
+event:texit
+
+
+
+# Global declarations
+int:1:0:1000:3:N
+int:1:0:1000:2:a
+int:1:0:1000:5:b
+int:1:0:1000:1:c
+int:1:0:1000:2:d
+int:1:0:1000:1:e
+int:1:0:1000:0:cnt
+
+
+
+# Processes
+process:Train01
+process:Train02
+process:Train03
+process:gate
+process:controller
+
+# Process: Train01
+## Clocks for Train01
+clock:1:Train01_x
+
+## Locations for Train01
+location:Train01:train0{initial:}
+location:Train01:train1{invariant:Train01_x <= b}
+location:Train01:train2{invariant:Train01_x <= b}
+location:Train01:train3{invariant:Train01_x <= b}
+
+## Edges for Train01
+edge:Train01:train2:train3:tau
+edge:Train01:train3:train0:texit{provided:Train01_x <= b}
+edge:Train01:train1:train2:tau{provided:Train01_x > a}
+edge:Train01:train0:train1:approach{do:Train01_x = 0}
+
+
+
+# Process: Train02
+## Clocks for Train02
+clock:1:Train02_x
+
+## Locations for Train02
+location:Train02:train0{initial:}
+location:Train02:train1{invariant:Train02_x <= b}
+location:Train02:train2{invariant:Train02_x <= b}
+location:Train02:train3{invariant:Train02_x <= b}
+
+## Edges for Train02
+edge:Train02:train2:train3:tau
+edge:Train02:train3:train0:texit{provided:Train02_x <= b}
+edge:Train02:train1:train2:tau{provided:Train02_x > a}
+edge:Train02:train0:train1:approach{do:Train02_x = 0}
+
+
+
+# Process: Train03
+## Clocks for Train03
+clock:1:Train03_x
+
+## Locations for Train03
+location:Train03:train0{initial:}
+location:Train03:train1{invariant:Train03_x <= b}
+location:Train03:train2{invariant:Train03_x <= b}
+location:Train03:train3{invariant:Train03_x <= b}
+
+## Edges for Train03
+edge:Train03:train2:train3:tau
+edge:Train03:train3:train0:texit{provided:Train03_x <= b}
+edge:Train03:train1:train2:tau{provided:Train03_x > a}
+edge:Train03:train0:train1:approach{do:Train03_x = 0}
+
+
+
+# Process: gate
+## Clocks for gate
+clock:1:gate_y
+
+## Locations for gate
+location:gate:gate0{initial:}
+location:gate:gate1{invariant:gate_y <= c}
+location:gate:gate2
+location:gate:gate3{invariant:gate_y <= d}
+
+## Edges for gate
+edge:gate:gate1:gate2:tau{provided:gate_y <= c}
+edge:gate:gate2:gate3:raise{do:gate_y = 0}
+edge:gate:gate0:gate1:lower{do:gate_y = 0}
+edge:gate:gate3:gate0:tau{provided:gate_y >= c && gate_y <= d}
+
+
+
+# Process: controller
+## Clocks for controller
+clock:1:controller_z
+
+## Locations for controller
+location:controller:controller0{initial:}
+location:controller:controller1{invariant:controller_z <= e}
+location:controller:controller2
+location:controller:controller3{invariant:controller_z <= e}
+
+## Edges for controller
+edge:controller:controller0:controller1:approach{do:controller_z = 0; cnt = 1}
+edge:controller:controller1:controller1:approach{do:cnt = cnt + 1}
+edge:controller:controller1:controller1:texit{do:cnt = cnt - 1}
+edge:controller:controller2:controller2:approach{do:cnt = cnt + 1}
+edge:controller:controller2:controller2:texit{provided:cnt > 1 : do:cnt = cnt - 1}
+edge:controller:controller2:controller3:texit{provided:cnt == 1 : do:controller_z = 0; cnt = 0}
+edge:controller:controller3:controller0:raise{provided:controller_z <= e}
+edge:controller:controller3:controller2:approach{provided:controller_z <= e : do:cnt = cnt + 1}
+edge:controller:controller1:controller2:lower{provided:controller_z == e}
+
+
+
+# Synchronizations
+sync:controller@approach:Train01@approach
+sync:controller@approach:Train02@approach
+sync:controller@approach:Train03@approach
+sync:controller@lower:gate@lower
+sync:controller@raise:gate@raise
+sync:controller@texit:Train01@texit
+sync:controller@texit:Train02@texit
+sync:controller@texit:Train03@texit
