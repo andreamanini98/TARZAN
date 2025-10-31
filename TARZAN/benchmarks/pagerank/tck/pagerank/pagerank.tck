@@ -1,0 +1,933 @@
+system:pagerank
+
+# Events
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:28:NUMBER_OF_CPU
+int:1:0:1000:9:NUMBER_OF_STAGES
+int:1:0:1000:0:available_cpu
+int:1:0:1000:0:ntasks_0
+int:1:0:1000:0:ntasks_1
+int:1:0:1000:0:ntasks_13
+int:1:0:1000:0:ntasks_2
+int:1:0:1000:0:ntasks_3
+int:1:0:1000:0:ntasks_4
+int:1:0:1000:0:ntasks_5
+int:1:0:1000:0:ntasks_6
+int:1:0:1000:0:ntasks_7
+int:1:0:1000:0:ntasks_8
+int:1:0:1:0:stage_0
+int:1:0:1:0:stage_1
+int:1:0:1:0:stage_2
+int:1:0:1:0:stage_3
+int:1:0:1:0:stage_4
+int:1:0:1:0:stage_5
+int:1:0:1:0:stage_6
+int:1:0:1:0:stage_7
+int:1:0:1:0:stage_8
+int:1:0:1:0:stage_9
+
+
+
+# Processes
+process:Stage0
+process:Stage1
+process:Stage13
+process:Stage2
+process:Stage3
+process:Stage4
+process:Stage5
+process:Stage6
+process:Stage7
+
+# Process: Stage0
+## Clocks for Stage0
+clock:1:Stage0_c
+
+## Locations for Stage0
+location:Stage0:Init{initial:}
+location:Stage0:Completed
+location:Stage0:a_1_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_2_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_3_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_4_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_5_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_6_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_7_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_8_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_9_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_10_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_11_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_12_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_13_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_14_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_15_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_16_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_17_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_18_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_19_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_20_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_21_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_22_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_23_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_24_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_25_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_26_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_27_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:a_28_run_tc{invariant:Stage0_c <= 101}
+location:Stage0:Batch_finished
+
+## Edges for Stage0
+edge:Stage0:Init:Batch_finished:tau{do:available_cpu = 28}
+edge:Stage0:Batch_finished:a_1_run_tc:tau{provided:available_cpu > 0 && ntasks_0 <= 128 - 1 : do:Stage0_c=0; available_cpu=available_cpu-1}
+edge:Stage0:Batch_finished:a_2_run_tc:tau{provided:available_cpu > 1 && ntasks_0 <= 128 - 2 : do:Stage0_c=0; available_cpu=available_cpu-2}
+edge:Stage0:Batch_finished:a_3_run_tc:tau{provided:available_cpu > 2 && ntasks_0 <= 128 - 3 : do:Stage0_c=0; available_cpu=available_cpu-3}
+edge:Stage0:Batch_finished:a_4_run_tc:tau{provided:available_cpu > 3 && ntasks_0 <= 128 - 4 : do:Stage0_c=0; available_cpu=available_cpu-4}
+edge:Stage0:Batch_finished:a_5_run_tc:tau{provided:available_cpu > 4 && ntasks_0 <= 128 - 5 : do:Stage0_c=0; available_cpu=available_cpu-5}
+edge:Stage0:Batch_finished:a_6_run_tc:tau{provided:available_cpu > 5 && ntasks_0 <= 128 - 6 : do:Stage0_c=0; available_cpu=available_cpu-6}
+edge:Stage0:Batch_finished:a_7_run_tc:tau{provided:available_cpu > 6 && ntasks_0 <= 128 - 7 : do:Stage0_c=0; available_cpu=available_cpu-7}
+edge:Stage0:Batch_finished:a_8_run_tc:tau{provided:available_cpu > 7 && ntasks_0 <= 128 - 8 : do:Stage0_c=0; available_cpu=available_cpu-8}
+edge:Stage0:Batch_finished:a_9_run_tc:tau{provided:available_cpu > 8 && ntasks_0 <= 128 - 9 : do:Stage0_c=0; available_cpu=available_cpu-9}
+edge:Stage0:Batch_finished:a_10_run_tc:tau{provided:available_cpu > 9 && ntasks_0 <= 128 - 10 : do:Stage0_c=0; available_cpu=available_cpu-10}
+edge:Stage0:Batch_finished:a_11_run_tc:tau{provided:available_cpu > 10 && ntasks_0 <= 128 - 11 : do:Stage0_c=0; available_cpu=available_cpu-11}
+edge:Stage0:Batch_finished:a_12_run_tc:tau{provided:available_cpu > 11 && ntasks_0 <= 128 - 12 : do:Stage0_c=0; available_cpu=available_cpu-12}
+edge:Stage0:Batch_finished:a_13_run_tc:tau{provided:available_cpu > 12 && ntasks_0 <= 128 - 13 : do:Stage0_c=0; available_cpu=available_cpu-13}
+edge:Stage0:Batch_finished:a_14_run_tc:tau{provided:available_cpu > 13 && ntasks_0 <= 128 - 14 : do:Stage0_c=0; available_cpu=available_cpu-14}
+edge:Stage0:Batch_finished:a_15_run_tc:tau{provided:available_cpu > 14 && ntasks_0 <= 128 - 15 : do:Stage0_c=0; available_cpu=available_cpu-15}
+edge:Stage0:Batch_finished:a_16_run_tc:tau{provided:available_cpu > 15 && ntasks_0 <= 128 - 16 : do:Stage0_c=0; available_cpu=available_cpu-16}
+edge:Stage0:Batch_finished:a_17_run_tc:tau{provided:available_cpu > 16 && ntasks_0 <= 128 - 17 : do:Stage0_c=0; available_cpu=available_cpu-17}
+edge:Stage0:Batch_finished:a_18_run_tc:tau{provided:available_cpu > 17 && ntasks_0 <= 128 - 18 : do:Stage0_c=0; available_cpu=available_cpu-18}
+edge:Stage0:Batch_finished:a_19_run_tc:tau{provided:available_cpu > 18 && ntasks_0 <= 128 - 19 : do:Stage0_c=0; available_cpu=available_cpu-19}
+edge:Stage0:Batch_finished:a_20_run_tc:tau{provided:available_cpu > 19 && ntasks_0 <= 128 - 20 : do:Stage0_c=0; available_cpu=available_cpu-20}
+edge:Stage0:Batch_finished:a_21_run_tc:tau{provided:available_cpu > 20 && ntasks_0 <= 128 - 21 : do:Stage0_c=0; available_cpu=available_cpu-21}
+edge:Stage0:Batch_finished:a_22_run_tc:tau{provided:available_cpu > 21 && ntasks_0 <= 128 - 22 : do:Stage0_c=0; available_cpu=available_cpu-22}
+edge:Stage0:Batch_finished:a_23_run_tc:tau{provided:available_cpu > 22 && ntasks_0 <= 128 - 23 : do:Stage0_c=0; available_cpu=available_cpu-23}
+edge:Stage0:Batch_finished:a_24_run_tc:tau{provided:available_cpu > 23 && ntasks_0 <= 128 - 24 : do:Stage0_c=0; available_cpu=available_cpu-24}
+edge:Stage0:Batch_finished:a_25_run_tc:tau{provided:available_cpu > 24 && ntasks_0 <= 128 - 25 : do:Stage0_c=0; available_cpu=available_cpu-25}
+edge:Stage0:Batch_finished:a_26_run_tc:tau{provided:available_cpu > 25 && ntasks_0 <= 128 - 26 : do:Stage0_c=0; available_cpu=available_cpu-26}
+edge:Stage0:Batch_finished:a_27_run_tc:tau{provided:available_cpu > 26 && ntasks_0 <= 128 - 27 : do:Stage0_c=0; available_cpu=available_cpu-27}
+edge:Stage0:Batch_finished:a_28_run_tc:tau{provided:available_cpu > 27 && ntasks_0 <= 128 - 28 : do:Stage0_c=0; available_cpu=available_cpu-28}
+edge:Stage0:a_1_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+1; available_cpu=available_cpu+1}
+edge:Stage0:a_2_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+2; available_cpu=available_cpu+2}
+edge:Stage0:a_3_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+3; available_cpu=available_cpu+3}
+edge:Stage0:a_4_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+4; available_cpu=available_cpu+4}
+edge:Stage0:a_5_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+5; available_cpu=available_cpu+5}
+edge:Stage0:a_6_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+6; available_cpu=available_cpu+6}
+edge:Stage0:a_7_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+7; available_cpu=available_cpu+7}
+edge:Stage0:a_8_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+8; available_cpu=available_cpu+8}
+edge:Stage0:a_9_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+9; available_cpu=available_cpu+9}
+edge:Stage0:a_10_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+10; available_cpu=available_cpu+10}
+edge:Stage0:a_11_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+11; available_cpu=available_cpu+11}
+edge:Stage0:a_12_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+12; available_cpu=available_cpu+12}
+edge:Stage0:a_13_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+13; available_cpu=available_cpu+13}
+edge:Stage0:a_14_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+14; available_cpu=available_cpu+14}
+edge:Stage0:a_15_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+15; available_cpu=available_cpu+15}
+edge:Stage0:a_16_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+16; available_cpu=available_cpu+16}
+edge:Stage0:a_17_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+17; available_cpu=available_cpu+17}
+edge:Stage0:a_18_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+18; available_cpu=available_cpu+18}
+edge:Stage0:a_19_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+19; available_cpu=available_cpu+19}
+edge:Stage0:a_20_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+20; available_cpu=available_cpu+20}
+edge:Stage0:a_21_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+21; available_cpu=available_cpu+21}
+edge:Stage0:a_22_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+22; available_cpu=available_cpu+22}
+edge:Stage0:a_23_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+23; available_cpu=available_cpu+23}
+edge:Stage0:a_24_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+24; available_cpu=available_cpu+24}
+edge:Stage0:a_25_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+25; available_cpu=available_cpu+25}
+edge:Stage0:a_26_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+26; available_cpu=available_cpu+26}
+edge:Stage0:a_27_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+27; available_cpu=available_cpu+27}
+edge:Stage0:a_28_run_tc:Batch_finished:tau{provided:Stage0_c == 101 : do:ntasks_0 = ntasks_0+28; available_cpu=available_cpu+28}
+edge:Stage0:Batch_finished:Completed:tau{provided:ntasks_0 == 128 : do:stage_0=1}
+
+
+
+# Process: Stage1
+## Clocks for Stage1
+clock:1:Stage1_c
+
+## Locations for Stage1
+location:Stage1:Init{initial:}
+location:Stage1:Completed
+location:Stage1:a_1_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_2_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_3_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_4_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_5_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_6_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_7_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_8_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_9_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_10_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_11_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_12_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_13_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_14_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_15_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_16_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_17_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_18_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_19_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_20_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_21_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_22_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_23_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_24_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_25_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_26_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_27_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:a_28_run_tc{invariant:Stage1_c <= 13}
+location:Stage1:Batch_finished
+
+## Edges for Stage1
+edge:Stage1:Init:Batch_finished:tau{provided:stage_0 == 1}
+edge:Stage1:Batch_finished:a_1_run_tc:tau{provided:available_cpu > 0 && ntasks_1 <= 128 - 1 : do:Stage1_c=0; available_cpu=available_cpu-1}
+edge:Stage1:Batch_finished:a_2_run_tc:tau{provided:available_cpu > 1 && ntasks_1 <= 128 - 2 : do:Stage1_c=0; available_cpu=available_cpu-2}
+edge:Stage1:Batch_finished:a_3_run_tc:tau{provided:available_cpu > 2 && ntasks_1 <= 128 - 3 : do:Stage1_c=0; available_cpu=available_cpu-3}
+edge:Stage1:Batch_finished:a_4_run_tc:tau{provided:available_cpu > 3 && ntasks_1 <= 128 - 4 : do:Stage1_c=0; available_cpu=available_cpu-4}
+edge:Stage1:Batch_finished:a_5_run_tc:tau{provided:available_cpu > 4 && ntasks_1 <= 128 - 5 : do:Stage1_c=0; available_cpu=available_cpu-5}
+edge:Stage1:Batch_finished:a_6_run_tc:tau{provided:available_cpu > 5 && ntasks_1 <= 128 - 6 : do:Stage1_c=0; available_cpu=available_cpu-6}
+edge:Stage1:Batch_finished:a_7_run_tc:tau{provided:available_cpu > 6 && ntasks_1 <= 128 - 7 : do:Stage1_c=0; available_cpu=available_cpu-7}
+edge:Stage1:Batch_finished:a_8_run_tc:tau{provided:available_cpu > 7 && ntasks_1 <= 128 - 8 : do:Stage1_c=0; available_cpu=available_cpu-8}
+edge:Stage1:Batch_finished:a_9_run_tc:tau{provided:available_cpu > 8 && ntasks_1 <= 128 - 9 : do:Stage1_c=0; available_cpu=available_cpu-9}
+edge:Stage1:Batch_finished:a_10_run_tc:tau{provided:available_cpu > 9 && ntasks_1 <= 128 - 10 : do:Stage1_c=0; available_cpu=available_cpu-10}
+edge:Stage1:Batch_finished:a_11_run_tc:tau{provided:available_cpu > 10 && ntasks_1 <= 128 - 11 : do:Stage1_c=0; available_cpu=available_cpu-11}
+edge:Stage1:Batch_finished:a_12_run_tc:tau{provided:available_cpu > 11 && ntasks_1 <= 128 - 12 : do:Stage1_c=0; available_cpu=available_cpu-12}
+edge:Stage1:Batch_finished:a_13_run_tc:tau{provided:available_cpu > 12 && ntasks_1 <= 128 - 13 : do:Stage1_c=0; available_cpu=available_cpu-13}
+edge:Stage1:Batch_finished:a_14_run_tc:tau{provided:available_cpu > 13 && ntasks_1 <= 128 - 14 : do:Stage1_c=0; available_cpu=available_cpu-14}
+edge:Stage1:Batch_finished:a_15_run_tc:tau{provided:available_cpu > 14 && ntasks_1 <= 128 - 15 : do:Stage1_c=0; available_cpu=available_cpu-15}
+edge:Stage1:Batch_finished:a_16_run_tc:tau{provided:available_cpu > 15 && ntasks_1 <= 128 - 16 : do:Stage1_c=0; available_cpu=available_cpu-16}
+edge:Stage1:Batch_finished:a_17_run_tc:tau{provided:available_cpu > 16 && ntasks_1 <= 128 - 17 : do:Stage1_c=0; available_cpu=available_cpu-17}
+edge:Stage1:Batch_finished:a_18_run_tc:tau{provided:available_cpu > 17 && ntasks_1 <= 128 - 18 : do:Stage1_c=0; available_cpu=available_cpu-18}
+edge:Stage1:Batch_finished:a_19_run_tc:tau{provided:available_cpu > 18 && ntasks_1 <= 128 - 19 : do:Stage1_c=0; available_cpu=available_cpu-19}
+edge:Stage1:Batch_finished:a_20_run_tc:tau{provided:available_cpu > 19 && ntasks_1 <= 128 - 20 : do:Stage1_c=0; available_cpu=available_cpu-20}
+edge:Stage1:Batch_finished:a_21_run_tc:tau{provided:available_cpu > 20 && ntasks_1 <= 128 - 21 : do:Stage1_c=0; available_cpu=available_cpu-21}
+edge:Stage1:Batch_finished:a_22_run_tc:tau{provided:available_cpu > 21 && ntasks_1 <= 128 - 22 : do:Stage1_c=0; available_cpu=available_cpu-22}
+edge:Stage1:Batch_finished:a_23_run_tc:tau{provided:available_cpu > 22 && ntasks_1 <= 128 - 23 : do:Stage1_c=0; available_cpu=available_cpu-23}
+edge:Stage1:Batch_finished:a_24_run_tc:tau{provided:available_cpu > 23 && ntasks_1 <= 128 - 24 : do:Stage1_c=0; available_cpu=available_cpu-24}
+edge:Stage1:Batch_finished:a_25_run_tc:tau{provided:available_cpu > 24 && ntasks_1 <= 128 - 25 : do:Stage1_c=0; available_cpu=available_cpu-25}
+edge:Stage1:Batch_finished:a_26_run_tc:tau{provided:available_cpu > 25 && ntasks_1 <= 128 - 26 : do:Stage1_c=0; available_cpu=available_cpu-26}
+edge:Stage1:Batch_finished:a_27_run_tc:tau{provided:available_cpu > 26 && ntasks_1 <= 128 - 27 : do:Stage1_c=0; available_cpu=available_cpu-27}
+edge:Stage1:Batch_finished:a_28_run_tc:tau{provided:available_cpu > 27 && ntasks_1 <= 128 - 28 : do:Stage1_c=0; available_cpu=available_cpu-28}
+edge:Stage1:a_1_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+1; available_cpu=available_cpu+1}
+edge:Stage1:a_2_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+2; available_cpu=available_cpu+2}
+edge:Stage1:a_3_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+3; available_cpu=available_cpu+3}
+edge:Stage1:a_4_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+4; available_cpu=available_cpu+4}
+edge:Stage1:a_5_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+5; available_cpu=available_cpu+5}
+edge:Stage1:a_6_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+6; available_cpu=available_cpu+6}
+edge:Stage1:a_7_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+7; available_cpu=available_cpu+7}
+edge:Stage1:a_8_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+8; available_cpu=available_cpu+8}
+edge:Stage1:a_9_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+9; available_cpu=available_cpu+9}
+edge:Stage1:a_10_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+10; available_cpu=available_cpu+10}
+edge:Stage1:a_11_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+11; available_cpu=available_cpu+11}
+edge:Stage1:a_12_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+12; available_cpu=available_cpu+12}
+edge:Stage1:a_13_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+13; available_cpu=available_cpu+13}
+edge:Stage1:a_14_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+14; available_cpu=available_cpu+14}
+edge:Stage1:a_15_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+15; available_cpu=available_cpu+15}
+edge:Stage1:a_16_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+16; available_cpu=available_cpu+16}
+edge:Stage1:a_17_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+17; available_cpu=available_cpu+17}
+edge:Stage1:a_18_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+18; available_cpu=available_cpu+18}
+edge:Stage1:a_19_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+19; available_cpu=available_cpu+19}
+edge:Stage1:a_20_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+20; available_cpu=available_cpu+20}
+edge:Stage1:a_21_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+21; available_cpu=available_cpu+21}
+edge:Stage1:a_22_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+22; available_cpu=available_cpu+22}
+edge:Stage1:a_23_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+23; available_cpu=available_cpu+23}
+edge:Stage1:a_24_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+24; available_cpu=available_cpu+24}
+edge:Stage1:a_25_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+25; available_cpu=available_cpu+25}
+edge:Stage1:a_26_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+26; available_cpu=available_cpu+26}
+edge:Stage1:a_27_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+27; available_cpu=available_cpu+27}
+edge:Stage1:a_28_run_tc:Batch_finished:tau{provided:Stage1_c == 13 : do:ntasks_1 = ntasks_1+28; available_cpu=available_cpu+28}
+edge:Stage1:Batch_finished:Completed:tau{provided:ntasks_1 == 128 : do:stage_1=1}
+
+
+
+# Process: Stage13
+## Clocks for Stage13
+clock:1:Stage13_c
+
+## Locations for Stage13
+location:Stage13:Init{initial:}
+location:Stage13:Completed
+location:Stage13:a_1_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_2_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_3_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_4_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_5_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_6_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_7_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_8_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_9_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_10_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_11_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_12_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_13_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_14_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_15_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_16_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_17_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_18_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_19_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_20_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_21_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_22_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_23_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_24_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_25_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_26_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_27_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:a_28_run_tc{invariant:Stage13_c <= 3}
+location:Stage13:Batch_finished
+
+## Edges for Stage13
+edge:Stage13:Init:Batch_finished:tau{provided:stage_1 == 1 && stage_2 == 1 && stage_5 == 1}
+edge:Stage13:Batch_finished:a_1_run_tc:tau{provided:available_cpu > 0 && ntasks_13 <= 128 - 1 : do:Stage13_c=0; available_cpu=available_cpu-1}
+edge:Stage13:Batch_finished:a_2_run_tc:tau{provided:available_cpu > 1 && ntasks_13 <= 128 - 2 : do:Stage13_c=0; available_cpu=available_cpu-2}
+edge:Stage13:Batch_finished:a_3_run_tc:tau{provided:available_cpu > 2 && ntasks_13 <= 128 - 3 : do:Stage13_c=0; available_cpu=available_cpu-3}
+edge:Stage13:Batch_finished:a_4_run_tc:tau{provided:available_cpu > 3 && ntasks_13 <= 128 - 4 : do:Stage13_c=0; available_cpu=available_cpu-4}
+edge:Stage13:Batch_finished:a_5_run_tc:tau{provided:available_cpu > 4 && ntasks_13 <= 128 - 5 : do:Stage13_c=0; available_cpu=available_cpu-5}
+edge:Stage13:Batch_finished:a_6_run_tc:tau{provided:available_cpu > 5 && ntasks_13 <= 128 - 6 : do:Stage13_c=0; available_cpu=available_cpu-6}
+edge:Stage13:Batch_finished:a_7_run_tc:tau{provided:available_cpu > 6 && ntasks_13 <= 128 - 7 : do:Stage13_c=0; available_cpu=available_cpu-7}
+edge:Stage13:Batch_finished:a_8_run_tc:tau{provided:available_cpu > 7 && ntasks_13 <= 128 - 8 : do:Stage13_c=0; available_cpu=available_cpu-8}
+edge:Stage13:Batch_finished:a_9_run_tc:tau{provided:available_cpu > 8 && ntasks_13 <= 128 - 9 : do:Stage13_c=0; available_cpu=available_cpu-9}
+edge:Stage13:Batch_finished:a_10_run_tc:tau{provided:available_cpu > 9 && ntasks_13 <= 128 - 10 : do:Stage13_c=0; available_cpu=available_cpu-10}
+edge:Stage13:Batch_finished:a_11_run_tc:tau{provided:available_cpu > 10 && ntasks_13 <= 128 - 11 : do:Stage13_c=0; available_cpu=available_cpu-11}
+edge:Stage13:Batch_finished:a_12_run_tc:tau{provided:available_cpu > 11 && ntasks_13 <= 128 - 12 : do:Stage13_c=0; available_cpu=available_cpu-12}
+edge:Stage13:Batch_finished:a_13_run_tc:tau{provided:available_cpu > 12 && ntasks_13 <= 128 - 13 : do:Stage13_c=0; available_cpu=available_cpu-13}
+edge:Stage13:Batch_finished:a_14_run_tc:tau{provided:available_cpu > 13 && ntasks_13 <= 128 - 14 : do:Stage13_c=0; available_cpu=available_cpu-14}
+edge:Stage13:Batch_finished:a_15_run_tc:tau{provided:available_cpu > 14 && ntasks_13 <= 128 - 15 : do:Stage13_c=0; available_cpu=available_cpu-15}
+edge:Stage13:Batch_finished:a_16_run_tc:tau{provided:available_cpu > 15 && ntasks_13 <= 128 - 16 : do:Stage13_c=0; available_cpu=available_cpu-16}
+edge:Stage13:Batch_finished:a_17_run_tc:tau{provided:available_cpu > 16 && ntasks_13 <= 128 - 17 : do:Stage13_c=0; available_cpu=available_cpu-17}
+edge:Stage13:Batch_finished:a_18_run_tc:tau{provided:available_cpu > 17 && ntasks_13 <= 128 - 18 : do:Stage13_c=0; available_cpu=available_cpu-18}
+edge:Stage13:Batch_finished:a_19_run_tc:tau{provided:available_cpu > 18 && ntasks_13 <= 128 - 19 : do:Stage13_c=0; available_cpu=available_cpu-19}
+edge:Stage13:Batch_finished:a_20_run_tc:tau{provided:available_cpu > 19 && ntasks_13 <= 128 - 20 : do:Stage13_c=0; available_cpu=available_cpu-20}
+edge:Stage13:Batch_finished:a_21_run_tc:tau{provided:available_cpu > 20 && ntasks_13 <= 128 - 21 : do:Stage13_c=0; available_cpu=available_cpu-21}
+edge:Stage13:Batch_finished:a_22_run_tc:tau{provided:available_cpu > 21 && ntasks_13 <= 128 - 22 : do:Stage13_c=0; available_cpu=available_cpu-22}
+edge:Stage13:Batch_finished:a_23_run_tc:tau{provided:available_cpu > 22 && ntasks_13 <= 128 - 23 : do:Stage13_c=0; available_cpu=available_cpu-23}
+edge:Stage13:Batch_finished:a_24_run_tc:tau{provided:available_cpu > 23 && ntasks_13 <= 128 - 24 : do:Stage13_c=0; available_cpu=available_cpu-24}
+edge:Stage13:Batch_finished:a_25_run_tc:tau{provided:available_cpu > 24 && ntasks_13 <= 128 - 25 : do:Stage13_c=0; available_cpu=available_cpu-25}
+edge:Stage13:Batch_finished:a_26_run_tc:tau{provided:available_cpu > 25 && ntasks_13 <= 128 - 26 : do:Stage13_c=0; available_cpu=available_cpu-26}
+edge:Stage13:Batch_finished:a_27_run_tc:tau{provided:available_cpu > 26 && ntasks_13 <= 128 - 27 : do:Stage13_c=0; available_cpu=available_cpu-27}
+edge:Stage13:Batch_finished:a_28_run_tc:tau{provided:available_cpu > 27 && ntasks_13 <= 128 - 28 : do:Stage13_c=0; available_cpu=available_cpu-28}
+edge:Stage13:a_1_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+1; available_cpu=available_cpu+1}
+edge:Stage13:a_2_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+2; available_cpu=available_cpu+2}
+edge:Stage13:a_3_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+3; available_cpu=available_cpu+3}
+edge:Stage13:a_4_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+4; available_cpu=available_cpu+4}
+edge:Stage13:a_5_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+5; available_cpu=available_cpu+5}
+edge:Stage13:a_6_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+6; available_cpu=available_cpu+6}
+edge:Stage13:a_7_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+7; available_cpu=available_cpu+7}
+edge:Stage13:a_8_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+8; available_cpu=available_cpu+8}
+edge:Stage13:a_9_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+9; available_cpu=available_cpu+9}
+edge:Stage13:a_10_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+10; available_cpu=available_cpu+10}
+edge:Stage13:a_11_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+11; available_cpu=available_cpu+11}
+edge:Stage13:a_12_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+12; available_cpu=available_cpu+12}
+edge:Stage13:a_13_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+13; available_cpu=available_cpu+13}
+edge:Stage13:a_14_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+14; available_cpu=available_cpu+14}
+edge:Stage13:a_15_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+15; available_cpu=available_cpu+15}
+edge:Stage13:a_16_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+16; available_cpu=available_cpu+16}
+edge:Stage13:a_17_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+17; available_cpu=available_cpu+17}
+edge:Stage13:a_18_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+18; available_cpu=available_cpu+18}
+edge:Stage13:a_19_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+19; available_cpu=available_cpu+19}
+edge:Stage13:a_20_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+20; available_cpu=available_cpu+20}
+edge:Stage13:a_21_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+21; available_cpu=available_cpu+21}
+edge:Stage13:a_22_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+22; available_cpu=available_cpu+22}
+edge:Stage13:a_23_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+23; available_cpu=available_cpu+23}
+edge:Stage13:a_24_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+24; available_cpu=available_cpu+24}
+edge:Stage13:a_25_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+25; available_cpu=available_cpu+25}
+edge:Stage13:a_26_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+26; available_cpu=available_cpu+26}
+edge:Stage13:a_27_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+27; available_cpu=available_cpu+27}
+edge:Stage13:a_28_run_tc:Batch_finished:tau{provided:Stage13_c == 3 : do:ntasks_13 = ntasks_13+28; available_cpu=available_cpu+28}
+edge:Stage13:Batch_finished:Completed:tau{provided:ntasks_13 == 128 : do:stage_8=1}
+
+
+
+# Process: Stage2
+## Clocks for Stage2
+clock:1:Stage2_c
+
+## Locations for Stage2
+location:Stage2:Init{initial:}
+location:Stage2:Completed
+location:Stage2:a_1_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_2_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_3_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_4_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_5_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_6_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_7_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_8_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_9_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_10_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_11_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_12_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_13_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_14_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_15_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_16_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_17_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_18_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_19_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_20_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_21_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_22_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_23_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_24_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_25_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_26_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_27_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:a_28_run_tc{invariant:Stage2_c <= 28}
+location:Stage2:Batch_finished
+
+## Edges for Stage2
+edge:Stage2:Init:Batch_finished:tau{provided:stage_0 == 1}
+edge:Stage2:Batch_finished:a_1_run_tc:tau{provided:available_cpu > 0 && ntasks_2 <= 128 - 1 : do:Stage2_c=0; available_cpu=available_cpu-1}
+edge:Stage2:Batch_finished:a_2_run_tc:tau{provided:available_cpu > 1 && ntasks_2 <= 128 - 2 : do:Stage2_c=0; available_cpu=available_cpu-2}
+edge:Stage2:Batch_finished:a_3_run_tc:tau{provided:available_cpu > 2 && ntasks_2 <= 128 - 3 : do:Stage2_c=0; available_cpu=available_cpu-3}
+edge:Stage2:Batch_finished:a_4_run_tc:tau{provided:available_cpu > 3 && ntasks_2 <= 128 - 4 : do:Stage2_c=0; available_cpu=available_cpu-4}
+edge:Stage2:Batch_finished:a_5_run_tc:tau{provided:available_cpu > 4 && ntasks_2 <= 128 - 5 : do:Stage2_c=0; available_cpu=available_cpu-5}
+edge:Stage2:Batch_finished:a_6_run_tc:tau{provided:available_cpu > 5 && ntasks_2 <= 128 - 6 : do:Stage2_c=0; available_cpu=available_cpu-6}
+edge:Stage2:Batch_finished:a_7_run_tc:tau{provided:available_cpu > 6 && ntasks_2 <= 128 - 7 : do:Stage2_c=0; available_cpu=available_cpu-7}
+edge:Stage2:Batch_finished:a_8_run_tc:tau{provided:available_cpu > 7 && ntasks_2 <= 128 - 8 : do:Stage2_c=0; available_cpu=available_cpu-8}
+edge:Stage2:Batch_finished:a_9_run_tc:tau{provided:available_cpu > 8 && ntasks_2 <= 128 - 9 : do:Stage2_c=0; available_cpu=available_cpu-9}
+edge:Stage2:Batch_finished:a_10_run_tc:tau{provided:available_cpu > 9 && ntasks_2 <= 128 - 10 : do:Stage2_c=0; available_cpu=available_cpu-10}
+edge:Stage2:Batch_finished:a_11_run_tc:tau{provided:available_cpu > 10 && ntasks_2 <= 128 - 11 : do:Stage2_c=0; available_cpu=available_cpu-11}
+edge:Stage2:Batch_finished:a_12_run_tc:tau{provided:available_cpu > 11 && ntasks_2 <= 128 - 12 : do:Stage2_c=0; available_cpu=available_cpu-12}
+edge:Stage2:Batch_finished:a_13_run_tc:tau{provided:available_cpu > 12 && ntasks_2 <= 128 - 13 : do:Stage2_c=0; available_cpu=available_cpu-13}
+edge:Stage2:Batch_finished:a_14_run_tc:tau{provided:available_cpu > 13 && ntasks_2 <= 128 - 14 : do:Stage2_c=0; available_cpu=available_cpu-14}
+edge:Stage2:Batch_finished:a_15_run_tc:tau{provided:available_cpu > 14 && ntasks_2 <= 128 - 15 : do:Stage2_c=0; available_cpu=available_cpu-15}
+edge:Stage2:Batch_finished:a_16_run_tc:tau{provided:available_cpu > 15 && ntasks_2 <= 128 - 16 : do:Stage2_c=0; available_cpu=available_cpu-16}
+edge:Stage2:Batch_finished:a_17_run_tc:tau{provided:available_cpu > 16 && ntasks_2 <= 128 - 17 : do:Stage2_c=0; available_cpu=available_cpu-17}
+edge:Stage2:Batch_finished:a_18_run_tc:tau{provided:available_cpu > 17 && ntasks_2 <= 128 - 18 : do:Stage2_c=0; available_cpu=available_cpu-18}
+edge:Stage2:Batch_finished:a_19_run_tc:tau{provided:available_cpu > 18 && ntasks_2 <= 128 - 19 : do:Stage2_c=0; available_cpu=available_cpu-19}
+edge:Stage2:Batch_finished:a_20_run_tc:tau{provided:available_cpu > 19 && ntasks_2 <= 128 - 20 : do:Stage2_c=0; available_cpu=available_cpu-20}
+edge:Stage2:Batch_finished:a_21_run_tc:tau{provided:available_cpu > 20 && ntasks_2 <= 128 - 21 : do:Stage2_c=0; available_cpu=available_cpu-21}
+edge:Stage2:Batch_finished:a_22_run_tc:tau{provided:available_cpu > 21 && ntasks_2 <= 128 - 22 : do:Stage2_c=0; available_cpu=available_cpu-22}
+edge:Stage2:Batch_finished:a_23_run_tc:tau{provided:available_cpu > 22 && ntasks_2 <= 128 - 23 : do:Stage2_c=0; available_cpu=available_cpu-23}
+edge:Stage2:Batch_finished:a_24_run_tc:tau{provided:available_cpu > 23 && ntasks_2 <= 128 - 24 : do:Stage2_c=0; available_cpu=available_cpu-24}
+edge:Stage2:Batch_finished:a_25_run_tc:tau{provided:available_cpu > 24 && ntasks_2 <= 128 - 25 : do:Stage2_c=0; available_cpu=available_cpu-25}
+edge:Stage2:Batch_finished:a_26_run_tc:tau{provided:available_cpu > 25 && ntasks_2 <= 128 - 26 : do:Stage2_c=0; available_cpu=available_cpu-26}
+edge:Stage2:Batch_finished:a_27_run_tc:tau{provided:available_cpu > 26 && ntasks_2 <= 128 - 27 : do:Stage2_c=0; available_cpu=available_cpu-27}
+edge:Stage2:Batch_finished:a_28_run_tc:tau{provided:available_cpu > 27 && ntasks_2 <= 128 - 28 : do:Stage2_c=0; available_cpu=available_cpu-28}
+edge:Stage2:a_1_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+1; available_cpu=available_cpu+1}
+edge:Stage2:a_2_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+2; available_cpu=available_cpu+2}
+edge:Stage2:a_3_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+3; available_cpu=available_cpu+3}
+edge:Stage2:a_4_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+4; available_cpu=available_cpu+4}
+edge:Stage2:a_5_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+5; available_cpu=available_cpu+5}
+edge:Stage2:a_6_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+6; available_cpu=available_cpu+6}
+edge:Stage2:a_7_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+7; available_cpu=available_cpu+7}
+edge:Stage2:a_8_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+8; available_cpu=available_cpu+8}
+edge:Stage2:a_9_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+9; available_cpu=available_cpu+9}
+edge:Stage2:a_10_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+10; available_cpu=available_cpu+10}
+edge:Stage2:a_11_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+11; available_cpu=available_cpu+11}
+edge:Stage2:a_12_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+12; available_cpu=available_cpu+12}
+edge:Stage2:a_13_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+13; available_cpu=available_cpu+13}
+edge:Stage2:a_14_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+14; available_cpu=available_cpu+14}
+edge:Stage2:a_15_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+15; available_cpu=available_cpu+15}
+edge:Stage2:a_16_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+16; available_cpu=available_cpu+16}
+edge:Stage2:a_17_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+17; available_cpu=available_cpu+17}
+edge:Stage2:a_18_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+18; available_cpu=available_cpu+18}
+edge:Stage2:a_19_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+19; available_cpu=available_cpu+19}
+edge:Stage2:a_20_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+20; available_cpu=available_cpu+20}
+edge:Stage2:a_21_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+21; available_cpu=available_cpu+21}
+edge:Stage2:a_22_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+22; available_cpu=available_cpu+22}
+edge:Stage2:a_23_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+23; available_cpu=available_cpu+23}
+edge:Stage2:a_24_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+24; available_cpu=available_cpu+24}
+edge:Stage2:a_25_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+25; available_cpu=available_cpu+25}
+edge:Stage2:a_26_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+26; available_cpu=available_cpu+26}
+edge:Stage2:a_27_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+27; available_cpu=available_cpu+27}
+edge:Stage2:a_28_run_tc:Batch_finished:tau{provided:Stage2_c == 28 : do:ntasks_2 = ntasks_2+28; available_cpu=available_cpu+28}
+edge:Stage2:Batch_finished:Completed:tau{provided:ntasks_2 == 128 : do:stage_2=1}
+
+
+
+# Process: Stage3
+## Clocks for Stage3
+clock:1:Stage3_c
+
+## Locations for Stage3
+location:Stage3:Init{initial:}
+location:Stage3:Completed
+location:Stage3:a_1_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_2_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_3_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_4_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_5_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_6_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_7_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_8_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_9_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_10_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_11_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_12_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_13_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_14_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_15_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_16_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_17_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_18_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_19_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_20_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_21_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_22_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_23_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_24_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_25_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_26_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_27_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:a_28_run_tc{invariant:Stage3_c <= 28}
+location:Stage3:Batch_finished
+
+## Edges for Stage3
+edge:Stage3:Init:Batch_finished:tau{provided:stage_1 == 1 && stage_2 == 1}
+edge:Stage3:Batch_finished:a_1_run_tc:tau{provided:available_cpu > 0 && ntasks_3 <= 128 - 1 : do:Stage3_c=0; available_cpu=available_cpu-1}
+edge:Stage3:Batch_finished:a_2_run_tc:tau{provided:available_cpu > 1 && ntasks_3 <= 128 - 2 : do:Stage3_c=0; available_cpu=available_cpu-2}
+edge:Stage3:Batch_finished:a_3_run_tc:tau{provided:available_cpu > 2 && ntasks_3 <= 128 - 3 : do:Stage3_c=0; available_cpu=available_cpu-3}
+edge:Stage3:Batch_finished:a_4_run_tc:tau{provided:available_cpu > 3 && ntasks_3 <= 128 - 4 : do:Stage3_c=0; available_cpu=available_cpu-4}
+edge:Stage3:Batch_finished:a_5_run_tc:tau{provided:available_cpu > 4 && ntasks_3 <= 128 - 5 : do:Stage3_c=0; available_cpu=available_cpu-5}
+edge:Stage3:Batch_finished:a_6_run_tc:tau{provided:available_cpu > 5 && ntasks_3 <= 128 - 6 : do:Stage3_c=0; available_cpu=available_cpu-6}
+edge:Stage3:Batch_finished:a_7_run_tc:tau{provided:available_cpu > 6 && ntasks_3 <= 128 - 7 : do:Stage3_c=0; available_cpu=available_cpu-7}
+edge:Stage3:Batch_finished:a_8_run_tc:tau{provided:available_cpu > 7 && ntasks_3 <= 128 - 8 : do:Stage3_c=0; available_cpu=available_cpu-8}
+edge:Stage3:Batch_finished:a_9_run_tc:tau{provided:available_cpu > 8 && ntasks_3 <= 128 - 9 : do:Stage3_c=0; available_cpu=available_cpu-9}
+edge:Stage3:Batch_finished:a_10_run_tc:tau{provided:available_cpu > 9 && ntasks_3 <= 128 - 10 : do:Stage3_c=0; available_cpu=available_cpu-10}
+edge:Stage3:Batch_finished:a_11_run_tc:tau{provided:available_cpu > 10 && ntasks_3 <= 128 - 11 : do:Stage3_c=0; available_cpu=available_cpu-11}
+edge:Stage3:Batch_finished:a_12_run_tc:tau{provided:available_cpu > 11 && ntasks_3 <= 128 - 12 : do:Stage3_c=0; available_cpu=available_cpu-12}
+edge:Stage3:Batch_finished:a_13_run_tc:tau{provided:available_cpu > 12 && ntasks_3 <= 128 - 13 : do:Stage3_c=0; available_cpu=available_cpu-13}
+edge:Stage3:Batch_finished:a_14_run_tc:tau{provided:available_cpu > 13 && ntasks_3 <= 128 - 14 : do:Stage3_c=0; available_cpu=available_cpu-14}
+edge:Stage3:Batch_finished:a_15_run_tc:tau{provided:available_cpu > 14 && ntasks_3 <= 128 - 15 : do:Stage3_c=0; available_cpu=available_cpu-15}
+edge:Stage3:Batch_finished:a_16_run_tc:tau{provided:available_cpu > 15 && ntasks_3 <= 128 - 16 : do:Stage3_c=0; available_cpu=available_cpu-16}
+edge:Stage3:Batch_finished:a_17_run_tc:tau{provided:available_cpu > 16 && ntasks_3 <= 128 - 17 : do:Stage3_c=0; available_cpu=available_cpu-17}
+edge:Stage3:Batch_finished:a_18_run_tc:tau{provided:available_cpu > 17 && ntasks_3 <= 128 - 18 : do:Stage3_c=0; available_cpu=available_cpu-18}
+edge:Stage3:Batch_finished:a_19_run_tc:tau{provided:available_cpu > 18 && ntasks_3 <= 128 - 19 : do:Stage3_c=0; available_cpu=available_cpu-19}
+edge:Stage3:Batch_finished:a_20_run_tc:tau{provided:available_cpu > 19 && ntasks_3 <= 128 - 20 : do:Stage3_c=0; available_cpu=available_cpu-20}
+edge:Stage3:Batch_finished:a_21_run_tc:tau{provided:available_cpu > 20 && ntasks_3 <= 128 - 21 : do:Stage3_c=0; available_cpu=available_cpu-21}
+edge:Stage3:Batch_finished:a_22_run_tc:tau{provided:available_cpu > 21 && ntasks_3 <= 128 - 22 : do:Stage3_c=0; available_cpu=available_cpu-22}
+edge:Stage3:Batch_finished:a_23_run_tc:tau{provided:available_cpu > 22 && ntasks_3 <= 128 - 23 : do:Stage3_c=0; available_cpu=available_cpu-23}
+edge:Stage3:Batch_finished:a_24_run_tc:tau{provided:available_cpu > 23 && ntasks_3 <= 128 - 24 : do:Stage3_c=0; available_cpu=available_cpu-24}
+edge:Stage3:Batch_finished:a_25_run_tc:tau{provided:available_cpu > 24 && ntasks_3 <= 128 - 25 : do:Stage3_c=0; available_cpu=available_cpu-25}
+edge:Stage3:Batch_finished:a_26_run_tc:tau{provided:available_cpu > 25 && ntasks_3 <= 128 - 26 : do:Stage3_c=0; available_cpu=available_cpu-26}
+edge:Stage3:Batch_finished:a_27_run_tc:tau{provided:available_cpu > 26 && ntasks_3 <= 128 - 27 : do:Stage3_c=0; available_cpu=available_cpu-27}
+edge:Stage3:Batch_finished:a_28_run_tc:tau{provided:available_cpu > 27 && ntasks_3 <= 128 - 28 : do:Stage3_c=0; available_cpu=available_cpu-28}
+edge:Stage3:a_1_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+1; available_cpu=available_cpu+1}
+edge:Stage3:a_2_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+2; available_cpu=available_cpu+2}
+edge:Stage3:a_3_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+3; available_cpu=available_cpu+3}
+edge:Stage3:a_4_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+4; available_cpu=available_cpu+4}
+edge:Stage3:a_5_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+5; available_cpu=available_cpu+5}
+edge:Stage3:a_6_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+6; available_cpu=available_cpu+6}
+edge:Stage3:a_7_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+7; available_cpu=available_cpu+7}
+edge:Stage3:a_8_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+8; available_cpu=available_cpu+8}
+edge:Stage3:a_9_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+9; available_cpu=available_cpu+9}
+edge:Stage3:a_10_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+10; available_cpu=available_cpu+10}
+edge:Stage3:a_11_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+11; available_cpu=available_cpu+11}
+edge:Stage3:a_12_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+12; available_cpu=available_cpu+12}
+edge:Stage3:a_13_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+13; available_cpu=available_cpu+13}
+edge:Stage3:a_14_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+14; available_cpu=available_cpu+14}
+edge:Stage3:a_15_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+15; available_cpu=available_cpu+15}
+edge:Stage3:a_16_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+16; available_cpu=available_cpu+16}
+edge:Stage3:a_17_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+17; available_cpu=available_cpu+17}
+edge:Stage3:a_18_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+18; available_cpu=available_cpu+18}
+edge:Stage3:a_19_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+19; available_cpu=available_cpu+19}
+edge:Stage3:a_20_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+20; available_cpu=available_cpu+20}
+edge:Stage3:a_21_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+21; available_cpu=available_cpu+21}
+edge:Stage3:a_22_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+22; available_cpu=available_cpu+22}
+edge:Stage3:a_23_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+23; available_cpu=available_cpu+23}
+edge:Stage3:a_24_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+24; available_cpu=available_cpu+24}
+edge:Stage3:a_25_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+25; available_cpu=available_cpu+25}
+edge:Stage3:a_26_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+26; available_cpu=available_cpu+26}
+edge:Stage3:a_27_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+27; available_cpu=available_cpu+27}
+edge:Stage3:a_28_run_tc:Batch_finished:tau{provided:Stage3_c == 28 : do:ntasks_3 = ntasks_3+28; available_cpu=available_cpu+28}
+edge:Stage3:Batch_finished:Completed:tau{provided:ntasks_3 == 128 : do:stage_3=1}
+
+
+
+# Process: Stage4
+## Clocks for Stage4
+clock:1:Stage4_c
+
+## Locations for Stage4
+location:Stage4:Init{initial:}
+location:Stage4:Completed
+location:Stage4:a_1_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_2_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_3_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_4_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_5_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_6_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_7_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_8_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_9_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_10_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_11_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_12_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_13_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_14_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_15_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_16_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_17_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_18_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_19_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_20_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_21_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_22_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_23_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_24_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_25_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_26_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_27_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:a_28_run_tc{invariant:Stage4_c <= 8}
+location:Stage4:Batch_finished
+
+## Edges for Stage4
+edge:Stage4:Init:Batch_finished:tau{provided:stage_1 == 1 && stage_2 == 1}
+edge:Stage4:Batch_finished:a_1_run_tc:tau{provided:available_cpu > 0 && ntasks_4 <= 128 - 1 : do:Stage4_c=0; available_cpu=available_cpu-1}
+edge:Stage4:Batch_finished:a_2_run_tc:tau{provided:available_cpu > 1 && ntasks_4 <= 128 - 2 : do:Stage4_c=0; available_cpu=available_cpu-2}
+edge:Stage4:Batch_finished:a_3_run_tc:tau{provided:available_cpu > 2 && ntasks_4 <= 128 - 3 : do:Stage4_c=0; available_cpu=available_cpu-3}
+edge:Stage4:Batch_finished:a_4_run_tc:tau{provided:available_cpu > 3 && ntasks_4 <= 128 - 4 : do:Stage4_c=0; available_cpu=available_cpu-4}
+edge:Stage4:Batch_finished:a_5_run_tc:tau{provided:available_cpu > 4 && ntasks_4 <= 128 - 5 : do:Stage4_c=0; available_cpu=available_cpu-5}
+edge:Stage4:Batch_finished:a_6_run_tc:tau{provided:available_cpu > 5 && ntasks_4 <= 128 - 6 : do:Stage4_c=0; available_cpu=available_cpu-6}
+edge:Stage4:Batch_finished:a_7_run_tc:tau{provided:available_cpu > 6 && ntasks_4 <= 128 - 7 : do:Stage4_c=0; available_cpu=available_cpu-7}
+edge:Stage4:Batch_finished:a_8_run_tc:tau{provided:available_cpu > 7 && ntasks_4 <= 128 - 8 : do:Stage4_c=0; available_cpu=available_cpu-8}
+edge:Stage4:Batch_finished:a_9_run_tc:tau{provided:available_cpu > 8 && ntasks_4 <= 128 - 9 : do:Stage4_c=0; available_cpu=available_cpu-9}
+edge:Stage4:Batch_finished:a_10_run_tc:tau{provided:available_cpu > 9 && ntasks_4 <= 128 - 10 : do:Stage4_c=0; available_cpu=available_cpu-10}
+edge:Stage4:Batch_finished:a_11_run_tc:tau{provided:available_cpu > 10 && ntasks_4 <= 128 - 11 : do:Stage4_c=0; available_cpu=available_cpu-11}
+edge:Stage4:Batch_finished:a_12_run_tc:tau{provided:available_cpu > 11 && ntasks_4 <= 128 - 12 : do:Stage4_c=0; available_cpu=available_cpu-12}
+edge:Stage4:Batch_finished:a_13_run_tc:tau{provided:available_cpu > 12 && ntasks_4 <= 128 - 13 : do:Stage4_c=0; available_cpu=available_cpu-13}
+edge:Stage4:Batch_finished:a_14_run_tc:tau{provided:available_cpu > 13 && ntasks_4 <= 128 - 14 : do:Stage4_c=0; available_cpu=available_cpu-14}
+edge:Stage4:Batch_finished:a_15_run_tc:tau{provided:available_cpu > 14 && ntasks_4 <= 128 - 15 : do:Stage4_c=0; available_cpu=available_cpu-15}
+edge:Stage4:Batch_finished:a_16_run_tc:tau{provided:available_cpu > 15 && ntasks_4 <= 128 - 16 : do:Stage4_c=0; available_cpu=available_cpu-16}
+edge:Stage4:Batch_finished:a_17_run_tc:tau{provided:available_cpu > 16 && ntasks_4 <= 128 - 17 : do:Stage4_c=0; available_cpu=available_cpu-17}
+edge:Stage4:Batch_finished:a_18_run_tc:tau{provided:available_cpu > 17 && ntasks_4 <= 128 - 18 : do:Stage4_c=0; available_cpu=available_cpu-18}
+edge:Stage4:Batch_finished:a_19_run_tc:tau{provided:available_cpu > 18 && ntasks_4 <= 128 - 19 : do:Stage4_c=0; available_cpu=available_cpu-19}
+edge:Stage4:Batch_finished:a_20_run_tc:tau{provided:available_cpu > 19 && ntasks_4 <= 128 - 20 : do:Stage4_c=0; available_cpu=available_cpu-20}
+edge:Stage4:Batch_finished:a_21_run_tc:tau{provided:available_cpu > 20 && ntasks_4 <= 128 - 21 : do:Stage4_c=0; available_cpu=available_cpu-21}
+edge:Stage4:Batch_finished:a_22_run_tc:tau{provided:available_cpu > 21 && ntasks_4 <= 128 - 22 : do:Stage4_c=0; available_cpu=available_cpu-22}
+edge:Stage4:Batch_finished:a_23_run_tc:tau{provided:available_cpu > 22 && ntasks_4 <= 128 - 23 : do:Stage4_c=0; available_cpu=available_cpu-23}
+edge:Stage4:Batch_finished:a_24_run_tc:tau{provided:available_cpu > 23 && ntasks_4 <= 128 - 24 : do:Stage4_c=0; available_cpu=available_cpu-24}
+edge:Stage4:Batch_finished:a_25_run_tc:tau{provided:available_cpu > 24 && ntasks_4 <= 128 - 25 : do:Stage4_c=0; available_cpu=available_cpu-25}
+edge:Stage4:Batch_finished:a_26_run_tc:tau{provided:available_cpu > 25 && ntasks_4 <= 128 - 26 : do:Stage4_c=0; available_cpu=available_cpu-26}
+edge:Stage4:Batch_finished:a_27_run_tc:tau{provided:available_cpu > 26 && ntasks_4 <= 128 - 27 : do:Stage4_c=0; available_cpu=available_cpu-27}
+edge:Stage4:Batch_finished:a_28_run_tc:tau{provided:available_cpu > 27 && ntasks_4 <= 128 - 28 : do:Stage4_c=0; available_cpu=available_cpu-28}
+edge:Stage4:a_1_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+1; available_cpu=available_cpu+1}
+edge:Stage4:a_2_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+2; available_cpu=available_cpu+2}
+edge:Stage4:a_3_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+3; available_cpu=available_cpu+3}
+edge:Stage4:a_4_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+4; available_cpu=available_cpu+4}
+edge:Stage4:a_5_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+5; available_cpu=available_cpu+5}
+edge:Stage4:a_6_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+6; available_cpu=available_cpu+6}
+edge:Stage4:a_7_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+7; available_cpu=available_cpu+7}
+edge:Stage4:a_8_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+8; available_cpu=available_cpu+8}
+edge:Stage4:a_9_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+9; available_cpu=available_cpu+9}
+edge:Stage4:a_10_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+10; available_cpu=available_cpu+10}
+edge:Stage4:a_11_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+11; available_cpu=available_cpu+11}
+edge:Stage4:a_12_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+12; available_cpu=available_cpu+12}
+edge:Stage4:a_13_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+13; available_cpu=available_cpu+13}
+edge:Stage4:a_14_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+14; available_cpu=available_cpu+14}
+edge:Stage4:a_15_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+15; available_cpu=available_cpu+15}
+edge:Stage4:a_16_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+16; available_cpu=available_cpu+16}
+edge:Stage4:a_17_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+17; available_cpu=available_cpu+17}
+edge:Stage4:a_18_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+18; available_cpu=available_cpu+18}
+edge:Stage4:a_19_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+19; available_cpu=available_cpu+19}
+edge:Stage4:a_20_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+20; available_cpu=available_cpu+20}
+edge:Stage4:a_21_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+21; available_cpu=available_cpu+21}
+edge:Stage4:a_22_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+22; available_cpu=available_cpu+22}
+edge:Stage4:a_23_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+23; available_cpu=available_cpu+23}
+edge:Stage4:a_24_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+24; available_cpu=available_cpu+24}
+edge:Stage4:a_25_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+25; available_cpu=available_cpu+25}
+edge:Stage4:a_26_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+26; available_cpu=available_cpu+26}
+edge:Stage4:a_27_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+27; available_cpu=available_cpu+27}
+edge:Stage4:a_28_run_tc:Batch_finished:tau{provided:Stage4_c == 8 : do:ntasks_4 = ntasks_4+28; available_cpu=available_cpu+28}
+edge:Stage4:Batch_finished:Completed:tau{provided:ntasks_4 == 128 : do:stage_4=1}
+
+
+
+# Process: Stage5
+## Clocks for Stage5
+clock:1:Stage5_c
+
+## Locations for Stage5
+location:Stage5:Init{initial:}
+location:Stage5:Completed
+location:Stage5:a_1_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_2_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_3_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_4_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_5_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_6_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_7_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_8_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_9_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_10_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_11_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_12_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_13_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_14_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_15_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_16_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_17_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_18_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_19_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_20_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_21_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_22_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_23_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_24_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_25_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_26_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_27_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:a_28_run_tc{invariant:Stage5_c <= 33}
+location:Stage5:Batch_finished
+
+## Edges for Stage5
+edge:Stage5:Init:Batch_finished:tau{provided:stage_3 == 1 && stage_4 == 1}
+edge:Stage5:Batch_finished:a_1_run_tc:tau{provided:available_cpu > 0 && ntasks_5 <= 128 - 1 : do:Stage5_c=0; available_cpu=available_cpu-1}
+edge:Stage5:Batch_finished:a_2_run_tc:tau{provided:available_cpu > 1 && ntasks_5 <= 128 - 2 : do:Stage5_c=0; available_cpu=available_cpu-2}
+edge:Stage5:Batch_finished:a_3_run_tc:tau{provided:available_cpu > 2 && ntasks_5 <= 128 - 3 : do:Stage5_c=0; available_cpu=available_cpu-3}
+edge:Stage5:Batch_finished:a_4_run_tc:tau{provided:available_cpu > 3 && ntasks_5 <= 128 - 4 : do:Stage5_c=0; available_cpu=available_cpu-4}
+edge:Stage5:Batch_finished:a_5_run_tc:tau{provided:available_cpu > 4 && ntasks_5 <= 128 - 5 : do:Stage5_c=0; available_cpu=available_cpu-5}
+edge:Stage5:Batch_finished:a_6_run_tc:tau{provided:available_cpu > 5 && ntasks_5 <= 128 - 6 : do:Stage5_c=0; available_cpu=available_cpu-6}
+edge:Stage5:Batch_finished:a_7_run_tc:tau{provided:available_cpu > 6 && ntasks_5 <= 128 - 7 : do:Stage5_c=0; available_cpu=available_cpu-7}
+edge:Stage5:Batch_finished:a_8_run_tc:tau{provided:available_cpu > 7 && ntasks_5 <= 128 - 8 : do:Stage5_c=0; available_cpu=available_cpu-8}
+edge:Stage5:Batch_finished:a_9_run_tc:tau{provided:available_cpu > 8 && ntasks_5 <= 128 - 9 : do:Stage5_c=0; available_cpu=available_cpu-9}
+edge:Stage5:Batch_finished:a_10_run_tc:tau{provided:available_cpu > 9 && ntasks_5 <= 128 - 10 : do:Stage5_c=0; available_cpu=available_cpu-10}
+edge:Stage5:Batch_finished:a_11_run_tc:tau{provided:available_cpu > 10 && ntasks_5 <= 128 - 11 : do:Stage5_c=0; available_cpu=available_cpu-11}
+edge:Stage5:Batch_finished:a_12_run_tc:tau{provided:available_cpu > 11 && ntasks_5 <= 128 - 12 : do:Stage5_c=0; available_cpu=available_cpu-12}
+edge:Stage5:Batch_finished:a_13_run_tc:tau{provided:available_cpu > 12 && ntasks_5 <= 128 - 13 : do:Stage5_c=0; available_cpu=available_cpu-13}
+edge:Stage5:Batch_finished:a_14_run_tc:tau{provided:available_cpu > 13 && ntasks_5 <= 128 - 14 : do:Stage5_c=0; available_cpu=available_cpu-14}
+edge:Stage5:Batch_finished:a_15_run_tc:tau{provided:available_cpu > 14 && ntasks_5 <= 128 - 15 : do:Stage5_c=0; available_cpu=available_cpu-15}
+edge:Stage5:Batch_finished:a_16_run_tc:tau{provided:available_cpu > 15 && ntasks_5 <= 128 - 16 : do:Stage5_c=0; available_cpu=available_cpu-16}
+edge:Stage5:Batch_finished:a_17_run_tc:tau{provided:available_cpu > 16 && ntasks_5 <= 128 - 17 : do:Stage5_c=0; available_cpu=available_cpu-17}
+edge:Stage5:Batch_finished:a_18_run_tc:tau{provided:available_cpu > 17 && ntasks_5 <= 128 - 18 : do:Stage5_c=0; available_cpu=available_cpu-18}
+edge:Stage5:Batch_finished:a_19_run_tc:tau{provided:available_cpu > 18 && ntasks_5 <= 128 - 19 : do:Stage5_c=0; available_cpu=available_cpu-19}
+edge:Stage5:Batch_finished:a_20_run_tc:tau{provided:available_cpu > 19 && ntasks_5 <= 128 - 20 : do:Stage5_c=0; available_cpu=available_cpu-20}
+edge:Stage5:Batch_finished:a_21_run_tc:tau{provided:available_cpu > 20 && ntasks_5 <= 128 - 21 : do:Stage5_c=0; available_cpu=available_cpu-21}
+edge:Stage5:Batch_finished:a_22_run_tc:tau{provided:available_cpu > 21 && ntasks_5 <= 128 - 22 : do:Stage5_c=0; available_cpu=available_cpu-22}
+edge:Stage5:Batch_finished:a_23_run_tc:tau{provided:available_cpu > 22 && ntasks_5 <= 128 - 23 : do:Stage5_c=0; available_cpu=available_cpu-23}
+edge:Stage5:Batch_finished:a_24_run_tc:tau{provided:available_cpu > 23 && ntasks_5 <= 128 - 24 : do:Stage5_c=0; available_cpu=available_cpu-24}
+edge:Stage5:Batch_finished:a_25_run_tc:tau{provided:available_cpu > 24 && ntasks_5 <= 128 - 25 : do:Stage5_c=0; available_cpu=available_cpu-25}
+edge:Stage5:Batch_finished:a_26_run_tc:tau{provided:available_cpu > 25 && ntasks_5 <= 128 - 26 : do:Stage5_c=0; available_cpu=available_cpu-26}
+edge:Stage5:Batch_finished:a_27_run_tc:tau{provided:available_cpu > 26 && ntasks_5 <= 128 - 27 : do:Stage5_c=0; available_cpu=available_cpu-27}
+edge:Stage5:Batch_finished:a_28_run_tc:tau{provided:available_cpu > 27 && ntasks_5 <= 128 - 28 : do:Stage5_c=0; available_cpu=available_cpu-28}
+edge:Stage5:a_1_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+1; available_cpu=available_cpu+1}
+edge:Stage5:a_2_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+2; available_cpu=available_cpu+2}
+edge:Stage5:a_3_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+3; available_cpu=available_cpu+3}
+edge:Stage5:a_4_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+4; available_cpu=available_cpu+4}
+edge:Stage5:a_5_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+5; available_cpu=available_cpu+5}
+edge:Stage5:a_6_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+6; available_cpu=available_cpu+6}
+edge:Stage5:a_7_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+7; available_cpu=available_cpu+7}
+edge:Stage5:a_8_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+8; available_cpu=available_cpu+8}
+edge:Stage5:a_9_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+9; available_cpu=available_cpu+9}
+edge:Stage5:a_10_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+10; available_cpu=available_cpu+10}
+edge:Stage5:a_11_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+11; available_cpu=available_cpu+11}
+edge:Stage5:a_12_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+12; available_cpu=available_cpu+12}
+edge:Stage5:a_13_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+13; available_cpu=available_cpu+13}
+edge:Stage5:a_14_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+14; available_cpu=available_cpu+14}
+edge:Stage5:a_15_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+15; available_cpu=available_cpu+15}
+edge:Stage5:a_16_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+16; available_cpu=available_cpu+16}
+edge:Stage5:a_17_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+17; available_cpu=available_cpu+17}
+edge:Stage5:a_18_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+18; available_cpu=available_cpu+18}
+edge:Stage5:a_19_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+19; available_cpu=available_cpu+19}
+edge:Stage5:a_20_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+20; available_cpu=available_cpu+20}
+edge:Stage5:a_21_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+21; available_cpu=available_cpu+21}
+edge:Stage5:a_22_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+22; available_cpu=available_cpu+22}
+edge:Stage5:a_23_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+23; available_cpu=available_cpu+23}
+edge:Stage5:a_24_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+24; available_cpu=available_cpu+24}
+edge:Stage5:a_25_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+25; available_cpu=available_cpu+25}
+edge:Stage5:a_26_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+26; available_cpu=available_cpu+26}
+edge:Stage5:a_27_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+27; available_cpu=available_cpu+27}
+edge:Stage5:a_28_run_tc:Batch_finished:tau{provided:Stage5_c == 33 : do:ntasks_5 = ntasks_5+28; available_cpu=available_cpu+28}
+edge:Stage5:Batch_finished:Completed:tau{provided:ntasks_5 == 128 : do:stage_5=1}
+
+
+
+# Process: Stage6
+## Clocks for Stage6
+clock:1:Stage6_c
+
+## Locations for Stage6
+location:Stage6:Init{initial:}
+location:Stage6:Completed
+location:Stage6:a_1_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_2_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_3_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_4_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_5_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_6_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_7_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_8_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_9_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_10_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_11_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_12_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_13_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_14_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_15_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_16_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_17_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_18_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_19_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_20_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_21_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_22_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_23_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_24_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_25_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_26_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_27_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:a_28_run_tc{invariant:Stage6_c <= 18}
+location:Stage6:Batch_finished
+
+## Edges for Stage6
+edge:Stage6:Init:Batch_finished:tau{provided:stage_1 == 1 && stage_2 == 1 && stage_5 == 1}
+edge:Stage6:Batch_finished:a_1_run_tc:tau{provided:available_cpu > 0 && ntasks_6 <= 128 - 1 : do:Stage6_c=0; available_cpu=available_cpu-1}
+edge:Stage6:Batch_finished:a_2_run_tc:tau{provided:available_cpu > 1 && ntasks_6 <= 128 - 2 : do:Stage6_c=0; available_cpu=available_cpu-2}
+edge:Stage6:Batch_finished:a_3_run_tc:tau{provided:available_cpu > 2 && ntasks_6 <= 128 - 3 : do:Stage6_c=0; available_cpu=available_cpu-3}
+edge:Stage6:Batch_finished:a_4_run_tc:tau{provided:available_cpu > 3 && ntasks_6 <= 128 - 4 : do:Stage6_c=0; available_cpu=available_cpu-4}
+edge:Stage6:Batch_finished:a_5_run_tc:tau{provided:available_cpu > 4 && ntasks_6 <= 128 - 5 : do:Stage6_c=0; available_cpu=available_cpu-5}
+edge:Stage6:Batch_finished:a_6_run_tc:tau{provided:available_cpu > 5 && ntasks_6 <= 128 - 6 : do:Stage6_c=0; available_cpu=available_cpu-6}
+edge:Stage6:Batch_finished:a_7_run_tc:tau{provided:available_cpu > 6 && ntasks_6 <= 128 - 7 : do:Stage6_c=0; available_cpu=available_cpu-7}
+edge:Stage6:Batch_finished:a_8_run_tc:tau{provided:available_cpu > 7 && ntasks_6 <= 128 - 8 : do:Stage6_c=0; available_cpu=available_cpu-8}
+edge:Stage6:Batch_finished:a_9_run_tc:tau{provided:available_cpu > 8 && ntasks_6 <= 128 - 9 : do:Stage6_c=0; available_cpu=available_cpu-9}
+edge:Stage6:Batch_finished:a_10_run_tc:tau{provided:available_cpu > 9 && ntasks_6 <= 128 - 10 : do:Stage6_c=0; available_cpu=available_cpu-10}
+edge:Stage6:Batch_finished:a_11_run_tc:tau{provided:available_cpu > 10 && ntasks_6 <= 128 - 11 : do:Stage6_c=0; available_cpu=available_cpu-11}
+edge:Stage6:Batch_finished:a_12_run_tc:tau{provided:available_cpu > 11 && ntasks_6 <= 128 - 12 : do:Stage6_c=0; available_cpu=available_cpu-12}
+edge:Stage6:Batch_finished:a_13_run_tc:tau{provided:available_cpu > 12 && ntasks_6 <= 128 - 13 : do:Stage6_c=0; available_cpu=available_cpu-13}
+edge:Stage6:Batch_finished:a_14_run_tc:tau{provided:available_cpu > 13 && ntasks_6 <= 128 - 14 : do:Stage6_c=0; available_cpu=available_cpu-14}
+edge:Stage6:Batch_finished:a_15_run_tc:tau{provided:available_cpu > 14 && ntasks_6 <= 128 - 15 : do:Stage6_c=0; available_cpu=available_cpu-15}
+edge:Stage6:Batch_finished:a_16_run_tc:tau{provided:available_cpu > 15 && ntasks_6 <= 128 - 16 : do:Stage6_c=0; available_cpu=available_cpu-16}
+edge:Stage6:Batch_finished:a_17_run_tc:tau{provided:available_cpu > 16 && ntasks_6 <= 128 - 17 : do:Stage6_c=0; available_cpu=available_cpu-17}
+edge:Stage6:Batch_finished:a_18_run_tc:tau{provided:available_cpu > 17 && ntasks_6 <= 128 - 18 : do:Stage6_c=0; available_cpu=available_cpu-18}
+edge:Stage6:Batch_finished:a_19_run_tc:tau{provided:available_cpu > 18 && ntasks_6 <= 128 - 19 : do:Stage6_c=0; available_cpu=available_cpu-19}
+edge:Stage6:Batch_finished:a_20_run_tc:tau{provided:available_cpu > 19 && ntasks_6 <= 128 - 20 : do:Stage6_c=0; available_cpu=available_cpu-20}
+edge:Stage6:Batch_finished:a_21_run_tc:tau{provided:available_cpu > 20 && ntasks_6 <= 128 - 21 : do:Stage6_c=0; available_cpu=available_cpu-21}
+edge:Stage6:Batch_finished:a_22_run_tc:tau{provided:available_cpu > 21 && ntasks_6 <= 128 - 22 : do:Stage6_c=0; available_cpu=available_cpu-22}
+edge:Stage6:Batch_finished:a_23_run_tc:tau{provided:available_cpu > 22 && ntasks_6 <= 128 - 23 : do:Stage6_c=0; available_cpu=available_cpu-23}
+edge:Stage6:Batch_finished:a_24_run_tc:tau{provided:available_cpu > 23 && ntasks_6 <= 128 - 24 : do:Stage6_c=0; available_cpu=available_cpu-24}
+edge:Stage6:Batch_finished:a_25_run_tc:tau{provided:available_cpu > 24 && ntasks_6 <= 128 - 25 : do:Stage6_c=0; available_cpu=available_cpu-25}
+edge:Stage6:Batch_finished:a_26_run_tc:tau{provided:available_cpu > 25 && ntasks_6 <= 128 - 26 : do:Stage6_c=0; available_cpu=available_cpu-26}
+edge:Stage6:Batch_finished:a_27_run_tc:tau{provided:available_cpu > 26 && ntasks_6 <= 128 - 27 : do:Stage6_c=0; available_cpu=available_cpu-27}
+edge:Stage6:Batch_finished:a_28_run_tc:tau{provided:available_cpu > 27 && ntasks_6 <= 128 - 28 : do:Stage6_c=0; available_cpu=available_cpu-28}
+edge:Stage6:a_1_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+1; available_cpu=available_cpu+1}
+edge:Stage6:a_2_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+2; available_cpu=available_cpu+2}
+edge:Stage6:a_3_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+3; available_cpu=available_cpu+3}
+edge:Stage6:a_4_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+4; available_cpu=available_cpu+4}
+edge:Stage6:a_5_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+5; available_cpu=available_cpu+5}
+edge:Stage6:a_6_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+6; available_cpu=available_cpu+6}
+edge:Stage6:a_7_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+7; available_cpu=available_cpu+7}
+edge:Stage6:a_8_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+8; available_cpu=available_cpu+8}
+edge:Stage6:a_9_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+9; available_cpu=available_cpu+9}
+edge:Stage6:a_10_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+10; available_cpu=available_cpu+10}
+edge:Stage6:a_11_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+11; available_cpu=available_cpu+11}
+edge:Stage6:a_12_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+12; available_cpu=available_cpu+12}
+edge:Stage6:a_13_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+13; available_cpu=available_cpu+13}
+edge:Stage6:a_14_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+14; available_cpu=available_cpu+14}
+edge:Stage6:a_15_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+15; available_cpu=available_cpu+15}
+edge:Stage6:a_16_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+16; available_cpu=available_cpu+16}
+edge:Stage6:a_17_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+17; available_cpu=available_cpu+17}
+edge:Stage6:a_18_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+18; available_cpu=available_cpu+18}
+edge:Stage6:a_19_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+19; available_cpu=available_cpu+19}
+edge:Stage6:a_20_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+20; available_cpu=available_cpu+20}
+edge:Stage6:a_21_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+21; available_cpu=available_cpu+21}
+edge:Stage6:a_22_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+22; available_cpu=available_cpu+22}
+edge:Stage6:a_23_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+23; available_cpu=available_cpu+23}
+edge:Stage6:a_24_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+24; available_cpu=available_cpu+24}
+edge:Stage6:a_25_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+25; available_cpu=available_cpu+25}
+edge:Stage6:a_26_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+26; available_cpu=available_cpu+26}
+edge:Stage6:a_27_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+27; available_cpu=available_cpu+27}
+edge:Stage6:a_28_run_tc:Batch_finished:tau{provided:Stage6_c == 18 : do:ntasks_6 = ntasks_6+28; available_cpu=available_cpu+28}
+edge:Stage6:Batch_finished:Completed:tau{provided:ntasks_6 == 128 : do:stage_6=1}
+
+
+
+# Process: Stage7
+## Clocks for Stage7
+clock:1:Stage7_c
+
+## Locations for Stage7
+location:Stage7:Init{initial:}
+location:Stage7:Completed
+location:Stage7:a_1_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_2_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_3_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_4_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_5_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_6_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_7_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_8_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_9_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_10_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_11_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_12_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_13_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_14_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_15_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_16_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_17_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_18_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_19_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_20_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_21_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_22_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_23_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_24_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_25_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_26_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_27_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:a_28_run_tc{invariant:Stage7_c <= 13}
+location:Stage7:Batch_finished
+
+## Edges for Stage7
+edge:Stage7:Init:Batch_finished:tau{provided:stage_3 == 1 && stage_4 == 1 && stage_6 == 1}
+edge:Stage7:Batch_finished:a_1_run_tc:tau{provided:available_cpu > 0 && ntasks_7 <= 128 - 1 : do:Stage7_c=0; available_cpu=available_cpu-1}
+edge:Stage7:Batch_finished:a_2_run_tc:tau{provided:available_cpu > 1 && ntasks_7 <= 128 - 2 : do:Stage7_c=0; available_cpu=available_cpu-2}
+edge:Stage7:Batch_finished:a_3_run_tc:tau{provided:available_cpu > 2 && ntasks_7 <= 128 - 3 : do:Stage7_c=0; available_cpu=available_cpu-3}
+edge:Stage7:Batch_finished:a_4_run_tc:tau{provided:available_cpu > 3 && ntasks_7 <= 128 - 4 : do:Stage7_c=0; available_cpu=available_cpu-4}
+edge:Stage7:Batch_finished:a_5_run_tc:tau{provided:available_cpu > 4 && ntasks_7 <= 128 - 5 : do:Stage7_c=0; available_cpu=available_cpu-5}
+edge:Stage7:Batch_finished:a_6_run_tc:tau{provided:available_cpu > 5 && ntasks_7 <= 128 - 6 : do:Stage7_c=0; available_cpu=available_cpu-6}
+edge:Stage7:Batch_finished:a_7_run_tc:tau{provided:available_cpu > 6 && ntasks_7 <= 128 - 7 : do:Stage7_c=0; available_cpu=available_cpu-7}
+edge:Stage7:Batch_finished:a_8_run_tc:tau{provided:available_cpu > 7 && ntasks_7 <= 128 - 8 : do:Stage7_c=0; available_cpu=available_cpu-8}
+edge:Stage7:Batch_finished:a_9_run_tc:tau{provided:available_cpu > 8 && ntasks_7 <= 128 - 9 : do:Stage7_c=0; available_cpu=available_cpu-9}
+edge:Stage7:Batch_finished:a_10_run_tc:tau{provided:available_cpu > 9 && ntasks_7 <= 128 - 10 : do:Stage7_c=0; available_cpu=available_cpu-10}
+edge:Stage7:Batch_finished:a_11_run_tc:tau{provided:available_cpu > 10 && ntasks_7 <= 128 - 11 : do:Stage7_c=0; available_cpu=available_cpu-11}
+edge:Stage7:Batch_finished:a_12_run_tc:tau{provided:available_cpu > 11 && ntasks_7 <= 128 - 12 : do:Stage7_c=0; available_cpu=available_cpu-12}
+edge:Stage7:Batch_finished:a_13_run_tc:tau{provided:available_cpu > 12 && ntasks_7 <= 128 - 13 : do:Stage7_c=0; available_cpu=available_cpu-13}
+edge:Stage7:Batch_finished:a_14_run_tc:tau{provided:available_cpu > 13 && ntasks_7 <= 128 - 14 : do:Stage7_c=0; available_cpu=available_cpu-14}
+edge:Stage7:Batch_finished:a_15_run_tc:tau{provided:available_cpu > 14 && ntasks_7 <= 128 - 15 : do:Stage7_c=0; available_cpu=available_cpu-15}
+edge:Stage7:Batch_finished:a_16_run_tc:tau{provided:available_cpu > 15 && ntasks_7 <= 128 - 16 : do:Stage7_c=0; available_cpu=available_cpu-16}
+edge:Stage7:Batch_finished:a_17_run_tc:tau{provided:available_cpu > 16 && ntasks_7 <= 128 - 17 : do:Stage7_c=0; available_cpu=available_cpu-17}
+edge:Stage7:Batch_finished:a_18_run_tc:tau{provided:available_cpu > 17 && ntasks_7 <= 128 - 18 : do:Stage7_c=0; available_cpu=available_cpu-18}
+edge:Stage7:Batch_finished:a_19_run_tc:tau{provided:available_cpu > 18 && ntasks_7 <= 128 - 19 : do:Stage7_c=0; available_cpu=available_cpu-19}
+edge:Stage7:Batch_finished:a_20_run_tc:tau{provided:available_cpu > 19 && ntasks_7 <= 128 - 20 : do:Stage7_c=0; available_cpu=available_cpu-20}
+edge:Stage7:Batch_finished:a_21_run_tc:tau{provided:available_cpu > 20 && ntasks_7 <= 128 - 21 : do:Stage7_c=0; available_cpu=available_cpu-21}
+edge:Stage7:Batch_finished:a_22_run_tc:tau{provided:available_cpu > 21 && ntasks_7 <= 128 - 22 : do:Stage7_c=0; available_cpu=available_cpu-22}
+edge:Stage7:Batch_finished:a_23_run_tc:tau{provided:available_cpu > 22 && ntasks_7 <= 128 - 23 : do:Stage7_c=0; available_cpu=available_cpu-23}
+edge:Stage7:Batch_finished:a_24_run_tc:tau{provided:available_cpu > 23 && ntasks_7 <= 128 - 24 : do:Stage7_c=0; available_cpu=available_cpu-24}
+edge:Stage7:Batch_finished:a_25_run_tc:tau{provided:available_cpu > 24 && ntasks_7 <= 128 - 25 : do:Stage7_c=0; available_cpu=available_cpu-25}
+edge:Stage7:Batch_finished:a_26_run_tc:tau{provided:available_cpu > 25 && ntasks_7 <= 128 - 26 : do:Stage7_c=0; available_cpu=available_cpu-26}
+edge:Stage7:Batch_finished:a_27_run_tc:tau{provided:available_cpu > 26 && ntasks_7 <= 128 - 27 : do:Stage7_c=0; available_cpu=available_cpu-27}
+edge:Stage7:Batch_finished:a_28_run_tc:tau{provided:available_cpu > 27 && ntasks_7 <= 128 - 28 : do:Stage7_c=0; available_cpu=available_cpu-28}
+edge:Stage7:a_1_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+1; available_cpu=available_cpu+1}
+edge:Stage7:a_2_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+2; available_cpu=available_cpu+2}
+edge:Stage7:a_3_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+3; available_cpu=available_cpu+3}
+edge:Stage7:a_4_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+4; available_cpu=available_cpu+4}
+edge:Stage7:a_5_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+5; available_cpu=available_cpu+5}
+edge:Stage7:a_6_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+6; available_cpu=available_cpu+6}
+edge:Stage7:a_7_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+7; available_cpu=available_cpu+7}
+edge:Stage7:a_8_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+8; available_cpu=available_cpu+8}
+edge:Stage7:a_9_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+9; available_cpu=available_cpu+9}
+edge:Stage7:a_10_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+10; available_cpu=available_cpu+10}
+edge:Stage7:a_11_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+11; available_cpu=available_cpu+11}
+edge:Stage7:a_12_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+12; available_cpu=available_cpu+12}
+edge:Stage7:a_13_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+13; available_cpu=available_cpu+13}
+edge:Stage7:a_14_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+14; available_cpu=available_cpu+14}
+edge:Stage7:a_15_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+15; available_cpu=available_cpu+15}
+edge:Stage7:a_16_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+16; available_cpu=available_cpu+16}
+edge:Stage7:a_17_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+17; available_cpu=available_cpu+17}
+edge:Stage7:a_18_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+18; available_cpu=available_cpu+18}
+edge:Stage7:a_19_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+19; available_cpu=available_cpu+19}
+edge:Stage7:a_20_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+20; available_cpu=available_cpu+20}
+edge:Stage7:a_21_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+21; available_cpu=available_cpu+21}
+edge:Stage7:a_22_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+22; available_cpu=available_cpu+22}
+edge:Stage7:a_23_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+23; available_cpu=available_cpu+23}
+edge:Stage7:a_24_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+24; available_cpu=available_cpu+24}
+edge:Stage7:a_25_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+25; available_cpu=available_cpu+25}
+edge:Stage7:a_26_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+26; available_cpu=available_cpu+26}
+edge:Stage7:a_27_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+27; available_cpu=available_cpu+27}
+edge:Stage7:a_28_run_tc:Batch_finished:tau{provided:Stage7_c == 13 : do:ntasks_7 = ntasks_7+28; available_cpu=available_cpu+28}
+edge:Stage7:Batch_finished:Completed:tau{provided:ntasks_7 == 128 : do:stage_7=1}
