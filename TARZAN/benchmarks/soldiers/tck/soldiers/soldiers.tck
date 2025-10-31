@@ -11,6 +11,10 @@ int:1:0:1000:20:delay2
 int:1:0:1000:10:delay3
 int:1:0:1000:5:delay4
 int:1:0:1000:60:obsDelay
+int:1:0:1000:0:first
+int:1:0:1000:0:second
+int:1:0:1000:0:back
+int:1:0:1000:0:InSafety
 
 
 
