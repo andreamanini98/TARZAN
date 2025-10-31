@@ -1,0 +1,109 @@
+system:soldiers
+
+# Events
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:25:delay1
+int:1:0:1000:20:delay2
+int:1:0:1000:10:delay3
+int:1:0:1000:5:delay4
+int:1:0:1000:60:obsDelay
+
+
+
+# Processes
+process:Soldier1
+process:Soldier2
+process:Soldier3
+process:Soldier4
+process:Observer
+
+# Process: Soldier1
+## Clocks for Soldier1
+clock:1:Soldier1_x
+
+## Locations for Soldier1
+location:Soldier1:Peril{initial:}
+location:Soldier1:Safety
+location:Soldier1:OnBridge
+location:Soldier1:OnWayBack
+
+## Edges for Soldier1
+edge:Soldier1:Peril:Safety:tau{provided:first == 0 : do:first = 1; InSafety = InSafety + 1}
+edge:Soldier1:Peril:OnBridge:tau{provided:second == 0 && first > 1 : do:second = 1; Soldier1_x = 0}
+edge:Soldier1:OnBridge:Safety:tau{provided:Soldier1_x == delay1 : do:InSafety = InSafety + 1; back = 1}
+edge:Soldier1:OnWayBack:Peril:tau{provided:Soldier1_x == delay1 : do:first = 0; second = 0}
+edge:Soldier1:Safety:OnWayBack:tau{provided:back == 1 : do:back = 0; Soldier1_x = 0; InSafety = InSafety - 1}
+
+
+
+# Process: Soldier2
+## Clocks for Soldier2
+clock:1:Soldier2_x
+
+## Locations for Soldier2
+location:Soldier2:Peril{initial:}
+location:Soldier2:Safety
+location:Soldier2:OnBridge
+location:Soldier2:OnWayBack
+
+## Edges for Soldier2
+edge:Soldier2:Peril:Safety:tau{provided:first == 0 : do:first = 2; InSafety = InSafety + 1}
+edge:Soldier2:Peril:OnBridge:tau{provided:second == 0 && first > 2 : do:second = 2; Soldier2_x = 0}
+edge:Soldier2:OnBridge:Safety:tau{provided:Soldier2_x == delay2 : do:InSafety = InSafety + 1; back = 1}
+edge:Soldier2:OnWayBack:Peril:tau{provided:Soldier2_x == delay2 : do:first = 0; second = 0}
+edge:Soldier2:Safety:OnWayBack:tau{provided:back == 1 : do:back = 0; Soldier2_x = 0; InSafety = InSafety - 1}
+
+
+
+# Process: Soldier3
+## Clocks for Soldier3
+clock:1:Soldier3_x
+
+## Locations for Soldier3
+location:Soldier3:Peril{initial:}
+location:Soldier3:Safety
+location:Soldier3:OnBridge
+location:Soldier3:OnWayBack
+
+## Edges for Soldier3
+edge:Soldier3:Peril:Safety:tau{provided:first == 0 : do:first = 3; InSafety = InSafety + 1}
+edge:Soldier3:Peril:OnBridge:tau{provided:second == 0 && first > 3 : do:second = 3; Soldier3_x = 0}
+edge:Soldier3:OnBridge:Safety:tau{provided:Soldier3_x == delay3 : do:InSafety = InSafety + 1; back = 1}
+edge:Soldier3:OnWayBack:Peril:tau{provided:Soldier3_x == delay3 : do:first = 0; second = 0}
+edge:Soldier3:Safety:OnWayBack:tau{provided:back == 1 : do:back = 0; Soldier3_x = 0; InSafety = InSafety - 1}
+
+
+
+# Process: Soldier4
+## Clocks for Soldier4
+clock:1:Soldier4_x
+
+## Locations for Soldier4
+location:Soldier4:Peril{initial:}
+location:Soldier4:Safety
+location:Soldier4:OnBridge
+location:Soldier4:OnWayBack
+
+## Edges for Soldier4
+edge:Soldier4:Peril:Safety:tau{provided:first == 0 : do:first = 4; InSafety = InSafety + 1}
+edge:Soldier4:Peril:OnBridge:tau{provided:second == 0 && first > 4 : do:second = 4; Soldier4_x = 0}
+edge:Soldier4:OnBridge:Safety:tau{provided:Soldier4_x == delay4 : do:InSafety = InSafety + 1; back = 1}
+edge:Soldier4:OnWayBack:Peril:tau{provided:Soldier4_x == delay4 : do:first = 0; second = 0}
+edge:Soldier4:Safety:OnWayBack:tau{provided:back == 1 : do:back = 0; Soldier4_x = 0; InSafety = InSafety - 1}
+
+
+
+# Process: Observer
+## Clocks for Observer
+clock:1:Observer_y
+
+## Locations for Observer
+location:Observer:Wait{initial:}
+location:Observer:Escape
+
+## Edges for Observer
+edge:Observer:Wait:Escape:tau{provided:Observer_y == obsDelay && InSafety == 4}
