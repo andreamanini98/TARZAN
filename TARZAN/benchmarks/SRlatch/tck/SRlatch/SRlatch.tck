@@ -1,0 +1,117 @@
+system:SRlatch
+
+# Events
+event:Q_Down
+event:Q_Up
+event:R_Down
+event:S_Down
+event:overQ_Down
+event:overQ_Up
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:1:t_down
+int:1:0:1000:2:dNor2_u
+int:1:0:1000:2:dNor1_u
+int:1:0:1000:1:dNor1_l
+int:1:0:1000:1:dNor2_l
+
+
+
+# Processes
+process:env
+process:norGate1
+process:norGate2
+
+# Process: env
+## Clocks for env
+clock:1:env_s
+
+## Locations for env
+location:env:env_11{initial:}
+location:env:env_10{invariant:env_s <= t_down}
+location:env:env_final
+
+## Edges for env
+edge:env:env_11:env_10:S_Down{do:env_s = 0}
+edge:env:env_10:env_final:R_Down{provided:env_s == t_down}
+
+
+
+# Process: norGate1
+## Clocks for norGate1
+clock:1:norGate1_ckNor1
+
+## Locations for norGate1
+location:norGate1:Nor1_000{invariant:norGate1_ckNor1 <= dNor1_u}
+location:norGate1:Nor1_001
+location:norGate1:Nor1_010
+location:norGate1:Nor1_011{invariant:norGate1_ckNor1 <= dNor1_u}
+location:norGate1:Nor1_100{initial:}
+location:norGate1:Nor1_101{invariant:norGate1_ckNor1 <= dNor1_u}
+location:norGate1:Nor1_110
+location:norGate1:Nor1_111{invariant:norGate1_ckNor1 <= dNor1_u}
+
+## Edges for norGate1
+edge:norGate1:Nor1_111:Nor1_110:Q_Down{provided:norGate1_ckNor1 >= dNor1_l}
+edge:norGate1:Nor1_011:Nor1_010:Q_Down{provided:norGate1_ckNor1 >= dNor1_l}
+edge:norGate1:Nor1_110:Nor1_100:overQ_Down
+edge:norGate1:Nor1_101:Nor1_100:Q_Down{provided:norGate1_ckNor1 >= dNor1_l}
+edge:norGate1:Nor1_111:Nor1_101:overQ_Down{do:norGate1_ckNor1 = 0}
+edge:norGate1:Nor1_100:Nor1_000:R_Down{do:norGate1_ckNor1 = 0}
+edge:norGate1:Nor1_101:Nor1_001:R_Down
+edge:norGate1:Nor1_010:Nor1_000:overQ_Down{do:norGate1_ckNor1 = 0}
+edge:norGate1:Nor1_100:Nor1_110:overQ_Up
+edge:norGate1:Nor1_011:Nor1_001:overQ_Down
+edge:norGate1:Nor1_000:Nor1_001:Q_Up{provided:norGate1_ckNor1 >= dNor1_l}
+edge:norGate1:Nor1_101:Nor1_111:overQ_Up{do:norGate1_ckNor1 = 0}
+edge:norGate1:Nor1_111:Nor1_011:R_Down{do:norGate1_ckNor1 = 0}
+edge:norGate1:Nor1_001:Nor1_011:overQ_Up{do:norGate1_ckNor1 = 0}
+edge:norGate1:Nor1_110:Nor1_010:R_Down
+edge:norGate1:Nor1_000:Nor1_010:overQ_Up
+
+
+
+# Process: norGate2
+## Clocks for norGate2
+clock:1:norGate2_ckNor2
+
+## Locations for norGate2
+location:norGate2:Nor2_000{invariant:norGate2_ckNor2 <= dNor2_u}
+location:norGate2:Nor2_001
+location:norGate2:Nor2_010{initial:}
+location:norGate2:Nor2_011{invariant:norGate2_ckNor2 <= dNor2_u}
+location:norGate2:Nor2_100
+location:norGate2:Nor2_101{invariant:norGate2_ckNor2 <= dNor2_u}
+location:norGate2:Nor2_110
+location:norGate2:Nor2_111{invariant:norGate2_ckNor2 <= dNor2_u}
+
+## Edges for norGate2
+edge:norGate2:Nor2_011:Nor2_001:S_Down
+edge:norGate2:Nor2_010:Nor2_000:S_Down{do:norGate2_ckNor2 = 0}
+edge:norGate2:Nor2_011:Nor2_111:Q_Up{do:norGate2_ckNor2 = 0}
+edge:norGate2:Nor2_101:Nor2_100:overQ_Down{provided:norGate2_ckNor2 >= dNor2_l}
+edge:norGate2:Nor2_000:Nor2_001:overQ_Up{provided:norGate2_ckNor2 >= dNor2_l}
+edge:norGate2:Nor2_111:Nor2_110:overQ_Down{provided:norGate2_ckNor2 >= dNor2_l}
+edge:norGate2:Nor2_111:Nor2_011:Q_Down{do:norGate2_ckNor2 = 0}
+edge:norGate2:Nor2_101:Nor2_001:Q_Down
+edge:norGate2:Nor2_111:Nor2_101:S_Down{do:norGate2_ckNor2 = 0}
+edge:norGate2:Nor2_000:Nor2_100:Q_Up
+edge:norGate2:Nor2_100:Nor2_000:Q_Down{do:norGate2_ckNor2 = 0}
+edge:norGate2:Nor2_010:Nor2_110:Q_Up
+edge:norGate2:Nor2_011:Nor2_010:overQ_Down{provided:norGate2_ckNor2 >= dNor2_l}
+edge:norGate2:Nor2_001:Nor2_101:Q_Up{do:norGate2_ckNor2 = 0}
+edge:norGate2:Nor2_110:Nor2_010:Q_Down
+edge:norGate2:Nor2_110:Nor2_100:S_Down
+
+
+
+# Synchronizations
+sync:norGate1@Q_Down:norGate2@Q_Down
+sync:norGate1@Q_Up:norGate2@Q_Up
+sync:env@R_Down:norGate1@R_Down
+sync:env@S_Down:norGate2@S_Down
+sync:norGate2@overQ_Down:norGate1@overQ_Down
+sync:norGate2@overQ_Up:norGate1@overQ_Up
