@@ -1,0 +1,52 @@
+system:ring_02
+
+# Events
+event:tau
+
+
+
+# Processes
+process:Ring0
+process:Ring1
+
+# Process: Ring0
+## Clocks for Ring0
+clock:1:Ring0_x
+
+## Locations for Ring0
+location:Ring0:L0{initial:}
+location:Ring0:L1
+location:Ring0:L2
+location:Ring0:L3
+location:Ring0:L4
+location:Ring0:goal
+
+## Edges for Ring0
+edge:Ring0:goal:L0:tau{provided:Ring0_x == 1 : do:Ring0_x = 0}
+edge:Ring0:L4:goal:tau{provided:Ring0_x == 1 : do:Ring0_x = 0}
+edge:Ring0:L3:L4:tau{provided:Ring0_x == 1 : do:Ring0_x = 0}
+edge:Ring0:L2:L3:tau{provided:Ring0_x == 1 : do:Ring0_x = 0}
+edge:Ring0:L1:L2:tau{provided:Ring0_x == 1 : do:Ring0_x = 0}
+edge:Ring0:L0:L1:tau{provided:Ring0_x == 1 : do:Ring0_x = 0}
+
+
+
+# Process: Ring1
+## Clocks for Ring1
+clock:1:Ring1_x
+
+## Locations for Ring1
+location:Ring1:L0{initial:}
+location:Ring1:L1
+location:Ring1:L2
+location:Ring1:L3
+location:Ring1:L4
+location:Ring1:goal
+
+## Edges for Ring1
+edge:Ring1:goal:L0:tau{provided:Ring1_x == 2 : do:Ring1_x = 0}
+edge:Ring1:L4:goal:tau{provided:Ring1_x == 2 : do:Ring1_x = 0}
+edge:Ring1:L3:L4:tau{provided:Ring1_x == 2 : do:Ring1_x = 0}
+edge:Ring1:L2:L3:tau{provided:Ring1_x == 2 : do:Ring1_x = 0}
+edge:Ring1:L1:L2:tau{provided:Ring1_x == 2 : do:Ring1_x = 0}
+edge:Ring1:L0:L1:tau{provided:Ring1_x == 2 : do:Ring1_x = 0}

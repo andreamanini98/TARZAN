@@ -1,0 +1,236 @@
+system:ring_10
+
+# Events
+event:tau
+
+
+
+# Processes
+process:Ring0
+process:Ring1
+process:Ring2
+process:Ring3
+process:Ring4
+process:Ring5
+process:Ring6
+process:Ring7
+process:Ring8
+process:Ring9
+
+# Process: Ring0
+## Clocks for Ring0
+clock:1:Ring0_x
+
+## Locations for Ring0
+location:Ring0:L0{initial:}
+location:Ring0:L1
+location:Ring0:L2
+location:Ring0:L3
+location:Ring0:L4
+location:Ring0:goal
+
+## Edges for Ring0
+edge:Ring0:goal:L0:tau{provided:Ring0_x == 1 : do:Ring0_x = 0}
+edge:Ring0:L4:goal:tau{provided:Ring0_x == 1 : do:Ring0_x = 0}
+edge:Ring0:L3:L4:tau{provided:Ring0_x == 1 : do:Ring0_x = 0}
+edge:Ring0:L2:L3:tau{provided:Ring0_x == 1 : do:Ring0_x = 0}
+edge:Ring0:L1:L2:tau{provided:Ring0_x == 1 : do:Ring0_x = 0}
+edge:Ring0:L0:L1:tau{provided:Ring0_x == 1 : do:Ring0_x = 0}
+
+
+
+# Process: Ring1
+## Clocks for Ring1
+clock:1:Ring1_x
+
+## Locations for Ring1
+location:Ring1:L0{initial:}
+location:Ring1:L1
+location:Ring1:L2
+location:Ring1:L3
+location:Ring1:L4
+location:Ring1:goal
+
+## Edges for Ring1
+edge:Ring1:goal:L0:tau{provided:Ring1_x == 2 : do:Ring1_x = 0}
+edge:Ring1:L4:goal:tau{provided:Ring1_x == 2 : do:Ring1_x = 0}
+edge:Ring1:L3:L4:tau{provided:Ring1_x == 2 : do:Ring1_x = 0}
+edge:Ring1:L2:L3:tau{provided:Ring1_x == 2 : do:Ring1_x = 0}
+edge:Ring1:L1:L2:tau{provided:Ring1_x == 2 : do:Ring1_x = 0}
+edge:Ring1:L0:L1:tau{provided:Ring1_x == 2 : do:Ring1_x = 0}
+
+
+
+# Process: Ring2
+## Clocks for Ring2
+clock:1:Ring2_x
+
+## Locations for Ring2
+location:Ring2:L0{initial:}
+location:Ring2:L1
+location:Ring2:L2
+location:Ring2:L3
+location:Ring2:L4
+location:Ring2:goal
+
+## Edges for Ring2
+edge:Ring2:goal:L0:tau{provided:Ring2_x == 3 : do:Ring2_x = 0}
+edge:Ring2:L4:goal:tau{provided:Ring2_x == 3 : do:Ring2_x = 0}
+edge:Ring2:L3:L4:tau{provided:Ring2_x == 3 : do:Ring2_x = 0}
+edge:Ring2:L2:L3:tau{provided:Ring2_x == 3 : do:Ring2_x = 0}
+edge:Ring2:L1:L2:tau{provided:Ring2_x == 3 : do:Ring2_x = 0}
+edge:Ring2:L0:L1:tau{provided:Ring2_x == 3 : do:Ring2_x = 0}
+
+
+
+# Process: Ring3
+## Clocks for Ring3
+clock:1:Ring3_x
+
+## Locations for Ring3
+location:Ring3:L0{initial:}
+location:Ring3:L1
+location:Ring3:L2
+location:Ring3:L3
+location:Ring3:L4
+location:Ring3:goal
+
+## Edges for Ring3
+edge:Ring3:goal:L0:tau{provided:Ring3_x == 4 : do:Ring3_x = 0}
+edge:Ring3:L4:goal:tau{provided:Ring3_x == 4 : do:Ring3_x = 0}
+edge:Ring3:L3:L4:tau{provided:Ring3_x == 4 : do:Ring3_x = 0}
+edge:Ring3:L2:L3:tau{provided:Ring3_x == 4 : do:Ring3_x = 0}
+edge:Ring3:L1:L2:tau{provided:Ring3_x == 4 : do:Ring3_x = 0}
+edge:Ring3:L0:L1:tau{provided:Ring3_x == 4 : do:Ring3_x = 0}
+
+
+
+# Process: Ring4
+## Clocks for Ring4
+clock:1:Ring4_x
+
+## Locations for Ring4
+location:Ring4:L0{initial:}
+location:Ring4:L1
+location:Ring4:L2
+location:Ring4:L3
+location:Ring4:L4
+location:Ring4:goal
+
+## Edges for Ring4
+edge:Ring4:goal:L0:tau{provided:Ring4_x == 5 : do:Ring4_x = 0}
+edge:Ring4:L4:goal:tau{provided:Ring4_x == 5 : do:Ring4_x = 0}
+edge:Ring4:L3:L4:tau{provided:Ring4_x == 5 : do:Ring4_x = 0}
+edge:Ring4:L2:L3:tau{provided:Ring4_x == 5 : do:Ring4_x = 0}
+edge:Ring4:L1:L2:tau{provided:Ring4_x == 5 : do:Ring4_x = 0}
+edge:Ring4:L0:L1:tau{provided:Ring4_x == 5 : do:Ring4_x = 0}
+
+
+
+# Process: Ring5
+## Clocks for Ring5
+clock:1:Ring5_x
+
+## Locations for Ring5
+location:Ring5:L0{initial:}
+location:Ring5:L1
+location:Ring5:L2
+location:Ring5:L3
+location:Ring5:L4
+location:Ring5:goal
+
+## Edges for Ring5
+edge:Ring5:goal:L0:tau{provided:Ring5_x == 6 : do:Ring5_x = 0}
+edge:Ring5:L4:goal:tau{provided:Ring5_x == 6 : do:Ring5_x = 0}
+edge:Ring5:L3:L4:tau{provided:Ring5_x == 6 : do:Ring5_x = 0}
+edge:Ring5:L2:L3:tau{provided:Ring5_x == 6 : do:Ring5_x = 0}
+edge:Ring5:L1:L2:tau{provided:Ring5_x == 6 : do:Ring5_x = 0}
+edge:Ring5:L0:L1:tau{provided:Ring5_x == 6 : do:Ring5_x = 0}
+
+
+
+# Process: Ring6
+## Clocks for Ring6
+clock:1:Ring6_x
+
+## Locations for Ring6
+location:Ring6:L0{initial:}
+location:Ring6:L1
+location:Ring6:L2
+location:Ring6:L3
+location:Ring6:L4
+location:Ring6:goal
+
+## Edges for Ring6
+edge:Ring6:goal:L0:tau{provided:Ring6_x == 7 : do:Ring6_x = 0}
+edge:Ring6:L4:goal:tau{provided:Ring6_x == 7 : do:Ring6_x = 0}
+edge:Ring6:L3:L4:tau{provided:Ring6_x == 7 : do:Ring6_x = 0}
+edge:Ring6:L2:L3:tau{provided:Ring6_x == 7 : do:Ring6_x = 0}
+edge:Ring6:L1:L2:tau{provided:Ring6_x == 7 : do:Ring6_x = 0}
+edge:Ring6:L0:L1:tau{provided:Ring6_x == 7 : do:Ring6_x = 0}
+
+
+
+# Process: Ring7
+## Clocks for Ring7
+clock:1:Ring7_x
+
+## Locations for Ring7
+location:Ring7:L0{initial:}
+location:Ring7:L1
+location:Ring7:L2
+location:Ring7:L3
+location:Ring7:L4
+location:Ring7:goal
+
+## Edges for Ring7
+edge:Ring7:goal:L0:tau{provided:Ring7_x == 8 : do:Ring7_x = 0}
+edge:Ring7:L4:goal:tau{provided:Ring7_x == 8 : do:Ring7_x = 0}
+edge:Ring7:L3:L4:tau{provided:Ring7_x == 8 : do:Ring7_x = 0}
+edge:Ring7:L2:L3:tau{provided:Ring7_x == 8 : do:Ring7_x = 0}
+edge:Ring7:L1:L2:tau{provided:Ring7_x == 8 : do:Ring7_x = 0}
+edge:Ring7:L0:L1:tau{provided:Ring7_x == 8 : do:Ring7_x = 0}
+
+
+
+# Process: Ring8
+## Clocks for Ring8
+clock:1:Ring8_x
+
+## Locations for Ring8
+location:Ring8:L0{initial:}
+location:Ring8:L1
+location:Ring8:L2
+location:Ring8:L3
+location:Ring8:L4
+location:Ring8:goal
+
+## Edges for Ring8
+edge:Ring8:goal:L0:tau{provided:Ring8_x == 9 : do:Ring8_x = 0}
+edge:Ring8:L4:goal:tau{provided:Ring8_x == 9 : do:Ring8_x = 0}
+edge:Ring8:L3:L4:tau{provided:Ring8_x == 9 : do:Ring8_x = 0}
+edge:Ring8:L2:L3:tau{provided:Ring8_x == 9 : do:Ring8_x = 0}
+edge:Ring8:L1:L2:tau{provided:Ring8_x == 9 : do:Ring8_x = 0}
+edge:Ring8:L0:L1:tau{provided:Ring8_x == 9 : do:Ring8_x = 0}
+
+
+
+# Process: Ring9
+## Clocks for Ring9
+clock:1:Ring9_x
+
+## Locations for Ring9
+location:Ring9:L0{initial:}
+location:Ring9:L1
+location:Ring9:L2
+location:Ring9:L3
+location:Ring9:L4
+location:Ring9:goal
+
+## Edges for Ring9
+edge:Ring9:goal:L0:tau{provided:Ring9_x == 10 : do:Ring9_x = 0}
+edge:Ring9:L4:goal:tau{provided:Ring9_x == 10 : do:Ring9_x = 0}
+edge:Ring9:L3:L4:tau{provided:Ring9_x == 10 : do:Ring9_x = 0}
+edge:Ring9:L2:L3:tau{provided:Ring9_x == 10 : do:Ring9_x = 0}
+edge:Ring9:L1:L2:tau{provided:Ring9_x == 10 : do:Ring9_x = 0}
+edge:Ring9:L0:L1:tau{provided:Ring9_x == 10 : do:Ring9_x = 0}
