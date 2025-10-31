@@ -1,0 +1,131 @@
+system:fischer06
+
+# Events
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:0:id
+
+
+
+# Processes
+process:fischer01
+process:fischer02
+process:fischer03
+process:fischer04
+process:fischer05
+process:fischer06
+
+# Process: fischer01
+## Clocks for fischer01
+clock:1:fischer01_x
+
+## Locations for fischer01
+location:fischer01:wait
+location:fischer01:req{invariant:fischer01_x <= 2}
+location:fischer01:A{initial:}
+location:fischer01:cs
+
+## Edges for fischer01
+edge:fischer01:A:req:tau{provided:id == 0 : do:fischer01_x = 0}
+edge:fischer01:req:wait:tau{provided:fischer01_x <= 2 : do:fischer01_x = 0; id = 1}
+edge:fischer01:wait:req:tau{provided:id == 0 : do:fischer01_x = 0}
+edge:fischer01:wait:cs:tau{provided:fischer01_x > 2 && id == 1}
+edge:fischer01:cs:A:tau{do:id = 0}
+
+
+
+# Process: fischer02
+## Clocks for fischer02
+clock:1:fischer02_x
+
+## Locations for fischer02
+location:fischer02:wait
+location:fischer02:req{invariant:fischer02_x <= 2}
+location:fischer02:A{initial:}
+location:fischer02:cs
+
+## Edges for fischer02
+edge:fischer02:A:req:tau{provided:id == 0 : do:fischer02_x = 0}
+edge:fischer02:req:wait:tau{provided:fischer02_x <= 2 : do:fischer02_x = 0; id = 2}
+edge:fischer02:wait:req:tau{provided:id == 0 : do:fischer02_x = 0}
+edge:fischer02:wait:cs:tau{provided:fischer02_x > 2 && id == 2}
+edge:fischer02:cs:A:tau{do:id = 0}
+
+
+
+# Process: fischer03
+## Clocks for fischer03
+clock:1:fischer03_x
+
+## Locations for fischer03
+location:fischer03:wait
+location:fischer03:req{invariant:fischer03_x <= 2}
+location:fischer03:A{initial:}
+location:fischer03:cs
+
+## Edges for fischer03
+edge:fischer03:A:req:tau{provided:id == 0 : do:fischer03_x = 0}
+edge:fischer03:req:wait:tau{provided:fischer03_x <= 2 : do:fischer03_x = 0; id = 3}
+edge:fischer03:wait:req:tau{provided:id == 0 : do:fischer03_x = 0}
+edge:fischer03:wait:cs:tau{provided:fischer03_x > 2 && id == 3}
+edge:fischer03:cs:A:tau{do:id = 0}
+
+
+
+# Process: fischer04
+## Clocks for fischer04
+clock:1:fischer04_x
+
+## Locations for fischer04
+location:fischer04:wait
+location:fischer04:req{invariant:fischer04_x <= 2}
+location:fischer04:A{initial:}
+location:fischer04:cs
+
+## Edges for fischer04
+edge:fischer04:A:req:tau{provided:id == 0 : do:fischer04_x = 0}
+edge:fischer04:req:wait:tau{provided:fischer04_x <= 2 : do:fischer04_x = 0; id = 4}
+edge:fischer04:wait:req:tau{provided:id == 0 : do:fischer04_x = 0}
+edge:fischer04:wait:cs:tau{provided:fischer04_x > 2 && id == 4}
+edge:fischer04:cs:A:tau{do:id = 0}
+
+
+
+# Process: fischer05
+## Clocks for fischer05
+clock:1:fischer05_x
+
+## Locations for fischer05
+location:fischer05:wait
+location:fischer05:req{invariant:fischer05_x <= 2}
+location:fischer05:A{initial:}
+location:fischer05:cs
+
+## Edges for fischer05
+edge:fischer05:A:req:tau{provided:id == 0 : do:fischer05_x = 0}
+edge:fischer05:req:wait:tau{provided:fischer05_x <= 2 : do:fischer05_x = 0; id = 5}
+edge:fischer05:wait:req:tau{provided:id == 0 : do:fischer05_x = 0}
+edge:fischer05:wait:cs:tau{provided:fischer05_x > 2 && id == 5}
+edge:fischer05:cs:A:tau{do:id = 0}
+
+
+
+# Process: fischer06
+## Clocks for fischer06
+clock:1:fischer06_x
+
+## Locations for fischer06
+location:fischer06:wait
+location:fischer06:req{invariant:fischer06_x <= 2}
+location:fischer06:A{initial:}
+location:fischer06:cs
+
+## Edges for fischer06
+edge:fischer06:A:req:tau{provided:id == 0 : do:fischer06_x = 0}
+edge:fischer06:req:wait:tau{provided:fischer06_x <= 2 : do:fischer06_x = 0; id = 6}
+edge:fischer06:wait:req:tau{provided:id == 0 : do:fischer06_x = 0}
+edge:fischer06:wait:cs:tau{provided:fischer06_x > 2 && id == 6}
+edge:fischer06:cs:A:tau{do:id = 0}
