@@ -1,0 +1,1480 @@
+system:csma50N
+
+# Events
+event:begin
+event:busy
+event:cd1
+event:cd10
+event:cd11
+event:cd12
+event:cd13
+event:cd14
+event:cd15
+event:cd16
+event:cd17
+event:cd18
+event:cd19
+event:cd2
+event:cd20
+event:cd21
+event:cd22
+event:cd23
+event:cd24
+event:cd25
+event:cd26
+event:cd27
+event:cd28
+event:cd29
+event:cd3
+event:cd30
+event:cd31
+event:cd32
+event:cd33
+event:cd34
+event:cd35
+event:cd36
+event:cd37
+event:cd38
+event:cd39
+event:cd4
+event:cd40
+event:cd41
+event:cd42
+event:cd43
+event:cd44
+event:cd45
+event:cd46
+event:cd47
+event:cd48
+event:cd49
+event:cd5
+event:cd50
+event:cd6
+event:cd7
+event:cd8
+event:cd9
+event:end
+event:tau
+
+
+
+# Processes
+process:P0
+process:P1
+process:P2
+process:P3
+process:P4
+process:P5
+process:P6
+process:P7
+process:P8
+process:P9
+process:P10
+process:P11
+process:P12
+process:P13
+process:P14
+process:P15
+process:P16
+process:P17
+process:P18
+process:P19
+process:P20
+process:P21
+process:P22
+process:P23
+process:P24
+process:P25
+process:P26
+process:P27
+process:P28
+process:P29
+process:P30
+process:P31
+process:P32
+process:P33
+process:P34
+process:P35
+process:P36
+process:P37
+process:P38
+process:P39
+process:P40
+process:P41
+process:P42
+process:P43
+process:P44
+process:P45
+process:P46
+process:P47
+process:P48
+process:P49
+process:P50
+
+# Process: P0
+## Clocks for P0
+clock:1:P0_x
+
+## Locations for P0
+location:P0:bus_idle{initial:}
+location:P0:bus_active
+location:P0:bus_collision1{invariant:P0_x < 26}
+location:P0:bus_collision2{invariant:P0_x <= 0}
+location:P0:bus_collision3{invariant:P0_x <= 0}
+location:P0:bus_collision4{invariant:P0_x <= 0}
+location:P0:bus_collision5{invariant:P0_x <= 0}
+location:P0:bus_collision6{invariant:P0_x <= 0}
+location:P0:bus_collision7{invariant:P0_x <= 0}
+location:P0:bus_collision8{invariant:P0_x <= 0}
+location:P0:bus_collision9{invariant:P0_x <= 0}
+location:P0:bus_collision10{invariant:P0_x <= 0}
+location:P0:bus_collision11{invariant:P0_x <= 0}
+location:P0:bus_collision12{invariant:P0_x <= 0}
+location:P0:bus_collision13{invariant:P0_x <= 0}
+location:P0:bus_collision14{invariant:P0_x <= 0}
+location:P0:bus_collision15{invariant:P0_x <= 0}
+location:P0:bus_collision16{invariant:P0_x <= 0}
+location:P0:bus_collision17{invariant:P0_x <= 0}
+location:P0:bus_collision18{invariant:P0_x <= 0}
+location:P0:bus_collision19{invariant:P0_x <= 0}
+location:P0:bus_collision20{invariant:P0_x <= 0}
+location:P0:bus_collision21{invariant:P0_x <= 0}
+location:P0:bus_collision22{invariant:P0_x <= 0}
+location:P0:bus_collision23{invariant:P0_x <= 0}
+location:P0:bus_collision24{invariant:P0_x <= 0}
+location:P0:bus_collision25{invariant:P0_x <= 0}
+location:P0:bus_collision26{invariant:P0_x <= 0}
+location:P0:bus_collision27{invariant:P0_x <= 0}
+location:P0:bus_collision28{invariant:P0_x <= 0}
+location:P0:bus_collision29{invariant:P0_x <= 0}
+location:P0:bus_collision30{invariant:P0_x <= 0}
+location:P0:bus_collision31{invariant:P0_x <= 0}
+location:P0:bus_collision32{invariant:P0_x <= 0}
+location:P0:bus_collision33{invariant:P0_x <= 0}
+location:P0:bus_collision34{invariant:P0_x <= 0}
+location:P0:bus_collision35{invariant:P0_x <= 0}
+location:P0:bus_collision36{invariant:P0_x <= 0}
+location:P0:bus_collision37{invariant:P0_x <= 0}
+location:P0:bus_collision38{invariant:P0_x <= 0}
+location:P0:bus_collision39{invariant:P0_x <= 0}
+location:P0:bus_collision40{invariant:P0_x <= 0}
+location:P0:bus_collision41{invariant:P0_x <= 0}
+location:P0:bus_collision42{invariant:P0_x <= 0}
+location:P0:bus_collision43{invariant:P0_x <= 0}
+location:P0:bus_collision44{invariant:P0_x <= 0}
+location:P0:bus_collision45{invariant:P0_x <= 0}
+location:P0:bus_collision46{invariant:P0_x <= 0}
+location:P0:bus_collision47{invariant:P0_x <= 0}
+location:P0:bus_collision48{invariant:P0_x <= 0}
+location:P0:bus_collision49{invariant:P0_x <= 0}
+location:P0:bus_collision50{invariant:P0_x <= 0}
+
+## Edges for P0
+edge:P0:bus_idle:bus_active:begin{do:P0_x= 0}
+edge:P0:bus_active:bus_idle:end{do:P0_x= 0}
+edge:P0:bus_active:bus_active:busy{provided:P0_x >= 26}
+edge:P0:bus_active:bus_collision1:begin{provided:P0_x < 26 : do:P0_x= 0}
+edge:P0:bus_collision1:bus_collision2:cd1{provided:P0_x < 26 : do:P0_x= 0}
+edge:P0:bus_collision2:bus_collision3:cd2{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision3:bus_collision4:cd3{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision4:bus_collision5:cd4{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision5:bus_collision6:cd5{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision6:bus_collision7:cd6{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision7:bus_collision8:cd7{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision8:bus_collision9:cd8{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision9:bus_collision10:cd9{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision10:bus_collision11:cd10{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision11:bus_collision12:cd11{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision12:bus_collision13:cd12{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision13:bus_collision14:cd13{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision14:bus_collision15:cd14{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision15:bus_collision16:cd15{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision16:bus_collision17:cd16{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision17:bus_collision18:cd17{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision18:bus_collision19:cd18{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision19:bus_collision20:cd19{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision20:bus_collision21:cd20{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision21:bus_collision22:cd21{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision22:bus_collision23:cd22{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision23:bus_collision24:cd23{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision24:bus_collision25:cd24{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision25:bus_collision26:cd25{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision26:bus_collision27:cd26{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision27:bus_collision28:cd27{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision28:bus_collision29:cd28{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision29:bus_collision30:cd29{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision30:bus_collision31:cd30{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision31:bus_collision32:cd31{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision32:bus_collision33:cd32{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision33:bus_collision34:cd33{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision34:bus_collision35:cd34{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision35:bus_collision36:cd35{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision36:bus_collision37:cd36{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision37:bus_collision38:cd37{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision38:bus_collision39:cd38{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision39:bus_collision40:cd39{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision40:bus_collision41:cd40{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision41:bus_collision42:cd41{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision42:bus_collision43:cd42{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision43:bus_collision44:cd43{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision44:bus_collision45:cd44{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision45:bus_collision46:cd45{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision46:bus_collision47:cd46{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision47:bus_collision48:cd47{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision48:bus_collision49:cd48{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision49:bus_collision50:cd49{provided:P0_x <= 0 : do:P0_x= 0}
+edge:P0:bus_collision50:bus_idle:cd50{provided:P0_x <= 0 : do:P0_x= 0}
+
+
+
+# Process: P1
+## Clocks for P1
+clock:1:P1_x
+
+## Locations for P1
+location:P1:sender_wait{initial:}
+location:P1:sender_transm{invariant:P1_x <= 808}
+location:P1:sender_retry{invariant:P1_x < 52}
+
+## Edges for P1
+edge:P1:sender_wait:sender_transm:begin{do:P1_x= 0}
+edge:P1:sender_wait:sender_wait:cd1{do:P1_x= 0}
+edge:P1:sender_wait:sender_retry:cd1{do:P1_x= 0}
+edge:P1:sender_wait:sender_retry:busy{do:P1_x= 0}
+edge:P1:sender_transm:sender_wait:end{provided:P1_x == 808 : do:P1_x= 0}
+edge:P1:sender_transm:sender_retry:cd1{provided:P1_x < 52 : do:P1_x= 0}
+edge:P1:sender_retry:sender_transm:begin{provided:P1_x < 52 : do:P1_x= 0}
+edge:P1:sender_retry:sender_retry:cd1{provided:P1_x < 52 : do:P1_x= 0}
+
+
+
+# Process: P2
+## Clocks for P2
+clock:1:P2_x
+
+## Locations for P2
+location:P2:sender_wait{initial:}
+location:P2:sender_transm{invariant:P2_x <= 808}
+location:P2:sender_retry{invariant:P2_x < 52}
+
+## Edges for P2
+edge:P2:sender_wait:sender_transm:begin{do:P2_x= 0}
+edge:P2:sender_wait:sender_wait:cd2{do:P2_x= 0}
+edge:P2:sender_wait:sender_retry:cd2{do:P2_x= 0}
+edge:P2:sender_wait:sender_retry:busy{do:P2_x= 0}
+edge:P2:sender_transm:sender_wait:end{provided:P2_x == 808 : do:P2_x= 0}
+edge:P2:sender_transm:sender_retry:cd2{provided:P2_x < 52 : do:P2_x= 0}
+edge:P2:sender_retry:sender_transm:begin{provided:P2_x < 52 : do:P2_x= 0}
+edge:P2:sender_retry:sender_retry:cd2{provided:P2_x < 52 : do:P2_x= 0}
+
+
+
+# Process: P3
+## Clocks for P3
+clock:1:P3_x
+
+## Locations for P3
+location:P3:sender_wait{initial:}
+location:P3:sender_transm{invariant:P3_x <= 808}
+location:P3:sender_retry{invariant:P3_x < 52}
+
+## Edges for P3
+edge:P3:sender_wait:sender_transm:begin{do:P3_x= 0}
+edge:P3:sender_wait:sender_wait:cd3{do:P3_x= 0}
+edge:P3:sender_wait:sender_retry:cd3{do:P3_x= 0}
+edge:P3:sender_wait:sender_retry:busy{do:P3_x= 0}
+edge:P3:sender_transm:sender_wait:end{provided:P3_x == 808 : do:P3_x= 0}
+edge:P3:sender_transm:sender_retry:cd3{provided:P3_x < 52 : do:P3_x= 0}
+edge:P3:sender_retry:sender_transm:begin{provided:P3_x < 52 : do:P3_x= 0}
+edge:P3:sender_retry:sender_retry:cd3{provided:P3_x < 52 : do:P3_x= 0}
+
+
+
+# Process: P4
+## Clocks for P4
+clock:1:P4_x
+
+## Locations for P4
+location:P4:sender_wait{initial:}
+location:P4:sender_transm{invariant:P4_x <= 808}
+location:P4:sender_retry{invariant:P4_x < 52}
+
+## Edges for P4
+edge:P4:sender_wait:sender_transm:begin{do:P4_x= 0}
+edge:P4:sender_wait:sender_wait:cd4{do:P4_x= 0}
+edge:P4:sender_wait:sender_retry:cd4{do:P4_x= 0}
+edge:P4:sender_wait:sender_retry:busy{do:P4_x= 0}
+edge:P4:sender_transm:sender_wait:end{provided:P4_x == 808 : do:P4_x= 0}
+edge:P4:sender_transm:sender_retry:cd4{provided:P4_x < 52 : do:P4_x= 0}
+edge:P4:sender_retry:sender_transm:begin{provided:P4_x < 52 : do:P4_x= 0}
+edge:P4:sender_retry:sender_retry:cd4{provided:P4_x < 52 : do:P4_x= 0}
+
+
+
+# Process: P5
+## Clocks for P5
+clock:1:P5_x
+
+## Locations for P5
+location:P5:sender_wait{initial:}
+location:P5:sender_transm{invariant:P5_x <= 808}
+location:P5:sender_retry{invariant:P5_x < 52}
+
+## Edges for P5
+edge:P5:sender_wait:sender_transm:begin{do:P5_x= 0}
+edge:P5:sender_wait:sender_wait:cd5{do:P5_x= 0}
+edge:P5:sender_wait:sender_retry:cd5{do:P5_x= 0}
+edge:P5:sender_wait:sender_retry:busy{do:P5_x= 0}
+edge:P5:sender_transm:sender_wait:end{provided:P5_x == 808 : do:P5_x= 0}
+edge:P5:sender_transm:sender_retry:cd5{provided:P5_x < 52 : do:P5_x= 0}
+edge:P5:sender_retry:sender_transm:begin{provided:P5_x < 52 : do:P5_x= 0}
+edge:P5:sender_retry:sender_retry:cd5{provided:P5_x < 52 : do:P5_x= 0}
+
+
+
+# Process: P6
+## Clocks for P6
+clock:1:P6_x
+
+## Locations for P6
+location:P6:sender_wait{initial:}
+location:P6:sender_transm{invariant:P6_x <= 808}
+location:P6:sender_retry{invariant:P6_x < 52}
+
+## Edges for P6
+edge:P6:sender_wait:sender_transm:begin{do:P6_x= 0}
+edge:P6:sender_wait:sender_wait:cd6{do:P6_x= 0}
+edge:P6:sender_wait:sender_retry:cd6{do:P6_x= 0}
+edge:P6:sender_wait:sender_retry:busy{do:P6_x= 0}
+edge:P6:sender_transm:sender_wait:end{provided:P6_x == 808 : do:P6_x= 0}
+edge:P6:sender_transm:sender_retry:cd6{provided:P6_x < 52 : do:P6_x= 0}
+edge:P6:sender_retry:sender_transm:begin{provided:P6_x < 52 : do:P6_x= 0}
+edge:P6:sender_retry:sender_retry:cd6{provided:P6_x < 52 : do:P6_x= 0}
+
+
+
+# Process: P7
+## Clocks for P7
+clock:1:P7_x
+
+## Locations for P7
+location:P7:sender_wait{initial:}
+location:P7:sender_transm{invariant:P7_x <= 808}
+location:P7:sender_retry{invariant:P7_x < 52}
+
+## Edges for P7
+edge:P7:sender_wait:sender_transm:begin{do:P7_x= 0}
+edge:P7:sender_wait:sender_wait:cd7{do:P7_x= 0}
+edge:P7:sender_wait:sender_retry:cd7{do:P7_x= 0}
+edge:P7:sender_wait:sender_retry:busy{do:P7_x= 0}
+edge:P7:sender_transm:sender_wait:end{provided:P7_x == 808 : do:P7_x= 0}
+edge:P7:sender_transm:sender_retry:cd7{provided:P7_x < 52 : do:P7_x= 0}
+edge:P7:sender_retry:sender_transm:begin{provided:P7_x < 52 : do:P7_x= 0}
+edge:P7:sender_retry:sender_retry:cd7{provided:P7_x < 52 : do:P7_x= 0}
+
+
+
+# Process: P8
+## Clocks for P8
+clock:1:P8_x
+
+## Locations for P8
+location:P8:sender_wait{initial:}
+location:P8:sender_transm{invariant:P8_x <= 808}
+location:P8:sender_retry{invariant:P8_x < 52}
+
+## Edges for P8
+edge:P8:sender_wait:sender_transm:begin{do:P8_x= 0}
+edge:P8:sender_wait:sender_wait:cd8{do:P8_x= 0}
+edge:P8:sender_wait:sender_retry:cd8{do:P8_x= 0}
+edge:P8:sender_wait:sender_retry:busy{do:P8_x= 0}
+edge:P8:sender_transm:sender_wait:end{provided:P8_x == 808 : do:P8_x= 0}
+edge:P8:sender_transm:sender_retry:cd8{provided:P8_x < 52 : do:P8_x= 0}
+edge:P8:sender_retry:sender_transm:begin{provided:P8_x < 52 : do:P8_x= 0}
+edge:P8:sender_retry:sender_retry:cd8{provided:P8_x < 52 : do:P8_x= 0}
+
+
+
+# Process: P9
+## Clocks for P9
+clock:1:P9_x
+
+## Locations for P9
+location:P9:sender_wait{initial:}
+location:P9:sender_transm{invariant:P9_x <= 808}
+location:P9:sender_retry{invariant:P9_x < 52}
+
+## Edges for P9
+edge:P9:sender_wait:sender_transm:begin{do:P9_x= 0}
+edge:P9:sender_wait:sender_wait:cd9{do:P9_x= 0}
+edge:P9:sender_wait:sender_retry:cd9{do:P9_x= 0}
+edge:P9:sender_wait:sender_retry:busy{do:P9_x= 0}
+edge:P9:sender_transm:sender_wait:end{provided:P9_x == 808 : do:P9_x= 0}
+edge:P9:sender_transm:sender_retry:cd9{provided:P9_x < 52 : do:P9_x= 0}
+edge:P9:sender_retry:sender_transm:begin{provided:P9_x < 52 : do:P9_x= 0}
+edge:P9:sender_retry:sender_retry:cd9{provided:P9_x < 52 : do:P9_x= 0}
+
+
+
+# Process: P10
+## Clocks for P10
+clock:1:P10_x
+
+## Locations for P10
+location:P10:sender_wait{initial:}
+location:P10:sender_transm{invariant:P10_x <= 808}
+location:P10:sender_retry{invariant:P10_x < 52}
+
+## Edges for P10
+edge:P10:sender_wait:sender_transm:begin{do:P10_x= 0}
+edge:P10:sender_wait:sender_wait:cd10{do:P10_x= 0}
+edge:P10:sender_wait:sender_retry:cd10{do:P10_x= 0}
+edge:P10:sender_wait:sender_retry:busy{do:P10_x= 0}
+edge:P10:sender_transm:sender_wait:end{provided:P10_x == 808 : do:P10_x= 0}
+edge:P10:sender_transm:sender_retry:cd10{provided:P10_x < 52 : do:P10_x= 0}
+edge:P10:sender_retry:sender_transm:begin{provided:P10_x < 52 : do:P10_x= 0}
+edge:P10:sender_retry:sender_retry:cd10{provided:P10_x < 52 : do:P10_x= 0}
+
+
+
+# Process: P11
+## Clocks for P11
+clock:1:P11_x
+
+## Locations for P11
+location:P11:sender_wait{initial:}
+location:P11:sender_transm{invariant:P11_x <= 808}
+location:P11:sender_retry{invariant:P11_x < 52}
+
+## Edges for P11
+edge:P11:sender_wait:sender_transm:begin{do:P11_x= 0}
+edge:P11:sender_wait:sender_wait:cd11{do:P11_x= 0}
+edge:P11:sender_wait:sender_retry:cd11{do:P11_x= 0}
+edge:P11:sender_wait:sender_retry:busy{do:P11_x= 0}
+edge:P11:sender_transm:sender_wait:end{provided:P11_x == 808 : do:P11_x= 0}
+edge:P11:sender_transm:sender_retry:cd11{provided:P11_x < 52 : do:P11_x= 0}
+edge:P11:sender_retry:sender_transm:begin{provided:P11_x < 52 : do:P11_x= 0}
+edge:P11:sender_retry:sender_retry:cd11{provided:P11_x < 52 : do:P11_x= 0}
+
+
+
+# Process: P12
+## Clocks for P12
+clock:1:P12_x
+
+## Locations for P12
+location:P12:sender_wait{initial:}
+location:P12:sender_transm{invariant:P12_x <= 808}
+location:P12:sender_retry{invariant:P12_x < 52}
+
+## Edges for P12
+edge:P12:sender_wait:sender_transm:begin{do:P12_x= 0}
+edge:P12:sender_wait:sender_wait:cd12{do:P12_x= 0}
+edge:P12:sender_wait:sender_retry:cd12{do:P12_x= 0}
+edge:P12:sender_wait:sender_retry:busy{do:P12_x= 0}
+edge:P12:sender_transm:sender_wait:end{provided:P12_x == 808 : do:P12_x= 0}
+edge:P12:sender_transm:sender_retry:cd12{provided:P12_x < 52 : do:P12_x= 0}
+edge:P12:sender_retry:sender_transm:begin{provided:P12_x < 52 : do:P12_x= 0}
+edge:P12:sender_retry:sender_retry:cd12{provided:P12_x < 52 : do:P12_x= 0}
+
+
+
+# Process: P13
+## Clocks for P13
+clock:1:P13_x
+
+## Locations for P13
+location:P13:sender_wait{initial:}
+location:P13:sender_transm{invariant:P13_x <= 808}
+location:P13:sender_retry{invariant:P13_x < 52}
+
+## Edges for P13
+edge:P13:sender_wait:sender_transm:begin{do:P13_x= 0}
+edge:P13:sender_wait:sender_wait:cd13{do:P13_x= 0}
+edge:P13:sender_wait:sender_retry:cd13{do:P13_x= 0}
+edge:P13:sender_wait:sender_retry:busy{do:P13_x= 0}
+edge:P13:sender_transm:sender_wait:end{provided:P13_x == 808 : do:P13_x= 0}
+edge:P13:sender_transm:sender_retry:cd13{provided:P13_x < 52 : do:P13_x= 0}
+edge:P13:sender_retry:sender_transm:begin{provided:P13_x < 52 : do:P13_x= 0}
+edge:P13:sender_retry:sender_retry:cd13{provided:P13_x < 52 : do:P13_x= 0}
+
+
+
+# Process: P14
+## Clocks for P14
+clock:1:P14_x
+
+## Locations for P14
+location:P14:sender_wait{initial:}
+location:P14:sender_transm{invariant:P14_x <= 808}
+location:P14:sender_retry{invariant:P14_x < 52}
+
+## Edges for P14
+edge:P14:sender_wait:sender_transm:begin{do:P14_x= 0}
+edge:P14:sender_wait:sender_wait:cd14{do:P14_x= 0}
+edge:P14:sender_wait:sender_retry:cd14{do:P14_x= 0}
+edge:P14:sender_wait:sender_retry:busy{do:P14_x= 0}
+edge:P14:sender_transm:sender_wait:end{provided:P14_x == 808 : do:P14_x= 0}
+edge:P14:sender_transm:sender_retry:cd14{provided:P14_x < 52 : do:P14_x= 0}
+edge:P14:sender_retry:sender_transm:begin{provided:P14_x < 52 : do:P14_x= 0}
+edge:P14:sender_retry:sender_retry:cd14{provided:P14_x < 52 : do:P14_x= 0}
+
+
+
+# Process: P15
+## Clocks for P15
+clock:1:P15_x
+
+## Locations for P15
+location:P15:sender_wait{initial:}
+location:P15:sender_transm{invariant:P15_x <= 808}
+location:P15:sender_retry{invariant:P15_x < 52}
+
+## Edges for P15
+edge:P15:sender_wait:sender_transm:begin{do:P15_x= 0}
+edge:P15:sender_wait:sender_wait:cd15{do:P15_x= 0}
+edge:P15:sender_wait:sender_retry:cd15{do:P15_x= 0}
+edge:P15:sender_wait:sender_retry:busy{do:P15_x= 0}
+edge:P15:sender_transm:sender_wait:end{provided:P15_x == 808 : do:P15_x= 0}
+edge:P15:sender_transm:sender_retry:cd15{provided:P15_x < 52 : do:P15_x= 0}
+edge:P15:sender_retry:sender_transm:begin{provided:P15_x < 52 : do:P15_x= 0}
+edge:P15:sender_retry:sender_retry:cd15{provided:P15_x < 52 : do:P15_x= 0}
+
+
+
+# Process: P16
+## Clocks for P16
+clock:1:P16_x
+
+## Locations for P16
+location:P16:sender_wait{initial:}
+location:P16:sender_transm{invariant:P16_x <= 808}
+location:P16:sender_retry{invariant:P16_x < 52}
+
+## Edges for P16
+edge:P16:sender_wait:sender_transm:begin{do:P16_x= 0}
+edge:P16:sender_wait:sender_wait:cd16{do:P16_x= 0}
+edge:P16:sender_wait:sender_retry:cd16{do:P16_x= 0}
+edge:P16:sender_wait:sender_retry:busy{do:P16_x= 0}
+edge:P16:sender_transm:sender_wait:end{provided:P16_x == 808 : do:P16_x= 0}
+edge:P16:sender_transm:sender_retry:cd16{provided:P16_x < 52 : do:P16_x= 0}
+edge:P16:sender_retry:sender_transm:begin{provided:P16_x < 52 : do:P16_x= 0}
+edge:P16:sender_retry:sender_retry:cd16{provided:P16_x < 52 : do:P16_x= 0}
+
+
+
+# Process: P17
+## Clocks for P17
+clock:1:P17_x
+
+## Locations for P17
+location:P17:sender_wait{initial:}
+location:P17:sender_transm{invariant:P17_x <= 808}
+location:P17:sender_retry{invariant:P17_x < 52}
+
+## Edges for P17
+edge:P17:sender_wait:sender_transm:begin{do:P17_x= 0}
+edge:P17:sender_wait:sender_wait:cd17{do:P17_x= 0}
+edge:P17:sender_wait:sender_retry:cd17{do:P17_x= 0}
+edge:P17:sender_wait:sender_retry:busy{do:P17_x= 0}
+edge:P17:sender_transm:sender_wait:end{provided:P17_x == 808 : do:P17_x= 0}
+edge:P17:sender_transm:sender_retry:cd17{provided:P17_x < 52 : do:P17_x= 0}
+edge:P17:sender_retry:sender_transm:begin{provided:P17_x < 52 : do:P17_x= 0}
+edge:P17:sender_retry:sender_retry:cd17{provided:P17_x < 52 : do:P17_x= 0}
+
+
+
+# Process: P18
+## Clocks for P18
+clock:1:P18_x
+
+## Locations for P18
+location:P18:sender_wait{initial:}
+location:P18:sender_transm{invariant:P18_x <= 808}
+location:P18:sender_retry{invariant:P18_x < 52}
+
+## Edges for P18
+edge:P18:sender_wait:sender_transm:begin{do:P18_x= 0}
+edge:P18:sender_wait:sender_wait:cd18{do:P18_x= 0}
+edge:P18:sender_wait:sender_retry:cd18{do:P18_x= 0}
+edge:P18:sender_wait:sender_retry:busy{do:P18_x= 0}
+edge:P18:sender_transm:sender_wait:end{provided:P18_x == 808 : do:P18_x= 0}
+edge:P18:sender_transm:sender_retry:cd18{provided:P18_x < 52 : do:P18_x= 0}
+edge:P18:sender_retry:sender_transm:begin{provided:P18_x < 52 : do:P18_x= 0}
+edge:P18:sender_retry:sender_retry:cd18{provided:P18_x < 52 : do:P18_x= 0}
+
+
+
+# Process: P19
+## Clocks for P19
+clock:1:P19_x
+
+## Locations for P19
+location:P19:sender_wait{initial:}
+location:P19:sender_transm{invariant:P19_x <= 808}
+location:P19:sender_retry{invariant:P19_x < 52}
+
+## Edges for P19
+edge:P19:sender_wait:sender_transm:begin{do:P19_x= 0}
+edge:P19:sender_wait:sender_wait:cd19{do:P19_x= 0}
+edge:P19:sender_wait:sender_retry:cd19{do:P19_x= 0}
+edge:P19:sender_wait:sender_retry:busy{do:P19_x= 0}
+edge:P19:sender_transm:sender_wait:end{provided:P19_x == 808 : do:P19_x= 0}
+edge:P19:sender_transm:sender_retry:cd19{provided:P19_x < 52 : do:P19_x= 0}
+edge:P19:sender_retry:sender_transm:begin{provided:P19_x < 52 : do:P19_x= 0}
+edge:P19:sender_retry:sender_retry:cd19{provided:P19_x < 52 : do:P19_x= 0}
+
+
+
+# Process: P20
+## Clocks for P20
+clock:1:P20_x
+
+## Locations for P20
+location:P20:sender_wait{initial:}
+location:P20:sender_transm{invariant:P20_x <= 808}
+location:P20:sender_retry{invariant:P20_x < 52}
+
+## Edges for P20
+edge:P20:sender_wait:sender_transm:begin{do:P20_x= 0}
+edge:P20:sender_wait:sender_wait:cd20{do:P20_x= 0}
+edge:P20:sender_wait:sender_retry:cd20{do:P20_x= 0}
+edge:P20:sender_wait:sender_retry:busy{do:P20_x= 0}
+edge:P20:sender_transm:sender_wait:end{provided:P20_x == 808 : do:P20_x= 0}
+edge:P20:sender_transm:sender_retry:cd20{provided:P20_x < 52 : do:P20_x= 0}
+edge:P20:sender_retry:sender_transm:begin{provided:P20_x < 52 : do:P20_x= 0}
+edge:P20:sender_retry:sender_retry:cd20{provided:P20_x < 52 : do:P20_x= 0}
+
+
+
+# Process: P21
+## Clocks for P21
+clock:1:P21_x
+
+## Locations for P21
+location:P21:sender_wait{initial:}
+location:P21:sender_transm{invariant:P21_x <= 808}
+location:P21:sender_retry{invariant:P21_x < 52}
+
+## Edges for P21
+edge:P21:sender_wait:sender_transm:begin{do:P21_x= 0}
+edge:P21:sender_wait:sender_wait:cd21{do:P21_x= 0}
+edge:P21:sender_wait:sender_retry:cd21{do:P21_x= 0}
+edge:P21:sender_wait:sender_retry:busy{do:P21_x= 0}
+edge:P21:sender_transm:sender_wait:end{provided:P21_x == 808 : do:P21_x= 0}
+edge:P21:sender_transm:sender_retry:cd21{provided:P21_x < 52 : do:P21_x= 0}
+edge:P21:sender_retry:sender_transm:begin{provided:P21_x < 52 : do:P21_x= 0}
+edge:P21:sender_retry:sender_retry:cd21{provided:P21_x < 52 : do:P21_x= 0}
+
+
+
+# Process: P22
+## Clocks for P22
+clock:1:P22_x
+
+## Locations for P22
+location:P22:sender_wait{initial:}
+location:P22:sender_transm{invariant:P22_x <= 808}
+location:P22:sender_retry{invariant:P22_x < 52}
+
+## Edges for P22
+edge:P22:sender_wait:sender_transm:begin{do:P22_x= 0}
+edge:P22:sender_wait:sender_wait:cd22{do:P22_x= 0}
+edge:P22:sender_wait:sender_retry:cd22{do:P22_x= 0}
+edge:P22:sender_wait:sender_retry:busy{do:P22_x= 0}
+edge:P22:sender_transm:sender_wait:end{provided:P22_x == 808 : do:P22_x= 0}
+edge:P22:sender_transm:sender_retry:cd22{provided:P22_x < 52 : do:P22_x= 0}
+edge:P22:sender_retry:sender_transm:begin{provided:P22_x < 52 : do:P22_x= 0}
+edge:P22:sender_retry:sender_retry:cd22{provided:P22_x < 52 : do:P22_x= 0}
+
+
+
+# Process: P23
+## Clocks for P23
+clock:1:P23_x
+
+## Locations for P23
+location:P23:sender_wait{initial:}
+location:P23:sender_transm{invariant:P23_x <= 808}
+location:P23:sender_retry{invariant:P23_x < 52}
+
+## Edges for P23
+edge:P23:sender_wait:sender_transm:begin{do:P23_x= 0}
+edge:P23:sender_wait:sender_wait:cd23{do:P23_x= 0}
+edge:P23:sender_wait:sender_retry:cd23{do:P23_x= 0}
+edge:P23:sender_wait:sender_retry:busy{do:P23_x= 0}
+edge:P23:sender_transm:sender_wait:end{provided:P23_x == 808 : do:P23_x= 0}
+edge:P23:sender_transm:sender_retry:cd23{provided:P23_x < 52 : do:P23_x= 0}
+edge:P23:sender_retry:sender_transm:begin{provided:P23_x < 52 : do:P23_x= 0}
+edge:P23:sender_retry:sender_retry:cd23{provided:P23_x < 52 : do:P23_x= 0}
+
+
+
+# Process: P24
+## Clocks for P24
+clock:1:P24_x
+
+## Locations for P24
+location:P24:sender_wait{initial:}
+location:P24:sender_transm{invariant:P24_x <= 808}
+location:P24:sender_retry{invariant:P24_x < 52}
+
+## Edges for P24
+edge:P24:sender_wait:sender_transm:begin{do:P24_x= 0}
+edge:P24:sender_wait:sender_wait:cd24{do:P24_x= 0}
+edge:P24:sender_wait:sender_retry:cd24{do:P24_x= 0}
+edge:P24:sender_wait:sender_retry:busy{do:P24_x= 0}
+edge:P24:sender_transm:sender_wait:end{provided:P24_x == 808 : do:P24_x= 0}
+edge:P24:sender_transm:sender_retry:cd24{provided:P24_x < 52 : do:P24_x= 0}
+edge:P24:sender_retry:sender_transm:begin{provided:P24_x < 52 : do:P24_x= 0}
+edge:P24:sender_retry:sender_retry:cd24{provided:P24_x < 52 : do:P24_x= 0}
+
+
+
+# Process: P25
+## Clocks for P25
+clock:1:P25_x
+
+## Locations for P25
+location:P25:sender_wait{initial:}
+location:P25:sender_transm{invariant:P25_x <= 808}
+location:P25:sender_retry{invariant:P25_x < 52}
+
+## Edges for P25
+edge:P25:sender_wait:sender_transm:begin{do:P25_x= 0}
+edge:P25:sender_wait:sender_wait:cd25{do:P25_x= 0}
+edge:P25:sender_wait:sender_retry:cd25{do:P25_x= 0}
+edge:P25:sender_wait:sender_retry:busy{do:P25_x= 0}
+edge:P25:sender_transm:sender_wait:end{provided:P25_x == 808 : do:P25_x= 0}
+edge:P25:sender_transm:sender_retry:cd25{provided:P25_x < 52 : do:P25_x= 0}
+edge:P25:sender_retry:sender_transm:begin{provided:P25_x < 52 : do:P25_x= 0}
+edge:P25:sender_retry:sender_retry:cd25{provided:P25_x < 52 : do:P25_x= 0}
+
+
+
+# Process: P26
+## Clocks for P26
+clock:1:P26_x
+
+## Locations for P26
+location:P26:sender_wait{initial:}
+location:P26:sender_transm{invariant:P26_x <= 808}
+location:P26:sender_retry{invariant:P26_x < 52}
+
+## Edges for P26
+edge:P26:sender_wait:sender_transm:begin{do:P26_x= 0}
+edge:P26:sender_wait:sender_wait:cd26{do:P26_x= 0}
+edge:P26:sender_wait:sender_retry:cd26{do:P26_x= 0}
+edge:P26:sender_wait:sender_retry:busy{do:P26_x= 0}
+edge:P26:sender_transm:sender_wait:end{provided:P26_x == 808 : do:P26_x= 0}
+edge:P26:sender_transm:sender_retry:cd26{provided:P26_x < 52 : do:P26_x= 0}
+edge:P26:sender_retry:sender_transm:begin{provided:P26_x < 52 : do:P26_x= 0}
+edge:P26:sender_retry:sender_retry:cd26{provided:P26_x < 52 : do:P26_x= 0}
+
+
+
+# Process: P27
+## Clocks for P27
+clock:1:P27_x
+
+## Locations for P27
+location:P27:sender_wait{initial:}
+location:P27:sender_transm{invariant:P27_x <= 808}
+location:P27:sender_retry{invariant:P27_x < 52}
+
+## Edges for P27
+edge:P27:sender_wait:sender_transm:begin{do:P27_x= 0}
+edge:P27:sender_wait:sender_wait:cd27{do:P27_x= 0}
+edge:P27:sender_wait:sender_retry:cd27{do:P27_x= 0}
+edge:P27:sender_wait:sender_retry:busy{do:P27_x= 0}
+edge:P27:sender_transm:sender_wait:end{provided:P27_x == 808 : do:P27_x= 0}
+edge:P27:sender_transm:sender_retry:cd27{provided:P27_x < 52 : do:P27_x= 0}
+edge:P27:sender_retry:sender_transm:begin{provided:P27_x < 52 : do:P27_x= 0}
+edge:P27:sender_retry:sender_retry:cd27{provided:P27_x < 52 : do:P27_x= 0}
+
+
+
+# Process: P28
+## Clocks for P28
+clock:1:P28_x
+
+## Locations for P28
+location:P28:sender_wait{initial:}
+location:P28:sender_transm{invariant:P28_x <= 808}
+location:P28:sender_retry{invariant:P28_x < 52}
+
+## Edges for P28
+edge:P28:sender_wait:sender_transm:begin{do:P28_x= 0}
+edge:P28:sender_wait:sender_wait:cd28{do:P28_x= 0}
+edge:P28:sender_wait:sender_retry:cd28{do:P28_x= 0}
+edge:P28:sender_wait:sender_retry:busy{do:P28_x= 0}
+edge:P28:sender_transm:sender_wait:end{provided:P28_x == 808 : do:P28_x= 0}
+edge:P28:sender_transm:sender_retry:cd28{provided:P28_x < 52 : do:P28_x= 0}
+edge:P28:sender_retry:sender_transm:begin{provided:P28_x < 52 : do:P28_x= 0}
+edge:P28:sender_retry:sender_retry:cd28{provided:P28_x < 52 : do:P28_x= 0}
+
+
+
+# Process: P29
+## Clocks for P29
+clock:1:P29_x
+
+## Locations for P29
+location:P29:sender_wait{initial:}
+location:P29:sender_transm{invariant:P29_x <= 808}
+location:P29:sender_retry{invariant:P29_x < 52}
+
+## Edges for P29
+edge:P29:sender_wait:sender_transm:begin{do:P29_x= 0}
+edge:P29:sender_wait:sender_wait:cd29{do:P29_x= 0}
+edge:P29:sender_wait:sender_retry:cd29{do:P29_x= 0}
+edge:P29:sender_wait:sender_retry:busy{do:P29_x= 0}
+edge:P29:sender_transm:sender_wait:end{provided:P29_x == 808 : do:P29_x= 0}
+edge:P29:sender_transm:sender_retry:cd29{provided:P29_x < 52 : do:P29_x= 0}
+edge:P29:sender_retry:sender_transm:begin{provided:P29_x < 52 : do:P29_x= 0}
+edge:P29:sender_retry:sender_retry:cd29{provided:P29_x < 52 : do:P29_x= 0}
+
+
+
+# Process: P30
+## Clocks for P30
+clock:1:P30_x
+
+## Locations for P30
+location:P30:sender_wait{initial:}
+location:P30:sender_transm{invariant:P30_x <= 808}
+location:P30:sender_retry{invariant:P30_x < 52}
+
+## Edges for P30
+edge:P30:sender_wait:sender_transm:begin{do:P30_x= 0}
+edge:P30:sender_wait:sender_wait:cd30{do:P30_x= 0}
+edge:P30:sender_wait:sender_retry:cd30{do:P30_x= 0}
+edge:P30:sender_wait:sender_retry:busy{do:P30_x= 0}
+edge:P30:sender_transm:sender_wait:end{provided:P30_x == 808 : do:P30_x= 0}
+edge:P30:sender_transm:sender_retry:cd30{provided:P30_x < 52 : do:P30_x= 0}
+edge:P30:sender_retry:sender_transm:begin{provided:P30_x < 52 : do:P30_x= 0}
+edge:P30:sender_retry:sender_retry:cd30{provided:P30_x < 52 : do:P30_x= 0}
+
+
+
+# Process: P31
+## Clocks for P31
+clock:1:P31_x
+
+## Locations for P31
+location:P31:sender_wait{initial:}
+location:P31:sender_transm{invariant:P31_x <= 808}
+location:P31:sender_retry{invariant:P31_x < 52}
+
+## Edges for P31
+edge:P31:sender_wait:sender_transm:begin{do:P31_x= 0}
+edge:P31:sender_wait:sender_wait:cd31{do:P31_x= 0}
+edge:P31:sender_wait:sender_retry:cd31{do:P31_x= 0}
+edge:P31:sender_wait:sender_retry:busy{do:P31_x= 0}
+edge:P31:sender_transm:sender_wait:end{provided:P31_x == 808 : do:P31_x= 0}
+edge:P31:sender_transm:sender_retry:cd31{provided:P31_x < 52 : do:P31_x= 0}
+edge:P31:sender_retry:sender_transm:begin{provided:P31_x < 52 : do:P31_x= 0}
+edge:P31:sender_retry:sender_retry:cd31{provided:P31_x < 52 : do:P31_x= 0}
+
+
+
+# Process: P32
+## Clocks for P32
+clock:1:P32_x
+
+## Locations for P32
+location:P32:sender_wait{initial:}
+location:P32:sender_transm{invariant:P32_x <= 808}
+location:P32:sender_retry{invariant:P32_x < 52}
+
+## Edges for P32
+edge:P32:sender_wait:sender_transm:begin{do:P32_x= 0}
+edge:P32:sender_wait:sender_wait:cd32{do:P32_x= 0}
+edge:P32:sender_wait:sender_retry:cd32{do:P32_x= 0}
+edge:P32:sender_wait:sender_retry:busy{do:P32_x= 0}
+edge:P32:sender_transm:sender_wait:end{provided:P32_x == 808 : do:P32_x= 0}
+edge:P32:sender_transm:sender_retry:cd32{provided:P32_x < 52 : do:P32_x= 0}
+edge:P32:sender_retry:sender_transm:begin{provided:P32_x < 52 : do:P32_x= 0}
+edge:P32:sender_retry:sender_retry:cd32{provided:P32_x < 52 : do:P32_x= 0}
+
+
+
+# Process: P33
+## Clocks for P33
+clock:1:P33_x
+
+## Locations for P33
+location:P33:sender_wait{initial:}
+location:P33:sender_transm{invariant:P33_x <= 808}
+location:P33:sender_retry{invariant:P33_x < 52}
+
+## Edges for P33
+edge:P33:sender_wait:sender_transm:begin{do:P33_x= 0}
+edge:P33:sender_wait:sender_wait:cd33{do:P33_x= 0}
+edge:P33:sender_wait:sender_retry:cd33{do:P33_x= 0}
+edge:P33:sender_wait:sender_retry:busy{do:P33_x= 0}
+edge:P33:sender_transm:sender_wait:end{provided:P33_x == 808 : do:P33_x= 0}
+edge:P33:sender_transm:sender_retry:cd33{provided:P33_x < 52 : do:P33_x= 0}
+edge:P33:sender_retry:sender_transm:begin{provided:P33_x < 52 : do:P33_x= 0}
+edge:P33:sender_retry:sender_retry:cd33{provided:P33_x < 52 : do:P33_x= 0}
+
+
+
+# Process: P34
+## Clocks for P34
+clock:1:P34_x
+
+## Locations for P34
+location:P34:sender_wait{initial:}
+location:P34:sender_transm{invariant:P34_x <= 808}
+location:P34:sender_retry{invariant:P34_x < 52}
+
+## Edges for P34
+edge:P34:sender_wait:sender_transm:begin{do:P34_x= 0}
+edge:P34:sender_wait:sender_wait:cd34{do:P34_x= 0}
+edge:P34:sender_wait:sender_retry:cd34{do:P34_x= 0}
+edge:P34:sender_wait:sender_retry:busy{do:P34_x= 0}
+edge:P34:sender_transm:sender_wait:end{provided:P34_x == 808 : do:P34_x= 0}
+edge:P34:sender_transm:sender_retry:cd34{provided:P34_x < 52 : do:P34_x= 0}
+edge:P34:sender_retry:sender_transm:begin{provided:P34_x < 52 : do:P34_x= 0}
+edge:P34:sender_retry:sender_retry:cd34{provided:P34_x < 52 : do:P34_x= 0}
+
+
+
+# Process: P35
+## Clocks for P35
+clock:1:P35_x
+
+## Locations for P35
+location:P35:sender_wait{initial:}
+location:P35:sender_transm{invariant:P35_x <= 808}
+location:P35:sender_retry{invariant:P35_x < 52}
+
+## Edges for P35
+edge:P35:sender_wait:sender_transm:begin{do:P35_x= 0}
+edge:P35:sender_wait:sender_wait:cd35{do:P35_x= 0}
+edge:P35:sender_wait:sender_retry:cd35{do:P35_x= 0}
+edge:P35:sender_wait:sender_retry:busy{do:P35_x= 0}
+edge:P35:sender_transm:sender_wait:end{provided:P35_x == 808 : do:P35_x= 0}
+edge:P35:sender_transm:sender_retry:cd35{provided:P35_x < 52 : do:P35_x= 0}
+edge:P35:sender_retry:sender_transm:begin{provided:P35_x < 52 : do:P35_x= 0}
+edge:P35:sender_retry:sender_retry:cd35{provided:P35_x < 52 : do:P35_x= 0}
+
+
+
+# Process: P36
+## Clocks for P36
+clock:1:P36_x
+
+## Locations for P36
+location:P36:sender_wait{initial:}
+location:P36:sender_transm{invariant:P36_x <= 808}
+location:P36:sender_retry{invariant:P36_x < 52}
+
+## Edges for P36
+edge:P36:sender_wait:sender_transm:begin{do:P36_x= 0}
+edge:P36:sender_wait:sender_wait:cd36{do:P36_x= 0}
+edge:P36:sender_wait:sender_retry:cd36{do:P36_x= 0}
+edge:P36:sender_wait:sender_retry:busy{do:P36_x= 0}
+edge:P36:sender_transm:sender_wait:end{provided:P36_x == 808 : do:P36_x= 0}
+edge:P36:sender_transm:sender_retry:cd36{provided:P36_x < 52 : do:P36_x= 0}
+edge:P36:sender_retry:sender_transm:begin{provided:P36_x < 52 : do:P36_x= 0}
+edge:P36:sender_retry:sender_retry:cd36{provided:P36_x < 52 : do:P36_x= 0}
+
+
+
+# Process: P37
+## Clocks for P37
+clock:1:P37_x
+
+## Locations for P37
+location:P37:sender_wait{initial:}
+location:P37:sender_transm{invariant:P37_x <= 808}
+location:P37:sender_retry{invariant:P37_x < 52}
+
+## Edges for P37
+edge:P37:sender_wait:sender_transm:begin{do:P37_x= 0}
+edge:P37:sender_wait:sender_wait:cd37{do:P37_x= 0}
+edge:P37:sender_wait:sender_retry:cd37{do:P37_x= 0}
+edge:P37:sender_wait:sender_retry:busy{do:P37_x= 0}
+edge:P37:sender_transm:sender_wait:end{provided:P37_x == 808 : do:P37_x= 0}
+edge:P37:sender_transm:sender_retry:cd37{provided:P37_x < 52 : do:P37_x= 0}
+edge:P37:sender_retry:sender_transm:begin{provided:P37_x < 52 : do:P37_x= 0}
+edge:P37:sender_retry:sender_retry:cd37{provided:P37_x < 52 : do:P37_x= 0}
+
+
+
+# Process: P38
+## Clocks for P38
+clock:1:P38_x
+
+## Locations for P38
+location:P38:sender_wait{initial:}
+location:P38:sender_transm{invariant:P38_x <= 808}
+location:P38:sender_retry{invariant:P38_x < 52}
+
+## Edges for P38
+edge:P38:sender_wait:sender_transm:begin{do:P38_x= 0}
+edge:P38:sender_wait:sender_wait:cd38{do:P38_x= 0}
+edge:P38:sender_wait:sender_retry:cd38{do:P38_x= 0}
+edge:P38:sender_wait:sender_retry:busy{do:P38_x= 0}
+edge:P38:sender_transm:sender_wait:end{provided:P38_x == 808 : do:P38_x= 0}
+edge:P38:sender_transm:sender_retry:cd38{provided:P38_x < 52 : do:P38_x= 0}
+edge:P38:sender_retry:sender_transm:begin{provided:P38_x < 52 : do:P38_x= 0}
+edge:P38:sender_retry:sender_retry:cd38{provided:P38_x < 52 : do:P38_x= 0}
+
+
+
+# Process: P39
+## Clocks for P39
+clock:1:P39_x
+
+## Locations for P39
+location:P39:sender_wait{initial:}
+location:P39:sender_transm{invariant:P39_x <= 808}
+location:P39:sender_retry{invariant:P39_x < 52}
+
+## Edges for P39
+edge:P39:sender_wait:sender_transm:begin{do:P39_x= 0}
+edge:P39:sender_wait:sender_wait:cd39{do:P39_x= 0}
+edge:P39:sender_wait:sender_retry:cd39{do:P39_x= 0}
+edge:P39:sender_wait:sender_retry:busy{do:P39_x= 0}
+edge:P39:sender_transm:sender_wait:end{provided:P39_x == 808 : do:P39_x= 0}
+edge:P39:sender_transm:sender_retry:cd39{provided:P39_x < 52 : do:P39_x= 0}
+edge:P39:sender_retry:sender_transm:begin{provided:P39_x < 52 : do:P39_x= 0}
+edge:P39:sender_retry:sender_retry:cd39{provided:P39_x < 52 : do:P39_x= 0}
+
+
+
+# Process: P40
+## Clocks for P40
+clock:1:P40_x
+
+## Locations for P40
+location:P40:sender_wait{initial:}
+location:P40:sender_transm{invariant:P40_x <= 808}
+location:P40:sender_retry{invariant:P40_x < 52}
+
+## Edges for P40
+edge:P40:sender_wait:sender_transm:begin{do:P40_x= 0}
+edge:P40:sender_wait:sender_wait:cd40{do:P40_x= 0}
+edge:P40:sender_wait:sender_retry:cd40{do:P40_x= 0}
+edge:P40:sender_wait:sender_retry:busy{do:P40_x= 0}
+edge:P40:sender_transm:sender_wait:end{provided:P40_x == 808 : do:P40_x= 0}
+edge:P40:sender_transm:sender_retry:cd40{provided:P40_x < 52 : do:P40_x= 0}
+edge:P40:sender_retry:sender_transm:begin{provided:P40_x < 52 : do:P40_x= 0}
+edge:P40:sender_retry:sender_retry:cd40{provided:P40_x < 52 : do:P40_x= 0}
+
+
+
+# Process: P41
+## Clocks for P41
+clock:1:P41_x
+
+## Locations for P41
+location:P41:sender_wait{initial:}
+location:P41:sender_transm{invariant:P41_x <= 808}
+location:P41:sender_retry{invariant:P41_x < 52}
+
+## Edges for P41
+edge:P41:sender_wait:sender_transm:begin{do:P41_x= 0}
+edge:P41:sender_wait:sender_wait:cd41{do:P41_x= 0}
+edge:P41:sender_wait:sender_retry:cd41{do:P41_x= 0}
+edge:P41:sender_wait:sender_retry:busy{do:P41_x= 0}
+edge:P41:sender_transm:sender_wait:end{provided:P41_x == 808 : do:P41_x= 0}
+edge:P41:sender_transm:sender_retry:cd41{provided:P41_x < 52 : do:P41_x= 0}
+edge:P41:sender_retry:sender_transm:begin{provided:P41_x < 52 : do:P41_x= 0}
+edge:P41:sender_retry:sender_retry:cd41{provided:P41_x < 52 : do:P41_x= 0}
+
+
+
+# Process: P42
+## Clocks for P42
+clock:1:P42_x
+
+## Locations for P42
+location:P42:sender_wait{initial:}
+location:P42:sender_transm{invariant:P42_x <= 808}
+location:P42:sender_retry{invariant:P42_x < 52}
+
+## Edges for P42
+edge:P42:sender_wait:sender_transm:begin{do:P42_x= 0}
+edge:P42:sender_wait:sender_wait:cd42{do:P42_x= 0}
+edge:P42:sender_wait:sender_retry:cd42{do:P42_x= 0}
+edge:P42:sender_wait:sender_retry:busy{do:P42_x= 0}
+edge:P42:sender_transm:sender_wait:end{provided:P42_x == 808 : do:P42_x= 0}
+edge:P42:sender_transm:sender_retry:cd42{provided:P42_x < 52 : do:P42_x= 0}
+edge:P42:sender_retry:sender_transm:begin{provided:P42_x < 52 : do:P42_x= 0}
+edge:P42:sender_retry:sender_retry:cd42{provided:P42_x < 52 : do:P42_x= 0}
+
+
+
+# Process: P43
+## Clocks for P43
+clock:1:P43_x
+
+## Locations for P43
+location:P43:sender_wait{initial:}
+location:P43:sender_transm{invariant:P43_x <= 808}
+location:P43:sender_retry{invariant:P43_x < 52}
+
+## Edges for P43
+edge:P43:sender_wait:sender_transm:begin{do:P43_x= 0}
+edge:P43:sender_wait:sender_wait:cd43{do:P43_x= 0}
+edge:P43:sender_wait:sender_retry:cd43{do:P43_x= 0}
+edge:P43:sender_wait:sender_retry:busy{do:P43_x= 0}
+edge:P43:sender_transm:sender_wait:end{provided:P43_x == 808 : do:P43_x= 0}
+edge:P43:sender_transm:sender_retry:cd43{provided:P43_x < 52 : do:P43_x= 0}
+edge:P43:sender_retry:sender_transm:begin{provided:P43_x < 52 : do:P43_x= 0}
+edge:P43:sender_retry:sender_retry:cd43{provided:P43_x < 52 : do:P43_x= 0}
+
+
+
+# Process: P44
+## Clocks for P44
+clock:1:P44_x
+
+## Locations for P44
+location:P44:sender_wait{initial:}
+location:P44:sender_transm{invariant:P44_x <= 808}
+location:P44:sender_retry{invariant:P44_x < 52}
+
+## Edges for P44
+edge:P44:sender_wait:sender_transm:begin{do:P44_x= 0}
+edge:P44:sender_wait:sender_wait:cd44{do:P44_x= 0}
+edge:P44:sender_wait:sender_retry:cd44{do:P44_x= 0}
+edge:P44:sender_wait:sender_retry:busy{do:P44_x= 0}
+edge:P44:sender_transm:sender_wait:end{provided:P44_x == 808 : do:P44_x= 0}
+edge:P44:sender_transm:sender_retry:cd44{provided:P44_x < 52 : do:P44_x= 0}
+edge:P44:sender_retry:sender_transm:begin{provided:P44_x < 52 : do:P44_x= 0}
+edge:P44:sender_retry:sender_retry:cd44{provided:P44_x < 52 : do:P44_x= 0}
+
+
+
+# Process: P45
+## Clocks for P45
+clock:1:P45_x
+
+## Locations for P45
+location:P45:sender_wait{initial:}
+location:P45:sender_transm{invariant:P45_x <= 808}
+location:P45:sender_retry{invariant:P45_x < 52}
+
+## Edges for P45
+edge:P45:sender_wait:sender_transm:begin{do:P45_x= 0}
+edge:P45:sender_wait:sender_wait:cd45{do:P45_x= 0}
+edge:P45:sender_wait:sender_retry:cd45{do:P45_x= 0}
+edge:P45:sender_wait:sender_retry:busy{do:P45_x= 0}
+edge:P45:sender_transm:sender_wait:end{provided:P45_x == 808 : do:P45_x= 0}
+edge:P45:sender_transm:sender_retry:cd45{provided:P45_x < 52 : do:P45_x= 0}
+edge:P45:sender_retry:sender_transm:begin{provided:P45_x < 52 : do:P45_x= 0}
+edge:P45:sender_retry:sender_retry:cd45{provided:P45_x < 52 : do:P45_x= 0}
+
+
+
+# Process: P46
+## Clocks for P46
+clock:1:P46_x
+
+## Locations for P46
+location:P46:sender_wait{initial:}
+location:P46:sender_transm{invariant:P46_x <= 808}
+location:P46:sender_retry{invariant:P46_x < 52}
+
+## Edges for P46
+edge:P46:sender_wait:sender_transm:begin{do:P46_x= 0}
+edge:P46:sender_wait:sender_wait:cd46{do:P46_x= 0}
+edge:P46:sender_wait:sender_retry:cd46{do:P46_x= 0}
+edge:P46:sender_wait:sender_retry:busy{do:P46_x= 0}
+edge:P46:sender_transm:sender_wait:end{provided:P46_x == 808 : do:P46_x= 0}
+edge:P46:sender_transm:sender_retry:cd46{provided:P46_x < 52 : do:P46_x= 0}
+edge:P46:sender_retry:sender_transm:begin{provided:P46_x < 52 : do:P46_x= 0}
+edge:P46:sender_retry:sender_retry:cd46{provided:P46_x < 52 : do:P46_x= 0}
+
+
+
+# Process: P47
+## Clocks for P47
+clock:1:P47_x
+
+## Locations for P47
+location:P47:sender_wait{initial:}
+location:P47:sender_transm{invariant:P47_x <= 808}
+location:P47:sender_retry{invariant:P47_x < 52}
+
+## Edges for P47
+edge:P47:sender_wait:sender_transm:begin{do:P47_x= 0}
+edge:P47:sender_wait:sender_wait:cd47{do:P47_x= 0}
+edge:P47:sender_wait:sender_retry:cd47{do:P47_x= 0}
+edge:P47:sender_wait:sender_retry:busy{do:P47_x= 0}
+edge:P47:sender_transm:sender_wait:end{provided:P47_x == 808 : do:P47_x= 0}
+edge:P47:sender_transm:sender_retry:cd47{provided:P47_x < 52 : do:P47_x= 0}
+edge:P47:sender_retry:sender_transm:begin{provided:P47_x < 52 : do:P47_x= 0}
+edge:P47:sender_retry:sender_retry:cd47{provided:P47_x < 52 : do:P47_x= 0}
+
+
+
+# Process: P48
+## Clocks for P48
+clock:1:P48_x
+
+## Locations for P48
+location:P48:sender_wait{initial:}
+location:P48:sender_transm{invariant:P48_x <= 808}
+location:P48:sender_retry{invariant:P48_x < 52}
+
+## Edges for P48
+edge:P48:sender_wait:sender_transm:begin{do:P48_x= 0}
+edge:P48:sender_wait:sender_wait:cd48{do:P48_x= 0}
+edge:P48:sender_wait:sender_retry:cd48{do:P48_x= 0}
+edge:P48:sender_wait:sender_retry:busy{do:P48_x= 0}
+edge:P48:sender_transm:sender_wait:end{provided:P48_x == 808 : do:P48_x= 0}
+edge:P48:sender_transm:sender_retry:cd48{provided:P48_x < 52 : do:P48_x= 0}
+edge:P48:sender_retry:sender_transm:begin{provided:P48_x < 52 : do:P48_x= 0}
+edge:P48:sender_retry:sender_retry:cd48{provided:P48_x < 52 : do:P48_x= 0}
+
+
+
+# Process: P49
+## Clocks for P49
+clock:1:P49_x
+
+## Locations for P49
+location:P49:sender_wait{initial:}
+location:P49:sender_transm{invariant:P49_x <= 808}
+location:P49:sender_retry{invariant:P49_x < 52}
+
+## Edges for P49
+edge:P49:sender_wait:sender_transm:begin{do:P49_x= 0}
+edge:P49:sender_wait:sender_wait:cd49{do:P49_x= 0}
+edge:P49:sender_wait:sender_retry:cd49{do:P49_x= 0}
+edge:P49:sender_wait:sender_retry:busy{do:P49_x= 0}
+edge:P49:sender_transm:sender_wait:end{provided:P49_x == 808 : do:P49_x= 0}
+edge:P49:sender_transm:sender_retry:cd49{provided:P49_x < 52 : do:P49_x= 0}
+edge:P49:sender_retry:sender_transm:begin{provided:P49_x < 52 : do:P49_x= 0}
+edge:P49:sender_retry:sender_retry:cd49{provided:P49_x < 52 : do:P49_x= 0}
+
+
+
+# Process: P50
+## Clocks for P50
+clock:1:P50_x
+
+## Locations for P50
+location:P50:sender_wait{initial:}
+location:P50:sender_transm{invariant:P50_x <= 808}
+location:P50:sender_retry{invariant:P50_x < 52}
+
+## Edges for P50
+edge:P50:sender_wait:sender_transm:begin{do:P50_x= 0}
+edge:P50:sender_wait:sender_wait:cd50{do:P50_x= 0}
+edge:P50:sender_wait:sender_retry:cd50{do:P50_x= 0}
+edge:P50:sender_wait:sender_retry:busy{do:P50_x= 0}
+edge:P50:sender_transm:sender_wait:end{provided:P50_x == 808 : do:P50_x= 0}
+edge:P50:sender_transm:sender_retry:cd50{provided:P50_x < 52 : do:P50_x= 0}
+edge:P50:sender_retry:sender_transm:begin{provided:P50_x < 52 : do:P50_x= 0}
+edge:P50:sender_retry:sender_retry:cd50{provided:P50_x < 52 : do:P50_x= 0}
+
+
+
+# Synchronizations
+sync:P1@begin:P0@begin
+sync:P10@begin:P0@begin
+sync:P11@begin:P0@begin
+sync:P12@begin:P0@begin
+sync:P13@begin:P0@begin
+sync:P14@begin:P0@begin
+sync:P15@begin:P0@begin
+sync:P16@begin:P0@begin
+sync:P17@begin:P0@begin
+sync:P18@begin:P0@begin
+sync:P19@begin:P0@begin
+sync:P2@begin:P0@begin
+sync:P20@begin:P0@begin
+sync:P21@begin:P0@begin
+sync:P22@begin:P0@begin
+sync:P23@begin:P0@begin
+sync:P24@begin:P0@begin
+sync:P25@begin:P0@begin
+sync:P26@begin:P0@begin
+sync:P27@begin:P0@begin
+sync:P28@begin:P0@begin
+sync:P29@begin:P0@begin
+sync:P3@begin:P0@begin
+sync:P30@begin:P0@begin
+sync:P31@begin:P0@begin
+sync:P32@begin:P0@begin
+sync:P33@begin:P0@begin
+sync:P34@begin:P0@begin
+sync:P35@begin:P0@begin
+sync:P36@begin:P0@begin
+sync:P37@begin:P0@begin
+sync:P38@begin:P0@begin
+sync:P39@begin:P0@begin
+sync:P4@begin:P0@begin
+sync:P40@begin:P0@begin
+sync:P41@begin:P0@begin
+sync:P42@begin:P0@begin
+sync:P43@begin:P0@begin
+sync:P44@begin:P0@begin
+sync:P45@begin:P0@begin
+sync:P46@begin:P0@begin
+sync:P47@begin:P0@begin
+sync:P48@begin:P0@begin
+sync:P49@begin:P0@begin
+sync:P5@begin:P0@begin
+sync:P50@begin:P0@begin
+sync:P6@begin:P0@begin
+sync:P7@begin:P0@begin
+sync:P8@begin:P0@begin
+sync:P9@begin:P0@begin
+sync:P0@busy:P1@busy
+sync:P0@busy:P10@busy
+sync:P0@busy:P11@busy
+sync:P0@busy:P12@busy
+sync:P0@busy:P13@busy
+sync:P0@busy:P14@busy
+sync:P0@busy:P15@busy
+sync:P0@busy:P16@busy
+sync:P0@busy:P17@busy
+sync:P0@busy:P18@busy
+sync:P0@busy:P19@busy
+sync:P0@busy:P2@busy
+sync:P0@busy:P20@busy
+sync:P0@busy:P21@busy
+sync:P0@busy:P22@busy
+sync:P0@busy:P23@busy
+sync:P0@busy:P24@busy
+sync:P0@busy:P25@busy
+sync:P0@busy:P26@busy
+sync:P0@busy:P27@busy
+sync:P0@busy:P28@busy
+sync:P0@busy:P29@busy
+sync:P0@busy:P3@busy
+sync:P0@busy:P30@busy
+sync:P0@busy:P31@busy
+sync:P0@busy:P32@busy
+sync:P0@busy:P33@busy
+sync:P0@busy:P34@busy
+sync:P0@busy:P35@busy
+sync:P0@busy:P36@busy
+sync:P0@busy:P37@busy
+sync:P0@busy:P38@busy
+sync:P0@busy:P39@busy
+sync:P0@busy:P4@busy
+sync:P0@busy:P40@busy
+sync:P0@busy:P41@busy
+sync:P0@busy:P42@busy
+sync:P0@busy:P43@busy
+sync:P0@busy:P44@busy
+sync:P0@busy:P45@busy
+sync:P0@busy:P46@busy
+sync:P0@busy:P47@busy
+sync:P0@busy:P48@busy
+sync:P0@busy:P49@busy
+sync:P0@busy:P5@busy
+sync:P0@busy:P50@busy
+sync:P0@busy:P6@busy
+sync:P0@busy:P7@busy
+sync:P0@busy:P8@busy
+sync:P0@busy:P9@busy
+sync:P0@cd1:P1@cd1
+sync:P0@cd10:P10@cd10
+sync:P0@cd11:P11@cd11
+sync:P0@cd12:P12@cd12
+sync:P0@cd13:P13@cd13
+sync:P0@cd14:P14@cd14
+sync:P0@cd15:P15@cd15
+sync:P0@cd16:P16@cd16
+sync:P0@cd17:P17@cd17
+sync:P0@cd18:P18@cd18
+sync:P0@cd19:P19@cd19
+sync:P0@cd2:P2@cd2
+sync:P0@cd20:P20@cd20
+sync:P0@cd21:P21@cd21
+sync:P0@cd22:P22@cd22
+sync:P0@cd23:P23@cd23
+sync:P0@cd24:P24@cd24
+sync:P0@cd25:P25@cd25
+sync:P0@cd26:P26@cd26
+sync:P0@cd27:P27@cd27
+sync:P0@cd28:P28@cd28
+sync:P0@cd29:P29@cd29
+sync:P0@cd3:P3@cd3
+sync:P0@cd30:P30@cd30
+sync:P0@cd31:P31@cd31
+sync:P0@cd32:P32@cd32
+sync:P0@cd33:P33@cd33
+sync:P0@cd34:P34@cd34
+sync:P0@cd35:P35@cd35
+sync:P0@cd36:P36@cd36
+sync:P0@cd37:P37@cd37
+sync:P0@cd38:P38@cd38
+sync:P0@cd39:P39@cd39
+sync:P0@cd4:P4@cd4
+sync:P0@cd40:P40@cd40
+sync:P0@cd41:P41@cd41
+sync:P0@cd42:P42@cd42
+sync:P0@cd43:P43@cd43
+sync:P0@cd44:P44@cd44
+sync:P0@cd45:P45@cd45
+sync:P0@cd46:P46@cd46
+sync:P0@cd47:P47@cd47
+sync:P0@cd48:P48@cd48
+sync:P0@cd49:P49@cd49
+sync:P0@cd5:P5@cd5
+sync:P0@cd50:P50@cd50
+sync:P0@cd6:P6@cd6
+sync:P0@cd7:P7@cd7
+sync:P0@cd8:P8@cd8
+sync:P0@cd9:P9@cd9
+sync:P1@end:P0@end
+sync:P10@end:P0@end
+sync:P11@end:P0@end
+sync:P12@end:P0@end
+sync:P13@end:P0@end
+sync:P14@end:P0@end
+sync:P15@end:P0@end
+sync:P16@end:P0@end
+sync:P17@end:P0@end
+sync:P18@end:P0@end
+sync:P19@end:P0@end
+sync:P2@end:P0@end
+sync:P20@end:P0@end
+sync:P21@end:P0@end
+sync:P22@end:P0@end
+sync:P23@end:P0@end
+sync:P24@end:P0@end
+sync:P25@end:P0@end
+sync:P26@end:P0@end
+sync:P27@end:P0@end
+sync:P28@end:P0@end
+sync:P29@end:P0@end
+sync:P3@end:P0@end
+sync:P30@end:P0@end
+sync:P31@end:P0@end
+sync:P32@end:P0@end
+sync:P33@end:P0@end
+sync:P34@end:P0@end
+sync:P35@end:P0@end
+sync:P36@end:P0@end
+sync:P37@end:P0@end
+sync:P38@end:P0@end
+sync:P39@end:P0@end
+sync:P4@end:P0@end
+sync:P40@end:P0@end
+sync:P41@end:P0@end
+sync:P42@end:P0@end
+sync:P43@end:P0@end
+sync:P44@end:P0@end
+sync:P45@end:P0@end
+sync:P46@end:P0@end
+sync:P47@end:P0@end
+sync:P48@end:P0@end
+sync:P49@end:P0@end
+sync:P5@end:P0@end
+sync:P50@end:P0@end
+sync:P6@end:P0@end
+sync:P7@end:P0@end
+sync:P8@end:P0@end
+sync:P9@end:P0@end
