@@ -841,7 +841,7 @@ clock:1:Stage7_c
 
 ## Locations for Stage7
 location:Stage7:Init{initial:}
-location:Stage7:Completed
+location:Stage7:Completed{labels: goal}
 location:Stage7:a_1_run_tc{invariant:Stage7_c <= 13}
 location:Stage7:a_2_run_tc{invariant:Stage7_c <= 13}
 location:Stage7:a_3_run_tc{invariant:Stage7_c <= 13}

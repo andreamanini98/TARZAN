@@ -15,7 +15,7 @@ clock:1:Flower_y
 
 ## Locations for Flower
 location:Flower:Start{initial:}
-location:Flower:Goal
+location:Flower:Goal{labels: goal}
 
 ## Edges for Flower
 edge:Flower:Start:Start:tau{provided:Flower_x1 == 1 : do:Flower_x1 = 0}

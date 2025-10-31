@@ -23,7 +23,7 @@ clock:1:Viking00_y
 
 ## Locations for Viking00
 location:Viking00:L0
-location:Viking00:safe
+location:Viking00:safe{labels: goal0}
 location:Viking00:L1
 location:Viking00:unsafe{initial:}
 
@@ -41,7 +41,7 @@ clock:1:Viking01_y
 
 ## Locations for Viking01
 location:Viking01:L0
-location:Viking01:safe
+location:Viking01:safe{labels: goal1}
 location:Viking01:L1
 location:Viking01:unsafe{initial:}
 

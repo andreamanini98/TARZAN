@@ -146,7 +146,7 @@ clock:1:latch1_ckLatch
 location:latch1:LatchD0E0{initial: : invariant:latch1_ckLatch >= 0}
 location:latch1:LatchD0E1{invariant:latch1_ckLatch >= 0}
 location:latch1:LatchD1E0{invariant:latch1_ckLatch >= 0}
-location:latch1:LatchD1E1{invariant:latch1_ckLatch <= dLatchUp}
+location:latch1:LatchD1E1{labels: goal : invariant:latch1_ckLatch <= dLatchUp}
 location:latch1:LatchD1E1B{invariant:latch1_ckLatch >= 0}
 
 ## Edges for latch1

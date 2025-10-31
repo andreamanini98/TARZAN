@@ -218,7 +218,7 @@ location:s1o:S1o1
 location:s1o:S1o2
 location:s1o:S1o3
 location:s1o:S1o4
-location:s1o:S1oEnd
+location:s1o:S1oEnd{labels: goal}
 
 ## Edges for s1o
 edge:s1o:S1o1:S1oEnd:child2

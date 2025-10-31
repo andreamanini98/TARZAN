@@ -24,7 +24,7 @@ location:A:q0{initial: : invariant:A_x1 <= 2 * p1}
 location:A:q1
 location:A:q2{invariant:A_x1 <= p2}
 location:A:q3
-location:A:qBad
+location:A:qBad{labels: goal}
 
 ## Edges for A
 edge:A:q3:q2:tau

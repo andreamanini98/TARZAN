@@ -24,7 +24,7 @@ clock:1:P1_c
 ## Locations for P1
 location:P1:L9{invariant:P1_c <= T}
 location:P1:L8{invariant:P1_c <= T}
-location:P1:CS7
+location:P1:CS7{labels: goal1}
 location:P1:L6
 location:P1:L5{invariant:P1_c <= T}
 location:P1:L4
@@ -57,7 +57,7 @@ clock:1:P2_c
 ## Locations for P2
 location:P2:L9{invariant:P2_c <= T}
 location:P2:L8{invariant:P2_c <= T}
-location:P2:CS7
+location:P2:CS7{labels: goal2}
 location:P2:L6
 location:P2:L5{invariant:P2_c <= T}
 location:P2:L4

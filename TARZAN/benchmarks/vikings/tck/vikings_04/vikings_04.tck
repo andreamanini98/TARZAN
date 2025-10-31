@@ -25,7 +25,7 @@ clock:1:Viking00_y
 
 ## Locations for Viking00
 location:Viking00:L0
-location:Viking00:safe
+location:Viking00:safe{labels: goal0}
 location:Viking00:L1
 location:Viking00:unsafe{initial:}
 
@@ -43,7 +43,7 @@ clock:1:Viking01_y
 
 ## Locations for Viking01
 location:Viking01:L0
-location:Viking01:safe
+location:Viking01:safe{labels: goal1}
 location:Viking01:L1
 location:Viking01:unsafe{initial:}
 
@@ -61,7 +61,7 @@ clock:1:Viking02_y
 
 ## Locations for Viking02
 location:Viking02:L0
-location:Viking02:safe
+location:Viking02:safe{labels: goal2}
 location:Viking02:L1
 location:Viking02:unsafe{initial:}
 
@@ -79,7 +79,7 @@ clock:1:Viking03_y
 
 ## Locations for Viking03
 location:Viking03:L0
-location:Viking03:safe
+location:Viking03:safe{labels: goal3}
 location:Viking03:L1
 location:Viking03:unsafe{initial:}
 

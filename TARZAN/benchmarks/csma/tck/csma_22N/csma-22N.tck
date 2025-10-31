@@ -122,7 +122,7 @@ clock:1:P1_x
 ## Locations for P1
 location:P1:sender_wait{initial:}
 location:P1:sender_transm{invariant:P1_x <= 808}
-location:P1:sender_retry{invariant:P1_x < 52}
+location:P1:sender_retry{labels: goal1 : invariant:P1_x < 52}
 
 ## Edges for P1
 edge:P1:sender_wait:sender_transm:begin{do:P1_x= 0}
@@ -143,7 +143,7 @@ clock:1:P2_x
 ## Locations for P2
 location:P2:sender_wait{initial:}
 location:P2:sender_transm{invariant:P2_x <= 808}
-location:P2:sender_retry{invariant:P2_x < 52}
+location:P2:sender_retry{labels: goal2 : invariant:P2_x < 52}
 
 ## Edges for P2
 edge:P2:sender_wait:sender_transm:begin{do:P2_x= 0}
@@ -163,7 +163,7 @@ clock:1:P3_x
 
 ## Locations for P3
 location:P3:sender_wait{initial:}
-location:P3:sender_transm{invariant:P3_x <= 808}
+location:P3:sender_transm{labels: goal3 : invariant:P3_x <= 808}
 location:P3:sender_retry{invariant:P3_x < 52}
 
 ## Edges for P3
@@ -185,7 +185,7 @@ clock:1:P4_x
 ## Locations for P4
 location:P4:sender_wait{initial:}
 location:P4:sender_transm{invariant:P4_x <= 808}
-location:P4:sender_retry{invariant:P4_x < 52}
+location:P4:sender_retry{labels: goal4 : invariant:P4_x < 52}
 
 ## Edges for P4
 edge:P4:sender_wait:sender_transm:begin{do:P4_x= 0}
@@ -206,7 +206,7 @@ clock:1:P5_x
 ## Locations for P5
 location:P5:sender_wait{initial:}
 location:P5:sender_transm{invariant:P5_x <= 808}
-location:P5:sender_retry{invariant:P5_x < 52}
+location:P5:sender_retry{labels: goal5 : invariant:P5_x < 52}
 
 ## Edges for P5
 edge:P5:sender_wait:sender_transm:begin{do:P5_x= 0}
@@ -227,7 +227,7 @@ clock:1:P6_x
 ## Locations for P6
 location:P6:sender_wait{initial:}
 location:P6:sender_transm{invariant:P6_x <= 808}
-location:P6:sender_retry{invariant:P6_x < 52}
+location:P6:sender_retry{labels: goal6 : invariant:P6_x < 52}
 
 ## Edges for P6
 edge:P6:sender_wait:sender_transm:begin{do:P6_x= 0}
@@ -248,7 +248,7 @@ clock:1:P7_x
 ## Locations for P7
 location:P7:sender_wait{initial:}
 location:P7:sender_transm{invariant:P7_x <= 808}
-location:P7:sender_retry{invariant:P7_x < 52}
+location:P7:sender_retry{labels: goal7 : invariant:P7_x < 52}
 
 ## Edges for P7
 edge:P7:sender_wait:sender_transm:begin{do:P7_x= 0}

@@ -103,7 +103,7 @@ clock:1:Observer_y
 
 ## Locations for Observer
 location:Observer:Wait{initial:}
-location:Observer:Escape
+location:Observer:Escape{labels: goal}
 
 ## Edges for Observer
 edge:Observer:Wait:Escape:tau{provided:Observer_y == obsDelay && InSafety == 4}

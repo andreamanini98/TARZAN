@@ -26,7 +26,7 @@ clock:1:fischer01_x
 location:fischer01:wait
 location:fischer01:req{invariant:fischer01_x <= 2}
 location:fischer01:A{initial:}
-location:fischer01:cs
+location:fischer01:cs{labels: goal1}
 
 ## Edges for fischer01
 edge:fischer01:A:req:tau{provided:id == 0 : do:fischer01_x = 0}
@@ -45,7 +45,7 @@ clock:1:fischer02_x
 location:fischer02:wait
 location:fischer02:req{invariant:fischer02_x <= 2}
 location:fischer02:A{initial:}
-location:fischer02:cs
+location:fischer02:cs{labels: goal2}
 
 ## Edges for fischer02
 edge:fischer02:A:req:tau{provided:id == 0 : do:fischer02_x = 0}

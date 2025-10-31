@@ -32,7 +32,7 @@ clock:1:env_s
 ## Locations for env
 location:env:env_11{initial:}
 location:env:env_10{invariant:env_s <= t_down}
-location:env:env_final
+location:env:env_final{labels: goal}
 
 ## Edges for env
 edge:env:env_11:env_10:S_Down{do:env_s = 0}

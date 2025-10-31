@@ -88,7 +88,7 @@ clock:1:controller_z
 location:controller:controller0{initial:}
 location:controller:controller1{invariant:controller_z <= e}
 location:controller:controller2
-location:controller:controller3{invariant:controller_z <= e}
+location:controller:controller3{labels: goal : invariant:controller_z <= e}
 
 ## Edges for controller
 edge:controller:controller0:controller1:approach{do:controller_z = 0; cnt = 1}

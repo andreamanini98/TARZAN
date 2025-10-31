@@ -21,7 +21,7 @@ location:Ring0:L1
 location:Ring0:L2
 location:Ring0:L3
 location:Ring0:L4
-location:Ring0:goal
+location:Ring0:goal{labels: goal0}
 
 ## Edges for Ring0
 edge:Ring0:goal:L0:tau{provided:Ring0_x == 1 : do:Ring0_x = 0}
@@ -43,7 +43,7 @@ location:Ring1:L1
 location:Ring1:L2
 location:Ring1:L3
 location:Ring1:L4
-location:Ring1:goal
+location:Ring1:goal{labels: goal1}
 
 ## Edges for Ring1
 edge:Ring1:goal:L0:tau{provided:Ring1_x == 2 : do:Ring1_x = 0}
@@ -65,7 +65,7 @@ location:Ring2:L1
 location:Ring2:L2
 location:Ring2:L3
 location:Ring2:L4
-location:Ring2:goal
+location:Ring2:goal{labels: goal2}
 
 ## Edges for Ring2
 edge:Ring2:goal:L0:tau{provided:Ring2_x == 3 : do:Ring2_x = 0}
@@ -87,7 +87,7 @@ location:Ring3:L1
 location:Ring3:L2
 location:Ring3:L3
 location:Ring3:L4
-location:Ring3:goal
+location:Ring3:goal{labels: goal3}
 
 ## Edges for Ring3
 edge:Ring3:goal:L0:tau{provided:Ring3_x == 4 : do:Ring3_x = 0}
