@@ -19,10 +19,10 @@ inline void testPagerank(const std::string &path)
     goal[7] = locationsToInt[7].at("Completed");
 
     // Using 1300 as the comparing constant. Values lower than 1256 will cause an explosion.
-    std::vector<std::vector<timed_automaton::ast::clockConstraint>> goalClockConstraints(9);
-    goalClockConstraints[0] = { { "timer", LT, 1300 } };
+    // std::vector<std::vector<timed_automaton::ast::clockConstraint>> goalClockConstraints(9);
+    // goalClockConstraints[0] = { { "timer", LT, 1300 } };
 
-    const auto res = net.forwardReachability(goalClockConstraints, goal, DFS);
+    const auto res = net.forwardReachability(goal, DFS);
 }
 
 
