@@ -1,0 +1,36 @@
+system:exSITH
+
+# Events
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:10:p1
+int:1:0:1000:50:p2
+
+
+
+# Processes
+process:A
+
+# Process: A
+## Clocks for A
+clock:1:A_x1
+clock:1:A_x2
+
+## Locations for A
+location:A:q0{initial: : invariant:A_x1 <= 2 * p1}
+location:A:q1
+location:A:q2{invariant:A_x1 <= p2}
+location:A:q3
+location:A:qBad
+
+## Edges for A
+edge:A:q3:q2:tau
+edge:A:q0:qBad:tau{provided:A_x1 >= p2}
+edge:A:q2:q3:tau{provided:A_x2 > p2}
+edge:A:q1:q1:tau{do:A_x2 = 0}
+edge:A:q1:q2:tau{provided:A_x1 >= p1}
+edge:A:q0:q1:tau{do:A_x2 = 0}
+edge:A:q2:qBad:tau{provided:A_x1 >= 4 * p1}
