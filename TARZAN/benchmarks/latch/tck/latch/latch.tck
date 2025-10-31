@@ -1,0 +1,178 @@
+system:latch
+
+# Events
+event:andDown1
+event:andUp1
+event:clockUp1
+event:dDown1
+event:dUp1
+event:not1Down1
+event:not2Up1
+event:tau
+event:xorDown1
+
+
+
+# Global declarations
+int:1:0:1000:350:dHold
+int:1:0:1000:155:dNot2Up
+int:1:0:1000:155:dNot1Up
+int:1:0:1000:147:dNot1Down
+int:1:0:1000:416:dXorDown1Up
+int:1:0:2000:1000:dClockHigh
+int:1:0:1000:155:dAndDown1
+int:1:0:2000:1000:dClockLow
+int:1:0:1000:80:dAndUp2
+int:1:0:1000:147:dNot2Down
+int:1:0:1000:147:dXorUp2Up
+int:1:0:1000:1:dSetup
+int:1:0:1000:240:dLatchUp
+int:1:0:1000:0:q
+
+
+
+# Processes
+process:clock1
+process:d1
+process:not1
+process:not2
+process:xor1
+process:and1
+process:latch1
+
+# Process: clock1
+## Clocks for clock1
+clock:1:clock1_ckClock
+
+## Locations for clock1
+location:clock1:ClockLow1{initial: : invariant:clock1_ckClock <= dClockLow}
+location:clock1:ClockHigh1{invariant:clock1_ckClock <= dClockHigh}
+
+## Edges for clock1
+edge:clock1:ClockLow1:ClockHigh1:clockUp1{provided:clock1_ckClock >= dClockLow : do:clock1_ckClock = 0}
+
+
+
+# Process: d1
+## Clocks for d1
+clock:1:d1_ckD
+
+## Locations for d1
+location:d1:DLow1{initial: : invariant:d1_ckD <= dClockLow + dSetup}
+location:d1:DHigh1{invariant:d1_ckD <= dSetup}
+location:d1:DHigh2{invariant:d1_ckD <= dHold}
+location:d1:DLow2{invariant:d1_ckD >= 0}
+
+## Edges for d1
+edge:d1:DHigh1:DHigh2:clockUp1{provided:d1_ckD == dSetup : do:d1_ckD = 0}
+edge:d1:DHigh2:DLow2:dDown1{provided:d1_ckD == dHold}
+edge:d1:DLow1:DHigh1:dUp1{provided:d1_ckD == dSetup + dClockLow : do:d1_ckD = 0}
+
+
+
+# Process: not1
+## Clocks for not1
+clock:1:not1_ckNot1
+
+## Locations for not1
+location:not1:Not1High1{initial: : invariant:not1_ckNot1 >= 0}
+location:not1:Not1High1bis{invariant:not1_ckNot1 <= dNot1Down}
+location:not1:Not1Low1{invariant:not1_ckNot1 >= 0}
+
+## Edges for not1
+edge:not1:Not1High1:Not1High1bis:clockUp1{do:not1_ckNot1 = 0}
+edge:not1:Not1High1bis:Not1Low1:not1Down1{provided:not1_ckNot1 >= dNot1Down}
+
+
+
+# Process: not2
+## Clocks for not2
+clock:1:not2_ckNot2
+
+## Locations for not2
+location:not2:Not2Low1{initial: : invariant:not2_ckNot2 >= 0}
+location:not2:Not2Low1bis{invariant:not2_ckNot2 <= dNot2Up}
+location:not2:Not2High1{invariant:not2_ckNot2 >= 0}
+
+## Edges for not2
+edge:not2:Not2Low1bis:Not2High1:not2Up1{provided:not2_ckNot2 >= dNot2Up}
+edge:not2:Not2Low1:Not2Low1bis:not1Down1{do:not2_ckNot2 = 0}
+
+
+
+# Process: xor1
+## Clocks for xor1
+clock:1:xor1_ckXor
+
+## Locations for xor1
+location:xor1:XorLow1{initial: : invariant:xor1_ckXor >= 0}
+location:xor1:XorLow1bis{invariant:xor1_ckXor <= dXorUp2Up}
+location:xor1:XorHigh1{invariant:xor1_ckXor >= 0}
+location:xor1:XorHigh1bis{invariant:xor1_ckXor <= dXorDown1Up}
+location:xor1:XorLow2{invariant:xor1_ckXor >= 0}
+
+## Edges for xor1
+edge:xor1:XorHigh1:XorHigh1bis:not2Up1{do:xor1_ckXor = 0}
+edge:xor1:XorLow1bis:XorHigh1:tau{provided:xor1_ckXor >= dXorUp2Up}
+edge:xor1:XorHigh1bis:XorLow2:xorDown1{provided:xor1_ckXor >= dXorDown1Up}
+edge:xor1:XorLow1:XorLow1bis:clockUp1{do:xor1_ckXor = 0}
+
+
+
+# Process: and1
+## Clocks for and1
+clock:1:and1_ckAnd
+
+## Locations for and1
+location:and1:AndLow1{initial: : invariant:and1_ckAnd >= 0}
+location:and1:AndLow1bis{invariant:and1_ckAnd <= dAndUp2}
+location:and1:AndHigh1{invariant:and1_ckAnd >= 0}
+location:and1:AndHigh1bis{invariant:and1_ckAnd <= dAndDown1}
+location:and1:AndLow2{invariant:and1_ckAnd >= 0}
+
+## Edges for and1
+edge:and1:AndLow1:AndLow1bis:clockUp1{do:and1_ckAnd = 0}
+edge:and1:AndLow1bis:AndHigh1:andUp1{provided:and1_ckAnd >= dAndUp2}
+edge:and1:AndHigh1bis:AndLow2:andDown1{provided:and1_ckAnd >= dAndDown1}
+edge:and1:AndHigh1:AndHigh1bis:xorDown1{do:and1_ckAnd = 0}
+
+
+
+# Process: latch1
+## Clocks for latch1
+clock:1:latch1_ckLatch
+
+## Locations for latch1
+location:latch1:LatchD0E0{initial: : invariant:latch1_ckLatch >= 0}
+location:latch1:LatchD0E1{invariant:latch1_ckLatch >= 0}
+location:latch1:LatchD1E0{invariant:latch1_ckLatch >= 0}
+location:latch1:LatchD1E1{invariant:latch1_ckLatch <= dLatchUp}
+location:latch1:LatchD1E1B{invariant:latch1_ckLatch >= 0}
+
+## Edges for latch1
+edge:latch1:LatchD0E1:LatchD1E1:dUp1{do:latch1_ckLatch = 0}
+edge:latch1:LatchD0E0:LatchD0E1:andUp1{do:latch1_ckLatch = 0}
+edge:latch1:LatchD1E0:LatchD0E0:dDown1
+edge:latch1:LatchD1E1:LatchD0E1:dDown1
+edge:latch1:LatchD1E1B:LatchD1E0:andDown1
+edge:latch1:LatchD1E1B:LatchD0E1:dDown1
+edge:latch1:LatchD0E1:LatchD0E0:andDown1
+edge:latch1:LatchD1E1:LatchD1E0:andDown1
+edge:latch1:LatchD0E0:LatchD1E0:dUp1
+edge:latch1:LatchD1E0:LatchD1E1:andUp1{do:latch1_ckLatch = 0}
+edge:latch1:LatchD1E1:LatchD1E1B:tau{provided:latch1_ckLatch >= dLatchUp : do:q = 1}
+
+
+
+# Synchronizations
+sync:and1@andDown1:latch1@andDown1
+sync:and1@andUp1:latch1@andUp1
+sync:clock1@clockUp1:and1@clockUp1
+sync:clock1@clockUp1:d1@clockUp1
+sync:clock1@clockUp1:not1@clockUp1
+sync:clock1@clockUp1:xor1@clockUp1
+sync:d1@dDown1:latch1@dDown1
+sync:d1@dUp1:latch1@dUp1
+sync:not1@not1Down1:not2@not1Down1
+sync:not2@not2Up1:xor1@not2Up1
+sync:xor1@xorDown1:and1@xorDown1
