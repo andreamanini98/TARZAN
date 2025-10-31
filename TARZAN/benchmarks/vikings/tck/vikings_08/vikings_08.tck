@@ -1,0 +1,202 @@
+system:vikings_08
+
+# Events
+event:release
+event:take
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:0:L
+
+
+
+# Processes
+process:Viking00
+process:Viking01
+process:Viking02
+process:Viking03
+process:Viking04
+process:Viking05
+process:Viking06
+process:Viking07
+process:Torch
+
+# Process: Viking00
+## Clocks for Viking00
+clock:1:Viking00_y
+
+## Locations for Viking00
+location:Viking00:L0
+location:Viking00:safe
+location:Viking00:L1
+location:Viking00:unsafe{initial:}
+
+## Edges for Viking00
+edge:Viking00:L1:unsafe:release{provided:Viking00_y >= 20}
+edge:Viking00:safe:L1:take{provided:L == 1 : do:Viking00_y = 0}
+edge:Viking00:L0:safe:release{provided:Viking00_y >= 20}
+edge:Viking00:unsafe:L0:take{provided:L == 0 : do:Viking00_y = 0}
+
+
+
+# Process: Viking01
+## Clocks for Viking01
+clock:1:Viking01_y
+
+## Locations for Viking01
+location:Viking01:L0
+location:Viking01:safe
+location:Viking01:L1
+location:Viking01:unsafe{initial:}
+
+## Edges for Viking01
+edge:Viking01:L1:unsafe:release{provided:Viking01_y >= 20}
+edge:Viking01:safe:L1:take{provided:L == 1 : do:Viking01_y = 0}
+edge:Viking01:L0:safe:release{provided:Viking01_y >= 20}
+edge:Viking01:unsafe:L0:take{provided:L == 0 : do:Viking01_y = 0}
+
+
+
+# Process: Viking02
+## Clocks for Viking02
+clock:1:Viking02_y
+
+## Locations for Viking02
+location:Viking02:L0
+location:Viking02:safe
+location:Viking02:L1
+location:Viking02:unsafe{initial:}
+
+## Edges for Viking02
+edge:Viking02:L1:unsafe:release{provided:Viking02_y >= 20}
+edge:Viking02:safe:L1:take{provided:L == 1 : do:Viking02_y = 0}
+edge:Viking02:L0:safe:release{provided:Viking02_y >= 20}
+edge:Viking02:unsafe:L0:take{provided:L == 0 : do:Viking02_y = 0}
+
+
+
+# Process: Viking03
+## Clocks for Viking03
+clock:1:Viking03_y
+
+## Locations for Viking03
+location:Viking03:L0
+location:Viking03:safe
+location:Viking03:L1
+location:Viking03:unsafe{initial:}
+
+## Edges for Viking03
+edge:Viking03:L1:unsafe:release{provided:Viking03_y >= 20}
+edge:Viking03:safe:L1:take{provided:L == 1 : do:Viking03_y = 0}
+edge:Viking03:L0:safe:release{provided:Viking03_y >= 20}
+edge:Viking03:unsafe:L0:take{provided:L == 0 : do:Viking03_y = 0}
+
+
+
+# Process: Viking04
+## Clocks for Viking04
+clock:1:Viking04_y
+
+## Locations for Viking04
+location:Viking04:L0
+location:Viking04:safe
+location:Viking04:L1
+location:Viking04:unsafe{initial:}
+
+## Edges for Viking04
+edge:Viking04:L1:unsafe:release{provided:Viking04_y >= 20}
+edge:Viking04:safe:L1:take{provided:L == 1 : do:Viking04_y = 0}
+edge:Viking04:L0:safe:release{provided:Viking04_y >= 20}
+edge:Viking04:unsafe:L0:take{provided:L == 0 : do:Viking04_y = 0}
+
+
+
+# Process: Viking05
+## Clocks for Viking05
+clock:1:Viking05_y
+
+## Locations for Viking05
+location:Viking05:L0
+location:Viking05:safe
+location:Viking05:L1
+location:Viking05:unsafe{initial:}
+
+## Edges for Viking05
+edge:Viking05:L1:unsafe:release{provided:Viking05_y >= 20}
+edge:Viking05:safe:L1:take{provided:L == 1 : do:Viking05_y = 0}
+edge:Viking05:L0:safe:release{provided:Viking05_y >= 20}
+edge:Viking05:unsafe:L0:take{provided:L == 0 : do:Viking05_y = 0}
+
+
+
+# Process: Viking06
+## Clocks for Viking06
+clock:1:Viking06_y
+
+## Locations for Viking06
+location:Viking06:L0
+location:Viking06:safe
+location:Viking06:L1
+location:Viking06:unsafe{initial:}
+
+## Edges for Viking06
+edge:Viking06:L1:unsafe:release{provided:Viking06_y >= 20}
+edge:Viking06:safe:L1:take{provided:L == 1 : do:Viking06_y = 0}
+edge:Viking06:L0:safe:release{provided:Viking06_y >= 20}
+edge:Viking06:unsafe:L0:take{provided:L == 0 : do:Viking06_y = 0}
+
+
+
+# Process: Viking07
+## Clocks for Viking07
+clock:1:Viking07_y
+
+## Locations for Viking07
+location:Viking07:L0
+location:Viking07:safe
+location:Viking07:L1
+location:Viking07:unsafe{initial:}
+
+## Edges for Viking07
+edge:Viking07:L1:unsafe:release{provided:Viking07_y >= 20}
+edge:Viking07:safe:L1:take{provided:L == 1 : do:Viking07_y = 0}
+edge:Viking07:L0:safe:release{provided:Viking07_y >= 20}
+edge:Viking07:unsafe:L0:take{provided:L == 0 : do:Viking07_y = 0}
+
+
+
+# Process: Torch
+## Locations for Torch
+location:Torch:one
+location:Torch:L0{urgent:}
+location:Torch:free{initial:}
+location:Torch:two
+
+## Edges for Torch
+edge:Torch:free:L0:take
+edge:Torch:L0:one:tau
+edge:Torch:L0:two:take
+edge:Torch:one:free:release{do:L = 1 - L}
+edge:Torch:two:one:release
+
+
+
+# Synchronizations
+sync:Viking00@release:Torch@release
+sync:Viking01@release:Torch@release
+sync:Viking02@release:Torch@release
+sync:Viking03@release:Torch@release
+sync:Viking04@release:Torch@release
+sync:Viking05@release:Torch@release
+sync:Viking06@release:Torch@release
+sync:Viking07@release:Torch@release
+sync:Viking00@take:Torch@take
+sync:Viking01@take:Torch@take
+sync:Viking02@take:Torch@take
+sync:Viking03@take:Torch@take
+sync:Viking04@take:Torch@take
+sync:Viking05@take:Torch@take
+sync:Viking06@take:Torch@take
+sync:Viking07@take:Torch@take
