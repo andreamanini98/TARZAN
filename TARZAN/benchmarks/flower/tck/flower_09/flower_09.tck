@@ -1,0 +1,38 @@
+system:flower_09
+
+# Events
+event:tau
+
+
+
+# Processes
+process:Flower
+
+# Process: Flower
+## Clocks for Flower
+clock:1:Flower_x1
+clock:1:Flower_x2
+clock:1:Flower_x3
+clock:1:Flower_x4
+clock:1:Flower_x5
+clock:1:Flower_x6
+clock:1:Flower_x7
+clock:1:Flower_x8
+clock:1:Flower_x9
+clock:1:Flower_y
+
+## Locations for Flower
+location:Flower:Start{initial:}
+location:Flower:Goal
+
+## Edges for Flower
+edge:Flower:Start:Start:tau{provided:Flower_x9 == 9 : do:Flower_x9 = 0}
+edge:Flower:Start:Start:tau{provided:Flower_x8 == 8 : do:Flower_x8 = 0}
+edge:Flower:Start:Start:tau{provided:Flower_x7 == 7 : do:Flower_x7 = 0}
+edge:Flower:Start:Start:tau{provided:Flower_x6 == 6 : do:Flower_x6 = 0}
+edge:Flower:Start:Start:tau{provided:Flower_x5 == 5 : do:Flower_x5 = 0}
+edge:Flower:Start:Start:tau{provided:Flower_x4 == 4 : do:Flower_x4 = 0}
+edge:Flower:Start:Start:tau{provided:Flower_x3 == 3 : do:Flower_x3 = 0}
+edge:Flower:Start:Start:tau{provided:Flower_x2 == 2 : do:Flower_x2 = 0}
+edge:Flower:Start:Start:tau{provided:Flower_x1 == 1 : do:Flower_x1 = 0}
+edge:Flower:Start:Goal:tau{provided:Flower_x1 == 0 && Flower_x2 == 0 && Flower_x3 == 0 && Flower_x4 == 0 && Flower_x5 == 0 && Flower_x6 == 0 && Flower_x7 == 0 && Flower_x8 == 0 && Flower_x9 == 0 && Flower_y >= 1}
