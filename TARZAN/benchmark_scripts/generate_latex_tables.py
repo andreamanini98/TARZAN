@@ -25,7 +25,7 @@ class BenchmarkResult:
         self.peak_memory: Optional[str] = None
 
         # TChecker fields
-        self.covered_states: Optional[str] = None
+        self.stored_states: Optional[str] = None
         self.memory_mb: Optional[str] = None
         self.reachable: Optional[str] = None
         self.running_time: Optional[str] = None
@@ -120,8 +120,8 @@ def parse_benchmark_summary(file_path: str) -> List[Experiment]:
                         current_result.peak_memory = match.group(1)
 
                 # TChecker fields
-                elif "Covered states:" in line:
-                    current_result.covered_states = line.split("Covered states:")[1].strip()
+                elif "Stored states:" in line:
+                    current_result.stored_states = line.split("Stored states:")[1].strip()
                 elif "Memory (MB):" in line:
                     current_result.memory_mb = line.split("Memory (MB):")[1].strip()
                 elif "Reachable:" in line:
@@ -205,7 +205,7 @@ def generate_latex_table(experiment: Experiment) -> str:
         else:
             row_parts.append(format_value(sub_exp.tchecker.running_time, "KO"))
             row_parts.append(format_value(sub_exp.tchecker.memory_mb, "KO"))
-            row_parts.append(format_value(sub_exp.tchecker.covered_states, "KO"))
+            row_parts.append(format_value(sub_exp.tchecker.stored_states, "KO"))
 
         # UPPAAL columns
         if sub_exp.uppaal.timeout:
