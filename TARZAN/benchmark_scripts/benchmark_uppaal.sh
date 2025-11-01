@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Timeout configuration (in seconds).
-TIMEOUT=1
+TIMEOUT=10
 
 # Number of runs for averaging results.
-NUM_RUNS=1
+NUM_RUNS=10
 
 # Benchmarks that should use --search-order 0 instead of 1.
 SEARCH_ORDER_0_BENCHMARKS=("trainAHV93")

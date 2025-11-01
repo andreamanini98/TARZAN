@@ -150,6 +150,8 @@ for dir in "$ROOT_DIR"*/; do
                 # Timeout occurred - don't count as successful, but collect memory if available.
                 timeout_count=$((timeout_count + 1))
                 echo "  Warning: Run $run timed out after $TIMEOUT seconds"
+                # Stop executing further runs on timeout (like TChecker and UPPAAL)
+                break
             elif [[ $exit_code -eq 0 ]]; then
                 successful_runs=$((successful_runs + 1))
 

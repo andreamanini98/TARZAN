@@ -2,9 +2,9 @@
 
 EXECUTABLES_PATH="../../executables/benchmark_executables"
 BENCHMARKS_PATH="../benchmarks"
-TOTAL_RUNS=1
+TOTAL_RUNS=10
 OUTPUT_PATH="../../output/benchmark_tarzan_results"
-TIMEOUT=1
+TIMEOUT=10
 
 
 # and_or_original
