@@ -470,7 +470,7 @@ void test_boolean()
 
 void test_pagerank()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/pagerank";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/pagerank/liana/pagerank_full";
     const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
@@ -499,19 +499,7 @@ void test_pagerank()
         std::nullopt
     };
 
-    const std::vector<std::vector<timed_automaton::ast::clockConstraint>> goalClockConstraints = {
-        { { "timer", LT, 1300 } },
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {}
-    };
-
-    const auto res = net.forwardReachability(goalClockConstraints, goalLocations, DFS);
+    const auto res = net.forwardReachability(goalLocations, DFS);
 
     // std::cout << res[0].toString() << std::endl;
 }
@@ -527,7 +515,7 @@ int main()
 
 
     // TODO: questo ora ha tutti i path sballati devi usare quelli nella cartella benchmark.
-    test_TrainAHV93_9();
+    test_pagerank();
 
 
 #ifdef REGION_TIMING
