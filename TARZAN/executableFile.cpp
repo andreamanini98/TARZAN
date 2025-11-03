@@ -9,10 +9,10 @@
 
 inline void testFlower()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/timed-automata-definitions/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_20/";
     // const std::string automatonFileName = "light_switch.txt";
 
-    const std::string automatonFileName = "test_flower_small.txt";
+    const std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
     region::RTS regionTransitionSystem(automaton);
@@ -515,7 +515,7 @@ int main()
 
 
     // TODO: questo ora ha tutti i path sballati devi usare quelli nella cartella benchmark.
-    test_pagerank();
+    testFlower();
 
 
 #ifdef REGION_TIMING
