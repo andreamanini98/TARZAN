@@ -1,6 +1,6 @@
 create automaton Stage0
 {
-    clocks { c, timer; }
+    clocks { c; }
     actions { a; }
     integers { available_cpu, ntasks_0, ntasks_1, ntasks_13, ntasks_2, ntasks_3, ntasks_4, ntasks_5, ntasks_6, ntasks_7, ntasks_8, stage_0, stage_1, stage_2, stage_3, stage_4, stage_5, stage_6, stage_7, stage_8, stage_9; }
     locations {
@@ -37,7 +37,7 @@ create automaton Stage0
         Batch_finished <ini: F                     >;
     }
     transitions {
-        (Init, a, [(timer, <=, 1300)], [], [available_cpu = 28], Batch_finished),
+        (Init, a, [], [], [available_cpu = 28], Batch_finished),
         (Batch_finished, a, [], available_cpu>0 && ntasks_0 <=128-1, [c], [available_cpu = available_cpu-1], a_1_run_tc),
         (Batch_finished, a, [], available_cpu>1 && ntasks_0 <=128-2, [c], [available_cpu = available_cpu-2], a_2_run_tc),
         (Batch_finished, a, [], available_cpu>2 && ntasks_0 <=128-3, [c], [available_cpu = available_cpu-3], a_3_run_tc),
