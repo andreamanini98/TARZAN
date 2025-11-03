@@ -1,0 +1,21 @@
+create automaton Ring10
+{
+    clocks { x; }
+    actions { a; }
+    locations {
+        L0   <ini: T>,
+        L1   <ini: F>,
+        L2   <ini: F>,
+        L3   <ini: F>,
+        L4   <ini: F>,
+        goal <ini: F>;
+    }
+    transitions {
+        (goal, a, [(x, ==, 11)], [x], L0),
+        (L4, a, [(x, ==, 11)], [x], goal),
+        (L3, a, [(x, ==, 11)], [x], L4),
+        (L2, a, [(x, ==, 11)], [x], L3),
+        (L1, a, [(x, ==, 11)], [x], L2),
+        (L0, a, [(x, ==, 11)], [x], L1);
+    }
+}

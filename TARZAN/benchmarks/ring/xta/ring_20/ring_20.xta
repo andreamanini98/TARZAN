@@ -1,0 +1,444 @@
+// Place global declarations here.
+
+process Ring0() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 1; assign x = 0; },
+    L4 -> goal { guard x == 1; assign x = 0; },
+    L3 -> L4 { guard x == 1; assign x = 0; },
+    L2 -> L3 { guard x == 1; assign x = 0; },
+    L1 -> L2 { guard x == 1; assign x = 0; },
+    L0 -> L1 { guard x == 1; assign x = 0; };
+}
+
+
+process Ring1() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 2; assign x = 0; },
+    L4 -> goal { guard x == 2; assign x = 0; },
+    L3 -> L4 { guard x == 2; assign x = 0; },
+    L2 -> L3 { guard x == 2; assign x = 0; },
+    L1 -> L2 { guard x == 2; assign x = 0; },
+    L0 -> L1 { guard x == 2; assign x = 0; };
+}
+
+
+process Ring2() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 3; assign x = 0; },
+    L4 -> goal { guard x == 3; assign x = 0; },
+    L3 -> L4 { guard x == 3; assign x = 0; },
+    L2 -> L3 { guard x == 3; assign x = 0; },
+    L1 -> L2 { guard x == 3; assign x = 0; },
+    L0 -> L1 { guard x == 3; assign x = 0; };
+}
+
+
+process Ring3() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 4; assign x = 0; },
+    L4 -> goal { guard x == 4; assign x = 0; },
+    L3 -> L4 { guard x == 4; assign x = 0; },
+    L2 -> L3 { guard x == 4; assign x = 0; },
+    L1 -> L2 { guard x == 4; assign x = 0; },
+    L0 -> L1 { guard x == 4; assign x = 0; };
+}
+
+
+process Ring4() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 5; assign x = 0; },
+    L4 -> goal { guard x == 5; assign x = 0; },
+    L3 -> L4 { guard x == 5; assign x = 0; },
+    L2 -> L3 { guard x == 5; assign x = 0; },
+    L1 -> L2 { guard x == 5; assign x = 0; },
+    L0 -> L1 { guard x == 5; assign x = 0; };
+}
+
+
+process Ring5() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 6; assign x = 0; },
+    L4 -> goal { guard x == 6; assign x = 0; },
+    L3 -> L4 { guard x == 6; assign x = 0; },
+    L2 -> L3 { guard x == 6; assign x = 0; },
+    L1 -> L2 { guard x == 6; assign x = 0; },
+    L0 -> L1 { guard x == 6; assign x = 0; };
+}
+
+
+process Ring6() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 7; assign x = 0; },
+    L4 -> goal { guard x == 7; assign x = 0; },
+    L3 -> L4 { guard x == 7; assign x = 0; },
+    L2 -> L3 { guard x == 7; assign x = 0; },
+    L1 -> L2 { guard x == 7; assign x = 0; },
+    L0 -> L1 { guard x == 7; assign x = 0; };
+}
+
+
+process Ring7() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 8; assign x = 0; },
+    L4 -> goal { guard x == 8; assign x = 0; },
+    L3 -> L4 { guard x == 8; assign x = 0; },
+    L2 -> L3 { guard x == 8; assign x = 0; },
+    L1 -> L2 { guard x == 8; assign x = 0; },
+    L0 -> L1 { guard x == 8; assign x = 0; };
+}
+
+
+process Ring8() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 9; assign x = 0; },
+    L4 -> goal { guard x == 9; assign x = 0; },
+    L3 -> L4 { guard x == 9; assign x = 0; },
+    L2 -> L3 { guard x == 9; assign x = 0; },
+    L1 -> L2 { guard x == 9; assign x = 0; },
+    L0 -> L1 { guard x == 9; assign x = 0; };
+}
+
+
+process Ring9() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 10; assign x = 0; },
+    L4 -> goal { guard x == 10; assign x = 0; },
+    L3 -> L4 { guard x == 10; assign x = 0; },
+    L2 -> L3 { guard x == 10; assign x = 0; },
+    L1 -> L2 { guard x == 10; assign x = 0; },
+    L0 -> L1 { guard x == 10; assign x = 0; };
+}
+
+
+process Ring10() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 11; assign x = 0; },
+    L4 -> goal { guard x == 11; assign x = 0; },
+    L3 -> L4 { guard x == 11; assign x = 0; },
+    L2 -> L3 { guard x == 11; assign x = 0; },
+    L1 -> L2 { guard x == 11; assign x = 0; },
+    L0 -> L1 { guard x == 11; assign x = 0; };
+}
+
+
+process Ring11() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 12; assign x = 0; },
+    L4 -> goal { guard x == 12; assign x = 0; },
+    L3 -> L4 { guard x == 12; assign x = 0; },
+    L2 -> L3 { guard x == 12; assign x = 0; },
+    L1 -> L2 { guard x == 12; assign x = 0; },
+    L0 -> L1 { guard x == 12; assign x = 0; };
+}
+
+
+process Ring12() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 13; assign x = 0; },
+    L4 -> goal { guard x == 13; assign x = 0; },
+    L3 -> L4 { guard x == 13; assign x = 0; },
+    L2 -> L3 { guard x == 13; assign x = 0; },
+    L1 -> L2 { guard x == 13; assign x = 0; },
+    L0 -> L1 { guard x == 13; assign x = 0; };
+}
+
+
+process Ring13() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 14; assign x = 0; },
+    L4 -> goal { guard x == 14; assign x = 0; },
+    L3 -> L4 { guard x == 14; assign x = 0; },
+    L2 -> L3 { guard x == 14; assign x = 0; },
+    L1 -> L2 { guard x == 14; assign x = 0; },
+    L0 -> L1 { guard x == 14; assign x = 0; };
+}
+
+
+process Ring14() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 15; assign x = 0; },
+    L4 -> goal { guard x == 15; assign x = 0; },
+    L3 -> L4 { guard x == 15; assign x = 0; },
+    L2 -> L3 { guard x == 15; assign x = 0; },
+    L1 -> L2 { guard x == 15; assign x = 0; },
+    L0 -> L1 { guard x == 15; assign x = 0; };
+}
+
+
+process Ring15() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 16; assign x = 0; },
+    L4 -> goal { guard x == 16; assign x = 0; },
+    L3 -> L4 { guard x == 16; assign x = 0; },
+    L2 -> L3 { guard x == 16; assign x = 0; },
+    L1 -> L2 { guard x == 16; assign x = 0; },
+    L0 -> L1 { guard x == 16; assign x = 0; };
+}
+
+
+process Ring16() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 17; assign x = 0; },
+    L4 -> goal { guard x == 17; assign x = 0; },
+    L3 -> L4 { guard x == 17; assign x = 0; },
+    L2 -> L3 { guard x == 17; assign x = 0; },
+    L1 -> L2 { guard x == 17; assign x = 0; },
+    L0 -> L1 { guard x == 17; assign x = 0; };
+}
+
+
+process Ring17() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 18; assign x = 0; },
+    L4 -> goal { guard x == 18; assign x = 0; },
+    L3 -> L4 { guard x == 18; assign x = 0; },
+    L2 -> L3 { guard x == 18; assign x = 0; },
+    L1 -> L2 { guard x == 18; assign x = 0; },
+    L0 -> L1 { guard x == 18; assign x = 0; };
+}
+
+
+process Ring18() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 19; assign x = 0; },
+    L4 -> goal { guard x == 19; assign x = 0; },
+    L3 -> L4 { guard x == 19; assign x = 0; },
+    L2 -> L3 { guard x == 19; assign x = 0; },
+    L1 -> L2 { guard x == 19; assign x = 0; },
+    L0 -> L1 { guard x == 19; assign x = 0; };
+}
+
+
+process Ring19() {
+clock x;
+state
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    goal;
+init
+    L0;
+trans
+    goal -> L0 { guard x == 20; assign x = 0; },
+    L4 -> goal { guard x == 20; assign x = 0; },
+    L3 -> L4 { guard x == 20; assign x = 0; },
+    L2 -> L3 { guard x == 20; assign x = 0; },
+    L1 -> L2 { guard x == 20; assign x = 0; },
+    L0 -> L1 { guard x == 20; assign x = 0; };
+}
+
+
+// Place Ring instantiations here.
+P0 = Ring0();
+P1 = Ring1();
+P2 = Ring2();
+P3 = Ring3();
+P4 = Ring4();
+P5 = Ring5();
+P6 = Ring6();
+P7 = Ring7();
+P8 = Ring8();
+P9 = Ring9();
+P10 = Ring10();
+P11 = Ring11();
+P12 = Ring12();
+P13 = Ring13();
+P14 = Ring14();
+P15 = Ring15();
+P16 = Ring16();
+P17 = Ring17();
+P18 = Ring18();
+P19 = Ring19();
+system P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19;
