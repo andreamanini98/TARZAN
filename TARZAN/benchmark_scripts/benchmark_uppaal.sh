@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Timeout configuration (in seconds).
-TIMEOUT=10
-
-# Number of runs for averaging results.
-NUM_RUNS=10
-
 # Benchmarks that should use --search-order 0 instead of 1.
 SEARCH_ORDER_0_BENCHMARKS=("trainAHV93")
 
@@ -24,6 +18,12 @@ if [[ ! -f "$UPPAAL_PATH" ]]; then
     echo "Error: UPPAAL executable not found at: $UPPAAL_PATH"
     exit 1
 fi
+
+# Number of runs for averaging results.
+NUM_RUNS="$2"
+
+# Timeout configuration (in seconds).
+TIMEOUT="$3"
 
 BENCHMARK_DIR="../benchmarks"
 OUTPUT_DIR="../../output/benchmark_uppaal_results"

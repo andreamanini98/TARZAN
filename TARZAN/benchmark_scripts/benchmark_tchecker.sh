@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Timeout configuration (in seconds).
-TIMEOUT=10
-
-# Number of runs for averaging results.
-NUM_RUNS=10
-
 # Benchmarks that should use bfs instead of dfs.
 SEARCH_ORDER_0_BENCHMARKS=("trainAHV93")
 
@@ -24,6 +18,12 @@ if [[ ! -f "$TCHECKER_PATH" ]]; then
     echo "Error: TChecker executable not found at: $TCHECKER_PATH"
     exit 1
 fi
+
+# Number of runs for averaging results.
+NUM_RUNS="$2"
+
+# Timeout configuration (in seconds).
+TIMEOUT="$3"
 
 BENCHMARK_DIR="../benchmarks"
 OUTPUT_DIR="../../output/benchmark_tchecker_results"
