@@ -1,0 +1,370 @@
+system:vikings_16
+
+# Events
+event:release
+event:take
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:0:L
+
+
+
+# Processes
+process:Viking00
+process:Viking01
+process:Viking02
+process:Viking03
+process:Viking04
+process:Viking05
+process:Viking06
+process:Viking07
+process:Viking08
+process:Viking09
+process:Viking10
+process:Viking11
+process:Viking12
+process:Viking13
+process:Viking14
+process:Viking15
+process:Torch
+
+# Process: Viking00
+## Clocks for Viking00
+clock:1:Viking00_y
+
+## Locations for Viking00
+location:Viking00:L0
+location:Viking00:safe{labels: goal0}
+location:Viking00:L1
+location:Viking00:unsafe{initial:}
+
+## Edges for Viking00
+edge:Viking00:L1:unsafe:release{provided:Viking00_y >= 20}
+edge:Viking00:safe:L1:take{provided:L == 1 : do:Viking00_y = 0}
+edge:Viking00:L0:safe:release{provided:Viking00_y >= 20}
+edge:Viking00:unsafe:L0:take{provided:L == 0 : do:Viking00_y = 0}
+
+
+
+# Process: Viking01
+## Clocks for Viking01
+clock:1:Viking01_y
+
+## Locations for Viking01
+location:Viking01:L0
+location:Viking01:safe{labels: goal1}
+location:Viking01:L1
+location:Viking01:unsafe{initial:}
+
+## Edges for Viking01
+edge:Viking01:L1:unsafe:release{provided:Viking01_y >= 20}
+edge:Viking01:safe:L1:take{provided:L == 1 : do:Viking01_y = 0}
+edge:Viking01:L0:safe:release{provided:Viking01_y >= 20}
+edge:Viking01:unsafe:L0:take{provided:L == 0 : do:Viking01_y = 0}
+
+
+
+# Process: Viking02
+## Clocks for Viking02
+clock:1:Viking02_y
+
+## Locations for Viking02
+location:Viking02:L0
+location:Viking02:safe{labels: goal2}
+location:Viking02:L1
+location:Viking02:unsafe{initial:}
+
+## Edges for Viking02
+edge:Viking02:L1:unsafe:release{provided:Viking02_y >= 20}
+edge:Viking02:safe:L1:take{provided:L == 1 : do:Viking02_y = 0}
+edge:Viking02:L0:safe:release{provided:Viking02_y >= 20}
+edge:Viking02:unsafe:L0:take{provided:L == 0 : do:Viking02_y = 0}
+
+
+
+# Process: Viking03
+## Clocks for Viking03
+clock:1:Viking03_y
+
+## Locations for Viking03
+location:Viking03:L0
+location:Viking03:safe{labels: goal3}
+location:Viking03:L1
+location:Viking03:unsafe{initial:}
+
+## Edges for Viking03
+edge:Viking03:L1:unsafe:release{provided:Viking03_y >= 20}
+edge:Viking03:safe:L1:take{provided:L == 1 : do:Viking03_y = 0}
+edge:Viking03:L0:safe:release{provided:Viking03_y >= 20}
+edge:Viking03:unsafe:L0:take{provided:L == 0 : do:Viking03_y = 0}
+
+
+
+# Process: Viking04
+## Clocks for Viking04
+clock:1:Viking04_y
+
+## Locations for Viking04
+location:Viking04:L0
+location:Viking04:safe{labels: goal4}
+location:Viking04:L1
+location:Viking04:unsafe{initial:}
+
+## Edges for Viking04
+edge:Viking04:L1:unsafe:release{provided:Viking04_y >= 20}
+edge:Viking04:safe:L1:take{provided:L == 1 : do:Viking04_y = 0}
+edge:Viking04:L0:safe:release{provided:Viking04_y >= 20}
+edge:Viking04:unsafe:L0:take{provided:L == 0 : do:Viking04_y = 0}
+
+
+
+# Process: Viking05
+## Clocks for Viking05
+clock:1:Viking05_y
+
+## Locations for Viking05
+location:Viking05:L0
+location:Viking05:safe{labels: goal5}
+location:Viking05:L1
+location:Viking05:unsafe{initial:}
+
+## Edges for Viking05
+edge:Viking05:L1:unsafe:release{provided:Viking05_y >= 20}
+edge:Viking05:safe:L1:take{provided:L == 1 : do:Viking05_y = 0}
+edge:Viking05:L0:safe:release{provided:Viking05_y >= 20}
+edge:Viking05:unsafe:L0:take{provided:L == 0 : do:Viking05_y = 0}
+
+
+
+# Process: Viking06
+## Clocks for Viking06
+clock:1:Viking06_y
+
+## Locations for Viking06
+location:Viking06:L0
+location:Viking06:safe{labels: goal6}
+location:Viking06:L1
+location:Viking06:unsafe{initial:}
+
+## Edges for Viking06
+edge:Viking06:L1:unsafe:release{provided:Viking06_y >= 20}
+edge:Viking06:safe:L1:take{provided:L == 1 : do:Viking06_y = 0}
+edge:Viking06:L0:safe:release{provided:Viking06_y >= 20}
+edge:Viking06:unsafe:L0:take{provided:L == 0 : do:Viking06_y = 0}
+
+
+
+# Process: Viking07
+## Clocks for Viking07
+clock:1:Viking07_y
+
+## Locations for Viking07
+location:Viking07:L0
+location:Viking07:safe{labels: goal7}
+location:Viking07:L1
+location:Viking07:unsafe{initial:}
+
+## Edges for Viking07
+edge:Viking07:L1:unsafe:release{provided:Viking07_y >= 20}
+edge:Viking07:safe:L1:take{provided:L == 1 : do:Viking07_y = 0}
+edge:Viking07:L0:safe:release{provided:Viking07_y >= 20}
+edge:Viking07:unsafe:L0:take{provided:L == 0 : do:Viking07_y = 0}
+
+
+
+# Process: Viking08
+## Clocks for Viking08
+clock:1:Viking08_y
+
+## Locations for Viking08
+location:Viking08:L0
+location:Viking08:safe{labels: goal8}
+location:Viking08:L1
+location:Viking08:unsafe{initial:}
+
+## Edges for Viking08
+edge:Viking08:L1:unsafe:release{provided:Viking08_y >= 20}
+edge:Viking08:safe:L1:take{provided:L == 1 : do:Viking08_y = 0}
+edge:Viking08:L0:safe:release{provided:Viking08_y >= 20}
+edge:Viking08:unsafe:L0:take{provided:L == 0 : do:Viking08_y = 0}
+
+
+
+# Process: Viking09
+## Clocks for Viking09
+clock:1:Viking09_y
+
+## Locations for Viking09
+location:Viking09:L0
+location:Viking09:safe{labels: goal9}
+location:Viking09:L1
+location:Viking09:unsafe{initial:}
+
+## Edges for Viking09
+edge:Viking09:L1:unsafe:release{provided:Viking09_y >= 20}
+edge:Viking09:safe:L1:take{provided:L == 1 : do:Viking09_y = 0}
+edge:Viking09:L0:safe:release{provided:Viking09_y >= 20}
+edge:Viking09:unsafe:L0:take{provided:L == 0 : do:Viking09_y = 0}
+
+
+
+# Process: Viking10
+## Clocks for Viking10
+clock:1:Viking10_y
+
+## Locations for Viking10
+location:Viking10:L0
+location:Viking10:safe{labels: goal10}
+location:Viking10:L1
+location:Viking10:unsafe{initial:}
+
+## Edges for Viking10
+edge:Viking10:L1:unsafe:release{provided:Viking10_y >= 20}
+edge:Viking10:safe:L1:take{provided:L == 1 : do:Viking10_y = 0}
+edge:Viking10:L0:safe:release{provided:Viking10_y >= 20}
+edge:Viking10:unsafe:L0:take{provided:L == 0 : do:Viking10_y = 0}
+
+
+
+# Process: Viking11
+## Clocks for Viking11
+clock:1:Viking11_y
+
+## Locations for Viking11
+location:Viking11:L0
+location:Viking11:safe{labels: goal11}
+location:Viking11:L1
+location:Viking11:unsafe{initial:}
+
+## Edges for Viking11
+edge:Viking11:L1:unsafe:release{provided:Viking11_y >= 20}
+edge:Viking11:safe:L1:take{provided:L == 1 : do:Viking11_y = 0}
+edge:Viking11:L0:safe:release{provided:Viking11_y >= 20}
+edge:Viking11:unsafe:L0:take{provided:L == 0 : do:Viking11_y = 0}
+
+
+
+# Process: Viking12
+## Clocks for Viking12
+clock:1:Viking12_y
+
+## Locations for Viking12
+location:Viking12:L0
+location:Viking12:safe{labels: goal12}
+location:Viking12:L1
+location:Viking12:unsafe{initial:}
+
+## Edges for Viking12
+edge:Viking12:L1:unsafe:release{provided:Viking12_y >= 20}
+edge:Viking12:safe:L1:take{provided:L == 1 : do:Viking12_y = 0}
+edge:Viking12:L0:safe:release{provided:Viking12_y >= 20}
+edge:Viking12:unsafe:L0:take{provided:L == 0 : do:Viking12_y = 0}
+
+
+
+# Process: Viking13
+## Clocks for Viking13
+clock:1:Viking13_y
+
+## Locations for Viking13
+location:Viking13:L0
+location:Viking13:safe{labels: goal13}
+location:Viking13:L1
+location:Viking13:unsafe{initial:}
+
+## Edges for Viking13
+edge:Viking13:L1:unsafe:release{provided:Viking13_y >= 20}
+edge:Viking13:safe:L1:take{provided:L == 1 : do:Viking13_y = 0}
+edge:Viking13:L0:safe:release{provided:Viking13_y >= 20}
+edge:Viking13:unsafe:L0:take{provided:L == 0 : do:Viking13_y = 0}
+
+
+
+# Process: Viking14
+## Clocks for Viking14
+clock:1:Viking14_y
+
+## Locations for Viking14
+location:Viking14:L0
+location:Viking14:safe{labels: goal14}
+location:Viking14:L1
+location:Viking14:unsafe{initial:}
+
+## Edges for Viking14
+edge:Viking14:L1:unsafe:release{provided:Viking14_y >= 20}
+edge:Viking14:safe:L1:take{provided:L == 1 : do:Viking14_y = 0}
+edge:Viking14:L0:safe:release{provided:Viking14_y >= 20}
+edge:Viking14:unsafe:L0:take{provided:L == 0 : do:Viking14_y = 0}
+
+
+
+# Process: Viking15
+## Clocks for Viking15
+clock:1:Viking15_y
+
+## Locations for Viking15
+location:Viking15:L0
+location:Viking15:safe{labels: goal15}
+location:Viking15:L1
+location:Viking15:unsafe{initial:}
+
+## Edges for Viking15
+edge:Viking15:L1:unsafe:release{provided:Viking15_y >= 20}
+edge:Viking15:safe:L1:take{provided:L == 1 : do:Viking15_y = 0}
+edge:Viking15:L0:safe:release{provided:Viking15_y >= 20}
+edge:Viking15:unsafe:L0:take{provided:L == 0 : do:Viking15_y = 0}
+
+
+
+# Process: Torch
+## Locations for Torch
+location:Torch:one
+location:Torch:L0{urgent:}
+location:Torch:free{initial:}
+location:Torch:two
+
+## Edges for Torch
+edge:Torch:free:L0:take
+edge:Torch:L0:one:tau
+edge:Torch:L0:two:take
+edge:Torch:one:free:release{do:L = 1 - L}
+edge:Torch:two:one:release
+
+
+
+# Synchronizations
+sync:Viking00@release:Torch@release
+sync:Viking01@release:Torch@release
+sync:Viking02@release:Torch@release
+sync:Viking03@release:Torch@release
+sync:Viking04@release:Torch@release
+sync:Viking05@release:Torch@release
+sync:Viking06@release:Torch@release
+sync:Viking07@release:Torch@release
+sync:Viking08@release:Torch@release
+sync:Viking09@release:Torch@release
+sync:Viking10@release:Torch@release
+sync:Viking11@release:Torch@release
+sync:Viking12@release:Torch@release
+sync:Viking13@release:Torch@release
+sync:Viking14@release:Torch@release
+sync:Viking15@release:Torch@release
+sync:Viking00@take:Torch@take
+sync:Viking01@take:Torch@take
+sync:Viking02@take:Torch@take
+sync:Viking03@take:Torch@take
+sync:Viking04@take:Torch@take
+sync:Viking05@take:Torch@take
+sync:Viking06@take:Torch@take
+sync:Viking07@take:Torch@take
+sync:Viking08@take:Torch@take
+sync:Viking09@take:Torch@take
+sync:Viking10@take:Torch@take
+sync:Viking11@take:Torch@take
+sync:Viking12@take:Torch@take
+sync:Viking13@take:Torch@take
+sync:Viking14@take:Torch@take
+sync:Viking15@take:Torch@take

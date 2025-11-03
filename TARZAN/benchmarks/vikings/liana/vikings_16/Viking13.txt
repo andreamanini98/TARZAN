@@ -1,0 +1,18 @@
+create automaton Viking13 :: symm<1>
+{
+    clocks { y; }
+    actions { release, take; }
+    integers { L; }
+    locations {
+        L0     <ini: F>,
+        safe   <ini: F>,
+        L1     <ini: F>,
+        unsafe <ini: T>;
+    }
+    transitions {
+        (L1, release!, [(y, >=, 20)], [], unsafe),
+        (safe, take!, [], L == 1, [y], L1),
+        (L0, release!, [(y, >=, 20)], [], safe),
+        (unsafe, take!, [], L == 0, [y], L0);
+    }
+}
