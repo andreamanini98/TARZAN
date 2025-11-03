@@ -1,0 +1,490 @@
+system:trainAHV93_20
+
+# Events
+event:approach
+event:lower
+event:raise
+event:tau
+event:texit
+
+
+
+# Global declarations
+int:1:0:1000:8:N
+int:1:0:1000:2:a
+int:1:0:1000:5:b
+int:1:0:1000:1:c
+int:1:0:1000:2:d
+int:1:0:1000:1:e
+int:1:0:1000:0:cnt
+
+
+
+# Processes
+process:Train01
+process:Train02
+process:Train03
+process:Train04
+process:Train05
+process:Train06
+process:Train07
+process:Train08
+process:Train09
+process:Train10
+process:Train11
+process:Train12
+process:Train13
+process:Train14
+process:Train15
+process:Train16
+process:Train17
+process:Train18
+process:Train19
+process:Train20
+process:gate
+process:controller
+
+# Process: Train01
+## Clocks for Train01
+clock:1:Train01_x
+
+## Locations for Train01
+location:Train01:train0{initial:}
+location:Train01:train1{invariant:Train01_x <= b}
+location:Train01:train2{invariant:Train01_x <= b}
+location:Train01:train3{invariant:Train01_x <= b}
+
+## Edges for Train01
+edge:Train01:train2:train3:tau
+edge:Train01:train3:train0:texit{provided:Train01_x <= b}
+edge:Train01:train1:train2:tau{provided:Train01_x > a}
+edge:Train01:train0:train1:approach{do:Train01_x = 0}
+
+
+
+# Process: Train02
+## Clocks for Train02
+clock:1:Train02_x
+
+## Locations for Train02
+location:Train02:train0{initial:}
+location:Train02:train1{invariant:Train02_x <= b}
+location:Train02:train2{invariant:Train02_x <= b}
+location:Train02:train3{invariant:Train02_x <= b}
+
+## Edges for Train02
+edge:Train02:train2:train3:tau
+edge:Train02:train3:train0:texit{provided:Train02_x <= b}
+edge:Train02:train1:train2:tau{provided:Train02_x > a}
+edge:Train02:train0:train1:approach{do:Train02_x = 0}
+
+
+
+# Process: Train03
+## Clocks for Train03
+clock:1:Train03_x
+
+## Locations for Train03
+location:Train03:train0{initial:}
+location:Train03:train1{invariant:Train03_x <= b}
+location:Train03:train2{invariant:Train03_x <= b}
+location:Train03:train3{invariant:Train03_x <= b}
+
+## Edges for Train03
+edge:Train03:train2:train3:tau
+edge:Train03:train3:train0:texit{provided:Train03_x <= b}
+edge:Train03:train1:train2:tau{provided:Train03_x > a}
+edge:Train03:train0:train1:approach{do:Train03_x = 0}
+
+
+
+# Process: Train04
+## Clocks for Train04
+clock:1:Train04_x
+
+## Locations for Train04
+location:Train04:train0{initial:}
+location:Train04:train1{invariant:Train04_x <= b}
+location:Train04:train2{invariant:Train04_x <= b}
+location:Train04:train3{invariant:Train04_x <= b}
+
+## Edges for Train04
+edge:Train04:train2:train3:tau
+edge:Train04:train3:train0:texit{provided:Train04_x <= b}
+edge:Train04:train1:train2:tau{provided:Train04_x > a}
+edge:Train04:train0:train1:approach{do:Train04_x = 0}
+
+
+
+# Process: Train05
+## Clocks for Train05
+clock:1:Train05_x
+
+## Locations for Train05
+location:Train05:train0{initial:}
+location:Train05:train1{invariant:Train05_x <= b}
+location:Train05:train2{invariant:Train05_x <= b}
+location:Train05:train3{invariant:Train05_x <= b}
+
+## Edges for Train05
+edge:Train05:train2:train3:tau
+edge:Train05:train3:train0:texit{provided:Train05_x <= b}
+edge:Train05:train1:train2:tau{provided:Train05_x > a}
+edge:Train05:train0:train1:approach{do:Train05_x = 0}
+
+
+
+# Process: Train06
+## Clocks for Train06
+clock:1:Train06_x
+
+## Locations for Train06
+location:Train06:train0{initial:}
+location:Train06:train1{invariant:Train06_x <= b}
+location:Train06:train2{invariant:Train06_x <= b}
+location:Train06:train3{invariant:Train06_x <= b}
+
+## Edges for Train06
+edge:Train06:train2:train3:tau
+edge:Train06:train3:train0:texit{provided:Train06_x <= b}
+edge:Train06:train1:train2:tau{provided:Train06_x > a}
+edge:Train06:train0:train1:approach{do:Train06_x = 0}
+
+
+
+# Process: Train07
+## Clocks for Train07
+clock:1:Train07_x
+
+## Locations for Train07
+location:Train07:train0{initial:}
+location:Train07:train1{invariant:Train07_x <= b}
+location:Train07:train2{invariant:Train07_x <= b}
+location:Train07:train3{invariant:Train07_x <= b}
+
+## Edges for Train07
+edge:Train07:train2:train3:tau
+edge:Train07:train3:train0:texit{provided:Train07_x <= b}
+edge:Train07:train1:train2:tau{provided:Train07_x > a}
+edge:Train07:train0:train1:approach{do:Train07_x = 0}
+
+
+
+# Process: Train08
+## Clocks for Train08
+clock:1:Train08_x
+
+## Locations for Train08
+location:Train08:train0{initial:}
+location:Train08:train1{invariant:Train08_x <= b}
+location:Train08:train2{invariant:Train08_x <= b}
+location:Train08:train3{invariant:Train08_x <= b}
+
+## Edges for Train08
+edge:Train08:train2:train3:tau
+edge:Train08:train3:train0:texit{provided:Train08_x <= b}
+edge:Train08:train1:train2:tau{provided:Train08_x > a}
+edge:Train08:train0:train1:approach{do:Train08_x = 0}
+
+
+
+# Process: Train09
+## Clocks for Train09
+clock:1:Train09_x
+
+## Locations for Train09
+location:Train09:train0{initial:}
+location:Train09:train1{invariant:Train09_x <= b}
+location:Train09:train2{invariant:Train09_x <= b}
+location:Train09:train3{invariant:Train09_x <= b}
+
+## Edges for Train09
+edge:Train09:train2:train3:tau
+edge:Train09:train3:train0:texit{provided:Train09_x <= b}
+edge:Train09:train1:train2:tau{provided:Train09_x > a}
+edge:Train09:train0:train1:approach{do:Train09_x = 0}
+
+
+
+# Process: Train10
+## Clocks for Train10
+clock:1:Train10_x
+
+## Locations for Train10
+location:Train10:train0{initial:}
+location:Train10:train1{invariant:Train10_x <= b}
+location:Train10:train2{invariant:Train10_x <= b}
+location:Train10:train3{invariant:Train10_x <= b}
+
+## Edges for Train10
+edge:Train10:train2:train3:tau
+edge:Train10:train3:train0:texit{provided:Train10_x <= b}
+edge:Train10:train1:train2:tau{provided:Train10_x > a}
+edge:Train10:train0:train1:approach{do:Train10_x = 0}
+
+
+
+# Process: Train11
+## Clocks for Train11
+clock:1:Train11_x
+
+## Locations for Train11
+location:Train11:train0{initial:}
+location:Train11:train1{invariant:Train11_x <= b}
+location:Train11:train2{invariant:Train11_x <= b}
+location:Train11:train3{invariant:Train11_x <= b}
+
+## Edges for Train11
+edge:Train11:train2:train3:tau
+edge:Train11:train3:train0:texit{provided:Train11_x <= b}
+edge:Train11:train1:train2:tau{provided:Train11_x > a}
+edge:Train11:train0:train1:approach{do:Train11_x = 0}
+
+
+
+# Process: Train12
+## Clocks for Train12
+clock:1:Train12_x
+
+## Locations for Train12
+location:Train12:train0{initial:}
+location:Train12:train1{invariant:Train12_x <= b}
+location:Train12:train2{invariant:Train12_x <= b}
+location:Train12:train3{invariant:Train12_x <= b}
+
+## Edges for Train12
+edge:Train12:train2:train3:tau
+edge:Train12:train3:train0:texit{provided:Train12_x <= b}
+edge:Train12:train1:train2:tau{provided:Train12_x > a}
+edge:Train12:train0:train1:approach{do:Train12_x = 0}
+
+
+
+# Process: Train13
+## Clocks for Train13
+clock:1:Train13_x
+
+## Locations for Train13
+location:Train13:train0{initial:}
+location:Train13:train1{invariant:Train13_x <= b}
+location:Train13:train2{invariant:Train13_x <= b}
+location:Train13:train3{invariant:Train13_x <= b}
+
+## Edges for Train13
+edge:Train13:train2:train3:tau
+edge:Train13:train3:train0:texit{provided:Train13_x <= b}
+edge:Train13:train1:train2:tau{provided:Train13_x > a}
+edge:Train13:train0:train1:approach{do:Train13_x = 0}
+
+
+
+# Process: Train14
+## Clocks for Train14
+clock:1:Train14_x
+
+## Locations for Train14
+location:Train14:train0{initial:}
+location:Train14:train1{invariant:Train14_x <= b}
+location:Train14:train2{invariant:Train14_x <= b}
+location:Train14:train3{invariant:Train14_x <= b}
+
+## Edges for Train14
+edge:Train14:train2:train3:tau
+edge:Train14:train3:train0:texit{provided:Train14_x <= b}
+edge:Train14:train1:train2:tau{provided:Train14_x > a}
+edge:Train14:train0:train1:approach{do:Train14_x = 0}
+
+
+
+# Process: Train15
+## Clocks for Train15
+clock:1:Train15_x
+
+## Locations for Train15
+location:Train15:train0{initial:}
+location:Train15:train1{invariant:Train15_x <= b}
+location:Train15:train2{invariant:Train15_x <= b}
+location:Train15:train3{invariant:Train15_x <= b}
+
+## Edges for Train15
+edge:Train15:train2:train3:tau
+edge:Train15:train3:train0:texit{provided:Train15_x <= b}
+edge:Train15:train1:train2:tau{provided:Train15_x > a}
+edge:Train15:train0:train1:approach{do:Train15_x = 0}
+
+
+
+# Process: Train16
+## Clocks for Train16
+clock:1:Train16_x
+
+## Locations for Train16
+location:Train16:train0{initial:}
+location:Train16:train1{invariant:Train16_x <= b}
+location:Train16:train2{invariant:Train16_x <= b}
+location:Train16:train3{invariant:Train16_x <= b}
+
+## Edges for Train16
+edge:Train16:train2:train3:tau
+edge:Train16:train3:train0:texit{provided:Train16_x <= b}
+edge:Train16:train1:train2:tau{provided:Train16_x > a}
+edge:Train16:train0:train1:approach{do:Train16_x = 0}
+
+
+
+# Process: Train17
+## Clocks for Train17
+clock:1:Train17_x
+
+## Locations for Train17
+location:Train17:train0{initial:}
+location:Train17:train1{invariant:Train17_x <= b}
+location:Train17:train2{invariant:Train17_x <= b}
+location:Train17:train3{invariant:Train17_x <= b}
+
+## Edges for Train17
+edge:Train17:train2:train3:tau
+edge:Train17:train3:train0:texit{provided:Train17_x <= b}
+edge:Train17:train1:train2:tau{provided:Train17_x > a}
+edge:Train17:train0:train1:approach{do:Train17_x = 0}
+
+
+
+# Process: Train18
+## Clocks for Train18
+clock:1:Train18_x
+
+## Locations for Train18
+location:Train18:train0{initial:}
+location:Train18:train1{invariant:Train18_x <= b}
+location:Train18:train2{invariant:Train18_x <= b}
+location:Train18:train3{invariant:Train18_x <= b}
+
+## Edges for Train18
+edge:Train18:train2:train3:tau
+edge:Train18:train3:train0:texit{provided:Train18_x <= b}
+edge:Train18:train1:train2:tau{provided:Train18_x > a}
+edge:Train18:train0:train1:approach{do:Train18_x = 0}
+
+
+
+# Process: Train19
+## Clocks for Train19
+clock:1:Train19_x
+
+## Locations for Train19
+location:Train19:train0{initial:}
+location:Train19:train1{invariant:Train19_x <= b}
+location:Train19:train2{invariant:Train19_x <= b}
+location:Train19:train3{invariant:Train19_x <= b}
+
+## Edges for Train19
+edge:Train19:train2:train3:tau
+edge:Train19:train3:train0:texit{provided:Train19_x <= b}
+edge:Train19:train1:train2:tau{provided:Train19_x > a}
+edge:Train19:train0:train1:approach{do:Train19_x = 0}
+
+
+
+# Process: Train20
+## Clocks for Train20
+clock:1:Train20_x
+
+## Locations for Train20
+location:Train20:train0{initial:}
+location:Train20:train1{invariant:Train20_x <= b}
+location:Train20:train2{invariant:Train20_x <= b}
+location:Train20:train3{invariant:Train20_x <= b}
+
+## Edges for Train20
+edge:Train20:train2:train3:tau
+edge:Train20:train3:train0:texit{provided:Train20_x <= b}
+edge:Train20:train1:train2:tau{provided:Train20_x > a}
+edge:Train20:train0:train1:approach{do:Train20_x = 0}
+
+
+
+# Process: gate
+## Clocks for gate
+clock:1:gate_y
+
+## Locations for gate
+location:gate:gate0{initial:}
+location:gate:gate1{invariant:gate_y <= c}
+location:gate:gate2
+location:gate:gate3{invariant:gate_y <= d}
+
+## Edges for gate
+edge:gate:gate1:gate2:tau{provided:gate_y <= c}
+edge:gate:gate2:gate3:raise{do:gate_y = 0}
+edge:gate:gate0:gate1:lower{do:gate_y = 0}
+edge:gate:gate3:gate0:tau{provided:gate_y >= c && gate_y <= d}
+
+
+
+# Process: controller
+## Clocks for controller
+clock:1:controller_z
+
+## Locations for controller
+location:controller:controller0{initial:}
+location:controller:controller1{invariant:controller_z <= e}
+location:controller:controller2
+location:controller:controller3{labels: goal : invariant:controller_z <= e}
+
+## Edges for controller
+edge:controller:controller0:controller1:approach{do:controller_z = 0; cnt = 1}
+edge:controller:controller1:controller1:approach{do:cnt = cnt + 1}
+edge:controller:controller1:controller1:texit{do:cnt = cnt - 1}
+edge:controller:controller2:controller2:approach{do:cnt = cnt + 1}
+edge:controller:controller2:controller2:texit{provided:cnt > 1 : do:cnt = cnt - 1}
+edge:controller:controller2:controller3:texit{provided:cnt == 1 : do:controller_z = 0; cnt = 0}
+edge:controller:controller3:controller0:raise{provided:controller_z <= e}
+edge:controller:controller3:controller2:approach{provided:controller_z <= e : do:cnt = cnt + 1}
+edge:controller:controller1:controller2:lower{provided:controller_z == e}
+
+
+
+# Synchronizations
+sync:controller@approach:Train01@approach
+sync:controller@approach:Train02@approach
+sync:controller@approach:Train03@approach
+sync:controller@approach:Train04@approach
+sync:controller@approach:Train05@approach
+sync:controller@approach:Train06@approach
+sync:controller@approach:Train07@approach
+sync:controller@approach:Train08@approach
+sync:controller@approach:Train09@approach
+sync:controller@approach:Train10@approach
+sync:controller@approach:Train11@approach
+sync:controller@approach:Train12@approach
+sync:controller@approach:Train13@approach
+sync:controller@approach:Train14@approach
+sync:controller@approach:Train15@approach
+sync:controller@approach:Train16@approach
+sync:controller@approach:Train17@approach
+sync:controller@approach:Train18@approach
+sync:controller@approach:Train19@approach
+sync:controller@approach:Train20@approach
+sync:controller@lower:gate@lower
+sync:controller@raise:gate@raise
+sync:controller@texit:Train01@texit
+sync:controller@texit:Train02@texit
+sync:controller@texit:Train03@texit
+sync:controller@texit:Train04@texit
+sync:controller@texit:Train05@texit
+sync:controller@texit:Train06@texit
+sync:controller@texit:Train07@texit
+sync:controller@texit:Train08@texit
+sync:controller@texit:Train09@texit
+sync:controller@texit:Train10@texit
+sync:controller@texit:Train11@texit
+sync:controller@texit:Train12@texit
+sync:controller@texit:Train13@texit
+sync:controller@texit:Train14@texit
+sync:controller@texit:Train15@texit
+sync:controller@texit:Train16@texit
+sync:controller@texit:Train17@texit
+sync:controller@texit:Train18@texit
+sync:controller@texit:Train19@texit
+sync:controller@texit:Train20@texit

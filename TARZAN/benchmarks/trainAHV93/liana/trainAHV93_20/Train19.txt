@@ -1,0 +1,18 @@
+create automaton Train19 :: symm<1>
+{
+    clocks { x; }
+    actions { a, approach, texit; }
+    integers { cnt; }
+    locations {
+        train0 <ini: T                   >,
+        train1 <ini: F, inv: [(x, <=, 5)]>,
+        train2 <ini: F, inv: [(x, <=, 5)]>,
+        train3 <ini: F, inv: [(x, <=, 5)]>;
+    }
+    transitions {
+        (train2, a, [], [], train3),
+        (train3, texit?, [(x, <=, 5)], [], train0),
+        (train1, a, [(x, >, 2)], [], train2),
+        (train0, approach?, [], [x], train1);
+    }
+}
