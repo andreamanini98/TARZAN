@@ -122,6 +122,14 @@ for dir in "$ROOT_DIR"*/; do
         exec_time_count=0
         goal_reachable=""
 
+        # Warm-up run to eliminate cold start effects (not measured)
+        echo "  Warm-up run (not measured)..."
+        if [[ "$TIMEOUT" -gt 0 ]]; then
+            timeout "$TIMEOUT" "$EXECUTABLE" "$dir" > /dev/null 2>&1
+        else
+            "$EXECUTABLE" "$dir" > /dev/null 2>&1
+        fi
+
         # Run the executable NUM_RUNS times.
         for ((run=1; run<=NUM_RUNS; run++)); do
             echo "  Run $run/$NUM_RUNS..."
