@@ -12,6 +12,8 @@
 #include "TARZAN/parser/config.h"
 #include "TARZAN/utilities/file_utilities.h"
 
+// #define PARSER_LOG
+
 
 timed_automaton::ast::timedArena parseTimedArena(std::string const &path)
 {
@@ -45,7 +47,13 @@ timed_automaton::ast::timedArena parseTimedArena(std::string const &path)
         if (iter != end)
             error_handler(iter, "Error! Expecting end of input here: ");
         else
+        {
+#ifdef PARSER_LOG
+
             std::cout << "Successful parsing" << std::endl;
+
+#endif
+        }
     } else
         std::cerr << "Wrong parsing" << std::endl;
 
@@ -85,7 +93,13 @@ timed_automaton::ast::timedAutomaton parseTimedAutomaton(std::string const &path
         if (iter != end)
             error_handler(iter, "Error! Expecting end of input here: ");
         else
+        {
+#ifdef PARSER_LOG
+
             std::cout << "Successful parsing" << std::endl;
+
+#endif
+        }
     } else
         std::cerr << "Wrong parsing" << std::endl;
 
@@ -113,7 +127,12 @@ std::vector<timed_automaton::ast::timedAutomaton> parseTimedAutomataFromFolder(s
         for (const auto &path: filePaths)
         {
             std::string filePath = path.string();
+
+#ifdef PARSER_LOG
+
             std::cout << "Parsing automaton from file: " << filePath << std::endl;
+
+#endif
 
             // Parse the automaton using the existing function.
             timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(filePath);
@@ -148,7 +167,12 @@ std::vector<timed_automaton::ast::timedArena> parseTimedArenasFromFolder(std::st
         for (const auto &path: filePaths)
         {
             std::string filePath = path.string();
+
+#ifdef PARSER_LOG
+
             std::cout << "Parsing arena from file: " << filePath << std::endl;
+
+#endif
 
             // Parse the arena using the existing function.
             timed_automaton::ast::timedArena arena = parseTimedArena(filePath);
