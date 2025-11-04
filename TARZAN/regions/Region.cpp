@@ -894,15 +894,9 @@ std::string region::Region::toString() const
     oss << "Region\n";
     oss << "  q: " << q << "\n";
     oss << "  h: [";
-    if (h != nullptr)
-    {
-        const int *it = h;
-        for (int i = 0; i < static_cast<int>(x0.size()); i++)
-        {
-            oss << "  " << *it;
-            it++;
-        }
-    }
+    if (!h.empty())
+        for (const int el: h)
+            oss << "  " << el;
     oss << "  ]\n";
     oss << "  unbounded: [";
     for (const auto &i: unbounded)
@@ -932,9 +926,9 @@ size_t region::Region::printSizeInBytes(const bool printStats) const
     // Start with the base size of the Region object itself.
     size_t totalSize = sizeof(*this);
 
-    // Size of the h array (clock integer values) - dynamically allocated.
-    const int numClocks = getNumberOfClocks();
-    const size_t sizeOfH = numClocks * sizeof(int);
+    // Size of the h vector (clock integer values) - dynamically allocated.
+    // Use capacity() instead of size() to get actual allocated memory.
+    const size_t sizeOfH = h.capacity() * sizeof(int);
     totalSize += sizeOfH;
 
     // Size of unbounded deque (bitsets) - dynamic storage.
@@ -967,7 +961,7 @@ size_t region::Region::printSizeInBytes(const bool printStats) const
     {
         std::cout << "Region Size Breakdown (in bytes):\n";
         std::cout << "  Base object size:    " << sizeof(*this) << "\n";
-        std::cout << "  H array:             " << sizeOfH << "\n";
+        std::cout << "  H vector:            " << sizeOfH << "\n";
         std::cout << "  Unbounded deque:     " << sizeOfUnbounded << "\n";
         std::cout << "  X0 bitset:           " << sizeOfX0 << "\n";
         std::cout << "  Bounded deque:       " << sizeOfBounded << "\n";

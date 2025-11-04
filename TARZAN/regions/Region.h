@@ -24,12 +24,12 @@ namespace region
 
         /**
          * The integer values of clocks.
-         * The clocks at a given index of this array correspond to the same clock in the std::vector<std::string> clocks of a Timed Automaton.
+         * The clocks at a given index of this vector correspond to the same clock in the std::vector<std::string> clocks of a Timed Automaton.
          *
          * @warning The order in bitsets is reversed, e.g., considering (clock, index), h = (x,0)(y,1)(z,2) x0 = (z,2)(y,1)(x,0).
          *          For this reason, we use indices in a way such that the two representations coincide.
          */
-        int *h{};
+        std::vector<int> h{};
 
         /**
          * A vector of bitsets keeping track of the order in which clocks became unbounded.
@@ -62,7 +62,7 @@ namespace region
          */
         Region(const int numClocks, const absl::btree_map<std::string, int> &variables) : variables(variables)
         {
-            h = static_cast<int *>(malloc(numClocks * sizeof(int)));
+            h.resize(numClocks);
             x0.resize(numClocks);
             x0.flip();
         }
@@ -77,14 +77,14 @@ namespace region
          */
         Region(const int numClocks, const int q, const absl::btree_map<std::string, int> &variables) : q(q), variables(variables)
         {
-            h = static_cast<int *>(malloc(numClocks * sizeof(int)));
+            h.resize(numClocks);
             x0.resize(numClocks);
             x0.flip();
         }
 
 
         Region(const int q,
-               int *h,
+               const std::vector<int> &h,
                const std::deque<boost::dynamic_bitset<>> &unbounded,
                const boost::dynamic_bitset<> &x0,
                const std::deque<boost::dynamic_bitset<>> &bounded,
@@ -98,46 +98,8 @@ namespace region
         {}
 
 
-        Region(const int q,
-               const std::vector<int> &H,
-               const std::deque<boost::dynamic_bitset<>> &unbounded,
-               const boost::dynamic_bitset<> &x0,
-               const std::deque<boost::dynamic_bitset<>> &bounded,
-               const absl::btree_map<std::string, int> &variables)
-            : q(q),
-              unbounded(unbounded),
-              x0(x0),
-              bounded(bounded),
-              variables(variables)
-        {
-            const int numOfClocks = static_cast<int>(H.size());
-
-            h = static_cast<int *>(malloc(numOfClocks * sizeof(int)));
-
-            for (int i = 0; i < numOfClocks; i++)
-                h[i] = H[i];
-        }
-
-
         // Copy constructor.
-        Region(const Region &other)
-            : q(other.q),
-              unbounded(other.unbounded),
-              x0(other.x0),
-              bounded(other.bounded),
-              variables(other.variables)
-        {
-            // Deep copy the h array.
-            const size_t numClocks = x0.size();
-            h = static_cast<int *>(malloc(numClocks * sizeof(int)));
-            std::memcpy(h, other.h, numClocks * sizeof(int));
-        }
-
-
-        ~Region()
-        {
-            free(h);
-        }
+        Region(const Region &other) = default;
 
 
         /**
@@ -294,7 +256,7 @@ namespace region
          *
          * This function calculates the memory footprint of the region by summing up:
          * - The size of the location (q)
-         * - The size of the h array (clock integer values)
+         * - The size of the h vector (clock integer values)
          * - The size of all unbounded deque elements (bitsets)
          * - The size of the x0 bitset
          * - The size of all bounded deque elements (bitsets)
@@ -308,7 +270,7 @@ namespace region
 
         // Getters.
         [[nodiscard]] int getLocation() const { return q; }
-        [[nodiscard]] int *getH() const { return h; }
+        [[nodiscard]] std::vector<int> const &getH() const { return h; }
         [[nodiscard]] std::deque<boost::dynamic_bitset<>> getUnbounded() const { return unbounded; }
         [[nodiscard]] boost::dynamic_bitset<> getX0() const { return x0; }
         [[nodiscard]] std::deque<boost::dynamic_bitset<>> getBounded() const { return bounded; }
@@ -318,7 +280,7 @@ namespace region
 
         // Setters.
         void set_q(const int q_p) { this->q = q_p; }
-        void set_h(int *h_p) { this->h = h_p; }
+        void set_h(const std::vector<int> &h_p) { this->h = h_p; }
         void set_unbounded(const std::deque<boost::dynamic_bitset<>> &unbounded_p) { this->unbounded = unbounded_p; }
         void set_x0(const boost::dynamic_bitset<> &x0_p) { this->x0 = x0_p; }
         void set_bounded(const std::deque<boost::dynamic_bitset<>> &bounded_p) { this->bounded = bounded_p; }
@@ -329,21 +291,12 @@ namespace region
         {
             if (this != &other)
             {
-                const size_t oldNumClocks = x0.size();
-
                 q = other.q;
+                h = other.h;
                 unbounded = other.unbounded;
                 x0 = other.x0;
                 bounded = other.bounded;
                 variables = other.variables;
-
-                const size_t newNumClocks = other.x0.size();
-                if (newNumClocks != oldNumClocks)
-                {
-                    free(h);
-                    h = static_cast<int *>(malloc(newNumClocks * sizeof(int)));
-                }
-                std::memcpy(h, other.h, newNumClocks * sizeof(int));
             }
             return *this;
         }
@@ -353,13 +306,13 @@ namespace region
         {
             if (q != other.q)
                 return false;
+            if (h != other.h)
+                return false;
             if (unbounded.size() != other.unbounded.size() || bounded.size() != other.bounded.size())
                 return false;
             if (variables != other.variables)
                 return false;
             if (x0 != other.x0)
-                return false;
-            if (const size_t numClocks = x0.size(); std::memcmp(h, other.h, numClocks * sizeof(int)) != 0)
                 return false;
             return unbounded == other.unbounded && bounded == other.bounded;
         }
@@ -388,17 +341,12 @@ namespace region
         {
             if (q != other.q)
                 return q < other.q;
-
             if (x0 != other.x0)
                 return x0 < other.x0;
-
-            const int numClocks = getNumberOfClocks();
-            if (const int hCmp = std::memcmp(h, other.h, numClocks * sizeof(int)); hCmp != 0)
-                return hCmp < 0;
-
+            if (h != other.h)
+                return h < other.h;
             if (bounded != other.bounded)
                 return bounded < other.bounded;
-
             return unbounded < other.unbounded;
         }
 
@@ -415,14 +363,13 @@ namespace region
             std::size_t seed = 0;
 
             // Hash the location.
-            hash_combine(seed, region.getLocation());
+            hash_combine(seed, region.q);
 
             // Hash x0 bitset.
             hash_combine(seed, hash_bitset(region.x0));
 
-            // Hash integer array h.
-            const int numClocks = region.getNumberOfClocks();
-            boost::hash_range(seed, region.h, region.h + numClocks);
+            // Hash integer vector h.
+            boost::hash_range(seed, region.h.data(), region.h.data() + region.h.size());
 
             // For deques, hash only size and first/last elements for speed.
             const auto unbounded_size = region.unbounded.size();

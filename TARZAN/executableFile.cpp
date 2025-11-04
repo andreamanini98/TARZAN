@@ -1,15 +1,22 @@
+#include <string>
+
 #include "regions/networkOfTA/RTSNetwork.h"
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
 #include "parser/enums/input_output_action_enum.h"
 #include "TARZAN/utilities/partition_utilities.h"
 #include "TARZAN/utilities/file_utilities.h"
+#include "TARZAN/headers/library.h"
+#include "TARZAN/parser/ast.h"
+#include "TARZAN/regions/Region.h"
+#include "TARZAN/regions/RTS.h"
+#include "TARZAN/testing/successorsAndPredecessorsTesting.h"
 
 // #define REGION_TIMING
 
 
 inline void testFlower()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_16/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_10/";
     // const std::string automatonFileName = "light_switch.txt";
 
     const std::string automatonFileName = "Flower.txt";
