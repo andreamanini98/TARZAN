@@ -145,17 +145,26 @@ for dir in "${subdirs[@]}"; do
             # Temporary files to capture time output and program output.
             TEMP_TIME_FILE=$(mktemp)
             TEMP_OUTPUT_FILE=$(mktemp)
+            TEMP_TIMING_FILE=$(mktemp)
 
             # Run the executable with or without timeout.
             timed_out=0
             if [[ "$TIMEOUT" -gt 0 ]]; then
                 # Wrap timeout with /usr/bin/time so we can capture memory even on timeout.
-                # Capture total execution time with millisecond precision
-                start=$(gdate +%s%3N)
-                /usr/bin/time -l timeout "$TIMEOUT" "$EXECUTABLE" "$dir" "$BENCHMARK_KEY" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
-                exit_code=$?
-                end=$(gdate +%s%3N)
-                exec_time_ms=$((end - start))
+                # Capture total execution time with millisecond precision inside redirected context
+                {
+                    start=$(gdate +%s%3N)
+                    /usr/bin/time -l timeout "$TIMEOUT" "$EXECUTABLE" "$dir" "$BENCHMARK_KEY"
+                    exit_code=$?
+                    end=$(gdate +%s%3N)
+                    exec_time_ms=$((end - start))
+                    echo "$exec_time_ms" > "$TEMP_TIMING_FILE"
+                    echo "$exit_code" >> "$TEMP_TIMING_FILE"
+                } > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
+
+                # Read back the timing data
+                exec_time_ms=$(head -n 1 "$TEMP_TIMING_FILE")
+                exit_code=$(tail -n 1 "$TEMP_TIMING_FILE")
 
                 # Exit code 124 means timeout was reached.
                 if [[ $exit_code -eq 124 ]]; then
@@ -164,11 +173,19 @@ for dir in "${subdirs[@]}"; do
                 fi
             else
                 # No timeout - run normally.
-                start=$(gdate +%s%3N)
-                /usr/bin/time -l "$EXECUTABLE" "$dir" "$BENCHMARK_KEY" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
-                exit_code=$?
-                end=$(gdate +%s%3N)
-                exec_time_ms=$((end - start))
+                {
+                    start=$(gdate +%s%3N)
+                    /usr/bin/time -l "$EXECUTABLE" "$dir" "$BENCHMARK_KEY"
+                    exit_code=$?
+                    end=$(gdate +%s%3N)
+                    exec_time_ms=$((end - start))
+                    echo "$exec_time_ms" > "$TEMP_TIMING_FILE"
+                    echo "$exit_code" >> "$TEMP_TIMING_FILE"
+                } > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
+
+                # Read back the timing data
+                exec_time_ms=$(head -n 1 "$TEMP_TIMING_FILE")
+                exit_code=$(tail -n 1 "$TEMP_TIMING_FILE")
             fi
 
             if [[ $timed_out -eq 1 ]]; then
@@ -221,7 +238,7 @@ for dir in "${subdirs[@]}"; do
             fi
 
             # Clean up temp files.
-            rm -f "$TEMP_TIME_FILE" "$TEMP_OUTPUT_FILE"
+            rm -f "$TEMP_TIME_FILE" "$TEMP_OUTPUT_FILE" "$TEMP_TIMING_FILE"
         done
 
         # Calculate and write averages.

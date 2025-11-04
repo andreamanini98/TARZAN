@@ -100,17 +100,26 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                     # Run the verification NUM_RUNS times.
                     for ((run=1; run<=NUM_RUNS; run++)); do
                         temp_file="$temp_output_dir/run_${run}.txt"
+                        temp_timing_file="$temp_output_dir/timing_${run}.txt"
 
                         echo "      Run $run/$NUM_RUNS..."
 
                         # Execute UPPAAL verification with timeout and capture output.
                         # Strip ANSI escape codes from the output using sed.
-                        # Capture total execution time with millisecond precision
-                        start=$(gdate +%s%3N)
-                        timeout "$TIMEOUT" "$UPPAAL_PATH" --search-order $search_order -u "$xta_file" "$q_file" 2>&1 | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' > "$temp_file"
-                        exit_code=${PIPESTATUS[0]}
-                        end=$(gdate +%s%3N)
-                        exec_time_ms=$((end - start))
+                        # Capture total execution time with millisecond precision inside redirected context
+                        {
+                            start=$(gdate +%s%3N)
+                            timeout "$TIMEOUT" "$UPPAAL_PATH" --search-order $search_order -u "$xta_file" "$q_file" # 2>&1 | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g'
+                            exit_code=${PIPESTATUS[0]}
+                            end=$(gdate +%s%3N)
+                            exec_time_ms=$((end - start))
+                            echo "$exec_time_ms" > "$temp_timing_file"
+                            echo "$exit_code" >> "$temp_timing_file"
+                        } > "$temp_file"
+
+                        # Read back the timing data
+                        exec_time_ms=$(head -n 1 "$temp_timing_file")
+                        exit_code=$(tail -n 1 "$temp_timing_file")
 
                         # Check if timeout occurred.
                         if [[ $exit_code -eq 124 ]]; then
