@@ -289,6 +289,23 @@ namespace region
         [[nodiscard]] std::string toString() const;
 
 
+        /**
+         * @brief Prints the size in bytes of this region based on its attributes.
+         *
+         * This function calculates the memory footprint of the region by summing up:
+         * - The size of the location (q)
+         * - The size of the h array (clock integer values)
+         * - The size of all unbounded deque elements (bitsets)
+         * - The size of the x0 bitset
+         * - The size of all bounded deque elements (bitsets)
+         * - The size of the variables map
+         *
+         * @param printStats prints the memory occupied by the attributes of the region.
+         * @return the size in bytes of the current region.
+         */
+        [[nodiscard]] size_t printSizeInBytes(bool printStats) const;
+
+
         // Getters.
         [[nodiscard]] int getLocation() const { return q; }
         [[nodiscard]] int *getH() const { return h; }

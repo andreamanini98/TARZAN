@@ -925,3 +925,56 @@ std::string region::Region::toString() const
     oss << "]\n";
     return oss.str();
 }
+
+
+size_t region::Region::printSizeInBytes(const bool printStats) const
+{
+    // Start with the base size of the Region object itself.
+    size_t totalSize = sizeof(*this);
+
+    // Size of the h array (clock integer values) - dynamically allocated.
+    const int numClocks = getNumberOfClocks();
+    const size_t sizeOfH = numClocks * sizeof(int);
+    totalSize += sizeOfH;
+
+    // Size of unbounded deque (bitsets) - dynamic storage.
+    // Add the actual bits' storage (overhead already counted in sizeof(*this)).
+    size_t sizeOfUnbounded = 0;
+    for (const auto &bitset: unbounded)
+        sizeOfUnbounded += bitset.num_blocks() * sizeof(boost::dynamic_bitset<>::block_type);
+    totalSize += sizeOfUnbounded;
+
+    // Size of x0 bitset - dynamic storage.
+    const size_t sizeOfX0 = x0.num_blocks() * sizeof(boost::dynamic_bitset<>::block_type);
+    totalSize += sizeOfX0;
+
+    // Size of bounded deque (bitsets) - dynamic storage.
+    size_t sizeOfBounded = 0;
+    // Add the actual bits' storage (overhead already counted in sizeof(*this)).
+    for (const auto &bitset: bounded)
+        sizeOfBounded += bitset.num_blocks() * sizeof(boost::dynamic_bitset<>::block_type);
+    totalSize += sizeOfBounded;
+
+    // Size of variables map - dynamic storage.
+    // String capacity includes allocated memory.
+    // Note: sizeof(varValue) is already included in sizeof(*this) for the map structure.
+    size_t sizeOfVariables = 0;
+    for (const auto &varName: variables | std::views::keys)
+        sizeOfVariables += varName.capacity();
+    totalSize += sizeOfVariables;
+
+    if (printStats)
+    {
+        std::cout << "Region Size Breakdown (in bytes):\n";
+        std::cout << "  Base object size:    " << sizeof(*this) << "\n";
+        std::cout << "  H array:             " << sizeOfH << "\n";
+        std::cout << "  Unbounded deque:     " << sizeOfUnbounded << "\n";
+        std::cout << "  X0 bitset:           " << sizeOfX0 << "\n";
+        std::cout << "  Bounded deque:       " << sizeOfBounded << "\n";
+        std::cout << "  Variables map:       " << sizeOfVariables << "\n";
+        std::cout << "  ---------------------------------\n";
+        std::cout << "  Total size:          " << totalSize << " bytes\n";
+    }
+
+    return totalSize;
+}

@@ -9,7 +9,7 @@
 
 inline void testFlower()
 {
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_20/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_16/";
     // const std::string automatonFileName = "light_switch.txt";
 
     const std::string automatonFileName = "Flower.txt";
@@ -515,7 +515,7 @@ int main()
 
 
     // TODO: questo ora ha tutti i path sballati devi usare quelli nella cartella benchmark.
-    testVikings();
+    testFlower();
 
 
 #ifdef REGION_TIMING
