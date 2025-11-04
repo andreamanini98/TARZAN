@@ -103,10 +103,12 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                     total_covered_states=0
                     total_memory_max_rss=0
                     total_running_time=0
+                    total_exec_time=0
                     total_stored_states=0
                     total_visited_states=0
                     total_visited_transitions=0
                     successful_runs=0
+                    exec_time_count=0
                     timeout_occurred=false
                     reachable_result=""
 
@@ -117,12 +119,16 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                         echo "      Run $run/$NUM_RUNS..."
 
                         # Execute TChecker verification with timeout and capture output.
+                        # Capture total execution time with millisecond precision
+                        start=$(gdate +%s%3N)
                         if [[ -n "$labels_content" ]]; then
                             timeout "$TIMEOUT" "$TCHECKER_PATH" -a covreach -s "$search_algorithm" -l "$labels_content" "$tck_file" > "$temp_file"
                         else
                             timeout "$TIMEOUT" "$TCHECKER_PATH" -a covreach -s "$search_algorithm" "$tck_file" > "$temp_file"
                         fi
                         exit_code=${PIPESTATUS[0]}
+                        end=$(gdate +%s%3N)
+                        exec_time_ms=$((end - start))
 
                         # Check if timeout occurred.
                         if [[ $exit_code -eq 124 ]]; then
@@ -178,6 +184,12 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                         else
                             echo "      WARNING: Could not extract metrics from run $run output"
                         fi
+
+                        # Accumulate execution time for all runs (excluding timeouts)
+                        if [[ $exit_code -ne 124 ]] && [[ -n "$exec_time_ms" ]]; then
+                            total_exec_time=$((total_exec_time + exec_time_ms))
+                            exec_time_count=$((exec_time_count + 1))
+                        fi
                     done
 
                     # Write averaged results to output file.
@@ -207,6 +219,14 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                         echo "STORED_STATES $avg_stored_states" >> "$output_file"
                         echo "VISITED_STATES $avg_visited_states" >> "$output_file"
                         echo "VISITED_TRANSITIONS $avg_visited_transitions" >> "$output_file"
+
+                        # Calculate and write execution time average
+                        if [[ $exec_time_count -gt 0 ]]; then
+                            avg_exec_time_ms=$(echo "scale=0; $total_exec_time / $exec_time_count" | bc)
+                            avg_exec_time_sec=$(awk "BEGIN {printf \"%.3f\", $avg_exec_time_ms / 1000}")
+                            echo "TOTAL_EXECUTION_TIME_MS $avg_exec_time_ms" >> "$output_file"
+                            echo "TOTAL_EXECUTION_TIME_SECONDS $avg_exec_time_sec" >> "$output_file"
+                        fi
                     else
                         echo "ERROR: No successful runs completed" > "$output_file"
                     fi

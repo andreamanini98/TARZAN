@@ -23,18 +23,21 @@ class BenchmarkResult:
         self.total_time: Optional[str] = None
         self.goal_status: Optional[str] = None
         self.peak_memory: Optional[str] = None
+        self.exec_time: Optional[str] = None
 
         # TChecker fields
         self.stored_states: Optional[str] = None
         self.memory_mb: Optional[str] = None
         self.reachable: Optional[str] = None
         self.running_time: Optional[str] = None
+        self.exec_time_sec: Optional[str] = None
 
         # UPPAAL fields
         self.formula_result: Optional[str] = None
         self.states_explored: Optional[str] = None
         self.cpu_time_s: Optional[str] = None
         self.resident_memory: Optional[str] = None
+        self.uppaal_exec_time: Optional[str] = None
 
         # Common fields
         self.timeout: bool = False
@@ -104,12 +107,23 @@ def parse_benchmark_summary(file_path: str) -> List[Experiment]:
                 # TARZAN fields
                 if "Number of regions:" in line:
                     current_result.num_regions = line.split("Number of regions:")[1].strip()
-                elif "Total time:" in line:
+                elif "Total time:" in line and "exec" not in line.lower():
                     time_str = line.split("Total time:")[1].strip()
                     # Extract just the numeric value in seconds
                     match = re.search(r'([\d.]+)\s*s', time_str)
                     if match:
                         current_result.total_time = match.group(1)
+                elif "Total exec time:" in line and current_tool == "TARZAN":
+                    exec_str = line.split("Total exec time:")[1].strip()
+                    # Extract the time value (could be in ms or s format)
+                    match = re.search(r'([\d.]+)\s*ms', exec_str)
+                    if match:
+                        current_result.exec_time = match.group(1)
+                    else:
+                        match = re.search(r'([\d.]+)\s*s', exec_str)
+                        if match:
+                            # Convert seconds to milliseconds
+                            current_result.exec_time = str(float(match.group(1)) * 1000)
                 elif "Goal status:" in line:
                     current_result.goal_status = line.split("Goal status:")[1].strip()
                 elif "Peak memory:" in line and "bytes" not in line:
@@ -128,6 +142,8 @@ def parse_benchmark_summary(file_path: str) -> List[Experiment]:
                     current_result.reachable = line.split("Reachable:")[1].strip()
                 elif "Running time (s):" in line:
                     current_result.running_time = line.split("Running time (s):")[1].strip()
+                elif "Total exec time (s):" in line:
+                    current_result.exec_time_sec = line.split("Total exec time (s):")[1].strip()
 
                 # UPPAAL fields
                 elif "Formula result:" in line:
@@ -143,6 +159,17 @@ def parse_benchmark_summary(file_path: str) -> List[Experiment]:
                     current_result.states_explored = line.split("States explored:")[1].strip()
                 elif "CPU time (s):" in line:
                     current_result.cpu_time_s = line.split("CPU time (s):")[1].strip()
+                elif "Total exec time:" in line and current_tool == "UPPAAL":
+                    exec_str = line.split("Total exec time:")[1].strip()
+                    # Extract the time value
+                    match = re.search(r'([\d.]+)\s*ms', exec_str)
+                    if match:
+                        current_result.uppaal_exec_time = match.group(1)
+                    else:
+                        match = re.search(r'([\d.]+)\s*s', exec_str)
+                        if match:
+                            # Convert seconds to milliseconds
+                            current_result.uppaal_exec_time = str(float(match.group(1)) * 1000)
                 elif "Resident memory (MB):" in line:
                     current_result.resident_memory = line.split("Resident memory (MB):")[1].strip()
 
@@ -167,20 +194,20 @@ def generate_latex_table(experiment: Experiment) -> str:
     latex.append(r"\caption{Benchmark results for " + experiment.name.replace("_", r"\_") + r"}")
     latex.append(r"\label{tab:" + experiment.name + r"}")
     latex.append(r"\resizebox{\textwidth}{!}{%")
-    latex.append(r"\begin{tabular}{|l|ccc|ccc|ccc|ccc|}")
+    latex.append(r"\begin{tabular}{|l|cccc|cccc|cccc|ccc|}")
     latex.append(r"\hline")
 
     # Header row 1: Tool names
     latex.append(r"\multirow{2}{*}{\textbf{Instance}} & " + \
-                r"\multicolumn{3}{c|}{\textbf{TARZAN}} & " + \
-                r"\multicolumn{3}{c|}{\textbf{TChecker}} & " + \
-                r"\multicolumn{3}{c|}{\textbf{UPPAAL}} & " + \
+                r"\multicolumn{4}{c|}{\textbf{TARZAN}} & " + \
+                r"\multicolumn{4}{c|}{\textbf{TChecker}} & " + \
+                r"\multicolumn{4}{c|}{\textbf{UPPAAL}} & " + \
                 r"\multicolumn{3}{c|}{\textbf{Verification}} \\")
 
     # Header row 2: Column names
-    latex.append(r"& \textbf{Time (s)} & \textbf{Mem (MB)} & \textbf{Regions} & " + \
-                r"\textbf{Time (s)} & \textbf{Mem (MB)} & \textbf{States} & " + \
-                r"\textbf{Time (s)} & \textbf{Mem (MB)} & \textbf{States} & " + \
+    latex.append(r"& \textbf{Time (s)} & \textbf{Exec (s)} & \textbf{Mem (MB)} & \textbf{Regions} & " + \
+                r"\textbf{Time (s)} & \textbf{Exec (s)} & \textbf{Mem (MB)} & \textbf{States} & " + \
+                r"\textbf{Time (s)} & \textbf{Exec (s)} & \textbf{Mem (MB)} & \textbf{States} & " + \
                 r"\textbf{TARZAN} & \textbf{TChecker} & \textbf{UPPAAL} \\")
     latex.append(r"\hline\hline")
 
@@ -193,25 +220,42 @@ def generate_latex_table(experiment: Experiment) -> str:
 
         # TARZAN columns
         if sub_exp.tarzan.timeout:
-            row_parts.extend([r"\multicolumn{3}{c|}{KO}"])
+            row_parts.extend([r"\multicolumn{4}{c|}{KO}"])
         else:
             row_parts.append(format_value(sub_exp.tarzan.total_time, "KO"))
+            # Convert exec time from ms to seconds if available
+            exec_time_s = "KO"
+            if sub_exp.tarzan.exec_time:
+                try:
+                    exec_time_s = f"{float(sub_exp.tarzan.exec_time) / 1000:.3f}"
+                except:
+                    exec_time_s = "KO"
+            row_parts.append(exec_time_s)
             row_parts.append(format_value(sub_exp.tarzan.peak_memory, "KO"))
             row_parts.append(format_value(sub_exp.tarzan.num_regions, "KO"))
 
         # TChecker columns
         if sub_exp.tchecker.timeout:
-            row_parts.extend([r"\multicolumn{3}{c|}{KO}"])
+            row_parts.extend([r"\multicolumn{4}{c|}{KO}"])
         else:
             row_parts.append(format_value(sub_exp.tchecker.running_time, "KO"))
+            row_parts.append(format_value(sub_exp.tchecker.exec_time_sec, "KO"))
             row_parts.append(format_value(sub_exp.tchecker.memory_mb, "KO"))
             row_parts.append(format_value(sub_exp.tchecker.stored_states, "KO"))
 
         # UPPAAL columns
         if sub_exp.uppaal.timeout:
-            row_parts.extend([r"\multicolumn{3}{c|}{KO}"])
+            row_parts.extend([r"\multicolumn{4}{c|}{KO}"])
         else:
             row_parts.append(format_value(sub_exp.uppaal.cpu_time_s, "KO"))
+            # Convert exec time from ms to seconds if available
+            exec_time_s = "KO"
+            if sub_exp.uppaal.uppaal_exec_time:
+                try:
+                    exec_time_s = f"{float(sub_exp.uppaal.uppaal_exec_time) / 1000:.3f}"
+                except:
+                    exec_time_s = "KO"
+            row_parts.append(exec_time_s)
             row_parts.append(format_value(sub_exp.uppaal.resident_memory, "KO"))
             row_parts.append(format_value(sub_exp.uppaal.states_explored, "KO"))
 

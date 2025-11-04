@@ -131,9 +131,11 @@ for dir in "${subdirs[@]}"; do
         total_regions=0
         total_time=0
         total_memory=0
+        total_exec_time=0
         successful_runs=0
         timeout_count=0
         memory_data_count=0
+        exec_time_count=0
         goal_reachable=""
 
         # Run the executable NUM_RUNS times.
@@ -148,8 +150,12 @@ for dir in "${subdirs[@]}"; do
             timed_out=0
             if [[ "$TIMEOUT" -gt 0 ]]; then
                 # Wrap timeout with /usr/bin/time so we can capture memory even on timeout.
+                # Capture total execution time with millisecond precision
+                start=$(gdate +%s%3N)
                 /usr/bin/time -l timeout "$TIMEOUT" "$EXECUTABLE" "$dir" "$BENCHMARK_KEY" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
                 exit_code=$?
+                end=$(gdate +%s%3N)
+                exec_time_ms=$((end - start))
 
                 # Exit code 124 means timeout was reached.
                 if [[ $exit_code -eq 124 ]]; then
@@ -158,8 +164,11 @@ for dir in "${subdirs[@]}"; do
                 fi
             else
                 # No timeout - run normally.
+                start=$(gdate +%s%3N)
                 /usr/bin/time -l "$EXECUTABLE" "$dir" "$BENCHMARK_KEY" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
                 exit_code=$?
+                end=$(gdate +%s%3N)
+                exec_time_ms=$((end - start))
             fi
 
             if [[ $timed_out -eq 1 ]]; then
@@ -205,6 +214,12 @@ for dir in "${subdirs[@]}"; do
                 fi
             fi
 
+            # Accumulate execution time for all runs (excluding timeouts)
+            if [[ $timed_out -eq 0 ]] && [[ -n "$exec_time_ms" ]]; then
+                total_exec_time=$((total_exec_time + exec_time_ms))
+                exec_time_count=$((exec_time_count + 1))
+            fi
+
             # Clean up temp files.
             rm -f "$TEMP_TIME_FILE" "$TEMP_OUTPUT_FILE"
         done
@@ -248,6 +263,16 @@ for dir in "${subdirs[@]}"; do
                 echo "" >> "$OUTPUT_FILE"
             fi
 
+            # Calculate execution time average from all runs with timing data.
+            if [[ $exec_time_count -gt 0 ]]; then
+                avg_exec_time_ms=$(echo "scale=0; $total_exec_time / $exec_time_count" | bc)
+                avg_exec_time_sec=$(echo "scale=3; $avg_exec_time_ms / 1000" | bc | awk '{printf "%.3f", $0}')
+
+                echo "Total Execution Time (averaged over $exec_time_count run(s)):" >> "$OUTPUT_FILE"
+                echo "  Total Execution Time: ${avg_exec_time_ms} ms (${avg_exec_time_sec} s)" >> "$OUTPUT_FILE"
+                echo "" >> "$OUTPUT_FILE"
+            fi
+
             # Build status message with run statistics.
             status_msg="Status: SUCCESS ($successful_runs/$NUM_RUNS runs successful"
             if [[ $timeout_count -gt 0 ]]; then
@@ -276,6 +301,16 @@ for dir in "${subdirs[@]}"; do
                 echo "" >> "$OUTPUT_FILE"
             fi
 
+            # Calculate execution time average if we have data (before timeout)
+            if [[ $exec_time_count -gt 0 ]]; then
+                avg_exec_time_ms=$(echo "scale=0; $total_exec_time / $exec_time_count" | bc)
+                avg_exec_time_sec=$(echo "scale=3; $avg_exec_time_ms / 1000" | bc | awk '{printf "%.3f", $0}')
+
+                echo "Total Execution Time (averaged over $exec_time_count run(s) before timeout):" >> "$OUTPUT_FILE"
+                echo "  Total Execution Time: ${avg_exec_time_ms} ms (${avg_exec_time_sec} s)" >> "$OUTPUT_FILE"
+                echo "" >> "$OUTPUT_FILE"
+            fi
+
             echo "Status: TIMEOUT (all $NUM_RUNS runs exceeded $TIMEOUT seconds)" >> "$OUTPUT_FILE"
             echo "Warning: All runs timed out for $folder_name"
         else
@@ -300,6 +335,16 @@ for dir in "${subdirs[@]}"; do
                 echo "Memory Usage (averaged over $memory_data_count run(s)):" >> "$OUTPUT_FILE"
                 echo "  Peak Memory (RSS):   ${avg_mem_mb} MB (${avg_mem_gb} GB)" >> "$OUTPUT_FILE"
                 echo "  Peak Memory (bytes): ${avg_memory}" >> "$OUTPUT_FILE"
+                echo "" >> "$OUTPUT_FILE"
+            fi
+
+            # Calculate execution time average if we have data
+            if [[ $exec_time_count -gt 0 ]]; then
+                avg_exec_time_ms=$(echo "scale=0; $total_exec_time / $exec_time_count" | bc)
+                avg_exec_time_sec=$(echo "scale=3; $avg_exec_time_ms / 1000" | bc | awk '{printf "%.3f", $0}')
+
+                echo "Total Execution Time (averaged over $exec_time_count run(s)):" >> "$OUTPUT_FILE"
+                echo "  Total Execution Time: ${avg_exec_time_ms} ms (${avg_exec_time_sec} s)" >> "$OUTPUT_FILE"
                 echo "" >> "$OUTPUT_FILE"
             fi
 

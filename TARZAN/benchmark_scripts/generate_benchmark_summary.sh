@@ -119,6 +119,7 @@ EOF
                 goal_status=$(grep "Goal status:" "$tarzan_file" | awk '{print $NF}')
                 peak_memory_mb=$(grep "Peak Memory (RSS):" "$tarzan_file" | awk '{print $4, $5}')
                 peak_memory_bytes=$(grep "Peak Memory (bytes):" "$tarzan_file" | awk '{print $NF}')
+                exec_time=$(grep "Total Execution Time:" "$tarzan_file" | grep -v "averaged" | awk '{print $4, $5, $6, $7}')
                 status=$(grep "Status:" "$tarzan_file" | sed 's/Status: //')
 
                 cat >> "$SUMMARY_FILE" << EOF
@@ -127,6 +128,7 @@ EOF
   Goal status:          ${goal_status:-N/A}
   Peak memory:          ${peak_memory_mb:-N/A}
   Peak memory (bytes):  ${peak_memory_bytes:-N/A}
+  Total exec time:      ${exec_time:-N/A}
   Status:               ${status:-N/A}
 EOF
             fi
@@ -159,6 +161,8 @@ EOF
                 memory_bytes=$(grep "MEMORY_MAX_RSS" "$tchecker_file" | awk '{print $2}')
                 reachable=$(grep "REACHABLE" "$tchecker_file" | awk '{print $2}')
                 running_time=$(grep "RUNNING_TIME_SECONDS" "$tchecker_file" | awk '{print $2}')
+                exec_time_ms=$(grep "TOTAL_EXECUTION_TIME_MS" "$tchecker_file" | awk '{print $2}')
+                exec_time_sec=$(grep "TOTAL_EXECUTION_TIME_SECONDS" "$tchecker_file" | awk '{print $2}')
                 stored_states=$(grep "STORED_STATES" "$tchecker_file" | awk '{print $2}')
                 visited_states=$(grep "VISITED_STATES" "$tchecker_file" | awk '{print $2}')
                 visited_transitions=$(grep "VISITED_TRANSITIONS" "$tchecker_file" | awk '{print $2}')
@@ -170,6 +174,8 @@ EOF
   Memory (bytes):       ${memory_bytes:-N/A}
   Reachable:            ${reachable:-N/A}
   Running time (s):     ${running_time:-N/A}
+  Total exec time (ms): ${exec_time_ms:-N/A}
+  Total exec time (s):  ${exec_time_sec:-N/A}
   Stored states:        ${stored_states:-N/A}
   Visited states:       ${visited_states:-N/A}
   Visited transitions:  ${visited_transitions:-N/A}
@@ -203,6 +209,7 @@ EOF
                 states_explored=$(grep "States explored" "$uppaal_file" | sed 's/.*: \([0-9]*\) states.*/\1/')
                 cpu_time_ms=$(grep "CPU user time used" "$uppaal_file" | sed 's/.*: \([0-9]*\) ms.*/\1/')
                 cpu_time_s=$(grep "CPU user time used" "$uppaal_file" | sed 's/.*(\(.*\) s).*/\1/')
+                exec_time=$(grep "Total execution time" "$uppaal_file" | sed 's/.*: \(.*\)/\1/')
                 virtual_mem_mb=$(grep "Virtual memory used" "$uppaal_file" | sed 's/.*(\(.*\) MB.*/\1/')
                 virtual_mem_gb=$(grep "Virtual memory used" "$uppaal_file" | sed 's/.*, \(.*\) GB).*/\1/')
                 resident_mem_mb=$(grep "Resident memory used" "$uppaal_file" | sed 's/.*(\(.*\) MB.*/\1/')
@@ -214,6 +221,7 @@ EOF
   States explored:      ${states_explored:-N/A}
   CPU time (ms):        ${cpu_time_ms:-N/A}
   CPU time (s):         ${cpu_time_s:-N/A}
+  Total exec time:      ${exec_time:-N/A}
   Virtual memory (MB):  ${virtual_mem_mb:-N/A}
   Virtual memory (GB):  ${virtual_mem_gb:-N/A}
   Resident memory (MB): ${resident_mem_mb:-N/A}

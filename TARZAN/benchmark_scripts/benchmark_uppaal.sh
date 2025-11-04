@@ -89,9 +89,11 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                     total_states_stored=0
                     total_states_explored=0
                     total_cpu_time=0
+                    total_exec_time=0
                     total_virtual_mem=0
                     total_resident_mem=0
                     successful_runs=0
+                    exec_time_count=0
                     timeout_occurred=false
                     formula_result=""
 
@@ -103,8 +105,12 @@ for benchmark in "$BENCHMARK_DIR"/*; do
 
                         # Execute UPPAAL verification with timeout and capture output.
                         # Strip ANSI escape codes from the output using sed.
+                        # Capture total execution time with millisecond precision
+                        start=$(gdate +%s%3N)
                         timeout "$TIMEOUT" "$UPPAAL_PATH" --search-order $search_order -u "$xta_file" "$q_file" 2>&1 | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' > "$temp_file"
                         exit_code=${PIPESTATUS[0]}
+                        end=$(gdate +%s%3N)
+                        exec_time_ms=$((end - start))
 
                         # Check if timeout occurred.
                         if [[ $exit_code -eq 124 ]]; then
@@ -158,6 +164,12 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                         else
                             echo "      WARNING: Could not extract metrics from run $run output"
                         fi
+
+                        # Accumulate execution time for all runs (excluding timeouts)
+                        if [[ $exit_code -ne 124 ]] && [[ -n "$exec_time_ms" ]]; then
+                            total_exec_time=$((total_exec_time + exec_time_ms))
+                            exec_time_count=$((exec_time_count + 1))
+                        fi
                     done
 
                     # Write averaged results to output file.
@@ -194,6 +206,13 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                         echo " -- CPU user time used : $avg_cpu_time ms ($avg_cpu_time_sec s)" >> "$output_file"
                         echo " -- Virtual memory used : $avg_virtual_mem KiB ($avg_virtual_mem_mb MB, $avg_virtual_mem_gb GB)" >> "$output_file"
                         echo " -- Resident memory used : $avg_resident_mem KiB ($avg_resident_mem_mb MB, $avg_resident_mem_gb GB)" >> "$output_file"
+
+                        # Calculate and write execution time average
+                        if [[ $exec_time_count -gt 0 ]]; then
+                            avg_exec_time_ms=$((total_exec_time / exec_time_count))
+                            avg_exec_time_sec=$(awk "BEGIN {printf \"%.3f\", $avg_exec_time_ms / 1000}")
+                            echo " -- Total execution time : $avg_exec_time_ms ms ($avg_exec_time_sec s)" >> "$output_file"
+                        fi
                     else
                         echo "ERROR: No successful runs completed" > "$output_file"
                     fi
