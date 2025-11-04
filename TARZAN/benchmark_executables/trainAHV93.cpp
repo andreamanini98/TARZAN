@@ -18,9 +18,9 @@ inline void testTrainAHV93(const std::string &path, const std::string &benchmark
 
     const auto &locationsToInt = net.getLocationsToInt();
 
-    // benchmarkKey + 2 should match the actual number of trains in the directory (since automata are sorted alphabetically and each Train is capitalized).
-    // Total automata = num_trains + controller + gate = num_trains + 2
-    const int numTrains = std::stoi(benchmarkKey) + 2;
+    // benchmarkKey * 4 + 4 should match the actual number of trains in the directory (since automata are sorted alphabetically and each Train is capitalized).
+    // Total automata = num_trains + controller + gate
+    const int numTrains = std::stoi(benchmarkKey) * 4 + 4;
     const int numElements = numTrains + 2;
 
     auto goal = std::vector<std::optional<int>>(numElements, std::nullopt);

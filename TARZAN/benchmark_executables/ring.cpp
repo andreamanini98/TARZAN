@@ -16,7 +16,7 @@ inline void testRing(const std::string &path, const std::string &benchmarkKey)
 
     const auto &locationsToInt = net.getLocationsToInt();
 
-    const int numElements = std::stoi(benchmarkKey) + 2;
+    const int numElements = std::stoi(benchmarkKey) * 2 + 2;
 
     auto goal = std::vector<std::optional<int>>(numElements);
     for (int i = 0; i < numElements; i++)

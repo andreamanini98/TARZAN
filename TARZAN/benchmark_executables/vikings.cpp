@@ -18,8 +18,8 @@ inline void testVikings(const std::string &path, const std::string &benchmarkKey
 
     const auto &locationsToInt = net.getLocationsToInt();
 
-    // The 3 is due to the Torch and vikings.
-    const int numElements = std::stoi(benchmarkKey) + 3;
+    // The 5 is due to the Torch and vikings.
+    const int numElements = std::stoi(benchmarkKey) * 4 + 5;
 
     auto goal = std::vector<std::optional<int>>(numElements, std::nullopt);
     for (int i = 1; i < numElements; i++)
