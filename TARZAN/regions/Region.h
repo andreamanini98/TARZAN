@@ -60,9 +60,8 @@ namespace region
          * @param numClocks the number of Timed Automaton clocks from which the region is derived.
          * @param variables a map between integer variables and their value.
          */
-        Region(const int numClocks, const absl::btree_map<std::string, int> &variables) : variables(variables)
+        Region(const int numClocks, const absl::btree_map<std::string, int> &variables) : h(numClocks, 0), variables(variables)
         {
-            h.resize(numClocks);
             x0.resize(numClocks);
             x0.flip();
         }
@@ -75,9 +74,8 @@ namespace region
          * @param q the location of the region.
          * @param variables a map between integer variables and their value.
          */
-        Region(const int numClocks, const int q, const absl::btree_map<std::string, int> &variables) : q(q), variables(variables)
+        Region(const int numClocks, const int q, const absl::btree_map<std::string, int> &variables) : q(q), h(numClocks, 0), variables(variables)
         {
-            h.resize(numClocks);
             x0.resize(numClocks);
             x0.flip();
         }
