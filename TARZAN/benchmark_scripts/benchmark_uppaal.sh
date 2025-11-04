@@ -5,7 +5,7 @@ SEARCH_ORDER_0_BENCHMARKS=("trainAHV93")
 
 
 # Check if UPPAAL path argument is provided.
-if [[ $# -ne 1 ]]; then
+if [[ $# -ne 3 ]]; then
     echo "Usage: $0 <path_to_uppaal_verifyta>"
     echo "Example: $0 ./UPPAAL-5.0.0.app/Contents/Resources/uppaal/bin/verifyta"
     exit 1

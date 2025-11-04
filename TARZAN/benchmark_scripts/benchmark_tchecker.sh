@@ -5,7 +5,7 @@ SEARCH_ORDER_0_BENCHMARKS=("trainAHV93")
 
 
 # Check if TChecker path argument is provided.
-if [[ $# -ne 1 ]]; then
+if [[ $# -ne 3 ]]; then
     echo "Usage: $0 <path_to_tchecker>"
     echo "Example: $0 /usr/local/bin/tchecker"
     exit 1

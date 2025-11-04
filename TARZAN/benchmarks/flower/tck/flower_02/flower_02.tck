@@ -1,0 +1,24 @@
+system:flower_02
+
+# Events
+event:tau
+
+
+
+# Processes
+process:Flower
+
+# Process: Flower
+## Clocks for Flower
+clock:1:Flower_x1
+clock:1:Flower_x2
+clock:1:Flower_y
+
+## Locations for Flower
+location:Flower:Start{initial:}
+location:Flower:Goal{labels: goal}
+
+## Edges for Flower
+edge:Flower:Start:Start:tau{provided:Flower_x2 == 2 : do:Flower_x2 = 0}
+edge:Flower:Start:Start:tau{provided:Flower_x1 == 1 : do:Flower_x1 = 0}
+edge:Flower:Start:Goal:tau{provided:Flower_x1 == 0 && Flower_x2 == 0 && Flower_y >= 1}

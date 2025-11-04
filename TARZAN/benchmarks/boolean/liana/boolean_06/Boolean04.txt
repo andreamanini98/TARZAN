@@ -1,0 +1,14 @@
+create automaton Boolean04
+{
+    clocks { x; }
+    actions { a; }
+    integers { ctr1, ctr2, ctr3, ctr4, ctr5, ctr6; }
+    locations {
+        s0 <ini: T>,
+        s1 <ini: F>;
+    }
+    transitions {
+        (s0, a, [(x, ==, 4)], [x], [ctr4 = 1 - ctr4], s1),
+        (s1, a, [(x, ==, 4)], [x], [ctr4 = 1 - ctr4], s0);
+    }
+}
