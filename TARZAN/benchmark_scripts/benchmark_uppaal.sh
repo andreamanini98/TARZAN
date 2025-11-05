@@ -97,6 +97,14 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                     timeout_occurred=false
                     formula_result=""
 
+                    # Warm-up run to eliminate cold start effects (not measured)
+                    echo "  Warm-up run (not measured)..."
+                    if [[ "$TIMEOUT" -gt 0 ]]; then
+                        timeout "$TIMEOUT" "$UPPAAL_PATH" --search-order $search_order -u "$xta_file" "$q_file" > /dev/null 2>&1
+                    else
+                       "$UPPAAL_PATH" --search-order $search_order -u "$xta_file" "$q_file" > /dev/null 2>&1
+                    fi
+
                     # Run the verification NUM_RUNS times.
                     for ((run=1; run<=NUM_RUNS; run++)); do
                         temp_file="$temp_output_dir/run_${run}.txt"
