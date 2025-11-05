@@ -4,6 +4,10 @@
 #define EARLY_EXIT
 
 
+// A pointer to a network region object.
+using NetworkRegionPtr = const networkOfTA::NetworkRegion *;
+
+
 /**
  * @brief Auxiliary function for the forwardReachability function.
  *
@@ -15,7 +19,7 @@
  * @param isInvariantFree a boolean telling whether there are no invariants at all to be checked.
  */
 inline void insertRegionInMapAndToProcess(const networkOfTA::NetworkRegion &reg,
-                                          std::deque<networkOfTA::NetworkRegion> &toProcess,
+                                          std::deque<NetworkRegionPtr> &toProcess,
                                           std::unordered_set<networkOfTA::NetworkRegion, networkOfTA::NetworkRegionHash> &regionsHashMap,
                                           const std::vector<std::unordered_map<std::string, int>> &clocksIndices,
                                           const std::vector<absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>>> &invariants,
@@ -38,8 +42,12 @@ inline void insertRegionInMapAndToProcess(const networkOfTA::NetworkRegion &reg,
 
     if (isRegionLegal)
     {
-        toProcess.push_back(reg);
-        regionsHashMap.insert(reg);
+        // ReSharper disable once CppTooWideScopeInitStatement
+        auto [iter, inserted] = regionsHashMap.insert(reg);
+
+        // Only add to toProcess if it's a new region.
+        if (inserted)
+            toProcess.push_back(&*iter);
     }
 }
 
@@ -125,7 +133,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
     const auto start = std::chrono::high_resolution_clock::now();
 
     // Initializing auxiliary data structures for reachability computation.
-    std::deque<NetworkRegion> toProcess{};
+    std::deque<NetworkRegionPtr> toProcess{};
     std::unordered_set<NetworkRegion, NetworkRegionHash> regionsHashMap{};
 
     const bool useSymmetryReduction = !symmetryGroups.empty() && symmetryReduction;
@@ -145,8 +153,8 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
         if (useSymmetryReduction)
             regionToInsert = regionToInsert.getCanonicalForm(symmetryGroups);
 
-        toProcess.push_back(regionToInsert);
-        regionsHashMap.insert(regionToInsert);
+        auto [iter, inserted] = regionsHashMap.insert(regionToInsert);
+        toProcess.push_back(&*iter);
     }
 
 
@@ -154,7 +162,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
 
     while (!toProcess.empty())
     {
-        const NetworkRegion &currentRegion = explorationTechnique == BFS ? toProcess.front() : toProcess.back();
+        const NetworkRegion &currentRegion = explorationTechnique == BFS ? *toProcess.front() : *toProcess.back();
 
 #ifdef RTSNETWORK_DEBUG
 
@@ -226,13 +234,9 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
             {
                 // ReSharper disable once CppTooWideScopeInitStatement
                 const NetworkRegion canonicalDelaySucc = delaySuccessor.getCanonicalForm(symmetryGroups);
-                if (!regionsHashMap.contains(canonicalDelaySucc))
-                    insertRegionInMapAndToProcess(canonicalDelaySucc, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
+                insertRegionInMapAndToProcess(canonicalDelaySucc, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
             } else
-            {
-                if (!regionsHashMap.contains(delaySuccessor))
-                    insertRegionInMapAndToProcess(delaySuccessor, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
-            }
+                insertRegionInMapAndToProcess(delaySuccessor, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
         }
 
         for (const auto &discreteSuccessor: discreteSuccessors)
@@ -241,13 +245,9 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
             {
                 // ReSharper disable once CppTooWideScopeInitStatement
                 const NetworkRegion canonicalDiscSucc = discreteSuccessor.getCanonicalForm(symmetryGroups);
-                if (!regionsHashMap.contains(canonicalDiscSucc))
-                    insertRegionInMapAndToProcess(canonicalDiscSucc, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
+                insertRegionInMapAndToProcess(canonicalDiscSucc, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
             } else
-            {
-                if (!regionsHashMap.contains(discreteSuccessor))
-                    insertRegionInMapAndToProcess(discreteSuccessor, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
-            }
+                insertRegionInMapAndToProcess(discreteSuccessor, toProcess, regionsHashMap, clocksIndices, invariants, isInvariantFree);
         }
     }
 

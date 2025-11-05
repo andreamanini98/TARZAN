@@ -12,6 +12,10 @@
 #define EARLY_EXIT
 
 
+// A pointer to a region object.
+using RegionPtr = const region::Region *;
+
+
 /**
  * @brief Auxiliary function for the forwardReachability and backwardReachability functions.
  *
@@ -22,7 +26,7 @@
  * @param invariants the invariants of the original Timed Automaton.
  */
 inline void insertRegionInMapAndToProcess(const region::Region &reg,
-                                          std::deque<region::Region> &toProcess,
+                                          std::deque<RegionPtr> &toProcess,
                                           std::unordered_set<region::Region, region::RegionHash> &regionsHashMap,
                                           const std::unordered_map<std::string, int> &clocksIndices,
                                           const absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> &invariants)
@@ -30,18 +34,17 @@ inline void insertRegionInMapAndToProcess(const region::Region &reg,
     // ReSharper disable once CppTooWideScopeInitStatement
     const int regLocation = reg.getLocation();
 
+    // Check invariant satisfaction first (avoid hash lookup if invariant fails).
     if (invariants.contains(regLocation))
-    {
-        if (isInvariantSatisfied(invariants.at(regLocation), reg.getClockValuation(), clocksIndices))
-        {
-            regionsHashMap.insert(reg);
-            toProcess.push_back(reg);
-        }
-    } else
-    {
-        regionsHashMap.insert(reg);
-        toProcess.push_back(reg);
-    }
+        if (!isInvariantSatisfied(invariants.at(regLocation), reg.getClockValuation(), clocksIndices))
+            return;
+
+    // ReSharper disable once CppTooWideScopeInitStatement
+    auto [iter, inserted] = regionsHashMap.insert(reg);
+
+    // Only add to toProcess if it's a new region.
+    if (inserted)
+        toProcess.push_back(&*iter);
 }
 
 
@@ -102,13 +105,13 @@ std::vector<region::Region> region::RTS::forwardReachability(const std::vector<t
     const auto start = std::chrono::high_resolution_clock::now();
 
     // Initializing auxiliary data structures for reachability computation.
-    std::deque<Region> toProcess{};
+    std::deque<RegionPtr> toProcess{};
     std::unordered_set<Region, RegionHash> regionsHashMap{};
 
     for (const auto &init: getInitialRegions())
     {
-        toProcess.push_back(init);
-        regionsHashMap.insert(init);
+        auto [iter, inserted] = regionsHashMap.insert(init);
+        toProcess.push_back(&*iter);
     }
 
     // Boolean used to track whether a region has clocks or not. If not, delay successors must not be computed.
@@ -118,7 +121,8 @@ std::vector<region::Region> region::RTS::forwardReachability(const std::vector<t
 
     while (!toProcess.empty())
     {
-        const Region &currentRegion = explorationTechnique == BFS ? toProcess.front() : toProcess.back();
+        // Dereference pointer to get the actual region.
+        const Region &currentRegion = explorationTechnique == BFS ? *toProcess.front() : *toProcess.back();
         const int currentRegionLocation = currentRegion.getLocation();
 
 #ifdef RTS_DEBUG
@@ -167,12 +171,12 @@ std::vector<region::Region> region::RTS::forwardReachability(const std::vector<t
         explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();
 
         // We insert the delay successor first and then the discrete successors.
-        if (isDelayComputable && !regionsHashMap.contains(delaySuccessor))
+        // Note: insertRegionInMapAndToProcess now checks for duplicates internally.
+        if (isDelayComputable)
             insertRegionInMapAndToProcess(delaySuccessor, toProcess, regionsHashMap, clocksIndices, invariants);
 
         for (const auto &discreteSuccessor: discreteSuccessors)
-            if (!regionsHashMap.contains(discreteSuccessor))
-                insertRegionInMapAndToProcess(discreteSuccessor, toProcess, regionsHashMap, clocksIndices, invariants);
+            insertRegionInMapAndToProcess(discreteSuccessor, toProcess, regionsHashMap, clocksIndices, invariants);
     }
 
     // No target region has been reached if the while loop ends.
@@ -216,13 +220,13 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
     const auto start = std::chrono::high_resolution_clock::now();
 
     // Initializing auxiliary data structures for reachability computation.
-    std::deque<Region> toProcess{};
+    std::deque<RegionPtr> toProcess{};
     std::unordered_set<Region, RegionHash> regionsHashMap{};
 
     for (const auto &startReg: startingRegions)
     {
-        toProcess.push_back(startReg);
-        regionsHashMap.insert(startReg);
+        auto [iter, inserted] = regionsHashMap.insert(startReg);
+        toProcess.push_back(&*iter);
     }
 
     // Boolean used to track whether a region has clocks or not. If not, delay successors must not be computed.
@@ -232,7 +236,8 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
 
     while (!toProcess.empty())
     {
-        const Region &currentRegion = explorationTechnique == BFS ? toProcess.front() : toProcess.back();
+        // Dereference pointer to get the actual region.
+        const Region &currentRegion = explorationTechnique == BFS ? *toProcess.front() : *toProcess.back();
         const int currentRegionLocation = currentRegion.getLocation();
 
 #ifdef RTS_DEBUG
@@ -291,13 +296,12 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
         explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();
 
         // We insert the delay predecessors first and then the discrete predecessors.
+        // Note: insertRegionInMapAndToProcess now checks for duplicates internally.
         for (const auto &delayPredecessor: delayPredecessors)
-            if (!regionsHashMap.contains(delayPredecessor))
-                insertRegionInMapAndToProcess(delayPredecessor, toProcess, regionsHashMap, clocksIndices, invariants);
+            insertRegionInMapAndToProcess(delayPredecessor, toProcess, regionsHashMap, clocksIndices, invariants);
 
         for (const auto &discretePredecessor: discPreds)
-            if (!regionsHashMap.contains(discretePredecessor))
-                insertRegionInMapAndToProcess(discretePredecessor, toProcess, regionsHashMap, clocksIndices, invariants);
+            insertRegionInMapAndToProcess(discretePredecessor, toProcess, regionsHashMap, clocksIndices, invariants);
     }
 
     // No initial region has been reached if the while loop ends.

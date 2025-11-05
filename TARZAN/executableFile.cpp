@@ -522,7 +522,7 @@ int main()
 
 
     // TODO: questo ora ha tutti i path sballati devi usare quelli nella cartella benchmark.
-    testRingNetwork();
+    testFlower();
 
 
 #ifdef REGION_TIMING
