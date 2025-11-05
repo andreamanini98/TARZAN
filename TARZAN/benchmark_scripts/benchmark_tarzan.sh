@@ -139,11 +139,19 @@ done
 
 # pagerank
 
-num_dirs=$(find "${BENCHMARKS_PATH}/pagerank/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
-for ((key=0; key<num_dirs; key++)); do
-  ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/pagerank" "${BENCHMARKS_PATH}/pagerank/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/pagerank" "pagerank" "${TIMEOUT}" "${key}"
-done
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/pagerank/liana" -mindepth 1 -maxdepth 1 -type d | sort)
 
+num_dirs=${#subdirs[@]}
+
+for ((key=0; key<num_dirs; key++)); do
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/pagerank" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/pagerank" "${folder_name}" "${TIMEOUT}" "${key}"
+done
 
 # ---
 

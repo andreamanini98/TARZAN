@@ -183,6 +183,28 @@ def format_value(value: Optional[str], default: str = "KO") -> str:
     return value
 
 
+def format_time_value(value: Optional[str], default: str = "KO") -> str:
+    """Format a time value for LaTeX, showing '< 0.001' for very small values and truncating to 3 decimal places."""
+    if value is None or value == "N/A":
+        return default
+
+    try:
+        time_val = float(value)
+
+        # Truncate to 3 decimal places without rounding
+        # Multiply by 1000, truncate to integer, divide by 1000
+        import math
+        truncated = math.floor(time_val * 1000) / 1000
+
+        # If truncated value is 0.000 (or original was less than 0.001), show < 0.001
+        if truncated == 0.000:
+            return r"$<$ 0.001"
+
+        return f"{truncated:.3f}"
+    except ValueError:
+        return default
+
+
 def generate_latex_table(experiment: Experiment) -> str:
     """Generate a LaTeX table for a single experiment."""
 
@@ -194,7 +216,7 @@ def generate_latex_table(experiment: Experiment) -> str:
     latex.append(r"\caption{Benchmark results for " + experiment.name.replace("_", r"\_") + r"}")
     latex.append(r"\label{tab:" + experiment.name + r"}")
     latex.append(r"\resizebox{\textwidth}{!}{%")
-    latex.append(r"\begin{tabular}{|l|cccc|cccc|cccc|ccc|}")
+    latex.append(r"\begin{tabular}{|l|rrrr|rrrr|rrrr|ccc|}")
     latex.append(r"\hline")
 
     # Header row 1: Tool names
@@ -222,12 +244,13 @@ def generate_latex_table(experiment: Experiment) -> str:
         if sub_exp.tarzan.timeout:
             row_parts.extend([r"\multicolumn{4}{c|}{KO}"])
         else:
-            row_parts.append(format_value(sub_exp.tarzan.total_time, "KO"))
+            row_parts.append(format_time_value(sub_exp.tarzan.total_time, "KO"))
             # Convert exec time from ms to seconds if available
             exec_time_s = "KO"
             if sub_exp.tarzan.exec_time:
                 try:
-                    exec_time_s = f"{float(sub_exp.tarzan.exec_time) / 1000:.3f}"
+                    # Convert from ms to seconds, then format
+                    exec_time_s = format_time_value(str(float(sub_exp.tarzan.exec_time) / 1000), "KO")
                 except:
                     exec_time_s = "KO"
             row_parts.append(exec_time_s)
@@ -238,8 +261,8 @@ def generate_latex_table(experiment: Experiment) -> str:
         if sub_exp.tchecker.timeout:
             row_parts.extend([r"\multicolumn{4}{c|}{KO}"])
         else:
-            row_parts.append(format_value(sub_exp.tchecker.running_time, "KO"))
-            row_parts.append(format_value(sub_exp.tchecker.exec_time_sec, "KO"))
+            row_parts.append(format_time_value(sub_exp.tchecker.running_time, "KO"))
+            row_parts.append(format_time_value(sub_exp.tchecker.exec_time_sec, "KO"))
             row_parts.append(format_value(sub_exp.tchecker.memory_mb, "KO"))
             row_parts.append(format_value(sub_exp.tchecker.stored_states, "KO"))
 
@@ -247,12 +270,13 @@ def generate_latex_table(experiment: Experiment) -> str:
         if sub_exp.uppaal.timeout:
             row_parts.extend([r"\multicolumn{4}{c|}{KO}"])
         else:
-            row_parts.append(format_value(sub_exp.uppaal.cpu_time_s, "KO"))
+            row_parts.append(format_time_value(sub_exp.uppaal.cpu_time_s, "KO"))
             # Convert exec time from ms to seconds if available
             exec_time_s = "KO"
             if sub_exp.uppaal.uppaal_exec_time:
                 try:
-                    exec_time_s = f"{float(sub_exp.uppaal.uppaal_exec_time) / 1000:.3f}"
+                    # Convert from ms to seconds, then format
+                    exec_time_s = format_time_value(str(float(sub_exp.uppaal.uppaal_exec_time) / 1000), "KO")
                 except:
                     exec_time_s = "KO"
             row_parts.append(exec_time_s)
