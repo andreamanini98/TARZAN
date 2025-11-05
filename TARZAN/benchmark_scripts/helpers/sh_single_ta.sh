@@ -125,7 +125,7 @@ for dir in "$ROOT_DIR"*/; do
         # Warm-up run to eliminate cold start effects (not measured)
         echo "  Warm-up run (not measured)..."
         if [[ "$TIMEOUT" -gt 0 ]]; then
-            timeout "$TIMEOUT" "$EXECUTABLE" "$dir" > /dev/null 2>&1
+            timeout 1 "$EXECUTABLE" "$dir" > /dev/null 2>&1
         else
             "$EXECUTABLE" "$dir" > /dev/null 2>&1
         fi

@@ -141,7 +141,7 @@ for dir in "${subdirs[@]}"; do
         # Warm-up run to eliminate cold start effects (not measured)
         echo "  Warm-up run (not measured)..."
         if [[ "$TIMEOUT" -gt 0 ]]; then
-            timeout "$TIMEOUT" "$EXECUTABLE" "$dir" "$BENCHMARK_KEY" > /dev/null 2>&1
+            timeout 1 "$EXECUTABLE" "$dir" "$BENCHMARK_KEY" > /dev/null 2>&1
         else
             "$EXECUTABLE" "$dir" "$BENCHMARK_KEY" > /dev/null 2>&1
         fi
