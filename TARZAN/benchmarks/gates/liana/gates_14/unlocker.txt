@@ -1,0 +1,41 @@
+create automaton unlocker
+{
+    clocks { x; }
+    actions { a; }
+    integers { gate; }
+    locations {
+        G0   <ini: T>,
+        G1   <ini: F>,
+        G2   <ini: F>,
+        G3   <ini: F>,
+        G4   <ini: F>,
+        G5   <ini: F>,
+        G6   <ini: F>,
+        G7   <ini: F>,
+        G8   <ini: F>,
+        G9   <ini: F>,
+        G10  <ini: F>,
+        G11  <ini: F>,
+        G12  <ini: F>,
+        G13  <ini: F>,
+        G14  <ini: F>,
+        goal <ini: F>;
+    }
+    transitions {
+        (G0, a, [(x, ==, 14)], [x], G1),
+        (G1, a, [(x, ==, 14)], [x], G2),
+        (G2, a, [(x, ==, 14)], [x], G3),
+        (G3, a, [(x, ==, 14)], [x], G4),
+        (G4, a, [(x, ==, 14)], [x], G5),
+        (G5, a, [(x, ==, 14)], [x], G6),
+        (G6, a, [(x, ==, 14)], [x], G7),
+        (G7, a, [(x, ==, 14)], [x], G8),
+        (G8, a, [(x, ==, 14)], [x], G9),
+        (G9, a, [(x, ==, 14)], [x], G10),
+        (G10, a, [(x, ==, 14)], [x], G11),
+        (G11, a, [(x, ==, 14)], [x], G12),
+        (G12, a, [(x, ==, 14)], [x], G13),
+        (G13, a, [(x, ==, 14)], [x], G14),
+        (G14, a, [(x, ==, 14)], gate == 14, [x], goal);
+    }
+}

@@ -1,0 +1,45 @@
+// Auto-generated XTA model for 2 keys
+
+int gate;
+
+
+process key01() {
+    clock x;
+    state
+        L0,
+    L1;
+    init
+        L0;
+    trans
+        L0 -> L1 { guard x == 1; assign gate = gate + 1; };
+}
+
+process key02() {
+    clock x;
+    state
+        L0,
+    L1,
+    L2;
+    init
+        L0;
+    trans
+        L0 -> L1 { guard x == 2; assign x = 0; },
+        L1 -> L2 { guard x == 2; assign gate = gate + 1; };
+}
+
+process unlocker() {
+    clock x;
+    state
+        G0,
+    G1,
+    G2,
+    goal;
+    init
+        G0;
+    trans
+        G0 -> G1 { guard x == 2; assign x = 0; },
+        G1 -> G2 { guard x == 2; assign x = 0; },
+        G2 -> goal { guard x == 2 && gate == 2; assign x = 0; };
+}
+
+system key01, key02, unlocker;

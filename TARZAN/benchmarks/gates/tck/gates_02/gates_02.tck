@@ -1,0 +1,59 @@
+system:gates_02
+
+# Events
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:0:gate
+
+
+
+# Processes
+process:key01
+process:key02
+process:unlocker
+
+# Process: key01
+## Clocks for key01
+clock:1:key01_x
+
+## Locations for key01
+location:key01:L0{initial:}
+location:key01:L1
+
+## Edges for key01
+edge:key01:L0:L1:tau{provided:key01_x == 1 : do:gate = gate + 1}
+
+
+
+# Process: key02
+## Clocks for key02
+clock:1:key02_x
+
+## Locations for key02
+location:key02:L0{initial:}
+location:key02:L1
+location:key02:L2
+
+## Edges for key02
+edge:key02:L0:L1:tau{provided:key02_x == 2 : do:key02_x = 0}
+edge:key02:L1:L2:tau{provided:key02_x == 2 : do:gate = gate + 1}
+
+
+
+# Process: unlocker
+## Clocks for unlocker
+clock:1:unlocker_x
+
+## Locations for unlocker
+location:unlocker:G0{initial:}
+location:unlocker:G1
+location:unlocker:G2
+location:unlocker:goal{labels: goal}
+
+## Edges for unlocker
+edge:unlocker:G0:G1:tau{provided:unlocker_x == 2 : do:unlocker_x = 0}
+edge:unlocker:G1:G2:tau{provided:unlocker_x == 2 : do:unlocker_x = 0}
+edge:unlocker:G2:goal:tau{provided:unlocker_x == 2 && gate == 2 : do:unlocker_x = 0}

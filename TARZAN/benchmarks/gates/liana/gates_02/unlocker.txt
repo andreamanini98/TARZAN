@@ -1,0 +1,17 @@
+create automaton unlocker
+{
+    clocks { x; }
+    actions { a; }
+    integers { gate; }
+    locations {
+        G0   <ini: T>,
+        G1   <ini: F>,
+        G2   <ini: F>,
+        goal <ini: F>;
+    }
+    transitions {
+        (G0, a, [(x, ==, 2)], [x], G1),
+        (G1, a, [(x, ==, 2)], [x], G2),
+        (G2, a, [(x, ==, 2)], gate == 2, [x], goal);
+    }
+}

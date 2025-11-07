@@ -1,0 +1,101 @@
+system:gates_04
+
+# Events
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:0:gate
+
+
+
+# Processes
+process:key01
+process:key02
+process:key03
+process:key04
+process:unlocker
+
+# Process: key01
+## Clocks for key01
+clock:1:key01_x
+
+## Locations for key01
+location:key01:L0{initial:}
+location:key01:L1
+
+## Edges for key01
+edge:key01:L0:L1:tau{provided:key01_x == 1 : do:gate = gate + 1}
+
+
+
+# Process: key02
+## Clocks for key02
+clock:1:key02_x
+
+## Locations for key02
+location:key02:L0{initial:}
+location:key02:L1
+location:key02:L2
+
+## Edges for key02
+edge:key02:L0:L1:tau{provided:key02_x == 2 : do:key02_x = 0}
+edge:key02:L1:L2:tau{provided:key02_x == 2 : do:gate = gate + 1}
+
+
+
+# Process: key03
+## Clocks for key03
+clock:1:key03_x
+
+## Locations for key03
+location:key03:L0{initial:}
+location:key03:L1
+location:key03:L2
+location:key03:L3
+
+## Edges for key03
+edge:key03:L0:L1:tau{provided:key03_x == 3 : do:key03_x = 0}
+edge:key03:L1:L2:tau{provided:key03_x == 3 : do:key03_x = 0}
+edge:key03:L2:L3:tau{provided:key03_x == 3 : do:gate = gate + 1}
+
+
+
+# Process: key04
+## Clocks for key04
+clock:1:key04_x
+
+## Locations for key04
+location:key04:L0{initial:}
+location:key04:L1
+location:key04:L2
+location:key04:L3
+location:key04:L4
+
+## Edges for key04
+edge:key04:L0:L1:tau{provided:key04_x == 4 : do:key04_x = 0}
+edge:key04:L1:L2:tau{provided:key04_x == 4 : do:key04_x = 0}
+edge:key04:L2:L3:tau{provided:key04_x == 4 : do:key04_x = 0}
+edge:key04:L3:L4:tau{provided:key04_x == 4 : do:gate = gate + 1}
+
+
+
+# Process: unlocker
+## Clocks for unlocker
+clock:1:unlocker_x
+
+## Locations for unlocker
+location:unlocker:G0{initial:}
+location:unlocker:G1
+location:unlocker:G2
+location:unlocker:G3
+location:unlocker:G4
+location:unlocker:goal{labels: goal}
+
+## Edges for unlocker
+edge:unlocker:G0:G1:tau{provided:unlocker_x == 4 : do:unlocker_x = 0}
+edge:unlocker:G1:G2:tau{provided:unlocker_x == 4 : do:unlocker_x = 0}
+edge:unlocker:G2:G3:tau{provided:unlocker_x == 4 : do:unlocker_x = 0}
+edge:unlocker:G3:G4:tau{provided:unlocker_x == 4 : do:unlocker_x = 0}
+edge:unlocker:G4:goal:tau{provided:unlocker_x == 4 && gate == 4 : do:unlocker_x = 0}

@@ -1,0 +1,349 @@
+system:gates_12
+
+# Events
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:0:gate
+
+
+
+# Processes
+process:key01
+process:key02
+process:key03
+process:key04
+process:key05
+process:key06
+process:key07
+process:key08
+process:key09
+process:key10
+process:key11
+process:key12
+process:unlocker
+
+# Process: key01
+## Clocks for key01
+clock:1:key01_x
+
+## Locations for key01
+location:key01:L0{initial:}
+location:key01:L1
+
+## Edges for key01
+edge:key01:L0:L1:tau{provided:key01_x == 1 : do:gate = gate + 1}
+
+
+
+# Process: key02
+## Clocks for key02
+clock:1:key02_x
+
+## Locations for key02
+location:key02:L0{initial:}
+location:key02:L1
+location:key02:L2
+
+## Edges for key02
+edge:key02:L0:L1:tau{provided:key02_x == 2 : do:key02_x = 0}
+edge:key02:L1:L2:tau{provided:key02_x == 2 : do:gate = gate + 1}
+
+
+
+# Process: key03
+## Clocks for key03
+clock:1:key03_x
+
+## Locations for key03
+location:key03:L0{initial:}
+location:key03:L1
+location:key03:L2
+location:key03:L3
+
+## Edges for key03
+edge:key03:L0:L1:tau{provided:key03_x == 3 : do:key03_x = 0}
+edge:key03:L1:L2:tau{provided:key03_x == 3 : do:key03_x = 0}
+edge:key03:L2:L3:tau{provided:key03_x == 3 : do:gate = gate + 1}
+
+
+
+# Process: key04
+## Clocks for key04
+clock:1:key04_x
+
+## Locations for key04
+location:key04:L0{initial:}
+location:key04:L1
+location:key04:L2
+location:key04:L3
+location:key04:L4
+
+## Edges for key04
+edge:key04:L0:L1:tau{provided:key04_x == 4 : do:key04_x = 0}
+edge:key04:L1:L2:tau{provided:key04_x == 4 : do:key04_x = 0}
+edge:key04:L2:L3:tau{provided:key04_x == 4 : do:key04_x = 0}
+edge:key04:L3:L4:tau{provided:key04_x == 4 : do:gate = gate + 1}
+
+
+
+# Process: key05
+## Clocks for key05
+clock:1:key05_x
+
+## Locations for key05
+location:key05:L0{initial:}
+location:key05:L1
+location:key05:L2
+location:key05:L3
+location:key05:L4
+location:key05:L5
+
+## Edges for key05
+edge:key05:L0:L1:tau{provided:key05_x == 5 : do:key05_x = 0}
+edge:key05:L1:L2:tau{provided:key05_x == 5 : do:key05_x = 0}
+edge:key05:L2:L3:tau{provided:key05_x == 5 : do:key05_x = 0}
+edge:key05:L3:L4:tau{provided:key05_x == 5 : do:key05_x = 0}
+edge:key05:L4:L5:tau{provided:key05_x == 5 : do:gate = gate + 1}
+
+
+
+# Process: key06
+## Clocks for key06
+clock:1:key06_x
+
+## Locations for key06
+location:key06:L0{initial:}
+location:key06:L1
+location:key06:L2
+location:key06:L3
+location:key06:L4
+location:key06:L5
+location:key06:L6
+
+## Edges for key06
+edge:key06:L0:L1:tau{provided:key06_x == 6 : do:key06_x = 0}
+edge:key06:L1:L2:tau{provided:key06_x == 6 : do:key06_x = 0}
+edge:key06:L2:L3:tau{provided:key06_x == 6 : do:key06_x = 0}
+edge:key06:L3:L4:tau{provided:key06_x == 6 : do:key06_x = 0}
+edge:key06:L4:L5:tau{provided:key06_x == 6 : do:key06_x = 0}
+edge:key06:L5:L6:tau{provided:key06_x == 6 : do:gate = gate + 1}
+
+
+
+# Process: key07
+## Clocks for key07
+clock:1:key07_x
+
+## Locations for key07
+location:key07:L0{initial:}
+location:key07:L1
+location:key07:L2
+location:key07:L3
+location:key07:L4
+location:key07:L5
+location:key07:L6
+location:key07:L7
+
+## Edges for key07
+edge:key07:L0:L1:tau{provided:key07_x == 7 : do:key07_x = 0}
+edge:key07:L1:L2:tau{provided:key07_x == 7 : do:key07_x = 0}
+edge:key07:L2:L3:tau{provided:key07_x == 7 : do:key07_x = 0}
+edge:key07:L3:L4:tau{provided:key07_x == 7 : do:key07_x = 0}
+edge:key07:L4:L5:tau{provided:key07_x == 7 : do:key07_x = 0}
+edge:key07:L5:L6:tau{provided:key07_x == 7 : do:key07_x = 0}
+edge:key07:L6:L7:tau{provided:key07_x == 7 : do:gate = gate + 1}
+
+
+
+# Process: key08
+## Clocks for key08
+clock:1:key08_x
+
+## Locations for key08
+location:key08:L0{initial:}
+location:key08:L1
+location:key08:L2
+location:key08:L3
+location:key08:L4
+location:key08:L5
+location:key08:L6
+location:key08:L7
+location:key08:L8
+
+## Edges for key08
+edge:key08:L0:L1:tau{provided:key08_x == 8 : do:key08_x = 0}
+edge:key08:L1:L2:tau{provided:key08_x == 8 : do:key08_x = 0}
+edge:key08:L2:L3:tau{provided:key08_x == 8 : do:key08_x = 0}
+edge:key08:L3:L4:tau{provided:key08_x == 8 : do:key08_x = 0}
+edge:key08:L4:L5:tau{provided:key08_x == 8 : do:key08_x = 0}
+edge:key08:L5:L6:tau{provided:key08_x == 8 : do:key08_x = 0}
+edge:key08:L6:L7:tau{provided:key08_x == 8 : do:key08_x = 0}
+edge:key08:L7:L8:tau{provided:key08_x == 8 : do:gate = gate + 1}
+
+
+
+# Process: key09
+## Clocks for key09
+clock:1:key09_x
+
+## Locations for key09
+location:key09:L0{initial:}
+location:key09:L1
+location:key09:L2
+location:key09:L3
+location:key09:L4
+location:key09:L5
+location:key09:L6
+location:key09:L7
+location:key09:L8
+location:key09:L9
+
+## Edges for key09
+edge:key09:L0:L1:tau{provided:key09_x == 9 : do:key09_x = 0}
+edge:key09:L1:L2:tau{provided:key09_x == 9 : do:key09_x = 0}
+edge:key09:L2:L3:tau{provided:key09_x == 9 : do:key09_x = 0}
+edge:key09:L3:L4:tau{provided:key09_x == 9 : do:key09_x = 0}
+edge:key09:L4:L5:tau{provided:key09_x == 9 : do:key09_x = 0}
+edge:key09:L5:L6:tau{provided:key09_x == 9 : do:key09_x = 0}
+edge:key09:L6:L7:tau{provided:key09_x == 9 : do:key09_x = 0}
+edge:key09:L7:L8:tau{provided:key09_x == 9 : do:key09_x = 0}
+edge:key09:L8:L9:tau{provided:key09_x == 9 : do:gate = gate + 1}
+
+
+
+# Process: key10
+## Clocks for key10
+clock:1:key10_x
+
+## Locations for key10
+location:key10:L0{initial:}
+location:key10:L1
+location:key10:L2
+location:key10:L3
+location:key10:L4
+location:key10:L5
+location:key10:L6
+location:key10:L7
+location:key10:L8
+location:key10:L9
+location:key10:L10
+
+## Edges for key10
+edge:key10:L0:L1:tau{provided:key10_x == 10 : do:key10_x = 0}
+edge:key10:L1:L2:tau{provided:key10_x == 10 : do:key10_x = 0}
+edge:key10:L2:L3:tau{provided:key10_x == 10 : do:key10_x = 0}
+edge:key10:L3:L4:tau{provided:key10_x == 10 : do:key10_x = 0}
+edge:key10:L4:L5:tau{provided:key10_x == 10 : do:key10_x = 0}
+edge:key10:L5:L6:tau{provided:key10_x == 10 : do:key10_x = 0}
+edge:key10:L6:L7:tau{provided:key10_x == 10 : do:key10_x = 0}
+edge:key10:L7:L8:tau{provided:key10_x == 10 : do:key10_x = 0}
+edge:key10:L8:L9:tau{provided:key10_x == 10 : do:key10_x = 0}
+edge:key10:L9:L10:tau{provided:key10_x == 10 : do:gate = gate + 1}
+
+
+
+# Process: key11
+## Clocks for key11
+clock:1:key11_x
+
+## Locations for key11
+location:key11:L0{initial:}
+location:key11:L1
+location:key11:L2
+location:key11:L3
+location:key11:L4
+location:key11:L5
+location:key11:L6
+location:key11:L7
+location:key11:L8
+location:key11:L9
+location:key11:L10
+location:key11:L11
+
+## Edges for key11
+edge:key11:L0:L1:tau{provided:key11_x == 11 : do:key11_x = 0}
+edge:key11:L1:L2:tau{provided:key11_x == 11 : do:key11_x = 0}
+edge:key11:L2:L3:tau{provided:key11_x == 11 : do:key11_x = 0}
+edge:key11:L3:L4:tau{provided:key11_x == 11 : do:key11_x = 0}
+edge:key11:L4:L5:tau{provided:key11_x == 11 : do:key11_x = 0}
+edge:key11:L5:L6:tau{provided:key11_x == 11 : do:key11_x = 0}
+edge:key11:L6:L7:tau{provided:key11_x == 11 : do:key11_x = 0}
+edge:key11:L7:L8:tau{provided:key11_x == 11 : do:key11_x = 0}
+edge:key11:L8:L9:tau{provided:key11_x == 11 : do:key11_x = 0}
+edge:key11:L9:L10:tau{provided:key11_x == 11 : do:key11_x = 0}
+edge:key11:L10:L11:tau{provided:key11_x == 11 : do:gate = gate + 1}
+
+
+
+# Process: key12
+## Clocks for key12
+clock:1:key12_x
+
+## Locations for key12
+location:key12:L0{initial:}
+location:key12:L1
+location:key12:L2
+location:key12:L3
+location:key12:L4
+location:key12:L5
+location:key12:L6
+location:key12:L7
+location:key12:L8
+location:key12:L9
+location:key12:L10
+location:key12:L11
+location:key12:L12
+
+## Edges for key12
+edge:key12:L0:L1:tau{provided:key12_x == 12 : do:key12_x = 0}
+edge:key12:L1:L2:tau{provided:key12_x == 12 : do:key12_x = 0}
+edge:key12:L2:L3:tau{provided:key12_x == 12 : do:key12_x = 0}
+edge:key12:L3:L4:tau{provided:key12_x == 12 : do:key12_x = 0}
+edge:key12:L4:L5:tau{provided:key12_x == 12 : do:key12_x = 0}
+edge:key12:L5:L6:tau{provided:key12_x == 12 : do:key12_x = 0}
+edge:key12:L6:L7:tau{provided:key12_x == 12 : do:key12_x = 0}
+edge:key12:L7:L8:tau{provided:key12_x == 12 : do:key12_x = 0}
+edge:key12:L8:L9:tau{provided:key12_x == 12 : do:key12_x = 0}
+edge:key12:L9:L10:tau{provided:key12_x == 12 : do:key12_x = 0}
+edge:key12:L10:L11:tau{provided:key12_x == 12 : do:key12_x = 0}
+edge:key12:L11:L12:tau{provided:key12_x == 12 : do:gate = gate + 1}
+
+
+
+# Process: unlocker
+## Clocks for unlocker
+clock:1:unlocker_x
+
+## Locations for unlocker
+location:unlocker:G0{initial:}
+location:unlocker:G1
+location:unlocker:G2
+location:unlocker:G3
+location:unlocker:G4
+location:unlocker:G5
+location:unlocker:G6
+location:unlocker:G7
+location:unlocker:G8
+location:unlocker:G9
+location:unlocker:G10
+location:unlocker:G11
+location:unlocker:G12
+location:unlocker:goal{labels: goal}
+
+## Edges for unlocker
+edge:unlocker:G0:G1:tau{provided:unlocker_x == 12 : do:unlocker_x = 0}
+edge:unlocker:G1:G2:tau{provided:unlocker_x == 12 : do:unlocker_x = 0}
+edge:unlocker:G2:G3:tau{provided:unlocker_x == 12 : do:unlocker_x = 0}
+edge:unlocker:G3:G4:tau{provided:unlocker_x == 12 : do:unlocker_x = 0}
+edge:unlocker:G4:G5:tau{provided:unlocker_x == 12 : do:unlocker_x = 0}
+edge:unlocker:G5:G6:tau{provided:unlocker_x == 12 : do:unlocker_x = 0}
+edge:unlocker:G6:G7:tau{provided:unlocker_x == 12 : do:unlocker_x = 0}
+edge:unlocker:G7:G8:tau{provided:unlocker_x == 12 : do:unlocker_x = 0}
+edge:unlocker:G8:G9:tau{provided:unlocker_x == 12 : do:unlocker_x = 0}
+edge:unlocker:G9:G10:tau{provided:unlocker_x == 12 : do:unlocker_x = 0}
+edge:unlocker:G10:G11:tau{provided:unlocker_x == 12 : do:unlocker_x = 0}
+edge:unlocker:G11:G12:tau{provided:unlocker_x == 12 : do:unlocker_x = 0}
+edge:unlocker:G12:goal:tau{provided:unlocker_x == 12 && gate == 12 : do:unlocker_x = 0}

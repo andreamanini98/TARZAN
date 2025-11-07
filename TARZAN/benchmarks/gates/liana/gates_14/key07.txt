@@ -1,0 +1,25 @@
+create automaton key07
+{
+    clocks { x; }
+    actions { a; }
+    integers { gate; }
+    locations {
+        L0 <ini: T>,
+        L1 <ini: F>,
+        L2 <ini: F>,
+        L3 <ini: F>,
+        L4 <ini: F>,
+        L5 <ini: F>,
+        L6 <ini: F>,
+        L7 <ini: F>;
+    }
+    transitions {
+        (L0, a, [(x, ==, 7)], [x], L1),
+        (L1, a, [(x, ==, 7)], [x], L2),
+        (L2, a, [(x, ==, 7)], [x], L3),
+        (L3, a, [(x, ==, 7)], [x], L4),
+        (L4, a, [(x, ==, 7)], [x], L5),
+        (L5, a, [(x, ==, 7)], [x], L6),
+        (L6, a, [(x, ==, 7)], [], [gate = gate + 1], L7);
+    }
+}

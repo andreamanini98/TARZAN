@@ -11,8 +11,6 @@
 #include "TARZAN/regions/RTS.h"
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
 
-// #define REGION_TIMING
-
 
 inline void testFlower()
 {
@@ -512,25 +510,36 @@ void test_pagerank()
 }
 
 
+void test_gates()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/gates/liana/gates_08";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+
+    const std::vector<std::optional<int>> goalLocations = {
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        8
+    };
+
+    const auto res = net.forwardReachability(goalLocations, DFS);
+
+    // std::cout << res[0].toString() << std::endl;
+}
+
+
 int main()
 {
-#ifdef REGION_TIMING
-    std::cout << "Tick period: " << static_cast<double>(std::chrono::high_resolution_clock::period::num) / std::chrono::high_resolution_clock::period::den <<
-            " seconds\n";
-    const auto start = std::chrono::high_resolution_clock::now();
-#endif
-
-
-    // TODO: questo ora ha tutti i path sballati devi usare quelli nella cartella benchmark.
-    testFlower();
-
-
-#ifdef REGION_TIMING
-    const auto end = std::chrono::high_resolution_clock::now();
-    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "Function took: " << duration.count() << " microseconds" << std::endl;
-#endif
-
+    test_gates();
 
     return 0;
 }

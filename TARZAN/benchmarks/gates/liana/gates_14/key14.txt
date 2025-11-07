@@ -1,0 +1,39 @@
+create automaton key14
+{
+    clocks { x; }
+    actions { a; }
+    integers { gate; }
+    locations {
+        L0  <ini: T>,
+        L1  <ini: F>,
+        L2  <ini: F>,
+        L3  <ini: F>,
+        L4  <ini: F>,
+        L5  <ini: F>,
+        L6  <ini: F>,
+        L7  <ini: F>,
+        L8  <ini: F>,
+        L9  <ini: F>,
+        L10 <ini: F>,
+        L11 <ini: F>,
+        L12 <ini: F>,
+        L13 <ini: F>,
+        L14 <ini: F>;
+    }
+    transitions {
+        (L0, a, [(x, ==, 14)], [x], L1),
+        (L1, a, [(x, ==, 14)], [x], L2),
+        (L2, a, [(x, ==, 14)], [x], L3),
+        (L3, a, [(x, ==, 14)], [x], L4),
+        (L4, a, [(x, ==, 14)], [x], L5),
+        (L5, a, [(x, ==, 14)], [x], L6),
+        (L6, a, [(x, ==, 14)], [x], L7),
+        (L7, a, [(x, ==, 14)], [x], L8),
+        (L8, a, [(x, ==, 14)], [x], L9),
+        (L9, a, [(x, ==, 14)], [x], L10),
+        (L10, a, [(x, ==, 14)], [x], L11),
+        (L11, a, [(x, ==, 14)], [x], L12),
+        (L12, a, [(x, ==, 14)], [x], L13),
+        (L13, a, [(x, ==, 14)], [], [gate = gate + 1], L14);
+    }
+}

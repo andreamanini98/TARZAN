@@ -1,0 +1,19 @@
+create automaton key04
+{
+    clocks { x; }
+    actions { a; }
+    integers { gate; }
+    locations {
+        L0 <ini: T>,
+        L1 <ini: F>,
+        L2 <ini: F>,
+        L3 <ini: F>,
+        L4 <ini: F>;
+    }
+    transitions {
+        (L0, a, [(x, ==, 4)], [x], L1),
+        (L1, a, [(x, ==, 4)], [x], L2),
+        (L2, a, [(x, ==, 4)], [x], L3),
+        (L3, a, [(x, ==, 4)], [], [gate = gate + 1], L4);
+    }
+}

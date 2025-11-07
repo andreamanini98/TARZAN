@@ -1,0 +1,15 @@
+create automaton key02
+{
+    clocks { x; }
+    actions { a; }
+    integers { gate; }
+    locations {
+        L0 <ini: T>,
+        L1 <ini: F>,
+        L2 <ini: F>;
+    }
+    transitions {
+        (L0, a, [(x, ==, 2)], [x], L1),
+        (L1, a, [(x, ==, 2)], [], [gate = gate + 1], L2);
+    }
+}
