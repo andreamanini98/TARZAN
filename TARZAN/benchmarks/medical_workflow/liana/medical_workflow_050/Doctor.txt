@@ -1,0 +1,67 @@
+create automaton Doctor
+{
+    clocks { x; }
+    actions { a, medicalCheck, patientArrivalDoc001, patientArrivalDoc002, patientArrivalDoc003, patientArrivalDoc004, patientArrivalDoc005, patientArrivalDoc006, patientArrivalDoc007, patientArrivalDoc008, patientArrivalDoc009, patientArrivalDoc010, patientArrivalDoc011, patientArrivalDoc012, patientArrivalDoc013, patientArrivalDoc014, patientArrivalDoc015, patientArrivalDoc016, patientArrivalDoc017, patientArrivalDoc018, patientArrivalDoc019, patientArrivalDoc020, patientArrivalDoc021, patientArrivalDoc022, patientArrivalDoc023, patientArrivalDoc024, patientArrivalDoc025, patientArrivalDoc026, patientArrivalDoc027, patientArrivalDoc028, patientArrivalDoc029, patientArrivalDoc030, patientArrivalDoc031, patientArrivalDoc032, patientArrivalDoc033, patientArrivalDoc034, patientArrivalDoc035, patientArrivalDoc036, patientArrivalDoc037, patientArrivalDoc038, patientArrivalDoc039, patientArrivalDoc040, patientArrivalDoc041, patientArrivalDoc042, patientArrivalDoc043, patientArrivalDoc044, patientArrivalDoc045, patientArrivalDoc046, patientArrivalDoc047, patientArrivalDoc048, patientArrivalDoc049, patientArrivalDoc050; }
+    integers { docReady, nurseReady; }
+    locations {
+        Prepaired   <ini: F, inv: [(x, <=, 25)]>,
+        GoToPatient <ini: F                    >,
+        Idle        <ini: F                    >,
+        L0          <ini: T, urg: T            >;
+    }
+    transitions {
+        (L0, a, [], [], [docReady = 1], Idle),
+        (Prepaired, medicalCheck!, [], [], [docReady = 1], Idle),
+        (GoToPatient, a, [(x, >=, 1)], [x], Prepaired),
+        (Idle, patientArrivalDoc001?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc002?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc003?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc004?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc005?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc006?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc007?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc008?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc009?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc010?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc011?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc012?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc013?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc014?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc015?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc016?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc017?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc018?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc019?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc020?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc021?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc022?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc023?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc024?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc025?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc026?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc027?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc028?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc029?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc030?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc031?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc032?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc033?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc034?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc035?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc036?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc037?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc038?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc039?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc040?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc041?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc042?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc043?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc044?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc045?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc046?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc047?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc048?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc049?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc050?, [], [x], [docReady = 0], GoToPatient);
+    }
+}

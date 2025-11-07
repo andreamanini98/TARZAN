@@ -2,7 +2,6 @@
 
 #include "regions/networkOfTA/RTSNetwork.h"
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
-#include "parser/enums/input_output_action_enum.h"
 #include "TARZAN/utilities/partition_utilities.h"
 #include "TARZAN/utilities/file_utilities.h"
 #include "TARZAN/headers/library.h"
@@ -537,9 +536,129 @@ void test_gates()
 }
 
 
+void test_patient()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/patientFlow";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    const std::vector<std::optional<int>> goalLocations = {
+        std::nullopt,
+        std::nullopt,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    };
+
+    const auto res = net.forwardReachability(goalLocations, DFS);
+
+    // std::cout << res[0].toString() << std::endl;
+}
+
+
+
 int main()
 {
-    test_gates();
+    test_patient();
 
     return 0;
 }

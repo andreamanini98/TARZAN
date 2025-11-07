@@ -1,0 +1,27 @@
+create automaton Doctor
+{
+    clocks { x; }
+    actions { a, medicalCheck, patientArrivalDoc001, patientArrivalDoc002, patientArrivalDoc003, patientArrivalDoc004, patientArrivalDoc005, patientArrivalDoc006, patientArrivalDoc007, patientArrivalDoc008, patientArrivalDoc009, patientArrivalDoc010; }
+    integers { docReady, nurseReady; }
+    locations {
+        Prepaired   <ini: F, inv: [(x, <=, 25)]>,
+        GoToPatient <ini: F                    >,
+        Idle        <ini: F                    >,
+        L0          <ini: T, urg: T            >;
+    }
+    transitions {
+        (L0, a, [], [], [docReady = 1], Idle),
+        (Prepaired, medicalCheck!, [], [], [docReady = 1], Idle),
+        (GoToPatient, a, [(x, >=, 1)], [x], Prepaired),
+        (Idle, patientArrivalDoc001?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc002?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc003?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc004?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc005?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc006?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc007?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc008?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc009?, [], [x], [docReady = 0], GoToPatient),
+        (Idle, patientArrivalDoc010?, [], [x], [docReady = 0], GoToPatient);
+    }
+}
