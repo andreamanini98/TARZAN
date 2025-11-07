@@ -1,0 +1,2761 @@
+system:medical_workflow_090
+
+# Events
+event:checkID
+event:medicalCheck
+event:patientArrivalDoc001
+event:patientArrivalDoc002
+event:patientArrivalDoc003
+event:patientArrivalDoc004
+event:patientArrivalDoc005
+event:patientArrivalDoc006
+event:patientArrivalDoc007
+event:patientArrivalDoc008
+event:patientArrivalDoc009
+event:patientArrivalDoc010
+event:patientArrivalDoc011
+event:patientArrivalDoc012
+event:patientArrivalDoc013
+event:patientArrivalDoc014
+event:patientArrivalDoc015
+event:patientArrivalDoc016
+event:patientArrivalDoc017
+event:patientArrivalDoc018
+event:patientArrivalDoc019
+event:patientArrivalDoc020
+event:patientArrivalDoc021
+event:patientArrivalDoc022
+event:patientArrivalDoc023
+event:patientArrivalDoc024
+event:patientArrivalDoc025
+event:patientArrivalDoc026
+event:patientArrivalDoc027
+event:patientArrivalDoc028
+event:patientArrivalDoc029
+event:patientArrivalDoc030
+event:patientArrivalDoc031
+event:patientArrivalDoc032
+event:patientArrivalDoc033
+event:patientArrivalDoc034
+event:patientArrivalDoc035
+event:patientArrivalDoc036
+event:patientArrivalDoc037
+event:patientArrivalDoc038
+event:patientArrivalDoc039
+event:patientArrivalDoc040
+event:patientArrivalDoc041
+event:patientArrivalDoc042
+event:patientArrivalDoc043
+event:patientArrivalDoc044
+event:patientArrivalDoc045
+event:patientArrivalDoc046
+event:patientArrivalDoc047
+event:patientArrivalDoc048
+event:patientArrivalDoc049
+event:patientArrivalDoc050
+event:patientArrivalDoc051
+event:patientArrivalDoc052
+event:patientArrivalDoc053
+event:patientArrivalDoc054
+event:patientArrivalDoc055
+event:patientArrivalDoc056
+event:patientArrivalDoc057
+event:patientArrivalDoc058
+event:patientArrivalDoc059
+event:patientArrivalDoc060
+event:patientArrivalDoc061
+event:patientArrivalDoc062
+event:patientArrivalDoc063
+event:patientArrivalDoc064
+event:patientArrivalDoc065
+event:patientArrivalDoc066
+event:patientArrivalDoc067
+event:patientArrivalDoc068
+event:patientArrivalDoc069
+event:patientArrivalDoc070
+event:patientArrivalDoc071
+event:patientArrivalDoc072
+event:patientArrivalDoc073
+event:patientArrivalDoc074
+event:patientArrivalDoc075
+event:patientArrivalDoc076
+event:patientArrivalDoc077
+event:patientArrivalDoc078
+event:patientArrivalDoc079
+event:patientArrivalDoc080
+event:patientArrivalDoc081
+event:patientArrivalDoc082
+event:patientArrivalDoc083
+event:patientArrivalDoc084
+event:patientArrivalDoc085
+event:patientArrivalDoc086
+event:patientArrivalDoc087
+event:patientArrivalDoc088
+event:patientArrivalDoc089
+event:patientArrivalDoc090
+event:patientArrivalNurse001
+event:patientArrivalNurse002
+event:patientArrivalNurse003
+event:patientArrivalNurse004
+event:patientArrivalNurse005
+event:patientArrivalNurse006
+event:patientArrivalNurse007
+event:patientArrivalNurse008
+event:patientArrivalNurse009
+event:patientArrivalNurse010
+event:patientArrivalNurse011
+event:patientArrivalNurse012
+event:patientArrivalNurse013
+event:patientArrivalNurse014
+event:patientArrivalNurse015
+event:patientArrivalNurse016
+event:patientArrivalNurse017
+event:patientArrivalNurse018
+event:patientArrivalNurse019
+event:patientArrivalNurse020
+event:patientArrivalNurse021
+event:patientArrivalNurse022
+event:patientArrivalNurse023
+event:patientArrivalNurse024
+event:patientArrivalNurse025
+event:patientArrivalNurse026
+event:patientArrivalNurse027
+event:patientArrivalNurse028
+event:patientArrivalNurse029
+event:patientArrivalNurse030
+event:patientArrivalNurse031
+event:patientArrivalNurse032
+event:patientArrivalNurse033
+event:patientArrivalNurse034
+event:patientArrivalNurse035
+event:patientArrivalNurse036
+event:patientArrivalNurse037
+event:patientArrivalNurse038
+event:patientArrivalNurse039
+event:patientArrivalNurse040
+event:patientArrivalNurse041
+event:patientArrivalNurse042
+event:patientArrivalNurse043
+event:patientArrivalNurse044
+event:patientArrivalNurse045
+event:patientArrivalNurse046
+event:patientArrivalNurse047
+event:patientArrivalNurse048
+event:patientArrivalNurse049
+event:patientArrivalNurse050
+event:patientArrivalNurse051
+event:patientArrivalNurse052
+event:patientArrivalNurse053
+event:patientArrivalNurse054
+event:patientArrivalNurse055
+event:patientArrivalNurse056
+event:patientArrivalNurse057
+event:patientArrivalNurse058
+event:patientArrivalNurse059
+event:patientArrivalNurse060
+event:patientArrivalNurse061
+event:patientArrivalNurse062
+event:patientArrivalNurse063
+event:patientArrivalNurse064
+event:patientArrivalNurse065
+event:patientArrivalNurse066
+event:patientArrivalNurse067
+event:patientArrivalNurse068
+event:patientArrivalNurse069
+event:patientArrivalNurse070
+event:patientArrivalNurse071
+event:patientArrivalNurse072
+event:patientArrivalNurse073
+event:patientArrivalNurse074
+event:patientArrivalNurse075
+event:patientArrivalNurse076
+event:patientArrivalNurse077
+event:patientArrivalNurse078
+event:patientArrivalNurse079
+event:patientArrivalNurse080
+event:patientArrivalNurse081
+event:patientArrivalNurse082
+event:patientArrivalNurse083
+event:patientArrivalNurse084
+event:patientArrivalNurse085
+event:patientArrivalNurse086
+event:patientArrivalNurse087
+event:patientArrivalNurse088
+event:patientArrivalNurse089
+event:patientArrivalNurse090
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:9:patArivMin
+int:1:0:1000:9:patArivMax
+int:1:0:1000:1:readDocsMin
+int:1:0:1000:2:checkIDMin
+int:1:0:1000:25:docMaxDeadline
+int:1:0:1000:5:nurseMaxDeadline
+int:1:0:1000:9:patientDeadline
+int:1:0:1000:0:docReady
+int:1:0:1000:0:nurseReady
+
+
+
+# Processes
+process:Patient001
+process:Patient002
+process:Patient003
+process:Patient004
+process:Patient005
+process:Patient006
+process:Patient007
+process:Patient008
+process:Patient009
+process:Patient010
+process:Patient011
+process:Patient012
+process:Patient013
+process:Patient014
+process:Patient015
+process:Patient016
+process:Patient017
+process:Patient018
+process:Patient019
+process:Patient020
+process:Patient021
+process:Patient022
+process:Patient023
+process:Patient024
+process:Patient025
+process:Patient026
+process:Patient027
+process:Patient028
+process:Patient029
+process:Patient030
+process:Patient031
+process:Patient032
+process:Patient033
+process:Patient034
+process:Patient035
+process:Patient036
+process:Patient037
+process:Patient038
+process:Patient039
+process:Patient040
+process:Patient041
+process:Patient042
+process:Patient043
+process:Patient044
+process:Patient045
+process:Patient046
+process:Patient047
+process:Patient048
+process:Patient049
+process:Patient050
+process:Patient051
+process:Patient052
+process:Patient053
+process:Patient054
+process:Patient055
+process:Patient056
+process:Patient057
+process:Patient058
+process:Patient059
+process:Patient060
+process:Patient061
+process:Patient062
+process:Patient063
+process:Patient064
+process:Patient065
+process:Patient066
+process:Patient067
+process:Patient068
+process:Patient069
+process:Patient070
+process:Patient071
+process:Patient072
+process:Patient073
+process:Patient074
+process:Patient075
+process:Patient076
+process:Patient077
+process:Patient078
+process:Patient079
+process:Patient080
+process:Patient081
+process:Patient082
+process:Patient083
+process:Patient084
+process:Patient085
+process:Patient086
+process:Patient087
+process:Patient088
+process:Patient089
+process:Patient090
+process:Nurse
+process:Doctor
+
+# Process: Patient001
+## Clocks for Patient001
+clock:1:Patient001_x
+clock:1:Patient001_patientFlow
+
+## Locations for Patient001
+location:Patient001:Done
+location:Patient001:WaitingMedicalCheck{invariant:Patient001_x <= patientDeadline}
+location:Patient001:Waiting{invariant:Patient001_x <= patientDeadline}
+location:Patient001:Ready{initial: : invariant:Patient001_patientFlow <= patArivMax}
+location:Patient001:L0{urgent:}
+
+## Edges for Patient001
+edge:Patient001:L0:Waiting:patientArrivalNurse001
+edge:Patient001:Ready:Ready:tau{provided:Patient001_patientFlow >= patArivMax : do:Patient001_patientFlow = 0}
+edge:Patient001:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient001:Waiting:WaitingMedicalCheck:checkID{do:Patient001_x=0}
+edge:Patient001:Ready:L0:patientArrivalDoc001{provided:Patient001_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient001_x = 0; Patient001_patientFlow = 0}
+
+
+
+# Process: Patient002
+## Clocks for Patient002
+clock:1:Patient002_x
+clock:1:Patient002_patientFlow
+
+## Locations for Patient002
+location:Patient002:Done
+location:Patient002:WaitingMedicalCheck{invariant:Patient002_x <= patientDeadline}
+location:Patient002:Waiting{invariant:Patient002_x <= patientDeadline}
+location:Patient002:Ready{initial: : invariant:Patient002_patientFlow <= patArivMax}
+location:Patient002:L0{urgent:}
+
+## Edges for Patient002
+edge:Patient002:L0:Waiting:patientArrivalNurse002
+edge:Patient002:Ready:Ready:tau{provided:Patient002_patientFlow >= patArivMax : do:Patient002_patientFlow = 0}
+edge:Patient002:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient002:Waiting:WaitingMedicalCheck:checkID{do:Patient002_x=0}
+edge:Patient002:Ready:L0:patientArrivalDoc002{provided:Patient002_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient002_x = 0; Patient002_patientFlow = 0}
+
+
+
+# Process: Patient003
+## Clocks for Patient003
+clock:1:Patient003_x
+clock:1:Patient003_patientFlow
+
+## Locations for Patient003
+location:Patient003:Done
+location:Patient003:WaitingMedicalCheck{invariant:Patient003_x <= patientDeadline}
+location:Patient003:Waiting{invariant:Patient003_x <= patientDeadline}
+location:Patient003:Ready{initial: : invariant:Patient003_patientFlow <= patArivMax}
+location:Patient003:L0{urgent:}
+
+## Edges for Patient003
+edge:Patient003:L0:Waiting:patientArrivalNurse003
+edge:Patient003:Ready:Ready:tau{provided:Patient003_patientFlow >= patArivMax : do:Patient003_patientFlow = 0}
+edge:Patient003:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient003:Waiting:WaitingMedicalCheck:checkID{do:Patient003_x=0}
+edge:Patient003:Ready:L0:patientArrivalDoc003{provided:Patient003_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient003_x = 0; Patient003_patientFlow = 0}
+
+
+
+# Process: Patient004
+## Clocks for Patient004
+clock:1:Patient004_x
+clock:1:Patient004_patientFlow
+
+## Locations for Patient004
+location:Patient004:Done
+location:Patient004:WaitingMedicalCheck{invariant:Patient004_x <= patientDeadline}
+location:Patient004:Waiting{invariant:Patient004_x <= patientDeadline}
+location:Patient004:Ready{initial: : invariant:Patient004_patientFlow <= patArivMax}
+location:Patient004:L0{urgent:}
+
+## Edges for Patient004
+edge:Patient004:L0:Waiting:patientArrivalNurse004
+edge:Patient004:Ready:Ready:tau{provided:Patient004_patientFlow >= patArivMax : do:Patient004_patientFlow = 0}
+edge:Patient004:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient004:Waiting:WaitingMedicalCheck:checkID{do:Patient004_x=0}
+edge:Patient004:Ready:L0:patientArrivalDoc004{provided:Patient004_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient004_x = 0; Patient004_patientFlow = 0}
+
+
+
+# Process: Patient005
+## Clocks for Patient005
+clock:1:Patient005_x
+clock:1:Patient005_patientFlow
+
+## Locations for Patient005
+location:Patient005:Done
+location:Patient005:WaitingMedicalCheck{invariant:Patient005_x <= patientDeadline}
+location:Patient005:Waiting{invariant:Patient005_x <= patientDeadline}
+location:Patient005:Ready{initial: : invariant:Patient005_patientFlow <= patArivMax}
+location:Patient005:L0{urgent:}
+
+## Edges for Patient005
+edge:Patient005:L0:Waiting:patientArrivalNurse005
+edge:Patient005:Ready:Ready:tau{provided:Patient005_patientFlow >= patArivMax : do:Patient005_patientFlow = 0}
+edge:Patient005:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient005:Waiting:WaitingMedicalCheck:checkID{do:Patient005_x=0}
+edge:Patient005:Ready:L0:patientArrivalDoc005{provided:Patient005_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient005_x = 0; Patient005_patientFlow = 0}
+
+
+
+# Process: Patient006
+## Clocks for Patient006
+clock:1:Patient006_x
+clock:1:Patient006_patientFlow
+
+## Locations for Patient006
+location:Patient006:Done
+location:Patient006:WaitingMedicalCheck{invariant:Patient006_x <= patientDeadline}
+location:Patient006:Waiting{invariant:Patient006_x <= patientDeadline}
+location:Patient006:Ready{initial: : invariant:Patient006_patientFlow <= patArivMax}
+location:Patient006:L0{urgent:}
+
+## Edges for Patient006
+edge:Patient006:L0:Waiting:patientArrivalNurse006
+edge:Patient006:Ready:Ready:tau{provided:Patient006_patientFlow >= patArivMax : do:Patient006_patientFlow = 0}
+edge:Patient006:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient006:Waiting:WaitingMedicalCheck:checkID{do:Patient006_x=0}
+edge:Patient006:Ready:L0:patientArrivalDoc006{provided:Patient006_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient006_x = 0; Patient006_patientFlow = 0}
+
+
+
+# Process: Patient007
+## Clocks for Patient007
+clock:1:Patient007_x
+clock:1:Patient007_patientFlow
+
+## Locations for Patient007
+location:Patient007:Done
+location:Patient007:WaitingMedicalCheck{invariant:Patient007_x <= patientDeadline}
+location:Patient007:Waiting{invariant:Patient007_x <= patientDeadline}
+location:Patient007:Ready{initial: : invariant:Patient007_patientFlow <= patArivMax}
+location:Patient007:L0{urgent:}
+
+## Edges for Patient007
+edge:Patient007:L0:Waiting:patientArrivalNurse007
+edge:Patient007:Ready:Ready:tau{provided:Patient007_patientFlow >= patArivMax : do:Patient007_patientFlow = 0}
+edge:Patient007:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient007:Waiting:WaitingMedicalCheck:checkID{do:Patient007_x=0}
+edge:Patient007:Ready:L0:patientArrivalDoc007{provided:Patient007_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient007_x = 0; Patient007_patientFlow = 0}
+
+
+
+# Process: Patient008
+## Clocks for Patient008
+clock:1:Patient008_x
+clock:1:Patient008_patientFlow
+
+## Locations for Patient008
+location:Patient008:Done
+location:Patient008:WaitingMedicalCheck{invariant:Patient008_x <= patientDeadline}
+location:Patient008:Waiting{invariant:Patient008_x <= patientDeadline}
+location:Patient008:Ready{initial: : invariant:Patient008_patientFlow <= patArivMax}
+location:Patient008:L0{urgent:}
+
+## Edges for Patient008
+edge:Patient008:L0:Waiting:patientArrivalNurse008
+edge:Patient008:Ready:Ready:tau{provided:Patient008_patientFlow >= patArivMax : do:Patient008_patientFlow = 0}
+edge:Patient008:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient008:Waiting:WaitingMedicalCheck:checkID{do:Patient008_x=0}
+edge:Patient008:Ready:L0:patientArrivalDoc008{provided:Patient008_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient008_x = 0; Patient008_patientFlow = 0}
+
+
+
+# Process: Patient009
+## Clocks for Patient009
+clock:1:Patient009_x
+clock:1:Patient009_patientFlow
+
+## Locations for Patient009
+location:Patient009:Done
+location:Patient009:WaitingMedicalCheck{invariant:Patient009_x <= patientDeadline}
+location:Patient009:Waiting{invariant:Patient009_x <= patientDeadline}
+location:Patient009:Ready{initial: : invariant:Patient009_patientFlow <= patArivMax}
+location:Patient009:L0{urgent:}
+
+## Edges for Patient009
+edge:Patient009:L0:Waiting:patientArrivalNurse009
+edge:Patient009:Ready:Ready:tau{provided:Patient009_patientFlow >= patArivMax : do:Patient009_patientFlow = 0}
+edge:Patient009:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient009:Waiting:WaitingMedicalCheck:checkID{do:Patient009_x=0}
+edge:Patient009:Ready:L0:patientArrivalDoc009{provided:Patient009_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient009_x = 0; Patient009_patientFlow = 0}
+
+
+
+# Process: Patient010
+## Clocks for Patient010
+clock:1:Patient010_x
+clock:1:Patient010_patientFlow
+
+## Locations for Patient010
+location:Patient010:Done
+location:Patient010:WaitingMedicalCheck{invariant:Patient010_x <= patientDeadline}
+location:Patient010:Waiting{invariant:Patient010_x <= patientDeadline}
+location:Patient010:Ready{initial: : invariant:Patient010_patientFlow <= patArivMax}
+location:Patient010:L0{urgent:}
+
+## Edges for Patient010
+edge:Patient010:L0:Waiting:patientArrivalNurse010
+edge:Patient010:Ready:Ready:tau{provided:Patient010_patientFlow >= patArivMax : do:Patient010_patientFlow = 0}
+edge:Patient010:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient010:Waiting:WaitingMedicalCheck:checkID{do:Patient010_x=0}
+edge:Patient010:Ready:L0:patientArrivalDoc010{provided:Patient010_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient010_x = 0; Patient010_patientFlow = 0}
+
+
+
+# Process: Patient011
+## Clocks for Patient011
+clock:1:Patient011_x
+clock:1:Patient011_patientFlow
+
+## Locations for Patient011
+location:Patient011:Done
+location:Patient011:WaitingMedicalCheck{invariant:Patient011_x <= patientDeadline}
+location:Patient011:Waiting{invariant:Patient011_x <= patientDeadline}
+location:Patient011:Ready{initial: : invariant:Patient011_patientFlow <= patArivMax}
+location:Patient011:L0{urgent:}
+
+## Edges for Patient011
+edge:Patient011:L0:Waiting:patientArrivalNurse011
+edge:Patient011:Ready:Ready:tau{provided:Patient011_patientFlow >= patArivMax : do:Patient011_patientFlow = 0}
+edge:Patient011:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient011:Waiting:WaitingMedicalCheck:checkID{do:Patient011_x=0}
+edge:Patient011:Ready:L0:patientArrivalDoc011{provided:Patient011_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient011_x = 0; Patient011_patientFlow = 0}
+
+
+
+# Process: Patient012
+## Clocks for Patient012
+clock:1:Patient012_x
+clock:1:Patient012_patientFlow
+
+## Locations for Patient012
+location:Patient012:Done
+location:Patient012:WaitingMedicalCheck{invariant:Patient012_x <= patientDeadline}
+location:Patient012:Waiting{invariant:Patient012_x <= patientDeadline}
+location:Patient012:Ready{initial: : invariant:Patient012_patientFlow <= patArivMax}
+location:Patient012:L0{urgent:}
+
+## Edges for Patient012
+edge:Patient012:L0:Waiting:patientArrivalNurse012
+edge:Patient012:Ready:Ready:tau{provided:Patient012_patientFlow >= patArivMax : do:Patient012_patientFlow = 0}
+edge:Patient012:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient012:Waiting:WaitingMedicalCheck:checkID{do:Patient012_x=0}
+edge:Patient012:Ready:L0:patientArrivalDoc012{provided:Patient012_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient012_x = 0; Patient012_patientFlow = 0}
+
+
+
+# Process: Patient013
+## Clocks for Patient013
+clock:1:Patient013_x
+clock:1:Patient013_patientFlow
+
+## Locations for Patient013
+location:Patient013:Done
+location:Patient013:WaitingMedicalCheck{invariant:Patient013_x <= patientDeadline}
+location:Patient013:Waiting{invariant:Patient013_x <= patientDeadline}
+location:Patient013:Ready{initial: : invariant:Patient013_patientFlow <= patArivMax}
+location:Patient013:L0{urgent:}
+
+## Edges for Patient013
+edge:Patient013:L0:Waiting:patientArrivalNurse013
+edge:Patient013:Ready:Ready:tau{provided:Patient013_patientFlow >= patArivMax : do:Patient013_patientFlow = 0}
+edge:Patient013:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient013:Waiting:WaitingMedicalCheck:checkID{do:Patient013_x=0}
+edge:Patient013:Ready:L0:patientArrivalDoc013{provided:Patient013_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient013_x = 0; Patient013_patientFlow = 0}
+
+
+
+# Process: Patient014
+## Clocks for Patient014
+clock:1:Patient014_x
+clock:1:Patient014_patientFlow
+
+## Locations for Patient014
+location:Patient014:Done
+location:Patient014:WaitingMedicalCheck{invariant:Patient014_x <= patientDeadline}
+location:Patient014:Waiting{invariant:Patient014_x <= patientDeadline}
+location:Patient014:Ready{initial: : invariant:Patient014_patientFlow <= patArivMax}
+location:Patient014:L0{urgent:}
+
+## Edges for Patient014
+edge:Patient014:L0:Waiting:patientArrivalNurse014
+edge:Patient014:Ready:Ready:tau{provided:Patient014_patientFlow >= patArivMax : do:Patient014_patientFlow = 0}
+edge:Patient014:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient014:Waiting:WaitingMedicalCheck:checkID{do:Patient014_x=0}
+edge:Patient014:Ready:L0:patientArrivalDoc014{provided:Patient014_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient014_x = 0; Patient014_patientFlow = 0}
+
+
+
+# Process: Patient015
+## Clocks for Patient015
+clock:1:Patient015_x
+clock:1:Patient015_patientFlow
+
+## Locations for Patient015
+location:Patient015:Done
+location:Patient015:WaitingMedicalCheck{invariant:Patient015_x <= patientDeadline}
+location:Patient015:Waiting{invariant:Patient015_x <= patientDeadline}
+location:Patient015:Ready{initial: : invariant:Patient015_patientFlow <= patArivMax}
+location:Patient015:L0{urgent:}
+
+## Edges for Patient015
+edge:Patient015:L0:Waiting:patientArrivalNurse015
+edge:Patient015:Ready:Ready:tau{provided:Patient015_patientFlow >= patArivMax : do:Patient015_patientFlow = 0}
+edge:Patient015:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient015:Waiting:WaitingMedicalCheck:checkID{do:Patient015_x=0}
+edge:Patient015:Ready:L0:patientArrivalDoc015{provided:Patient015_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient015_x = 0; Patient015_patientFlow = 0}
+
+
+
+# Process: Patient016
+## Clocks for Patient016
+clock:1:Patient016_x
+clock:1:Patient016_patientFlow
+
+## Locations for Patient016
+location:Patient016:Done
+location:Patient016:WaitingMedicalCheck{invariant:Patient016_x <= patientDeadline}
+location:Patient016:Waiting{invariant:Patient016_x <= patientDeadline}
+location:Patient016:Ready{initial: : invariant:Patient016_patientFlow <= patArivMax}
+location:Patient016:L0{urgent:}
+
+## Edges for Patient016
+edge:Patient016:L0:Waiting:patientArrivalNurse016
+edge:Patient016:Ready:Ready:tau{provided:Patient016_patientFlow >= patArivMax : do:Patient016_patientFlow = 0}
+edge:Patient016:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient016:Waiting:WaitingMedicalCheck:checkID{do:Patient016_x=0}
+edge:Patient016:Ready:L0:patientArrivalDoc016{provided:Patient016_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient016_x = 0; Patient016_patientFlow = 0}
+
+
+
+# Process: Patient017
+## Clocks for Patient017
+clock:1:Patient017_x
+clock:1:Patient017_patientFlow
+
+## Locations for Patient017
+location:Patient017:Done
+location:Patient017:WaitingMedicalCheck{invariant:Patient017_x <= patientDeadline}
+location:Patient017:Waiting{invariant:Patient017_x <= patientDeadline}
+location:Patient017:Ready{initial: : invariant:Patient017_patientFlow <= patArivMax}
+location:Patient017:L0{urgent:}
+
+## Edges for Patient017
+edge:Patient017:L0:Waiting:patientArrivalNurse017
+edge:Patient017:Ready:Ready:tau{provided:Patient017_patientFlow >= patArivMax : do:Patient017_patientFlow = 0}
+edge:Patient017:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient017:Waiting:WaitingMedicalCheck:checkID{do:Patient017_x=0}
+edge:Patient017:Ready:L0:patientArrivalDoc017{provided:Patient017_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient017_x = 0; Patient017_patientFlow = 0}
+
+
+
+# Process: Patient018
+## Clocks for Patient018
+clock:1:Patient018_x
+clock:1:Patient018_patientFlow
+
+## Locations for Patient018
+location:Patient018:Done
+location:Patient018:WaitingMedicalCheck{invariant:Patient018_x <= patientDeadline}
+location:Patient018:Waiting{invariant:Patient018_x <= patientDeadline}
+location:Patient018:Ready{initial: : invariant:Patient018_patientFlow <= patArivMax}
+location:Patient018:L0{urgent:}
+
+## Edges for Patient018
+edge:Patient018:L0:Waiting:patientArrivalNurse018
+edge:Patient018:Ready:Ready:tau{provided:Patient018_patientFlow >= patArivMax : do:Patient018_patientFlow = 0}
+edge:Patient018:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient018:Waiting:WaitingMedicalCheck:checkID{do:Patient018_x=0}
+edge:Patient018:Ready:L0:patientArrivalDoc018{provided:Patient018_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient018_x = 0; Patient018_patientFlow = 0}
+
+
+
+# Process: Patient019
+## Clocks for Patient019
+clock:1:Patient019_x
+clock:1:Patient019_patientFlow
+
+## Locations for Patient019
+location:Patient019:Done
+location:Patient019:WaitingMedicalCheck{invariant:Patient019_x <= patientDeadline}
+location:Patient019:Waiting{invariant:Patient019_x <= patientDeadline}
+location:Patient019:Ready{initial: : invariant:Patient019_patientFlow <= patArivMax}
+location:Patient019:L0{urgent:}
+
+## Edges for Patient019
+edge:Patient019:L0:Waiting:patientArrivalNurse019
+edge:Patient019:Ready:Ready:tau{provided:Patient019_patientFlow >= patArivMax : do:Patient019_patientFlow = 0}
+edge:Patient019:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient019:Waiting:WaitingMedicalCheck:checkID{do:Patient019_x=0}
+edge:Patient019:Ready:L0:patientArrivalDoc019{provided:Patient019_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient019_x = 0; Patient019_patientFlow = 0}
+
+
+
+# Process: Patient020
+## Clocks for Patient020
+clock:1:Patient020_x
+clock:1:Patient020_patientFlow
+
+## Locations for Patient020
+location:Patient020:Done
+location:Patient020:WaitingMedicalCheck{invariant:Patient020_x <= patientDeadline}
+location:Patient020:Waiting{invariant:Patient020_x <= patientDeadline}
+location:Patient020:Ready{initial: : invariant:Patient020_patientFlow <= patArivMax}
+location:Patient020:L0{urgent:}
+
+## Edges for Patient020
+edge:Patient020:L0:Waiting:patientArrivalNurse020
+edge:Patient020:Ready:Ready:tau{provided:Patient020_patientFlow >= patArivMax : do:Patient020_patientFlow = 0}
+edge:Patient020:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient020:Waiting:WaitingMedicalCheck:checkID{do:Patient020_x=0}
+edge:Patient020:Ready:L0:patientArrivalDoc020{provided:Patient020_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient020_x = 0; Patient020_patientFlow = 0}
+
+
+
+# Process: Patient021
+## Clocks for Patient021
+clock:1:Patient021_x
+clock:1:Patient021_patientFlow
+
+## Locations for Patient021
+location:Patient021:Done
+location:Patient021:WaitingMedicalCheck{invariant:Patient021_x <= patientDeadline}
+location:Patient021:Waiting{invariant:Patient021_x <= patientDeadline}
+location:Patient021:Ready{initial: : invariant:Patient021_patientFlow <= patArivMax}
+location:Patient021:L0{urgent:}
+
+## Edges for Patient021
+edge:Patient021:L0:Waiting:patientArrivalNurse021
+edge:Patient021:Ready:Ready:tau{provided:Patient021_patientFlow >= patArivMax : do:Patient021_patientFlow = 0}
+edge:Patient021:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient021:Waiting:WaitingMedicalCheck:checkID{do:Patient021_x=0}
+edge:Patient021:Ready:L0:patientArrivalDoc021{provided:Patient021_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient021_x = 0; Patient021_patientFlow = 0}
+
+
+
+# Process: Patient022
+## Clocks for Patient022
+clock:1:Patient022_x
+clock:1:Patient022_patientFlow
+
+## Locations for Patient022
+location:Patient022:Done
+location:Patient022:WaitingMedicalCheck{invariant:Patient022_x <= patientDeadline}
+location:Patient022:Waiting{invariant:Patient022_x <= patientDeadline}
+location:Patient022:Ready{initial: : invariant:Patient022_patientFlow <= patArivMax}
+location:Patient022:L0{urgent:}
+
+## Edges for Patient022
+edge:Patient022:L0:Waiting:patientArrivalNurse022
+edge:Patient022:Ready:Ready:tau{provided:Patient022_patientFlow >= patArivMax : do:Patient022_patientFlow = 0}
+edge:Patient022:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient022:Waiting:WaitingMedicalCheck:checkID{do:Patient022_x=0}
+edge:Patient022:Ready:L0:patientArrivalDoc022{provided:Patient022_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient022_x = 0; Patient022_patientFlow = 0}
+
+
+
+# Process: Patient023
+## Clocks for Patient023
+clock:1:Patient023_x
+clock:1:Patient023_patientFlow
+
+## Locations for Patient023
+location:Patient023:Done
+location:Patient023:WaitingMedicalCheck{invariant:Patient023_x <= patientDeadline}
+location:Patient023:Waiting{invariant:Patient023_x <= patientDeadline}
+location:Patient023:Ready{initial: : invariant:Patient023_patientFlow <= patArivMax}
+location:Patient023:L0{urgent:}
+
+## Edges for Patient023
+edge:Patient023:L0:Waiting:patientArrivalNurse023
+edge:Patient023:Ready:Ready:tau{provided:Patient023_patientFlow >= patArivMax : do:Patient023_patientFlow = 0}
+edge:Patient023:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient023:Waiting:WaitingMedicalCheck:checkID{do:Patient023_x=0}
+edge:Patient023:Ready:L0:patientArrivalDoc023{provided:Patient023_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient023_x = 0; Patient023_patientFlow = 0}
+
+
+
+# Process: Patient024
+## Clocks for Patient024
+clock:1:Patient024_x
+clock:1:Patient024_patientFlow
+
+## Locations for Patient024
+location:Patient024:Done
+location:Patient024:WaitingMedicalCheck{invariant:Patient024_x <= patientDeadline}
+location:Patient024:Waiting{invariant:Patient024_x <= patientDeadline}
+location:Patient024:Ready{initial: : invariant:Patient024_patientFlow <= patArivMax}
+location:Patient024:L0{urgent:}
+
+## Edges for Patient024
+edge:Patient024:L0:Waiting:patientArrivalNurse024
+edge:Patient024:Ready:Ready:tau{provided:Patient024_patientFlow >= patArivMax : do:Patient024_patientFlow = 0}
+edge:Patient024:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient024:Waiting:WaitingMedicalCheck:checkID{do:Patient024_x=0}
+edge:Patient024:Ready:L0:patientArrivalDoc024{provided:Patient024_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient024_x = 0; Patient024_patientFlow = 0}
+
+
+
+# Process: Patient025
+## Clocks for Patient025
+clock:1:Patient025_x
+clock:1:Patient025_patientFlow
+
+## Locations for Patient025
+location:Patient025:Done
+location:Patient025:WaitingMedicalCheck{invariant:Patient025_x <= patientDeadline}
+location:Patient025:Waiting{invariant:Patient025_x <= patientDeadline}
+location:Patient025:Ready{initial: : invariant:Patient025_patientFlow <= patArivMax}
+location:Patient025:L0{urgent:}
+
+## Edges for Patient025
+edge:Patient025:L0:Waiting:patientArrivalNurse025
+edge:Patient025:Ready:Ready:tau{provided:Patient025_patientFlow >= patArivMax : do:Patient025_patientFlow = 0}
+edge:Patient025:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient025:Waiting:WaitingMedicalCheck:checkID{do:Patient025_x=0}
+edge:Patient025:Ready:L0:patientArrivalDoc025{provided:Patient025_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient025_x = 0; Patient025_patientFlow = 0}
+
+
+
+# Process: Patient026
+## Clocks for Patient026
+clock:1:Patient026_x
+clock:1:Patient026_patientFlow
+
+## Locations for Patient026
+location:Patient026:Done
+location:Patient026:WaitingMedicalCheck{invariant:Patient026_x <= patientDeadline}
+location:Patient026:Waiting{invariant:Patient026_x <= patientDeadline}
+location:Patient026:Ready{initial: : invariant:Patient026_patientFlow <= patArivMax}
+location:Patient026:L0{urgent:}
+
+## Edges for Patient026
+edge:Patient026:L0:Waiting:patientArrivalNurse026
+edge:Patient026:Ready:Ready:tau{provided:Patient026_patientFlow >= patArivMax : do:Patient026_patientFlow = 0}
+edge:Patient026:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient026:Waiting:WaitingMedicalCheck:checkID{do:Patient026_x=0}
+edge:Patient026:Ready:L0:patientArrivalDoc026{provided:Patient026_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient026_x = 0; Patient026_patientFlow = 0}
+
+
+
+# Process: Patient027
+## Clocks for Patient027
+clock:1:Patient027_x
+clock:1:Patient027_patientFlow
+
+## Locations for Patient027
+location:Patient027:Done
+location:Patient027:WaitingMedicalCheck{invariant:Patient027_x <= patientDeadline}
+location:Patient027:Waiting{invariant:Patient027_x <= patientDeadline}
+location:Patient027:Ready{initial: : invariant:Patient027_patientFlow <= patArivMax}
+location:Patient027:L0{urgent:}
+
+## Edges for Patient027
+edge:Patient027:L0:Waiting:patientArrivalNurse027
+edge:Patient027:Ready:Ready:tau{provided:Patient027_patientFlow >= patArivMax : do:Patient027_patientFlow = 0}
+edge:Patient027:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient027:Waiting:WaitingMedicalCheck:checkID{do:Patient027_x=0}
+edge:Patient027:Ready:L0:patientArrivalDoc027{provided:Patient027_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient027_x = 0; Patient027_patientFlow = 0}
+
+
+
+# Process: Patient028
+## Clocks for Patient028
+clock:1:Patient028_x
+clock:1:Patient028_patientFlow
+
+## Locations for Patient028
+location:Patient028:Done
+location:Patient028:WaitingMedicalCheck{invariant:Patient028_x <= patientDeadline}
+location:Patient028:Waiting{invariant:Patient028_x <= patientDeadline}
+location:Patient028:Ready{initial: : invariant:Patient028_patientFlow <= patArivMax}
+location:Patient028:L0{urgent:}
+
+## Edges for Patient028
+edge:Patient028:L0:Waiting:patientArrivalNurse028
+edge:Patient028:Ready:Ready:tau{provided:Patient028_patientFlow >= patArivMax : do:Patient028_patientFlow = 0}
+edge:Patient028:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient028:Waiting:WaitingMedicalCheck:checkID{do:Patient028_x=0}
+edge:Patient028:Ready:L0:patientArrivalDoc028{provided:Patient028_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient028_x = 0; Patient028_patientFlow = 0}
+
+
+
+# Process: Patient029
+## Clocks for Patient029
+clock:1:Patient029_x
+clock:1:Patient029_patientFlow
+
+## Locations for Patient029
+location:Patient029:Done
+location:Patient029:WaitingMedicalCheck{invariant:Patient029_x <= patientDeadline}
+location:Patient029:Waiting{invariant:Patient029_x <= patientDeadline}
+location:Patient029:Ready{initial: : invariant:Patient029_patientFlow <= patArivMax}
+location:Patient029:L0{urgent:}
+
+## Edges for Patient029
+edge:Patient029:L0:Waiting:patientArrivalNurse029
+edge:Patient029:Ready:Ready:tau{provided:Patient029_patientFlow >= patArivMax : do:Patient029_patientFlow = 0}
+edge:Patient029:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient029:Waiting:WaitingMedicalCheck:checkID{do:Patient029_x=0}
+edge:Patient029:Ready:L0:patientArrivalDoc029{provided:Patient029_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient029_x = 0; Patient029_patientFlow = 0}
+
+
+
+# Process: Patient030
+## Clocks for Patient030
+clock:1:Patient030_x
+clock:1:Patient030_patientFlow
+
+## Locations for Patient030
+location:Patient030:Done
+location:Patient030:WaitingMedicalCheck{invariant:Patient030_x <= patientDeadline}
+location:Patient030:Waiting{invariant:Patient030_x <= patientDeadline}
+location:Patient030:Ready{initial: : invariant:Patient030_patientFlow <= patArivMax}
+location:Patient030:L0{urgent:}
+
+## Edges for Patient030
+edge:Patient030:L0:Waiting:patientArrivalNurse030
+edge:Patient030:Ready:Ready:tau{provided:Patient030_patientFlow >= patArivMax : do:Patient030_patientFlow = 0}
+edge:Patient030:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient030:Waiting:WaitingMedicalCheck:checkID{do:Patient030_x=0}
+edge:Patient030:Ready:L0:patientArrivalDoc030{provided:Patient030_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient030_x = 0; Patient030_patientFlow = 0}
+
+
+
+# Process: Patient031
+## Clocks for Patient031
+clock:1:Patient031_x
+clock:1:Patient031_patientFlow
+
+## Locations for Patient031
+location:Patient031:Done
+location:Patient031:WaitingMedicalCheck{invariant:Patient031_x <= patientDeadline}
+location:Patient031:Waiting{invariant:Patient031_x <= patientDeadline}
+location:Patient031:Ready{initial: : invariant:Patient031_patientFlow <= patArivMax}
+location:Patient031:L0{urgent:}
+
+## Edges for Patient031
+edge:Patient031:L0:Waiting:patientArrivalNurse031
+edge:Patient031:Ready:Ready:tau{provided:Patient031_patientFlow >= patArivMax : do:Patient031_patientFlow = 0}
+edge:Patient031:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient031:Waiting:WaitingMedicalCheck:checkID{do:Patient031_x=0}
+edge:Patient031:Ready:L0:patientArrivalDoc031{provided:Patient031_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient031_x = 0; Patient031_patientFlow = 0}
+
+
+
+# Process: Patient032
+## Clocks for Patient032
+clock:1:Patient032_x
+clock:1:Patient032_patientFlow
+
+## Locations for Patient032
+location:Patient032:Done
+location:Patient032:WaitingMedicalCheck{invariant:Patient032_x <= patientDeadline}
+location:Patient032:Waiting{invariant:Patient032_x <= patientDeadline}
+location:Patient032:Ready{initial: : invariant:Patient032_patientFlow <= patArivMax}
+location:Patient032:L0{urgent:}
+
+## Edges for Patient032
+edge:Patient032:L0:Waiting:patientArrivalNurse032
+edge:Patient032:Ready:Ready:tau{provided:Patient032_patientFlow >= patArivMax : do:Patient032_patientFlow = 0}
+edge:Patient032:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient032:Waiting:WaitingMedicalCheck:checkID{do:Patient032_x=0}
+edge:Patient032:Ready:L0:patientArrivalDoc032{provided:Patient032_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient032_x = 0; Patient032_patientFlow = 0}
+
+
+
+# Process: Patient033
+## Clocks for Patient033
+clock:1:Patient033_x
+clock:1:Patient033_patientFlow
+
+## Locations for Patient033
+location:Patient033:Done
+location:Patient033:WaitingMedicalCheck{invariant:Patient033_x <= patientDeadline}
+location:Patient033:Waiting{invariant:Patient033_x <= patientDeadline}
+location:Patient033:Ready{initial: : invariant:Patient033_patientFlow <= patArivMax}
+location:Patient033:L0{urgent:}
+
+## Edges for Patient033
+edge:Patient033:L0:Waiting:patientArrivalNurse033
+edge:Patient033:Ready:Ready:tau{provided:Patient033_patientFlow >= patArivMax : do:Patient033_patientFlow = 0}
+edge:Patient033:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient033:Waiting:WaitingMedicalCheck:checkID{do:Patient033_x=0}
+edge:Patient033:Ready:L0:patientArrivalDoc033{provided:Patient033_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient033_x = 0; Patient033_patientFlow = 0}
+
+
+
+# Process: Patient034
+## Clocks for Patient034
+clock:1:Patient034_x
+clock:1:Patient034_patientFlow
+
+## Locations for Patient034
+location:Patient034:Done
+location:Patient034:WaitingMedicalCheck{invariant:Patient034_x <= patientDeadline}
+location:Patient034:Waiting{invariant:Patient034_x <= patientDeadline}
+location:Patient034:Ready{initial: : invariant:Patient034_patientFlow <= patArivMax}
+location:Patient034:L0{urgent:}
+
+## Edges for Patient034
+edge:Patient034:L0:Waiting:patientArrivalNurse034
+edge:Patient034:Ready:Ready:tau{provided:Patient034_patientFlow >= patArivMax : do:Patient034_patientFlow = 0}
+edge:Patient034:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient034:Waiting:WaitingMedicalCheck:checkID{do:Patient034_x=0}
+edge:Patient034:Ready:L0:patientArrivalDoc034{provided:Patient034_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient034_x = 0; Patient034_patientFlow = 0}
+
+
+
+# Process: Patient035
+## Clocks for Patient035
+clock:1:Patient035_x
+clock:1:Patient035_patientFlow
+
+## Locations for Patient035
+location:Patient035:Done
+location:Patient035:WaitingMedicalCheck{invariant:Patient035_x <= patientDeadline}
+location:Patient035:Waiting{invariant:Patient035_x <= patientDeadline}
+location:Patient035:Ready{initial: : invariant:Patient035_patientFlow <= patArivMax}
+location:Patient035:L0{urgent:}
+
+## Edges for Patient035
+edge:Patient035:L0:Waiting:patientArrivalNurse035
+edge:Patient035:Ready:Ready:tau{provided:Patient035_patientFlow >= patArivMax : do:Patient035_patientFlow = 0}
+edge:Patient035:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient035:Waiting:WaitingMedicalCheck:checkID{do:Patient035_x=0}
+edge:Patient035:Ready:L0:patientArrivalDoc035{provided:Patient035_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient035_x = 0; Patient035_patientFlow = 0}
+
+
+
+# Process: Patient036
+## Clocks for Patient036
+clock:1:Patient036_x
+clock:1:Patient036_patientFlow
+
+## Locations for Patient036
+location:Patient036:Done
+location:Patient036:WaitingMedicalCheck{invariant:Patient036_x <= patientDeadline}
+location:Patient036:Waiting{invariant:Patient036_x <= patientDeadline}
+location:Patient036:Ready{initial: : invariant:Patient036_patientFlow <= patArivMax}
+location:Patient036:L0{urgent:}
+
+## Edges for Patient036
+edge:Patient036:L0:Waiting:patientArrivalNurse036
+edge:Patient036:Ready:Ready:tau{provided:Patient036_patientFlow >= patArivMax : do:Patient036_patientFlow = 0}
+edge:Patient036:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient036:Waiting:WaitingMedicalCheck:checkID{do:Patient036_x=0}
+edge:Patient036:Ready:L0:patientArrivalDoc036{provided:Patient036_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient036_x = 0; Patient036_patientFlow = 0}
+
+
+
+# Process: Patient037
+## Clocks for Patient037
+clock:1:Patient037_x
+clock:1:Patient037_patientFlow
+
+## Locations for Patient037
+location:Patient037:Done
+location:Patient037:WaitingMedicalCheck{invariant:Patient037_x <= patientDeadline}
+location:Patient037:Waiting{invariant:Patient037_x <= patientDeadline}
+location:Patient037:Ready{initial: : invariant:Patient037_patientFlow <= patArivMax}
+location:Patient037:L0{urgent:}
+
+## Edges for Patient037
+edge:Patient037:L0:Waiting:patientArrivalNurse037
+edge:Patient037:Ready:Ready:tau{provided:Patient037_patientFlow >= patArivMax : do:Patient037_patientFlow = 0}
+edge:Patient037:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient037:Waiting:WaitingMedicalCheck:checkID{do:Patient037_x=0}
+edge:Patient037:Ready:L0:patientArrivalDoc037{provided:Patient037_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient037_x = 0; Patient037_patientFlow = 0}
+
+
+
+# Process: Patient038
+## Clocks for Patient038
+clock:1:Patient038_x
+clock:1:Patient038_patientFlow
+
+## Locations for Patient038
+location:Patient038:Done
+location:Patient038:WaitingMedicalCheck{invariant:Patient038_x <= patientDeadline}
+location:Patient038:Waiting{invariant:Patient038_x <= patientDeadline}
+location:Patient038:Ready{initial: : invariant:Patient038_patientFlow <= patArivMax}
+location:Patient038:L0{urgent:}
+
+## Edges for Patient038
+edge:Patient038:L0:Waiting:patientArrivalNurse038
+edge:Patient038:Ready:Ready:tau{provided:Patient038_patientFlow >= patArivMax : do:Patient038_patientFlow = 0}
+edge:Patient038:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient038:Waiting:WaitingMedicalCheck:checkID{do:Patient038_x=0}
+edge:Patient038:Ready:L0:patientArrivalDoc038{provided:Patient038_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient038_x = 0; Patient038_patientFlow = 0}
+
+
+
+# Process: Patient039
+## Clocks for Patient039
+clock:1:Patient039_x
+clock:1:Patient039_patientFlow
+
+## Locations for Patient039
+location:Patient039:Done
+location:Patient039:WaitingMedicalCheck{invariant:Patient039_x <= patientDeadline}
+location:Patient039:Waiting{invariant:Patient039_x <= patientDeadline}
+location:Patient039:Ready{initial: : invariant:Patient039_patientFlow <= patArivMax}
+location:Patient039:L0{urgent:}
+
+## Edges for Patient039
+edge:Patient039:L0:Waiting:patientArrivalNurse039
+edge:Patient039:Ready:Ready:tau{provided:Patient039_patientFlow >= patArivMax : do:Patient039_patientFlow = 0}
+edge:Patient039:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient039:Waiting:WaitingMedicalCheck:checkID{do:Patient039_x=0}
+edge:Patient039:Ready:L0:patientArrivalDoc039{provided:Patient039_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient039_x = 0; Patient039_patientFlow = 0}
+
+
+
+# Process: Patient040
+## Clocks for Patient040
+clock:1:Patient040_x
+clock:1:Patient040_patientFlow
+
+## Locations for Patient040
+location:Patient040:Done
+location:Patient040:WaitingMedicalCheck{invariant:Patient040_x <= patientDeadline}
+location:Patient040:Waiting{invariant:Patient040_x <= patientDeadline}
+location:Patient040:Ready{initial: : invariant:Patient040_patientFlow <= patArivMax}
+location:Patient040:L0{urgent:}
+
+## Edges for Patient040
+edge:Patient040:L0:Waiting:patientArrivalNurse040
+edge:Patient040:Ready:Ready:tau{provided:Patient040_patientFlow >= patArivMax : do:Patient040_patientFlow = 0}
+edge:Patient040:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient040:Waiting:WaitingMedicalCheck:checkID{do:Patient040_x=0}
+edge:Patient040:Ready:L0:patientArrivalDoc040{provided:Patient040_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient040_x = 0; Patient040_patientFlow = 0}
+
+
+
+# Process: Patient041
+## Clocks for Patient041
+clock:1:Patient041_x
+clock:1:Patient041_patientFlow
+
+## Locations for Patient041
+location:Patient041:Done
+location:Patient041:WaitingMedicalCheck{invariant:Patient041_x <= patientDeadline}
+location:Patient041:Waiting{invariant:Patient041_x <= patientDeadline}
+location:Patient041:Ready{initial: : invariant:Patient041_patientFlow <= patArivMax}
+location:Patient041:L0{urgent:}
+
+## Edges for Patient041
+edge:Patient041:L0:Waiting:patientArrivalNurse041
+edge:Patient041:Ready:Ready:tau{provided:Patient041_patientFlow >= patArivMax : do:Patient041_patientFlow = 0}
+edge:Patient041:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient041:Waiting:WaitingMedicalCheck:checkID{do:Patient041_x=0}
+edge:Patient041:Ready:L0:patientArrivalDoc041{provided:Patient041_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient041_x = 0; Patient041_patientFlow = 0}
+
+
+
+# Process: Patient042
+## Clocks for Patient042
+clock:1:Patient042_x
+clock:1:Patient042_patientFlow
+
+## Locations for Patient042
+location:Patient042:Done
+location:Patient042:WaitingMedicalCheck{invariant:Patient042_x <= patientDeadline}
+location:Patient042:Waiting{invariant:Patient042_x <= patientDeadline}
+location:Patient042:Ready{initial: : invariant:Patient042_patientFlow <= patArivMax}
+location:Patient042:L0{urgent:}
+
+## Edges for Patient042
+edge:Patient042:L0:Waiting:patientArrivalNurse042
+edge:Patient042:Ready:Ready:tau{provided:Patient042_patientFlow >= patArivMax : do:Patient042_patientFlow = 0}
+edge:Patient042:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient042:Waiting:WaitingMedicalCheck:checkID{do:Patient042_x=0}
+edge:Patient042:Ready:L0:patientArrivalDoc042{provided:Patient042_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient042_x = 0; Patient042_patientFlow = 0}
+
+
+
+# Process: Patient043
+## Clocks for Patient043
+clock:1:Patient043_x
+clock:1:Patient043_patientFlow
+
+## Locations for Patient043
+location:Patient043:Done
+location:Patient043:WaitingMedicalCheck{invariant:Patient043_x <= patientDeadline}
+location:Patient043:Waiting{invariant:Patient043_x <= patientDeadline}
+location:Patient043:Ready{initial: : invariant:Patient043_patientFlow <= patArivMax}
+location:Patient043:L0{urgent:}
+
+## Edges for Patient043
+edge:Patient043:L0:Waiting:patientArrivalNurse043
+edge:Patient043:Ready:Ready:tau{provided:Patient043_patientFlow >= patArivMax : do:Patient043_patientFlow = 0}
+edge:Patient043:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient043:Waiting:WaitingMedicalCheck:checkID{do:Patient043_x=0}
+edge:Patient043:Ready:L0:patientArrivalDoc043{provided:Patient043_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient043_x = 0; Patient043_patientFlow = 0}
+
+
+
+# Process: Patient044
+## Clocks for Patient044
+clock:1:Patient044_x
+clock:1:Patient044_patientFlow
+
+## Locations for Patient044
+location:Patient044:Done
+location:Patient044:WaitingMedicalCheck{invariant:Patient044_x <= patientDeadline}
+location:Patient044:Waiting{invariant:Patient044_x <= patientDeadline}
+location:Patient044:Ready{initial: : invariant:Patient044_patientFlow <= patArivMax}
+location:Patient044:L0{urgent:}
+
+## Edges for Patient044
+edge:Patient044:L0:Waiting:patientArrivalNurse044
+edge:Patient044:Ready:Ready:tau{provided:Patient044_patientFlow >= patArivMax : do:Patient044_patientFlow = 0}
+edge:Patient044:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient044:Waiting:WaitingMedicalCheck:checkID{do:Patient044_x=0}
+edge:Patient044:Ready:L0:patientArrivalDoc044{provided:Patient044_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient044_x = 0; Patient044_patientFlow = 0}
+
+
+
+# Process: Patient045
+## Clocks for Patient045
+clock:1:Patient045_x
+clock:1:Patient045_patientFlow
+
+## Locations for Patient045
+location:Patient045:Done
+location:Patient045:WaitingMedicalCheck{invariant:Patient045_x <= patientDeadline}
+location:Patient045:Waiting{invariant:Patient045_x <= patientDeadline}
+location:Patient045:Ready{initial: : invariant:Patient045_patientFlow <= patArivMax}
+location:Patient045:L0{urgent:}
+
+## Edges for Patient045
+edge:Patient045:L0:Waiting:patientArrivalNurse045
+edge:Patient045:Ready:Ready:tau{provided:Patient045_patientFlow >= patArivMax : do:Patient045_patientFlow = 0}
+edge:Patient045:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient045:Waiting:WaitingMedicalCheck:checkID{do:Patient045_x=0}
+edge:Patient045:Ready:L0:patientArrivalDoc045{provided:Patient045_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient045_x = 0; Patient045_patientFlow = 0}
+
+
+
+# Process: Patient046
+## Clocks for Patient046
+clock:1:Patient046_x
+clock:1:Patient046_patientFlow
+
+## Locations for Patient046
+location:Patient046:Done
+location:Patient046:WaitingMedicalCheck{invariant:Patient046_x <= patientDeadline}
+location:Patient046:Waiting{invariant:Patient046_x <= patientDeadline}
+location:Patient046:Ready{initial: : invariant:Patient046_patientFlow <= patArivMax}
+location:Patient046:L0{urgent:}
+
+## Edges for Patient046
+edge:Patient046:L0:Waiting:patientArrivalNurse046
+edge:Patient046:Ready:Ready:tau{provided:Patient046_patientFlow >= patArivMax : do:Patient046_patientFlow = 0}
+edge:Patient046:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient046:Waiting:WaitingMedicalCheck:checkID{do:Patient046_x=0}
+edge:Patient046:Ready:L0:patientArrivalDoc046{provided:Patient046_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient046_x = 0; Patient046_patientFlow = 0}
+
+
+
+# Process: Patient047
+## Clocks for Patient047
+clock:1:Patient047_x
+clock:1:Patient047_patientFlow
+
+## Locations for Patient047
+location:Patient047:Done
+location:Patient047:WaitingMedicalCheck{invariant:Patient047_x <= patientDeadline}
+location:Patient047:Waiting{invariant:Patient047_x <= patientDeadline}
+location:Patient047:Ready{initial: : invariant:Patient047_patientFlow <= patArivMax}
+location:Patient047:L0{urgent:}
+
+## Edges for Patient047
+edge:Patient047:L0:Waiting:patientArrivalNurse047
+edge:Patient047:Ready:Ready:tau{provided:Patient047_patientFlow >= patArivMax : do:Patient047_patientFlow = 0}
+edge:Patient047:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient047:Waiting:WaitingMedicalCheck:checkID{do:Patient047_x=0}
+edge:Patient047:Ready:L0:patientArrivalDoc047{provided:Patient047_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient047_x = 0; Patient047_patientFlow = 0}
+
+
+
+# Process: Patient048
+## Clocks for Patient048
+clock:1:Patient048_x
+clock:1:Patient048_patientFlow
+
+## Locations for Patient048
+location:Patient048:Done
+location:Patient048:WaitingMedicalCheck{invariant:Patient048_x <= patientDeadline}
+location:Patient048:Waiting{invariant:Patient048_x <= patientDeadline}
+location:Patient048:Ready{initial: : invariant:Patient048_patientFlow <= patArivMax}
+location:Patient048:L0{urgent:}
+
+## Edges for Patient048
+edge:Patient048:L0:Waiting:patientArrivalNurse048
+edge:Patient048:Ready:Ready:tau{provided:Patient048_patientFlow >= patArivMax : do:Patient048_patientFlow = 0}
+edge:Patient048:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient048:Waiting:WaitingMedicalCheck:checkID{do:Patient048_x=0}
+edge:Patient048:Ready:L0:patientArrivalDoc048{provided:Patient048_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient048_x = 0; Patient048_patientFlow = 0}
+
+
+
+# Process: Patient049
+## Clocks for Patient049
+clock:1:Patient049_x
+clock:1:Patient049_patientFlow
+
+## Locations for Patient049
+location:Patient049:Done
+location:Patient049:WaitingMedicalCheck{invariant:Patient049_x <= patientDeadline}
+location:Patient049:Waiting{invariant:Patient049_x <= patientDeadline}
+location:Patient049:Ready{initial: : invariant:Patient049_patientFlow <= patArivMax}
+location:Patient049:L0{urgent:}
+
+## Edges for Patient049
+edge:Patient049:L0:Waiting:patientArrivalNurse049
+edge:Patient049:Ready:Ready:tau{provided:Patient049_patientFlow >= patArivMax : do:Patient049_patientFlow = 0}
+edge:Patient049:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient049:Waiting:WaitingMedicalCheck:checkID{do:Patient049_x=0}
+edge:Patient049:Ready:L0:patientArrivalDoc049{provided:Patient049_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient049_x = 0; Patient049_patientFlow = 0}
+
+
+
+# Process: Patient050
+## Clocks for Patient050
+clock:1:Patient050_x
+clock:1:Patient050_patientFlow
+
+## Locations for Patient050
+location:Patient050:Done
+location:Patient050:WaitingMedicalCheck{invariant:Patient050_x <= patientDeadline}
+location:Patient050:Waiting{invariant:Patient050_x <= patientDeadline}
+location:Patient050:Ready{initial: : invariant:Patient050_patientFlow <= patArivMax}
+location:Patient050:L0{urgent:}
+
+## Edges for Patient050
+edge:Patient050:L0:Waiting:patientArrivalNurse050
+edge:Patient050:Ready:Ready:tau{provided:Patient050_patientFlow >= patArivMax : do:Patient050_patientFlow = 0}
+edge:Patient050:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient050:Waiting:WaitingMedicalCheck:checkID{do:Patient050_x=0}
+edge:Patient050:Ready:L0:patientArrivalDoc050{provided:Patient050_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient050_x = 0; Patient050_patientFlow = 0}
+
+
+
+# Process: Patient051
+## Clocks for Patient051
+clock:1:Patient051_x
+clock:1:Patient051_patientFlow
+
+## Locations for Patient051
+location:Patient051:Done
+location:Patient051:WaitingMedicalCheck{invariant:Patient051_x <= patientDeadline}
+location:Patient051:Waiting{invariant:Patient051_x <= patientDeadline}
+location:Patient051:Ready{initial: : invariant:Patient051_patientFlow <= patArivMax}
+location:Patient051:L0{urgent:}
+
+## Edges for Patient051
+edge:Patient051:L0:Waiting:patientArrivalNurse051
+edge:Patient051:Ready:Ready:tau{provided:Patient051_patientFlow >= patArivMax : do:Patient051_patientFlow = 0}
+edge:Patient051:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient051:Waiting:WaitingMedicalCheck:checkID{do:Patient051_x=0}
+edge:Patient051:Ready:L0:patientArrivalDoc051{provided:Patient051_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient051_x = 0; Patient051_patientFlow = 0}
+
+
+
+# Process: Patient052
+## Clocks for Patient052
+clock:1:Patient052_x
+clock:1:Patient052_patientFlow
+
+## Locations for Patient052
+location:Patient052:Done
+location:Patient052:WaitingMedicalCheck{invariant:Patient052_x <= patientDeadline}
+location:Patient052:Waiting{invariant:Patient052_x <= patientDeadline}
+location:Patient052:Ready{initial: : invariant:Patient052_patientFlow <= patArivMax}
+location:Patient052:L0{urgent:}
+
+## Edges for Patient052
+edge:Patient052:L0:Waiting:patientArrivalNurse052
+edge:Patient052:Ready:Ready:tau{provided:Patient052_patientFlow >= patArivMax : do:Patient052_patientFlow = 0}
+edge:Patient052:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient052:Waiting:WaitingMedicalCheck:checkID{do:Patient052_x=0}
+edge:Patient052:Ready:L0:patientArrivalDoc052{provided:Patient052_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient052_x = 0; Patient052_patientFlow = 0}
+
+
+
+# Process: Patient053
+## Clocks for Patient053
+clock:1:Patient053_x
+clock:1:Patient053_patientFlow
+
+## Locations for Patient053
+location:Patient053:Done
+location:Patient053:WaitingMedicalCheck{invariant:Patient053_x <= patientDeadline}
+location:Patient053:Waiting{invariant:Patient053_x <= patientDeadline}
+location:Patient053:Ready{initial: : invariant:Patient053_patientFlow <= patArivMax}
+location:Patient053:L0{urgent:}
+
+## Edges for Patient053
+edge:Patient053:L0:Waiting:patientArrivalNurse053
+edge:Patient053:Ready:Ready:tau{provided:Patient053_patientFlow >= patArivMax : do:Patient053_patientFlow = 0}
+edge:Patient053:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient053:Waiting:WaitingMedicalCheck:checkID{do:Patient053_x=0}
+edge:Patient053:Ready:L0:patientArrivalDoc053{provided:Patient053_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient053_x = 0; Patient053_patientFlow = 0}
+
+
+
+# Process: Patient054
+## Clocks for Patient054
+clock:1:Patient054_x
+clock:1:Patient054_patientFlow
+
+## Locations for Patient054
+location:Patient054:Done
+location:Patient054:WaitingMedicalCheck{invariant:Patient054_x <= patientDeadline}
+location:Patient054:Waiting{invariant:Patient054_x <= patientDeadline}
+location:Patient054:Ready{initial: : invariant:Patient054_patientFlow <= patArivMax}
+location:Patient054:L0{urgent:}
+
+## Edges for Patient054
+edge:Patient054:L0:Waiting:patientArrivalNurse054
+edge:Patient054:Ready:Ready:tau{provided:Patient054_patientFlow >= patArivMax : do:Patient054_patientFlow = 0}
+edge:Patient054:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient054:Waiting:WaitingMedicalCheck:checkID{do:Patient054_x=0}
+edge:Patient054:Ready:L0:patientArrivalDoc054{provided:Patient054_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient054_x = 0; Patient054_patientFlow = 0}
+
+
+
+# Process: Patient055
+## Clocks for Patient055
+clock:1:Patient055_x
+clock:1:Patient055_patientFlow
+
+## Locations for Patient055
+location:Patient055:Done
+location:Patient055:WaitingMedicalCheck{invariant:Patient055_x <= patientDeadline}
+location:Patient055:Waiting{invariant:Patient055_x <= patientDeadline}
+location:Patient055:Ready{initial: : invariant:Patient055_patientFlow <= patArivMax}
+location:Patient055:L0{urgent:}
+
+## Edges for Patient055
+edge:Patient055:L0:Waiting:patientArrivalNurse055
+edge:Patient055:Ready:Ready:tau{provided:Patient055_patientFlow >= patArivMax : do:Patient055_patientFlow = 0}
+edge:Patient055:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient055:Waiting:WaitingMedicalCheck:checkID{do:Patient055_x=0}
+edge:Patient055:Ready:L0:patientArrivalDoc055{provided:Patient055_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient055_x = 0; Patient055_patientFlow = 0}
+
+
+
+# Process: Patient056
+## Clocks for Patient056
+clock:1:Patient056_x
+clock:1:Patient056_patientFlow
+
+## Locations for Patient056
+location:Patient056:Done
+location:Patient056:WaitingMedicalCheck{invariant:Patient056_x <= patientDeadline}
+location:Patient056:Waiting{invariant:Patient056_x <= patientDeadline}
+location:Patient056:Ready{initial: : invariant:Patient056_patientFlow <= patArivMax}
+location:Patient056:L0{urgent:}
+
+## Edges for Patient056
+edge:Patient056:L0:Waiting:patientArrivalNurse056
+edge:Patient056:Ready:Ready:tau{provided:Patient056_patientFlow >= patArivMax : do:Patient056_patientFlow = 0}
+edge:Patient056:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient056:Waiting:WaitingMedicalCheck:checkID{do:Patient056_x=0}
+edge:Patient056:Ready:L0:patientArrivalDoc056{provided:Patient056_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient056_x = 0; Patient056_patientFlow = 0}
+
+
+
+# Process: Patient057
+## Clocks for Patient057
+clock:1:Patient057_x
+clock:1:Patient057_patientFlow
+
+## Locations for Patient057
+location:Patient057:Done
+location:Patient057:WaitingMedicalCheck{invariant:Patient057_x <= patientDeadline}
+location:Patient057:Waiting{invariant:Patient057_x <= patientDeadline}
+location:Patient057:Ready{initial: : invariant:Patient057_patientFlow <= patArivMax}
+location:Patient057:L0{urgent:}
+
+## Edges for Patient057
+edge:Patient057:L0:Waiting:patientArrivalNurse057
+edge:Patient057:Ready:Ready:tau{provided:Patient057_patientFlow >= patArivMax : do:Patient057_patientFlow = 0}
+edge:Patient057:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient057:Waiting:WaitingMedicalCheck:checkID{do:Patient057_x=0}
+edge:Patient057:Ready:L0:patientArrivalDoc057{provided:Patient057_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient057_x = 0; Patient057_patientFlow = 0}
+
+
+
+# Process: Patient058
+## Clocks for Patient058
+clock:1:Patient058_x
+clock:1:Patient058_patientFlow
+
+## Locations for Patient058
+location:Patient058:Done
+location:Patient058:WaitingMedicalCheck{invariant:Patient058_x <= patientDeadline}
+location:Patient058:Waiting{invariant:Patient058_x <= patientDeadline}
+location:Patient058:Ready{initial: : invariant:Patient058_patientFlow <= patArivMax}
+location:Patient058:L0{urgent:}
+
+## Edges for Patient058
+edge:Patient058:L0:Waiting:patientArrivalNurse058
+edge:Patient058:Ready:Ready:tau{provided:Patient058_patientFlow >= patArivMax : do:Patient058_patientFlow = 0}
+edge:Patient058:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient058:Waiting:WaitingMedicalCheck:checkID{do:Patient058_x=0}
+edge:Patient058:Ready:L0:patientArrivalDoc058{provided:Patient058_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient058_x = 0; Patient058_patientFlow = 0}
+
+
+
+# Process: Patient059
+## Clocks for Patient059
+clock:1:Patient059_x
+clock:1:Patient059_patientFlow
+
+## Locations for Patient059
+location:Patient059:Done
+location:Patient059:WaitingMedicalCheck{invariant:Patient059_x <= patientDeadline}
+location:Patient059:Waiting{invariant:Patient059_x <= patientDeadline}
+location:Patient059:Ready{initial: : invariant:Patient059_patientFlow <= patArivMax}
+location:Patient059:L0{urgent:}
+
+## Edges for Patient059
+edge:Patient059:L0:Waiting:patientArrivalNurse059
+edge:Patient059:Ready:Ready:tau{provided:Patient059_patientFlow >= patArivMax : do:Patient059_patientFlow = 0}
+edge:Patient059:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient059:Waiting:WaitingMedicalCheck:checkID{do:Patient059_x=0}
+edge:Patient059:Ready:L0:patientArrivalDoc059{provided:Patient059_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient059_x = 0; Patient059_patientFlow = 0}
+
+
+
+# Process: Patient060
+## Clocks for Patient060
+clock:1:Patient060_x
+clock:1:Patient060_patientFlow
+
+## Locations for Patient060
+location:Patient060:Done
+location:Patient060:WaitingMedicalCheck{invariant:Patient060_x <= patientDeadline}
+location:Patient060:Waiting{invariant:Patient060_x <= patientDeadline}
+location:Patient060:Ready{initial: : invariant:Patient060_patientFlow <= patArivMax}
+location:Patient060:L0{urgent:}
+
+## Edges for Patient060
+edge:Patient060:L0:Waiting:patientArrivalNurse060
+edge:Patient060:Ready:Ready:tau{provided:Patient060_patientFlow >= patArivMax : do:Patient060_patientFlow = 0}
+edge:Patient060:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient060:Waiting:WaitingMedicalCheck:checkID{do:Patient060_x=0}
+edge:Patient060:Ready:L0:patientArrivalDoc060{provided:Patient060_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient060_x = 0; Patient060_patientFlow = 0}
+
+
+
+# Process: Patient061
+## Clocks for Patient061
+clock:1:Patient061_x
+clock:1:Patient061_patientFlow
+
+## Locations for Patient061
+location:Patient061:Done
+location:Patient061:WaitingMedicalCheck{invariant:Patient061_x <= patientDeadline}
+location:Patient061:Waiting{invariant:Patient061_x <= patientDeadline}
+location:Patient061:Ready{initial: : invariant:Patient061_patientFlow <= patArivMax}
+location:Patient061:L0{urgent:}
+
+## Edges for Patient061
+edge:Patient061:L0:Waiting:patientArrivalNurse061
+edge:Patient061:Ready:Ready:tau{provided:Patient061_patientFlow >= patArivMax : do:Patient061_patientFlow = 0}
+edge:Patient061:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient061:Waiting:WaitingMedicalCheck:checkID{do:Patient061_x=0}
+edge:Patient061:Ready:L0:patientArrivalDoc061{provided:Patient061_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient061_x = 0; Patient061_patientFlow = 0}
+
+
+
+# Process: Patient062
+## Clocks for Patient062
+clock:1:Patient062_x
+clock:1:Patient062_patientFlow
+
+## Locations for Patient062
+location:Patient062:Done
+location:Patient062:WaitingMedicalCheck{invariant:Patient062_x <= patientDeadline}
+location:Patient062:Waiting{invariant:Patient062_x <= patientDeadline}
+location:Patient062:Ready{initial: : invariant:Patient062_patientFlow <= patArivMax}
+location:Patient062:L0{urgent:}
+
+## Edges for Patient062
+edge:Patient062:L0:Waiting:patientArrivalNurse062
+edge:Patient062:Ready:Ready:tau{provided:Patient062_patientFlow >= patArivMax : do:Patient062_patientFlow = 0}
+edge:Patient062:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient062:Waiting:WaitingMedicalCheck:checkID{do:Patient062_x=0}
+edge:Patient062:Ready:L0:patientArrivalDoc062{provided:Patient062_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient062_x = 0; Patient062_patientFlow = 0}
+
+
+
+# Process: Patient063
+## Clocks for Patient063
+clock:1:Patient063_x
+clock:1:Patient063_patientFlow
+
+## Locations for Patient063
+location:Patient063:Done
+location:Patient063:WaitingMedicalCheck{invariant:Patient063_x <= patientDeadline}
+location:Patient063:Waiting{invariant:Patient063_x <= patientDeadline}
+location:Patient063:Ready{initial: : invariant:Patient063_patientFlow <= patArivMax}
+location:Patient063:L0{urgent:}
+
+## Edges for Patient063
+edge:Patient063:L0:Waiting:patientArrivalNurse063
+edge:Patient063:Ready:Ready:tau{provided:Patient063_patientFlow >= patArivMax : do:Patient063_patientFlow = 0}
+edge:Patient063:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient063:Waiting:WaitingMedicalCheck:checkID{do:Patient063_x=0}
+edge:Patient063:Ready:L0:patientArrivalDoc063{provided:Patient063_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient063_x = 0; Patient063_patientFlow = 0}
+
+
+
+# Process: Patient064
+## Clocks for Patient064
+clock:1:Patient064_x
+clock:1:Patient064_patientFlow
+
+## Locations for Patient064
+location:Patient064:Done
+location:Patient064:WaitingMedicalCheck{invariant:Patient064_x <= patientDeadline}
+location:Patient064:Waiting{invariant:Patient064_x <= patientDeadline}
+location:Patient064:Ready{initial: : invariant:Patient064_patientFlow <= patArivMax}
+location:Patient064:L0{urgent:}
+
+## Edges for Patient064
+edge:Patient064:L0:Waiting:patientArrivalNurse064
+edge:Patient064:Ready:Ready:tau{provided:Patient064_patientFlow >= patArivMax : do:Patient064_patientFlow = 0}
+edge:Patient064:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient064:Waiting:WaitingMedicalCheck:checkID{do:Patient064_x=0}
+edge:Patient064:Ready:L0:patientArrivalDoc064{provided:Patient064_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient064_x = 0; Patient064_patientFlow = 0}
+
+
+
+# Process: Patient065
+## Clocks for Patient065
+clock:1:Patient065_x
+clock:1:Patient065_patientFlow
+
+## Locations for Patient065
+location:Patient065:Done
+location:Patient065:WaitingMedicalCheck{invariant:Patient065_x <= patientDeadline}
+location:Patient065:Waiting{invariant:Patient065_x <= patientDeadline}
+location:Patient065:Ready{initial: : invariant:Patient065_patientFlow <= patArivMax}
+location:Patient065:L0{urgent:}
+
+## Edges for Patient065
+edge:Patient065:L0:Waiting:patientArrivalNurse065
+edge:Patient065:Ready:Ready:tau{provided:Patient065_patientFlow >= patArivMax : do:Patient065_patientFlow = 0}
+edge:Patient065:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient065:Waiting:WaitingMedicalCheck:checkID{do:Patient065_x=0}
+edge:Patient065:Ready:L0:patientArrivalDoc065{provided:Patient065_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient065_x = 0; Patient065_patientFlow = 0}
+
+
+
+# Process: Patient066
+## Clocks for Patient066
+clock:1:Patient066_x
+clock:1:Patient066_patientFlow
+
+## Locations for Patient066
+location:Patient066:Done
+location:Patient066:WaitingMedicalCheck{invariant:Patient066_x <= patientDeadline}
+location:Patient066:Waiting{invariant:Patient066_x <= patientDeadline}
+location:Patient066:Ready{initial: : invariant:Patient066_patientFlow <= patArivMax}
+location:Patient066:L0{urgent:}
+
+## Edges for Patient066
+edge:Patient066:L0:Waiting:patientArrivalNurse066
+edge:Patient066:Ready:Ready:tau{provided:Patient066_patientFlow >= patArivMax : do:Patient066_patientFlow = 0}
+edge:Patient066:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient066:Waiting:WaitingMedicalCheck:checkID{do:Patient066_x=0}
+edge:Patient066:Ready:L0:patientArrivalDoc066{provided:Patient066_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient066_x = 0; Patient066_patientFlow = 0}
+
+
+
+# Process: Patient067
+## Clocks for Patient067
+clock:1:Patient067_x
+clock:1:Patient067_patientFlow
+
+## Locations for Patient067
+location:Patient067:Done
+location:Patient067:WaitingMedicalCheck{invariant:Patient067_x <= patientDeadline}
+location:Patient067:Waiting{invariant:Patient067_x <= patientDeadline}
+location:Patient067:Ready{initial: : invariant:Patient067_patientFlow <= patArivMax}
+location:Patient067:L0{urgent:}
+
+## Edges for Patient067
+edge:Patient067:L0:Waiting:patientArrivalNurse067
+edge:Patient067:Ready:Ready:tau{provided:Patient067_patientFlow >= patArivMax : do:Patient067_patientFlow = 0}
+edge:Patient067:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient067:Waiting:WaitingMedicalCheck:checkID{do:Patient067_x=0}
+edge:Patient067:Ready:L0:patientArrivalDoc067{provided:Patient067_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient067_x = 0; Patient067_patientFlow = 0}
+
+
+
+# Process: Patient068
+## Clocks for Patient068
+clock:1:Patient068_x
+clock:1:Patient068_patientFlow
+
+## Locations for Patient068
+location:Patient068:Done
+location:Patient068:WaitingMedicalCheck{invariant:Patient068_x <= patientDeadline}
+location:Patient068:Waiting{invariant:Patient068_x <= patientDeadline}
+location:Patient068:Ready{initial: : invariant:Patient068_patientFlow <= patArivMax}
+location:Patient068:L0{urgent:}
+
+## Edges for Patient068
+edge:Patient068:L0:Waiting:patientArrivalNurse068
+edge:Patient068:Ready:Ready:tau{provided:Patient068_patientFlow >= patArivMax : do:Patient068_patientFlow = 0}
+edge:Patient068:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient068:Waiting:WaitingMedicalCheck:checkID{do:Patient068_x=0}
+edge:Patient068:Ready:L0:patientArrivalDoc068{provided:Patient068_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient068_x = 0; Patient068_patientFlow = 0}
+
+
+
+# Process: Patient069
+## Clocks for Patient069
+clock:1:Patient069_x
+clock:1:Patient069_patientFlow
+
+## Locations for Patient069
+location:Patient069:Done
+location:Patient069:WaitingMedicalCheck{invariant:Patient069_x <= patientDeadline}
+location:Patient069:Waiting{invariant:Patient069_x <= patientDeadline}
+location:Patient069:Ready{initial: : invariant:Patient069_patientFlow <= patArivMax}
+location:Patient069:L0{urgent:}
+
+## Edges for Patient069
+edge:Patient069:L0:Waiting:patientArrivalNurse069
+edge:Patient069:Ready:Ready:tau{provided:Patient069_patientFlow >= patArivMax : do:Patient069_patientFlow = 0}
+edge:Patient069:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient069:Waiting:WaitingMedicalCheck:checkID{do:Patient069_x=0}
+edge:Patient069:Ready:L0:patientArrivalDoc069{provided:Patient069_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient069_x = 0; Patient069_patientFlow = 0}
+
+
+
+# Process: Patient070
+## Clocks for Patient070
+clock:1:Patient070_x
+clock:1:Patient070_patientFlow
+
+## Locations for Patient070
+location:Patient070:Done
+location:Patient070:WaitingMedicalCheck{invariant:Patient070_x <= patientDeadline}
+location:Patient070:Waiting{invariant:Patient070_x <= patientDeadline}
+location:Patient070:Ready{initial: : invariant:Patient070_patientFlow <= patArivMax}
+location:Patient070:L0{urgent:}
+
+## Edges for Patient070
+edge:Patient070:L0:Waiting:patientArrivalNurse070
+edge:Patient070:Ready:Ready:tau{provided:Patient070_patientFlow >= patArivMax : do:Patient070_patientFlow = 0}
+edge:Patient070:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient070:Waiting:WaitingMedicalCheck:checkID{do:Patient070_x=0}
+edge:Patient070:Ready:L0:patientArrivalDoc070{provided:Patient070_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient070_x = 0; Patient070_patientFlow = 0}
+
+
+
+# Process: Patient071
+## Clocks for Patient071
+clock:1:Patient071_x
+clock:1:Patient071_patientFlow
+
+## Locations for Patient071
+location:Patient071:Done
+location:Patient071:WaitingMedicalCheck{invariant:Patient071_x <= patientDeadline}
+location:Patient071:Waiting{invariant:Patient071_x <= patientDeadline}
+location:Patient071:Ready{initial: : invariant:Patient071_patientFlow <= patArivMax}
+location:Patient071:L0{urgent:}
+
+## Edges for Patient071
+edge:Patient071:L0:Waiting:patientArrivalNurse071
+edge:Patient071:Ready:Ready:tau{provided:Patient071_patientFlow >= patArivMax : do:Patient071_patientFlow = 0}
+edge:Patient071:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient071:Waiting:WaitingMedicalCheck:checkID{do:Patient071_x=0}
+edge:Patient071:Ready:L0:patientArrivalDoc071{provided:Patient071_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient071_x = 0; Patient071_patientFlow = 0}
+
+
+
+# Process: Patient072
+## Clocks for Patient072
+clock:1:Patient072_x
+clock:1:Patient072_patientFlow
+
+## Locations for Patient072
+location:Patient072:Done
+location:Patient072:WaitingMedicalCheck{invariant:Patient072_x <= patientDeadline}
+location:Patient072:Waiting{invariant:Patient072_x <= patientDeadline}
+location:Patient072:Ready{initial: : invariant:Patient072_patientFlow <= patArivMax}
+location:Patient072:L0{urgent:}
+
+## Edges for Patient072
+edge:Patient072:L0:Waiting:patientArrivalNurse072
+edge:Patient072:Ready:Ready:tau{provided:Patient072_patientFlow >= patArivMax : do:Patient072_patientFlow = 0}
+edge:Patient072:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient072:Waiting:WaitingMedicalCheck:checkID{do:Patient072_x=0}
+edge:Patient072:Ready:L0:patientArrivalDoc072{provided:Patient072_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient072_x = 0; Patient072_patientFlow = 0}
+
+
+
+# Process: Patient073
+## Clocks for Patient073
+clock:1:Patient073_x
+clock:1:Patient073_patientFlow
+
+## Locations for Patient073
+location:Patient073:Done
+location:Patient073:WaitingMedicalCheck{invariant:Patient073_x <= patientDeadline}
+location:Patient073:Waiting{invariant:Patient073_x <= patientDeadline}
+location:Patient073:Ready{initial: : invariant:Patient073_patientFlow <= patArivMax}
+location:Patient073:L0{urgent:}
+
+## Edges for Patient073
+edge:Patient073:L0:Waiting:patientArrivalNurse073
+edge:Patient073:Ready:Ready:tau{provided:Patient073_patientFlow >= patArivMax : do:Patient073_patientFlow = 0}
+edge:Patient073:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient073:Waiting:WaitingMedicalCheck:checkID{do:Patient073_x=0}
+edge:Patient073:Ready:L0:patientArrivalDoc073{provided:Patient073_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient073_x = 0; Patient073_patientFlow = 0}
+
+
+
+# Process: Patient074
+## Clocks for Patient074
+clock:1:Patient074_x
+clock:1:Patient074_patientFlow
+
+## Locations for Patient074
+location:Patient074:Done
+location:Patient074:WaitingMedicalCheck{invariant:Patient074_x <= patientDeadline}
+location:Patient074:Waiting{invariant:Patient074_x <= patientDeadline}
+location:Patient074:Ready{initial: : invariant:Patient074_patientFlow <= patArivMax}
+location:Patient074:L0{urgent:}
+
+## Edges for Patient074
+edge:Patient074:L0:Waiting:patientArrivalNurse074
+edge:Patient074:Ready:Ready:tau{provided:Patient074_patientFlow >= patArivMax : do:Patient074_patientFlow = 0}
+edge:Patient074:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient074:Waiting:WaitingMedicalCheck:checkID{do:Patient074_x=0}
+edge:Patient074:Ready:L0:patientArrivalDoc074{provided:Patient074_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient074_x = 0; Patient074_patientFlow = 0}
+
+
+
+# Process: Patient075
+## Clocks for Patient075
+clock:1:Patient075_x
+clock:1:Patient075_patientFlow
+
+## Locations for Patient075
+location:Patient075:Done
+location:Patient075:WaitingMedicalCheck{invariant:Patient075_x <= patientDeadline}
+location:Patient075:Waiting{invariant:Patient075_x <= patientDeadline}
+location:Patient075:Ready{initial: : invariant:Patient075_patientFlow <= patArivMax}
+location:Patient075:L0{urgent:}
+
+## Edges for Patient075
+edge:Patient075:L0:Waiting:patientArrivalNurse075
+edge:Patient075:Ready:Ready:tau{provided:Patient075_patientFlow >= patArivMax : do:Patient075_patientFlow = 0}
+edge:Patient075:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient075:Waiting:WaitingMedicalCheck:checkID{do:Patient075_x=0}
+edge:Patient075:Ready:L0:patientArrivalDoc075{provided:Patient075_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient075_x = 0; Patient075_patientFlow = 0}
+
+
+
+# Process: Patient076
+## Clocks for Patient076
+clock:1:Patient076_x
+clock:1:Patient076_patientFlow
+
+## Locations for Patient076
+location:Patient076:Done
+location:Patient076:WaitingMedicalCheck{invariant:Patient076_x <= patientDeadline}
+location:Patient076:Waiting{invariant:Patient076_x <= patientDeadline}
+location:Patient076:Ready{initial: : invariant:Patient076_patientFlow <= patArivMax}
+location:Patient076:L0{urgent:}
+
+## Edges for Patient076
+edge:Patient076:L0:Waiting:patientArrivalNurse076
+edge:Patient076:Ready:Ready:tau{provided:Patient076_patientFlow >= patArivMax : do:Patient076_patientFlow = 0}
+edge:Patient076:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient076:Waiting:WaitingMedicalCheck:checkID{do:Patient076_x=0}
+edge:Patient076:Ready:L0:patientArrivalDoc076{provided:Patient076_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient076_x = 0; Patient076_patientFlow = 0}
+
+
+
+# Process: Patient077
+## Clocks for Patient077
+clock:1:Patient077_x
+clock:1:Patient077_patientFlow
+
+## Locations for Patient077
+location:Patient077:Done
+location:Patient077:WaitingMedicalCheck{invariant:Patient077_x <= patientDeadline}
+location:Patient077:Waiting{invariant:Patient077_x <= patientDeadline}
+location:Patient077:Ready{initial: : invariant:Patient077_patientFlow <= patArivMax}
+location:Patient077:L0{urgent:}
+
+## Edges for Patient077
+edge:Patient077:L0:Waiting:patientArrivalNurse077
+edge:Patient077:Ready:Ready:tau{provided:Patient077_patientFlow >= patArivMax : do:Patient077_patientFlow = 0}
+edge:Patient077:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient077:Waiting:WaitingMedicalCheck:checkID{do:Patient077_x=0}
+edge:Patient077:Ready:L0:patientArrivalDoc077{provided:Patient077_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient077_x = 0; Patient077_patientFlow = 0}
+
+
+
+# Process: Patient078
+## Clocks for Patient078
+clock:1:Patient078_x
+clock:1:Patient078_patientFlow
+
+## Locations for Patient078
+location:Patient078:Done
+location:Patient078:WaitingMedicalCheck{invariant:Patient078_x <= patientDeadline}
+location:Patient078:Waiting{invariant:Patient078_x <= patientDeadline}
+location:Patient078:Ready{initial: : invariant:Patient078_patientFlow <= patArivMax}
+location:Patient078:L0{urgent:}
+
+## Edges for Patient078
+edge:Patient078:L0:Waiting:patientArrivalNurse078
+edge:Patient078:Ready:Ready:tau{provided:Patient078_patientFlow >= patArivMax : do:Patient078_patientFlow = 0}
+edge:Patient078:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient078:Waiting:WaitingMedicalCheck:checkID{do:Patient078_x=0}
+edge:Patient078:Ready:L0:patientArrivalDoc078{provided:Patient078_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient078_x = 0; Patient078_patientFlow = 0}
+
+
+
+# Process: Patient079
+## Clocks for Patient079
+clock:1:Patient079_x
+clock:1:Patient079_patientFlow
+
+## Locations for Patient079
+location:Patient079:Done
+location:Patient079:WaitingMedicalCheck{invariant:Patient079_x <= patientDeadline}
+location:Patient079:Waiting{invariant:Patient079_x <= patientDeadline}
+location:Patient079:Ready{initial: : invariant:Patient079_patientFlow <= patArivMax}
+location:Patient079:L0{urgent:}
+
+## Edges for Patient079
+edge:Patient079:L0:Waiting:patientArrivalNurse079
+edge:Patient079:Ready:Ready:tau{provided:Patient079_patientFlow >= patArivMax : do:Patient079_patientFlow = 0}
+edge:Patient079:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient079:Waiting:WaitingMedicalCheck:checkID{do:Patient079_x=0}
+edge:Patient079:Ready:L0:patientArrivalDoc079{provided:Patient079_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient079_x = 0; Patient079_patientFlow = 0}
+
+
+
+# Process: Patient080
+## Clocks for Patient080
+clock:1:Patient080_x
+clock:1:Patient080_patientFlow
+
+## Locations for Patient080
+location:Patient080:Done
+location:Patient080:WaitingMedicalCheck{invariant:Patient080_x <= patientDeadline}
+location:Patient080:Waiting{invariant:Patient080_x <= patientDeadline}
+location:Patient080:Ready{initial: : invariant:Patient080_patientFlow <= patArivMax}
+location:Patient080:L0{urgent:}
+
+## Edges for Patient080
+edge:Patient080:L0:Waiting:patientArrivalNurse080
+edge:Patient080:Ready:Ready:tau{provided:Patient080_patientFlow >= patArivMax : do:Patient080_patientFlow = 0}
+edge:Patient080:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient080:Waiting:WaitingMedicalCheck:checkID{do:Patient080_x=0}
+edge:Patient080:Ready:L0:patientArrivalDoc080{provided:Patient080_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient080_x = 0; Patient080_patientFlow = 0}
+
+
+
+# Process: Patient081
+## Clocks for Patient081
+clock:1:Patient081_x
+clock:1:Patient081_patientFlow
+
+## Locations for Patient081
+location:Patient081:Done
+location:Patient081:WaitingMedicalCheck{invariant:Patient081_x <= patientDeadline}
+location:Patient081:Waiting{invariant:Patient081_x <= patientDeadline}
+location:Patient081:Ready{initial: : invariant:Patient081_patientFlow <= patArivMax}
+location:Patient081:L0{urgent:}
+
+## Edges for Patient081
+edge:Patient081:L0:Waiting:patientArrivalNurse081
+edge:Patient081:Ready:Ready:tau{provided:Patient081_patientFlow >= patArivMax : do:Patient081_patientFlow = 0}
+edge:Patient081:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient081:Waiting:WaitingMedicalCheck:checkID{do:Patient081_x=0}
+edge:Patient081:Ready:L0:patientArrivalDoc081{provided:Patient081_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient081_x = 0; Patient081_patientFlow = 0}
+
+
+
+# Process: Patient082
+## Clocks for Patient082
+clock:1:Patient082_x
+clock:1:Patient082_patientFlow
+
+## Locations for Patient082
+location:Patient082:Done
+location:Patient082:WaitingMedicalCheck{invariant:Patient082_x <= patientDeadline}
+location:Patient082:Waiting{invariant:Patient082_x <= patientDeadline}
+location:Patient082:Ready{initial: : invariant:Patient082_patientFlow <= patArivMax}
+location:Patient082:L0{urgent:}
+
+## Edges for Patient082
+edge:Patient082:L0:Waiting:patientArrivalNurse082
+edge:Patient082:Ready:Ready:tau{provided:Patient082_patientFlow >= patArivMax : do:Patient082_patientFlow = 0}
+edge:Patient082:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient082:Waiting:WaitingMedicalCheck:checkID{do:Patient082_x=0}
+edge:Patient082:Ready:L0:patientArrivalDoc082{provided:Patient082_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient082_x = 0; Patient082_patientFlow = 0}
+
+
+
+# Process: Patient083
+## Clocks for Patient083
+clock:1:Patient083_x
+clock:1:Patient083_patientFlow
+
+## Locations for Patient083
+location:Patient083:Done
+location:Patient083:WaitingMedicalCheck{invariant:Patient083_x <= patientDeadline}
+location:Patient083:Waiting{invariant:Patient083_x <= patientDeadline}
+location:Patient083:Ready{initial: : invariant:Patient083_patientFlow <= patArivMax}
+location:Patient083:L0{urgent:}
+
+## Edges for Patient083
+edge:Patient083:L0:Waiting:patientArrivalNurse083
+edge:Patient083:Ready:Ready:tau{provided:Patient083_patientFlow >= patArivMax : do:Patient083_patientFlow = 0}
+edge:Patient083:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient083:Waiting:WaitingMedicalCheck:checkID{do:Patient083_x=0}
+edge:Patient083:Ready:L0:patientArrivalDoc083{provided:Patient083_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient083_x = 0; Patient083_patientFlow = 0}
+
+
+
+# Process: Patient084
+## Clocks for Patient084
+clock:1:Patient084_x
+clock:1:Patient084_patientFlow
+
+## Locations for Patient084
+location:Patient084:Done
+location:Patient084:WaitingMedicalCheck{invariant:Patient084_x <= patientDeadline}
+location:Patient084:Waiting{invariant:Patient084_x <= patientDeadline}
+location:Patient084:Ready{initial: : invariant:Patient084_patientFlow <= patArivMax}
+location:Patient084:L0{urgent:}
+
+## Edges for Patient084
+edge:Patient084:L0:Waiting:patientArrivalNurse084
+edge:Patient084:Ready:Ready:tau{provided:Patient084_patientFlow >= patArivMax : do:Patient084_patientFlow = 0}
+edge:Patient084:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient084:Waiting:WaitingMedicalCheck:checkID{do:Patient084_x=0}
+edge:Patient084:Ready:L0:patientArrivalDoc084{provided:Patient084_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient084_x = 0; Patient084_patientFlow = 0}
+
+
+
+# Process: Patient085
+## Clocks for Patient085
+clock:1:Patient085_x
+clock:1:Patient085_patientFlow
+
+## Locations for Patient085
+location:Patient085:Done
+location:Patient085:WaitingMedicalCheck{invariant:Patient085_x <= patientDeadline}
+location:Patient085:Waiting{invariant:Patient085_x <= patientDeadline}
+location:Patient085:Ready{initial: : invariant:Patient085_patientFlow <= patArivMax}
+location:Patient085:L0{urgent:}
+
+## Edges for Patient085
+edge:Patient085:L0:Waiting:patientArrivalNurse085
+edge:Patient085:Ready:Ready:tau{provided:Patient085_patientFlow >= patArivMax : do:Patient085_patientFlow = 0}
+edge:Patient085:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient085:Waiting:WaitingMedicalCheck:checkID{do:Patient085_x=0}
+edge:Patient085:Ready:L0:patientArrivalDoc085{provided:Patient085_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient085_x = 0; Patient085_patientFlow = 0}
+
+
+
+# Process: Patient086
+## Clocks for Patient086
+clock:1:Patient086_x
+clock:1:Patient086_patientFlow
+
+## Locations for Patient086
+location:Patient086:Done
+location:Patient086:WaitingMedicalCheck{invariant:Patient086_x <= patientDeadline}
+location:Patient086:Waiting{invariant:Patient086_x <= patientDeadline}
+location:Patient086:Ready{initial: : invariant:Patient086_patientFlow <= patArivMax}
+location:Patient086:L0{urgent:}
+
+## Edges for Patient086
+edge:Patient086:L0:Waiting:patientArrivalNurse086
+edge:Patient086:Ready:Ready:tau{provided:Patient086_patientFlow >= patArivMax : do:Patient086_patientFlow = 0}
+edge:Patient086:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient086:Waiting:WaitingMedicalCheck:checkID{do:Patient086_x=0}
+edge:Patient086:Ready:L0:patientArrivalDoc086{provided:Patient086_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient086_x = 0; Patient086_patientFlow = 0}
+
+
+
+# Process: Patient087
+## Clocks for Patient087
+clock:1:Patient087_x
+clock:1:Patient087_patientFlow
+
+## Locations for Patient087
+location:Patient087:Done
+location:Patient087:WaitingMedicalCheck{invariant:Patient087_x <= patientDeadline}
+location:Patient087:Waiting{invariant:Patient087_x <= patientDeadline}
+location:Patient087:Ready{initial: : invariant:Patient087_patientFlow <= patArivMax}
+location:Patient087:L0{urgent:}
+
+## Edges for Patient087
+edge:Patient087:L0:Waiting:patientArrivalNurse087
+edge:Patient087:Ready:Ready:tau{provided:Patient087_patientFlow >= patArivMax : do:Patient087_patientFlow = 0}
+edge:Patient087:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient087:Waiting:WaitingMedicalCheck:checkID{do:Patient087_x=0}
+edge:Patient087:Ready:L0:patientArrivalDoc087{provided:Patient087_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient087_x = 0; Patient087_patientFlow = 0}
+
+
+
+# Process: Patient088
+## Clocks for Patient088
+clock:1:Patient088_x
+clock:1:Patient088_patientFlow
+
+## Locations for Patient088
+location:Patient088:Done
+location:Patient088:WaitingMedicalCheck{invariant:Patient088_x <= patientDeadline}
+location:Patient088:Waiting{invariant:Patient088_x <= patientDeadline}
+location:Patient088:Ready{initial: : invariant:Patient088_patientFlow <= patArivMax}
+location:Patient088:L0{urgent:}
+
+## Edges for Patient088
+edge:Patient088:L0:Waiting:patientArrivalNurse088
+edge:Patient088:Ready:Ready:tau{provided:Patient088_patientFlow >= patArivMax : do:Patient088_patientFlow = 0}
+edge:Patient088:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient088:Waiting:WaitingMedicalCheck:checkID{do:Patient088_x=0}
+edge:Patient088:Ready:L0:patientArrivalDoc088{provided:Patient088_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient088_x = 0; Patient088_patientFlow = 0}
+
+
+
+# Process: Patient089
+## Clocks for Patient089
+clock:1:Patient089_x
+clock:1:Patient089_patientFlow
+
+## Locations for Patient089
+location:Patient089:Done
+location:Patient089:WaitingMedicalCheck{invariant:Patient089_x <= patientDeadline}
+location:Patient089:Waiting{invariant:Patient089_x <= patientDeadline}
+location:Patient089:Ready{initial: : invariant:Patient089_patientFlow <= patArivMax}
+location:Patient089:L0{urgent:}
+
+## Edges for Patient089
+edge:Patient089:L0:Waiting:patientArrivalNurse089
+edge:Patient089:Ready:Ready:tau{provided:Patient089_patientFlow >= patArivMax : do:Patient089_patientFlow = 0}
+edge:Patient089:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient089:Waiting:WaitingMedicalCheck:checkID{do:Patient089_x=0}
+edge:Patient089:Ready:L0:patientArrivalDoc089{provided:Patient089_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient089_x = 0; Patient089_patientFlow = 0}
+
+
+
+# Process: Patient090
+## Clocks for Patient090
+clock:1:Patient090_x
+clock:1:Patient090_patientFlow
+
+## Locations for Patient090
+location:Patient090:Done
+location:Patient090:WaitingMedicalCheck{invariant:Patient090_x <= patientDeadline}
+location:Patient090:Waiting{invariant:Patient090_x <= patientDeadline}
+location:Patient090:Ready{initial: : invariant:Patient090_patientFlow <= patArivMax}
+location:Patient090:L0{urgent:}
+
+## Edges for Patient090
+edge:Patient090:L0:Waiting:patientArrivalNurse090
+edge:Patient090:Ready:Ready:tau{provided:Patient090_patientFlow >= patArivMax : do:Patient090_patientFlow = 0}
+edge:Patient090:WaitingMedicalCheck:Done:medicalCheck
+edge:Patient090:Waiting:WaitingMedicalCheck:checkID{do:Patient090_x=0}
+edge:Patient090:Ready:L0:patientArrivalDoc090{provided:Patient090_patientFlow >= patArivMin && docReady == 1 && nurseReady == 1 : do:Patient090_x = 0; Patient090_patientFlow = 0}
+
+
+
+# Process: Nurse
+## Clocks for Nurse
+clock:1:Nurse_x
+
+## Locations for Nurse
+location:Nurse:atPatient{invariant:Nurse_x <= nurseMaxDeadline}
+location:Nurse:GoToPatient
+location:Nurse:Idle
+location:Nurse:L0{initial: : urgent:}
+
+## Edges for Nurse
+edge:Nurse:L0:Idle:tau{do:nurseReady = 1}
+edge:Nurse:atPatient:Idle:tau{do:nurseReady = 1}
+edge:Nurse:GoToPatient:atPatient:checkID{provided:Nurse_x >= checkIDMin : do:Nurse_x = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse001{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse002{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse003{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse004{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse005{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse006{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse007{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse008{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse009{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse010{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse011{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse012{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse013{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse014{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse015{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse016{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse017{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse018{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse019{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse020{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse021{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse022{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse023{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse024{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse025{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse026{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse027{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse028{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse029{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse030{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse031{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse032{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse033{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse034{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse035{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse036{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse037{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse038{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse039{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse040{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse041{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse042{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse043{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse044{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse045{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse046{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse047{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse048{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse049{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse050{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse051{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse052{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse053{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse054{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse055{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse056{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse057{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse058{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse059{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse060{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse061{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse062{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse063{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse064{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse065{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse066{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse067{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse068{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse069{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse070{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse071{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse072{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse073{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse074{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse075{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse076{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse077{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse078{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse079{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse080{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse081{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse082{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse083{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse084{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse085{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse086{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse087{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse088{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse089{do:Nurse_x = 0; nurseReady = 0}
+edge:Nurse:Idle:GoToPatient:patientArrivalNurse090{do:Nurse_x = 0; nurseReady = 0}
+
+
+
+# Process: Doctor
+## Clocks for Doctor
+clock:1:Doctor_x
+
+## Locations for Doctor
+location:Doctor:Prepaired{invariant:Doctor_x <= docMaxDeadline}
+location:Doctor:GoToPatient
+location:Doctor:Idle
+location:Doctor:L0{initial: : urgent:}
+
+## Edges for Doctor
+edge:Doctor:L0:Idle:tau{do:docReady = 1}
+edge:Doctor:Prepaired:Idle:medicalCheck{do:docReady = 1}
+edge:Doctor:GoToPatient:Prepaired:tau{provided:Doctor_x >= readDocsMin : do:Doctor_x = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc001{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc002{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc003{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc004{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc005{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc006{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc007{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc008{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc009{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc010{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc011{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc012{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc013{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc014{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc015{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc016{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc017{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc018{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc019{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc020{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc021{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc022{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc023{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc024{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc025{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc026{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc027{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc028{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc029{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc030{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc031{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc032{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc033{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc034{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc035{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc036{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc037{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc038{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc039{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc040{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc041{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc042{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc043{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc044{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc045{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc046{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc047{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc048{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc049{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc050{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc051{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc052{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc053{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc054{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc055{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc056{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc057{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc058{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc059{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc060{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc061{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc062{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc063{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc064{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc065{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc066{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc067{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc068{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc069{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc070{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc071{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc072{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc073{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc074{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc075{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc076{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc077{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc078{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc079{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc080{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc081{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc082{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc083{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc084{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc085{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc086{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc087{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc088{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc089{do:Doctor_x = 0; docReady = 0}
+edge:Doctor:Idle:GoToPatient:patientArrivalDoc090{do:Doctor_x = 0; docReady = 0}
+
+
+
+# Synchronizations
+sync:Nurse@checkID:Patient001@checkID
+sync:Nurse@checkID:Patient002@checkID
+sync:Nurse@checkID:Patient003@checkID
+sync:Nurse@checkID:Patient004@checkID
+sync:Nurse@checkID:Patient005@checkID
+sync:Nurse@checkID:Patient006@checkID
+sync:Nurse@checkID:Patient007@checkID
+sync:Nurse@checkID:Patient008@checkID
+sync:Nurse@checkID:Patient009@checkID
+sync:Nurse@checkID:Patient010@checkID
+sync:Nurse@checkID:Patient011@checkID
+sync:Nurse@checkID:Patient012@checkID
+sync:Nurse@checkID:Patient013@checkID
+sync:Nurse@checkID:Patient014@checkID
+sync:Nurse@checkID:Patient015@checkID
+sync:Nurse@checkID:Patient016@checkID
+sync:Nurse@checkID:Patient017@checkID
+sync:Nurse@checkID:Patient018@checkID
+sync:Nurse@checkID:Patient019@checkID
+sync:Nurse@checkID:Patient020@checkID
+sync:Nurse@checkID:Patient021@checkID
+sync:Nurse@checkID:Patient022@checkID
+sync:Nurse@checkID:Patient023@checkID
+sync:Nurse@checkID:Patient024@checkID
+sync:Nurse@checkID:Patient025@checkID
+sync:Nurse@checkID:Patient026@checkID
+sync:Nurse@checkID:Patient027@checkID
+sync:Nurse@checkID:Patient028@checkID
+sync:Nurse@checkID:Patient029@checkID
+sync:Nurse@checkID:Patient030@checkID
+sync:Nurse@checkID:Patient031@checkID
+sync:Nurse@checkID:Patient032@checkID
+sync:Nurse@checkID:Patient033@checkID
+sync:Nurse@checkID:Patient034@checkID
+sync:Nurse@checkID:Patient035@checkID
+sync:Nurse@checkID:Patient036@checkID
+sync:Nurse@checkID:Patient037@checkID
+sync:Nurse@checkID:Patient038@checkID
+sync:Nurse@checkID:Patient039@checkID
+sync:Nurse@checkID:Patient040@checkID
+sync:Nurse@checkID:Patient041@checkID
+sync:Nurse@checkID:Patient042@checkID
+sync:Nurse@checkID:Patient043@checkID
+sync:Nurse@checkID:Patient044@checkID
+sync:Nurse@checkID:Patient045@checkID
+sync:Nurse@checkID:Patient046@checkID
+sync:Nurse@checkID:Patient047@checkID
+sync:Nurse@checkID:Patient048@checkID
+sync:Nurse@checkID:Patient049@checkID
+sync:Nurse@checkID:Patient050@checkID
+sync:Nurse@checkID:Patient051@checkID
+sync:Nurse@checkID:Patient052@checkID
+sync:Nurse@checkID:Patient053@checkID
+sync:Nurse@checkID:Patient054@checkID
+sync:Nurse@checkID:Patient055@checkID
+sync:Nurse@checkID:Patient056@checkID
+sync:Nurse@checkID:Patient057@checkID
+sync:Nurse@checkID:Patient058@checkID
+sync:Nurse@checkID:Patient059@checkID
+sync:Nurse@checkID:Patient060@checkID
+sync:Nurse@checkID:Patient061@checkID
+sync:Nurse@checkID:Patient062@checkID
+sync:Nurse@checkID:Patient063@checkID
+sync:Nurse@checkID:Patient064@checkID
+sync:Nurse@checkID:Patient065@checkID
+sync:Nurse@checkID:Patient066@checkID
+sync:Nurse@checkID:Patient067@checkID
+sync:Nurse@checkID:Patient068@checkID
+sync:Nurse@checkID:Patient069@checkID
+sync:Nurse@checkID:Patient070@checkID
+sync:Nurse@checkID:Patient071@checkID
+sync:Nurse@checkID:Patient072@checkID
+sync:Nurse@checkID:Patient073@checkID
+sync:Nurse@checkID:Patient074@checkID
+sync:Nurse@checkID:Patient075@checkID
+sync:Nurse@checkID:Patient076@checkID
+sync:Nurse@checkID:Patient077@checkID
+sync:Nurse@checkID:Patient078@checkID
+sync:Nurse@checkID:Patient079@checkID
+sync:Nurse@checkID:Patient080@checkID
+sync:Nurse@checkID:Patient081@checkID
+sync:Nurse@checkID:Patient082@checkID
+sync:Nurse@checkID:Patient083@checkID
+sync:Nurse@checkID:Patient084@checkID
+sync:Nurse@checkID:Patient085@checkID
+sync:Nurse@checkID:Patient086@checkID
+sync:Nurse@checkID:Patient087@checkID
+sync:Nurse@checkID:Patient088@checkID
+sync:Nurse@checkID:Patient089@checkID
+sync:Nurse@checkID:Patient090@checkID
+sync:Doctor@medicalCheck:Patient001@medicalCheck
+sync:Doctor@medicalCheck:Patient002@medicalCheck
+sync:Doctor@medicalCheck:Patient003@medicalCheck
+sync:Doctor@medicalCheck:Patient004@medicalCheck
+sync:Doctor@medicalCheck:Patient005@medicalCheck
+sync:Doctor@medicalCheck:Patient006@medicalCheck
+sync:Doctor@medicalCheck:Patient007@medicalCheck
+sync:Doctor@medicalCheck:Patient008@medicalCheck
+sync:Doctor@medicalCheck:Patient009@medicalCheck
+sync:Doctor@medicalCheck:Patient010@medicalCheck
+sync:Doctor@medicalCheck:Patient011@medicalCheck
+sync:Doctor@medicalCheck:Patient012@medicalCheck
+sync:Doctor@medicalCheck:Patient013@medicalCheck
+sync:Doctor@medicalCheck:Patient014@medicalCheck
+sync:Doctor@medicalCheck:Patient015@medicalCheck
+sync:Doctor@medicalCheck:Patient016@medicalCheck
+sync:Doctor@medicalCheck:Patient017@medicalCheck
+sync:Doctor@medicalCheck:Patient018@medicalCheck
+sync:Doctor@medicalCheck:Patient019@medicalCheck
+sync:Doctor@medicalCheck:Patient020@medicalCheck
+sync:Doctor@medicalCheck:Patient021@medicalCheck
+sync:Doctor@medicalCheck:Patient022@medicalCheck
+sync:Doctor@medicalCheck:Patient023@medicalCheck
+sync:Doctor@medicalCheck:Patient024@medicalCheck
+sync:Doctor@medicalCheck:Patient025@medicalCheck
+sync:Doctor@medicalCheck:Patient026@medicalCheck
+sync:Doctor@medicalCheck:Patient027@medicalCheck
+sync:Doctor@medicalCheck:Patient028@medicalCheck
+sync:Doctor@medicalCheck:Patient029@medicalCheck
+sync:Doctor@medicalCheck:Patient030@medicalCheck
+sync:Doctor@medicalCheck:Patient031@medicalCheck
+sync:Doctor@medicalCheck:Patient032@medicalCheck
+sync:Doctor@medicalCheck:Patient033@medicalCheck
+sync:Doctor@medicalCheck:Patient034@medicalCheck
+sync:Doctor@medicalCheck:Patient035@medicalCheck
+sync:Doctor@medicalCheck:Patient036@medicalCheck
+sync:Doctor@medicalCheck:Patient037@medicalCheck
+sync:Doctor@medicalCheck:Patient038@medicalCheck
+sync:Doctor@medicalCheck:Patient039@medicalCheck
+sync:Doctor@medicalCheck:Patient040@medicalCheck
+sync:Doctor@medicalCheck:Patient041@medicalCheck
+sync:Doctor@medicalCheck:Patient042@medicalCheck
+sync:Doctor@medicalCheck:Patient043@medicalCheck
+sync:Doctor@medicalCheck:Patient044@medicalCheck
+sync:Doctor@medicalCheck:Patient045@medicalCheck
+sync:Doctor@medicalCheck:Patient046@medicalCheck
+sync:Doctor@medicalCheck:Patient047@medicalCheck
+sync:Doctor@medicalCheck:Patient048@medicalCheck
+sync:Doctor@medicalCheck:Patient049@medicalCheck
+sync:Doctor@medicalCheck:Patient050@medicalCheck
+sync:Doctor@medicalCheck:Patient051@medicalCheck
+sync:Doctor@medicalCheck:Patient052@medicalCheck
+sync:Doctor@medicalCheck:Patient053@medicalCheck
+sync:Doctor@medicalCheck:Patient054@medicalCheck
+sync:Doctor@medicalCheck:Patient055@medicalCheck
+sync:Doctor@medicalCheck:Patient056@medicalCheck
+sync:Doctor@medicalCheck:Patient057@medicalCheck
+sync:Doctor@medicalCheck:Patient058@medicalCheck
+sync:Doctor@medicalCheck:Patient059@medicalCheck
+sync:Doctor@medicalCheck:Patient060@medicalCheck
+sync:Doctor@medicalCheck:Patient061@medicalCheck
+sync:Doctor@medicalCheck:Patient062@medicalCheck
+sync:Doctor@medicalCheck:Patient063@medicalCheck
+sync:Doctor@medicalCheck:Patient064@medicalCheck
+sync:Doctor@medicalCheck:Patient065@medicalCheck
+sync:Doctor@medicalCheck:Patient066@medicalCheck
+sync:Doctor@medicalCheck:Patient067@medicalCheck
+sync:Doctor@medicalCheck:Patient068@medicalCheck
+sync:Doctor@medicalCheck:Patient069@medicalCheck
+sync:Doctor@medicalCheck:Patient070@medicalCheck
+sync:Doctor@medicalCheck:Patient071@medicalCheck
+sync:Doctor@medicalCheck:Patient072@medicalCheck
+sync:Doctor@medicalCheck:Patient073@medicalCheck
+sync:Doctor@medicalCheck:Patient074@medicalCheck
+sync:Doctor@medicalCheck:Patient075@medicalCheck
+sync:Doctor@medicalCheck:Patient076@medicalCheck
+sync:Doctor@medicalCheck:Patient077@medicalCheck
+sync:Doctor@medicalCheck:Patient078@medicalCheck
+sync:Doctor@medicalCheck:Patient079@medicalCheck
+sync:Doctor@medicalCheck:Patient080@medicalCheck
+sync:Doctor@medicalCheck:Patient081@medicalCheck
+sync:Doctor@medicalCheck:Patient082@medicalCheck
+sync:Doctor@medicalCheck:Patient083@medicalCheck
+sync:Doctor@medicalCheck:Patient084@medicalCheck
+sync:Doctor@medicalCheck:Patient085@medicalCheck
+sync:Doctor@medicalCheck:Patient086@medicalCheck
+sync:Doctor@medicalCheck:Patient087@medicalCheck
+sync:Doctor@medicalCheck:Patient088@medicalCheck
+sync:Doctor@medicalCheck:Patient089@medicalCheck
+sync:Doctor@medicalCheck:Patient090@medicalCheck
+sync:Patient001@patientArrivalDoc001:Doctor@patientArrivalDoc001
+sync:Patient002@patientArrivalDoc002:Doctor@patientArrivalDoc002
+sync:Patient003@patientArrivalDoc003:Doctor@patientArrivalDoc003
+sync:Patient004@patientArrivalDoc004:Doctor@patientArrivalDoc004
+sync:Patient005@patientArrivalDoc005:Doctor@patientArrivalDoc005
+sync:Patient006@patientArrivalDoc006:Doctor@patientArrivalDoc006
+sync:Patient007@patientArrivalDoc007:Doctor@patientArrivalDoc007
+sync:Patient008@patientArrivalDoc008:Doctor@patientArrivalDoc008
+sync:Patient009@patientArrivalDoc009:Doctor@patientArrivalDoc009
+sync:Patient010@patientArrivalDoc010:Doctor@patientArrivalDoc010
+sync:Patient011@patientArrivalDoc011:Doctor@patientArrivalDoc011
+sync:Patient012@patientArrivalDoc012:Doctor@patientArrivalDoc012
+sync:Patient013@patientArrivalDoc013:Doctor@patientArrivalDoc013
+sync:Patient014@patientArrivalDoc014:Doctor@patientArrivalDoc014
+sync:Patient015@patientArrivalDoc015:Doctor@patientArrivalDoc015
+sync:Patient016@patientArrivalDoc016:Doctor@patientArrivalDoc016
+sync:Patient017@patientArrivalDoc017:Doctor@patientArrivalDoc017
+sync:Patient018@patientArrivalDoc018:Doctor@patientArrivalDoc018
+sync:Patient019@patientArrivalDoc019:Doctor@patientArrivalDoc019
+sync:Patient020@patientArrivalDoc020:Doctor@patientArrivalDoc020
+sync:Patient021@patientArrivalDoc021:Doctor@patientArrivalDoc021
+sync:Patient022@patientArrivalDoc022:Doctor@patientArrivalDoc022
+sync:Patient023@patientArrivalDoc023:Doctor@patientArrivalDoc023
+sync:Patient024@patientArrivalDoc024:Doctor@patientArrivalDoc024
+sync:Patient025@patientArrivalDoc025:Doctor@patientArrivalDoc025
+sync:Patient026@patientArrivalDoc026:Doctor@patientArrivalDoc026
+sync:Patient027@patientArrivalDoc027:Doctor@patientArrivalDoc027
+sync:Patient028@patientArrivalDoc028:Doctor@patientArrivalDoc028
+sync:Patient029@patientArrivalDoc029:Doctor@patientArrivalDoc029
+sync:Patient030@patientArrivalDoc030:Doctor@patientArrivalDoc030
+sync:Patient031@patientArrivalDoc031:Doctor@patientArrivalDoc031
+sync:Patient032@patientArrivalDoc032:Doctor@patientArrivalDoc032
+sync:Patient033@patientArrivalDoc033:Doctor@patientArrivalDoc033
+sync:Patient034@patientArrivalDoc034:Doctor@patientArrivalDoc034
+sync:Patient035@patientArrivalDoc035:Doctor@patientArrivalDoc035
+sync:Patient036@patientArrivalDoc036:Doctor@patientArrivalDoc036
+sync:Patient037@patientArrivalDoc037:Doctor@patientArrivalDoc037
+sync:Patient038@patientArrivalDoc038:Doctor@patientArrivalDoc038
+sync:Patient039@patientArrivalDoc039:Doctor@patientArrivalDoc039
+sync:Patient040@patientArrivalDoc040:Doctor@patientArrivalDoc040
+sync:Patient041@patientArrivalDoc041:Doctor@patientArrivalDoc041
+sync:Patient042@patientArrivalDoc042:Doctor@patientArrivalDoc042
+sync:Patient043@patientArrivalDoc043:Doctor@patientArrivalDoc043
+sync:Patient044@patientArrivalDoc044:Doctor@patientArrivalDoc044
+sync:Patient045@patientArrivalDoc045:Doctor@patientArrivalDoc045
+sync:Patient046@patientArrivalDoc046:Doctor@patientArrivalDoc046
+sync:Patient047@patientArrivalDoc047:Doctor@patientArrivalDoc047
+sync:Patient048@patientArrivalDoc048:Doctor@patientArrivalDoc048
+sync:Patient049@patientArrivalDoc049:Doctor@patientArrivalDoc049
+sync:Patient050@patientArrivalDoc050:Doctor@patientArrivalDoc050
+sync:Patient051@patientArrivalDoc051:Doctor@patientArrivalDoc051
+sync:Patient052@patientArrivalDoc052:Doctor@patientArrivalDoc052
+sync:Patient053@patientArrivalDoc053:Doctor@patientArrivalDoc053
+sync:Patient054@patientArrivalDoc054:Doctor@patientArrivalDoc054
+sync:Patient055@patientArrivalDoc055:Doctor@patientArrivalDoc055
+sync:Patient056@patientArrivalDoc056:Doctor@patientArrivalDoc056
+sync:Patient057@patientArrivalDoc057:Doctor@patientArrivalDoc057
+sync:Patient058@patientArrivalDoc058:Doctor@patientArrivalDoc058
+sync:Patient059@patientArrivalDoc059:Doctor@patientArrivalDoc059
+sync:Patient060@patientArrivalDoc060:Doctor@patientArrivalDoc060
+sync:Patient061@patientArrivalDoc061:Doctor@patientArrivalDoc061
+sync:Patient062@patientArrivalDoc062:Doctor@patientArrivalDoc062
+sync:Patient063@patientArrivalDoc063:Doctor@patientArrivalDoc063
+sync:Patient064@patientArrivalDoc064:Doctor@patientArrivalDoc064
+sync:Patient065@patientArrivalDoc065:Doctor@patientArrivalDoc065
+sync:Patient066@patientArrivalDoc066:Doctor@patientArrivalDoc066
+sync:Patient067@patientArrivalDoc067:Doctor@patientArrivalDoc067
+sync:Patient068@patientArrivalDoc068:Doctor@patientArrivalDoc068
+sync:Patient069@patientArrivalDoc069:Doctor@patientArrivalDoc069
+sync:Patient070@patientArrivalDoc070:Doctor@patientArrivalDoc070
+sync:Patient071@patientArrivalDoc071:Doctor@patientArrivalDoc071
+sync:Patient072@patientArrivalDoc072:Doctor@patientArrivalDoc072
+sync:Patient073@patientArrivalDoc073:Doctor@patientArrivalDoc073
+sync:Patient074@patientArrivalDoc074:Doctor@patientArrivalDoc074
+sync:Patient075@patientArrivalDoc075:Doctor@patientArrivalDoc075
+sync:Patient076@patientArrivalDoc076:Doctor@patientArrivalDoc076
+sync:Patient077@patientArrivalDoc077:Doctor@patientArrivalDoc077
+sync:Patient078@patientArrivalDoc078:Doctor@patientArrivalDoc078
+sync:Patient079@patientArrivalDoc079:Doctor@patientArrivalDoc079
+sync:Patient080@patientArrivalDoc080:Doctor@patientArrivalDoc080
+sync:Patient081@patientArrivalDoc081:Doctor@patientArrivalDoc081
+sync:Patient082@patientArrivalDoc082:Doctor@patientArrivalDoc082
+sync:Patient083@patientArrivalDoc083:Doctor@patientArrivalDoc083
+sync:Patient084@patientArrivalDoc084:Doctor@patientArrivalDoc084
+sync:Patient085@patientArrivalDoc085:Doctor@patientArrivalDoc085
+sync:Patient086@patientArrivalDoc086:Doctor@patientArrivalDoc086
+sync:Patient087@patientArrivalDoc087:Doctor@patientArrivalDoc087
+sync:Patient088@patientArrivalDoc088:Doctor@patientArrivalDoc088
+sync:Patient089@patientArrivalDoc089:Doctor@patientArrivalDoc089
+sync:Patient090@patientArrivalDoc090:Doctor@patientArrivalDoc090
+sync:Patient001@patientArrivalNurse001:Nurse@patientArrivalNurse001
+sync:Patient002@patientArrivalNurse002:Nurse@patientArrivalNurse002
+sync:Patient003@patientArrivalNurse003:Nurse@patientArrivalNurse003
+sync:Patient004@patientArrivalNurse004:Nurse@patientArrivalNurse004
+sync:Patient005@patientArrivalNurse005:Nurse@patientArrivalNurse005
+sync:Patient006@patientArrivalNurse006:Nurse@patientArrivalNurse006
+sync:Patient007@patientArrivalNurse007:Nurse@patientArrivalNurse007
+sync:Patient008@patientArrivalNurse008:Nurse@patientArrivalNurse008
+sync:Patient009@patientArrivalNurse009:Nurse@patientArrivalNurse009
+sync:Patient010@patientArrivalNurse010:Nurse@patientArrivalNurse010
+sync:Patient011@patientArrivalNurse011:Nurse@patientArrivalNurse011
+sync:Patient012@patientArrivalNurse012:Nurse@patientArrivalNurse012
+sync:Patient013@patientArrivalNurse013:Nurse@patientArrivalNurse013
+sync:Patient014@patientArrivalNurse014:Nurse@patientArrivalNurse014
+sync:Patient015@patientArrivalNurse015:Nurse@patientArrivalNurse015
+sync:Patient016@patientArrivalNurse016:Nurse@patientArrivalNurse016
+sync:Patient017@patientArrivalNurse017:Nurse@patientArrivalNurse017
+sync:Patient018@patientArrivalNurse018:Nurse@patientArrivalNurse018
+sync:Patient019@patientArrivalNurse019:Nurse@patientArrivalNurse019
+sync:Patient020@patientArrivalNurse020:Nurse@patientArrivalNurse020
+sync:Patient021@patientArrivalNurse021:Nurse@patientArrivalNurse021
+sync:Patient022@patientArrivalNurse022:Nurse@patientArrivalNurse022
+sync:Patient023@patientArrivalNurse023:Nurse@patientArrivalNurse023
+sync:Patient024@patientArrivalNurse024:Nurse@patientArrivalNurse024
+sync:Patient025@patientArrivalNurse025:Nurse@patientArrivalNurse025
+sync:Patient026@patientArrivalNurse026:Nurse@patientArrivalNurse026
+sync:Patient027@patientArrivalNurse027:Nurse@patientArrivalNurse027
+sync:Patient028@patientArrivalNurse028:Nurse@patientArrivalNurse028
+sync:Patient029@patientArrivalNurse029:Nurse@patientArrivalNurse029
+sync:Patient030@patientArrivalNurse030:Nurse@patientArrivalNurse030
+sync:Patient031@patientArrivalNurse031:Nurse@patientArrivalNurse031
+sync:Patient032@patientArrivalNurse032:Nurse@patientArrivalNurse032
+sync:Patient033@patientArrivalNurse033:Nurse@patientArrivalNurse033
+sync:Patient034@patientArrivalNurse034:Nurse@patientArrivalNurse034
+sync:Patient035@patientArrivalNurse035:Nurse@patientArrivalNurse035
+sync:Patient036@patientArrivalNurse036:Nurse@patientArrivalNurse036
+sync:Patient037@patientArrivalNurse037:Nurse@patientArrivalNurse037
+sync:Patient038@patientArrivalNurse038:Nurse@patientArrivalNurse038
+sync:Patient039@patientArrivalNurse039:Nurse@patientArrivalNurse039
+sync:Patient040@patientArrivalNurse040:Nurse@patientArrivalNurse040
+sync:Patient041@patientArrivalNurse041:Nurse@patientArrivalNurse041
+sync:Patient042@patientArrivalNurse042:Nurse@patientArrivalNurse042
+sync:Patient043@patientArrivalNurse043:Nurse@patientArrivalNurse043
+sync:Patient044@patientArrivalNurse044:Nurse@patientArrivalNurse044
+sync:Patient045@patientArrivalNurse045:Nurse@patientArrivalNurse045
+sync:Patient046@patientArrivalNurse046:Nurse@patientArrivalNurse046
+sync:Patient047@patientArrivalNurse047:Nurse@patientArrivalNurse047
+sync:Patient048@patientArrivalNurse048:Nurse@patientArrivalNurse048
+sync:Patient049@patientArrivalNurse049:Nurse@patientArrivalNurse049
+sync:Patient050@patientArrivalNurse050:Nurse@patientArrivalNurse050
+sync:Patient051@patientArrivalNurse051:Nurse@patientArrivalNurse051
+sync:Patient052@patientArrivalNurse052:Nurse@patientArrivalNurse052
+sync:Patient053@patientArrivalNurse053:Nurse@patientArrivalNurse053
+sync:Patient054@patientArrivalNurse054:Nurse@patientArrivalNurse054
+sync:Patient055@patientArrivalNurse055:Nurse@patientArrivalNurse055
+sync:Patient056@patientArrivalNurse056:Nurse@patientArrivalNurse056
+sync:Patient057@patientArrivalNurse057:Nurse@patientArrivalNurse057
+sync:Patient058@patientArrivalNurse058:Nurse@patientArrivalNurse058
+sync:Patient059@patientArrivalNurse059:Nurse@patientArrivalNurse059
+sync:Patient060@patientArrivalNurse060:Nurse@patientArrivalNurse060
+sync:Patient061@patientArrivalNurse061:Nurse@patientArrivalNurse061
+sync:Patient062@patientArrivalNurse062:Nurse@patientArrivalNurse062
+sync:Patient063@patientArrivalNurse063:Nurse@patientArrivalNurse063
+sync:Patient064@patientArrivalNurse064:Nurse@patientArrivalNurse064
+sync:Patient065@patientArrivalNurse065:Nurse@patientArrivalNurse065
+sync:Patient066@patientArrivalNurse066:Nurse@patientArrivalNurse066
+sync:Patient067@patientArrivalNurse067:Nurse@patientArrivalNurse067
+sync:Patient068@patientArrivalNurse068:Nurse@patientArrivalNurse068
+sync:Patient069@patientArrivalNurse069:Nurse@patientArrivalNurse069
+sync:Patient070@patientArrivalNurse070:Nurse@patientArrivalNurse070
+sync:Patient071@patientArrivalNurse071:Nurse@patientArrivalNurse071
+sync:Patient072@patientArrivalNurse072:Nurse@patientArrivalNurse072
+sync:Patient073@patientArrivalNurse073:Nurse@patientArrivalNurse073
+sync:Patient074@patientArrivalNurse074:Nurse@patientArrivalNurse074
+sync:Patient075@patientArrivalNurse075:Nurse@patientArrivalNurse075
+sync:Patient076@patientArrivalNurse076:Nurse@patientArrivalNurse076
+sync:Patient077@patientArrivalNurse077:Nurse@patientArrivalNurse077
+sync:Patient078@patientArrivalNurse078:Nurse@patientArrivalNurse078
+sync:Patient079@patientArrivalNurse079:Nurse@patientArrivalNurse079
+sync:Patient080@patientArrivalNurse080:Nurse@patientArrivalNurse080
+sync:Patient081@patientArrivalNurse081:Nurse@patientArrivalNurse081
+sync:Patient082@patientArrivalNurse082:Nurse@patientArrivalNurse082
+sync:Patient083@patientArrivalNurse083:Nurse@patientArrivalNurse083
+sync:Patient084@patientArrivalNurse084:Nurse@patientArrivalNurse084
+sync:Patient085@patientArrivalNurse085:Nurse@patientArrivalNurse085
+sync:Patient086@patientArrivalNurse086:Nurse@patientArrivalNurse086
+sync:Patient087@patientArrivalNurse087:Nurse@patientArrivalNurse087
+sync:Patient088@patientArrivalNurse088:Nurse@patientArrivalNurse088
+sync:Patient089@patientArrivalNurse089:Nurse@patientArrivalNurse089
+sync:Patient090@patientArrivalNurse090:Nurse@patientArrivalNurse090
