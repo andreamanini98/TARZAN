@@ -60,7 +60,7 @@ clock:1:Patient001_x
 clock:1:Patient001_patientFlow
 
 ## Locations for Patient001
-location:Patient001:Done
+location:Patient001:Done{labels: goal001}
 location:Patient001:WaitingMedicalCheck{invariant:Patient001_x <= patientDeadline}
 location:Patient001:Waiting{invariant:Patient001_x <= patientDeadline}
 location:Patient001:Ready{initial: : invariant:Patient001_patientFlow <= patArivMax}
@@ -81,7 +81,7 @@ clock:1:Patient002_x
 clock:1:Patient002_patientFlow
 
 ## Locations for Patient002
-location:Patient002:Done
+location:Patient002:Done{labels: goal002}
 location:Patient002:WaitingMedicalCheck{invariant:Patient002_x <= patientDeadline}
 location:Patient002:Waiting{invariant:Patient002_x <= patientDeadline}
 location:Patient002:Ready{initial: : invariant:Patient002_patientFlow <= patArivMax}
@@ -102,7 +102,7 @@ clock:1:Patient003_x
 clock:1:Patient003_patientFlow
 
 ## Locations for Patient003
-location:Patient003:Done
+location:Patient003:Done{labels: goal003}
 location:Patient003:WaitingMedicalCheck{invariant:Patient003_x <= patientDeadline}
 location:Patient003:Waiting{invariant:Patient003_x <= patientDeadline}
 location:Patient003:Ready{initial: : invariant:Patient003_patientFlow <= patArivMax}
@@ -123,7 +123,7 @@ clock:1:Patient004_x
 clock:1:Patient004_patientFlow
 
 ## Locations for Patient004
-location:Patient004:Done
+location:Patient004:Done{labels: goal004}
 location:Patient004:WaitingMedicalCheck{invariant:Patient004_x <= patientDeadline}
 location:Patient004:Waiting{invariant:Patient004_x <= patientDeadline}
 location:Patient004:Ready{initial: : invariant:Patient004_patientFlow <= patArivMax}
@@ -144,7 +144,7 @@ clock:1:Patient005_x
 clock:1:Patient005_patientFlow
 
 ## Locations for Patient005
-location:Patient005:Done
+location:Patient005:Done{labels: goal005}
 location:Patient005:WaitingMedicalCheck{invariant:Patient005_x <= patientDeadline}
 location:Patient005:Waiting{invariant:Patient005_x <= patientDeadline}
 location:Patient005:Ready{initial: : invariant:Patient005_patientFlow <= patArivMax}
@@ -165,7 +165,7 @@ clock:1:Patient006_x
 clock:1:Patient006_patientFlow
 
 ## Locations for Patient006
-location:Patient006:Done
+location:Patient006:Done{labels: goal006}
 location:Patient006:WaitingMedicalCheck{invariant:Patient006_x <= patientDeadline}
 location:Patient006:Waiting{invariant:Patient006_x <= patientDeadline}
 location:Patient006:Ready{initial: : invariant:Patient006_patientFlow <= patArivMax}
@@ -186,7 +186,7 @@ clock:1:Patient007_x
 clock:1:Patient007_patientFlow
 
 ## Locations for Patient007
-location:Patient007:Done
+location:Patient007:Done{labels: goal007}
 location:Patient007:WaitingMedicalCheck{invariant:Patient007_x <= patientDeadline}
 location:Patient007:Waiting{invariant:Patient007_x <= patientDeadline}
 location:Patient007:Ready{initial: : invariant:Patient007_patientFlow <= patArivMax}
@@ -207,7 +207,7 @@ clock:1:Patient008_x
 clock:1:Patient008_patientFlow
 
 ## Locations for Patient008
-location:Patient008:Done
+location:Patient008:Done{labels: goal008}
 location:Patient008:WaitingMedicalCheck{invariant:Patient008_x <= patientDeadline}
 location:Patient008:Waiting{invariant:Patient008_x <= patientDeadline}
 location:Patient008:Ready{initial: : invariant:Patient008_patientFlow <= patArivMax}
@@ -228,7 +228,7 @@ clock:1:Patient009_x
 clock:1:Patient009_patientFlow
 
 ## Locations for Patient009
-location:Patient009:Done
+location:Patient009:Done{labels: goal009}
 location:Patient009:WaitingMedicalCheck{invariant:Patient009_x <= patientDeadline}
 location:Patient009:Waiting{invariant:Patient009_x <= patientDeadline}
 location:Patient009:Ready{initial: : invariant:Patient009_patientFlow <= patArivMax}
@@ -249,7 +249,7 @@ clock:1:Patient010_x
 clock:1:Patient010_patientFlow
 
 ## Locations for Patient010
-location:Patient010:Done
+location:Patient010:Done{labels: goal010}
 location:Patient010:WaitingMedicalCheck{invariant:Patient010_x <= patientDeadline}
 location:Patient010:Waiting{invariant:Patient010_x <= patientDeadline}
 location:Patient010:Ready{initial: : invariant:Patient010_patientFlow <= patArivMax}
