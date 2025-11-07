@@ -1,4 +1,4 @@
-const int N = 4;
+const int N = 8;
 
 const int a = 2;
 const int b = 5;
@@ -13,56 +13,10 @@ chan lower;
 chan raise;
 chan approach;
 
-process Train01() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
+typedef scalar[N] pid_t;
 
-process Train02() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train03() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train04() {
-    clock x;
+process Train(const pid_t pid) {
+clock x;
 state
     train0,
     train1 { x <= b },
@@ -78,7 +32,7 @@ trans
 }
 
 process gate() {
-    clock y;
+clock y;
 state
     gate0,
     gate1 { y <= c },
@@ -94,7 +48,7 @@ trans
 }
 
 process controller() {
-    clock z;
+clock z;
 state
     controller0,
     controller1 { z <= e },
@@ -113,5 +67,4 @@ trans
     controller3 -> controller2 { guard z <= e; sync approach!; assign cnt = cnt + 1; },
     controller1 -> controller2 { guard z == e; sync lower!; };
 }
-
-system Train01, Train02, Train03, Train04, gate, controller;
+system Train, gate, controller;

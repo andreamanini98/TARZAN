@@ -1,4 +1,4 @@
-const int N = 12;
+const int N = 4;
 
 const int a = 2;
 const int b = 5;

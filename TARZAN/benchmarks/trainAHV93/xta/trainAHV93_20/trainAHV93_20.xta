@@ -1,4 +1,4 @@
-const int N = 8;
+const int N = 20;
 
 const int a = 2;
 const int b = 5;
@@ -13,312 +13,10 @@ chan lower;
 chan raise;
 chan approach;
 
-process Train01() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
+typedef scalar[N] pid_t;
 
-process Train02() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train03() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train04() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train05() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train06() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train07() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train08() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train09() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train10() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train11() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train12() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train13() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train14() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train15() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train16() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train17() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train18() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train19() {
-    clock x;
-state
-    train0,
-    train1 { x <= b },
-    train2 { x <= b },
-    train3 { x <= b };
-init
-    train0;
-trans
-    train2 -> train3 { },
-    train3 -> train0 { guard x <= b; sync texit?; },
-    train1 -> train2 { guard x > a; },
-    train0 -> train1 { sync approach?; assign x = 0; };
-}
-
-process Train20() {
-    clock x;
+process Train(const pid_t pid) {
+clock x;
 state
     train0,
     train1 { x <= b },
@@ -334,7 +32,7 @@ trans
 }
 
 process gate() {
-    clock y;
+clock y;
 state
     gate0,
     gate1 { y <= c },
@@ -350,7 +48,7 @@ trans
 }
 
 process controller() {
-    clock z;
+clock z;
 state
     controller0,
     controller1 { z <= e },
@@ -369,5 +67,4 @@ trans
     controller3 -> controller2 { guard z <= e; sync approach!; assign cnt = cnt + 1; },
     controller1 -> controller2 { guard z == e; sync lower!; };
 }
-
-system Train01, Train02, Train03, Train04, Train05, Train06, Train07, Train08, Train09, Train10, Train11, Train12, Train13, Train14, Train15, Train16, Train17, Train18, Train19, Train20, gate, controller;
+system Train, gate, controller;
