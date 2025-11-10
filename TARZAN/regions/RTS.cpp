@@ -189,6 +189,12 @@ std::vector<region::Region> region::RTS::forwardReachability(const std::vector<t
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
 
+#ifdef EARLY_EXIT
+
+    std::quick_exit(EXIT_SUCCESS);
+
+#endif
+
     return {};
 }
 
@@ -313,6 +319,12 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
 
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
+
+#ifdef EARLY_EXIT
+
+    std::quick_exit(EXIT_SUCCESS);
+
+#endif
 
     return {};
 }

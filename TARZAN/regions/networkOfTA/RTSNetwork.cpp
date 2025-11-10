@@ -261,6 +261,12 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
 
+#ifdef EARLY_EXIT
+
+    std::quick_exit(EXIT_SUCCESS);
+
+#endif
+
     return {};
 }
 
