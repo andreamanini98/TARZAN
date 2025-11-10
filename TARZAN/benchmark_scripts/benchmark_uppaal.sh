@@ -100,9 +100,9 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                     # Warm-up run to eliminate cold start effects (not measured)
                     echo "  Warm-up run (not measured)..."
                     if [[ "$TIMEOUT" -gt 0 ]]; then
-                        timeout 1 "$UPPAAL_PATH" --search-order $search_order -u "$xta_file" "$q_file" > /dev/null 2>&1
+                        timeout 1 "$UPPAAL_PATH" --state-representation 0 --search-order $search_order -u "$xta_file" "$q_file" > /dev/null 2>&1
                     else
-                       "$UPPAAL_PATH" --search-order $search_order -u "$xta_file" "$q_file" > /dev/null 2>&1
+                       "$UPPAAL_PATH" --state-representation 0 --search-order $search_order -u "$xta_file" "$q_file" > /dev/null 2>&1
                     fi
 
                     # Run the verification NUM_RUNS times.
@@ -117,7 +117,7 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                         # Capture total execution time with millisecond precision inside redirected context
                         {
                             start=$(gdate +%s%3N)
-                            timeout "$TIMEOUT" "$UPPAAL_PATH" --search-order $search_order -u "$xta_file" "$q_file" # 2>&1 | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g'
+                            timeout "$TIMEOUT" "$UPPAAL_PATH" --state-representation 0 --search-order $search_order -u "$xta_file" "$q_file" # 2>&1 | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g'
                             exit_code=${PIPESTATUS[0]}
                             end=$(gdate +%s%3N)
                             exec_time_ms=$((end - start))
