@@ -87,7 +87,7 @@ void testFischer()
     //Locations:
     //    Automaton [0] (4 locations): {cs -> 3, wait -> 2, req -> 1, A -> 0}
 
-    const std::vector<std::optional<int>> goalLocations = { 3,3,3,3,3 };
+    const std::vector<std::optional<int>> goalLocations = { 3, 3, 3, 3, 3 };
 
     const auto res = net.forwardReachability(goalLocations, DFS);
 }
@@ -655,10 +655,46 @@ void test_patient()
 }
 
 
+void test_mpeg2()
+{
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/mpeg2";
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const networkOfTA::RTSNetwork net(automata);
+
+    std::cout << net.toString() << std::endl;
+
+    const std::vector<std::optional<int>> goalLocations = {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt,
+        std::nullopt
+    };
+
+    const auto res = net.forwardReachability(goalLocations, DFS);
+}
+
 
 int main()
 {
-    testFischer();
+    test_mpeg2();
 
     return 0;
 }

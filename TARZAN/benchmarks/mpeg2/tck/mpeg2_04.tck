@@ -1,0 +1,235 @@
+system:mpeg2_04
+
+# Events
+event:bstart001
+event:bstart002
+event:bstart003
+event:bstart004
+event:dctq
+event:dctq1
+event:ibx001
+event:ibx002
+event:ibx003
+event:ibx004
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:4:N
+int:1:0:13346:6673:DEADLINE
+
+
+
+# Processes
+process:Time
+process:BFrame001
+process:BFrame002
+process:BFrame003
+process:BFrame004
+process:Pfinish
+process:Ifinish
+process:IandPframes
+
+# Process: Time
+## Clocks for Time
+clock:1:Time_x
+
+## Locations for Time
+location:Time:L0{initial: : invariant:Time_x <= DEADLINE}
+
+## Edges for Time
+edge:Time:L0:L0:tau
+
+
+
+# Process: BFrame001
+## Clocks for BFrame001
+clock:1:BFrame001_x
+
+## Locations for BFrame001
+location:BFrame001:Bout{labels: goal001}
+location:BFrame001:L0
+location:BFrame001:L1
+location:BFrame001:L2
+location:BFrame001:L3
+location:BFrame001:L4
+location:BFrame001:L5
+location:BFrame001:L6{initial:}
+
+## Edges for BFrame001
+edge:BFrame001:L6:L6:ibx001{do:ib001 = 1}
+edge:BFrame001:L0:Bout:tau{provided:BFrame001_x <= 0}
+edge:BFrame001:L1:L0:tau{provided:BFrame001_x >= 189 && BFrame001_x <= 454 && mvb001 == 1 : do:BFrame001_x = 0; mvb001 = 0}
+edge:BFrame001:L2:L1:tau{provided:BFrame001_x == 521 : do:BFrame001_x = 0}
+edge:BFrame001:L3:L2:tau{provided:BFrame001_x <= 0 && berror001 == 1 : do:BFrame001_x = 0; berror001 = 0}
+edge:BFrame001:L4:L3:tau{provided:BFrame001_x == 48 : do:BFrame001_x = 0}
+edge:BFrame001:L5:L4:tau{provided:BFrame001_x >= 2399 && BFrame001_x <= 2422 && ib001 == 1 && B001 == 1 : do:mvb001 = 1; ib001 = 0; B001 = 0; BFrame001_x = 0}
+edge:BFrame001:L6:L5:bstart001{do:BFrame001_x = 0; B001 = 1; berror001 = 1}
+
+
+
+# Process: BFrame002
+## Clocks for BFrame002
+clock:1:BFrame002_x
+
+## Locations for BFrame002
+location:BFrame002:Bout{labels: goal002}
+location:BFrame002:L0
+location:BFrame002:L1
+location:BFrame002:L2
+location:BFrame002:L3
+location:BFrame002:L4
+location:BFrame002:L5
+location:BFrame002:L6{initial:}
+
+## Edges for BFrame002
+edge:BFrame002:L6:L6:ibx002{do:ib002 = 1}
+edge:BFrame002:L0:Bout:tau{provided:BFrame002_x <= 0}
+edge:BFrame002:L1:L0:tau{provided:BFrame002_x >= 189 && BFrame002_x <= 454 && mvb002 == 1 : do:BFrame002_x = 0; mvb002 = 0}
+edge:BFrame002:L2:L1:tau{provided:BFrame002_x == 521 : do:BFrame002_x = 0}
+edge:BFrame002:L3:L2:tau{provided:BFrame002_x <= 0 && berror002 == 1 : do:BFrame002_x = 0; berror002 = 0}
+edge:BFrame002:L4:L3:tau{provided:BFrame002_x == 48 : do:BFrame002_x = 0}
+edge:BFrame002:L5:L4:tau{provided:BFrame002_x >= 2399 && BFrame002_x <= 2422 && ib002 == 1 && B002 == 1 : do:mvb002 = 1; ib002 = 0; B002 = 0; BFrame002_x = 0}
+edge:BFrame002:L6:L5:bstart002{do:BFrame002_x = 0; B002 = 1; berror002 = 1}
+
+
+
+# Process: BFrame003
+## Clocks for BFrame003
+clock:1:BFrame003_x
+
+## Locations for BFrame003
+location:BFrame003:Bout{labels: goal003}
+location:BFrame003:L0
+location:BFrame003:L1
+location:BFrame003:L2
+location:BFrame003:L3
+location:BFrame003:L4
+location:BFrame003:L5
+location:BFrame003:L6{initial:}
+
+## Edges for BFrame003
+edge:BFrame003:L6:L6:ibx003{do:ib003 = 1}
+edge:BFrame003:L0:Bout:tau{provided:BFrame003_x <= 0}
+edge:BFrame003:L1:L0:tau{provided:BFrame003_x >= 189 && BFrame003_x <= 454 && mvb003 == 1 : do:BFrame003_x = 0; mvb003 = 0}
+edge:BFrame003:L2:L1:tau{provided:BFrame003_x == 521 : do:BFrame003_x = 0}
+edge:BFrame003:L3:L2:tau{provided:BFrame003_x <= 0 && berror003 == 1 : do:BFrame003_x = 0; berror003 = 0}
+edge:BFrame003:L4:L3:tau{provided:BFrame003_x == 48 : do:BFrame003_x = 0}
+edge:BFrame003:L5:L4:tau{provided:BFrame003_x >= 2399 && BFrame003_x <= 2422 && ib003 == 1 && B003 == 1 : do:mvb003 = 1; ib003 = 0; B003 = 0; BFrame003_x = 0}
+edge:BFrame003:L6:L5:bstart003{do:BFrame003_x = 0; B003 = 1; berror003 = 1}
+
+
+
+# Process: BFrame004
+## Clocks for BFrame004
+clock:1:BFrame004_x
+
+## Locations for BFrame004
+location:BFrame004:Bout{labels: goal004}
+location:BFrame004:L0
+location:BFrame004:L1
+location:BFrame004:L2
+location:BFrame004:L3
+location:BFrame004:L4
+location:BFrame004:L5
+location:BFrame004:L6{initial:}
+
+## Edges for BFrame004
+edge:BFrame004:L6:L6:ibx004{do:ib004 = 1}
+edge:BFrame004:L0:Bout:tau{provided:BFrame004_x <= 0}
+edge:BFrame004:L1:L0:tau{provided:BFrame004_x >= 189 && BFrame004_x <= 454 && mvb004 == 1 : do:BFrame004_x = 0; mvb004 = 0}
+edge:BFrame004:L2:L1:tau{provided:BFrame004_x == 521 : do:BFrame004_x = 0}
+edge:BFrame004:L3:L2:tau{provided:BFrame004_x <= 0 && berror004 == 1 : do:BFrame004_x = 0; berror004 = 0}
+edge:BFrame004:L4:L3:tau{provided:BFrame004_x == 48 : do:BFrame004_x = 0}
+edge:BFrame004:L5:L4:tau{provided:BFrame004_x >= 2399 && BFrame004_x <= 2422 && ib004 == 1 && B004 == 1 : do:mvb004 = 1; ib004 = 0; B004 = 0; BFrame004_x = 0}
+edge:BFrame004:L6:L5:bstart004{do:BFrame004_x = 0; B004 = 1; berror004 = 1}
+
+
+
+# Process: Pfinish
+## Clocks for Pfinish
+clock:1:Pfinish_x
+
+## Locations for Pfinish
+location:Pfinish:Pout
+location:Pfinish:L0
+location:Pfinish:L1
+location:Pfinish:L2{initial:}
+
+## Edges for Pfinish
+edge:Pfinish:L0:Pout:tau{provided:Pfinish_x <= 0}
+edge:Pfinish:L1:L0:tau{provided:Pfinish_x >= 378 && Pfinish_x <= 389 && mvp == 1 : do:Pfinish_x = 0; mvp = 0}
+edge:Pfinish:L2:L1:dctq{do:Pfinish_x = 0}
+
+
+
+# Process: Ifinish
+## Clocks for Ifinish
+clock:1:Ifinish_x
+
+## Locations for Ifinish
+location:Ifinish:Iout
+location:Ifinish:L0
+location:Ifinish:L1
+location:Ifinish:L2{initial:}
+
+## Edges for Ifinish
+edge:Ifinish:L0:Iout:tau{provided:Ifinish_x <= 0}
+edge:Ifinish:L1:L0:tau{provided:Ifinish_x >= 298 && Ifinish_x <= 358 : do:Ifinish_x = 0}
+edge:Ifinish:L2:L1:dctq1{do:Ifinish_x = 0}
+
+
+
+# Process: IandPframes
+## Clocks for IandPframes
+clock:1:IandPframes_x
+
+## Locations for IandPframes
+location:IandPframes:L0
+location:IandPframes:extra1{urgent:}
+location:IandPframes:extra2{urgent:}
+location:IandPframes:extra3{urgent:}
+location:IandPframes:extra4{urgent:}
+location:IandPframes:extra5{urgent:}
+location:IandPframes:extra6{urgent:}
+location:IandPframes:L1
+location:IandPframes:L2
+location:IandPframes:L3
+location:IandPframes:L4
+location:IandPframes:L5
+location:IandPframes:L6
+location:IandPframes:L7
+location:IandPframes:L8
+location:IandPframes:I{initial:}
+
+## Edges for IandPframes
+edge:IandPframes:L1:extra1:bstart001{provided:IandPframes_x <= 0}
+edge:IandPframes:extra1:extra2:bstart002{provided:IandPframes_x <= 0}
+edge:IandPframes:extra2:extra3:bstart003{provided:IandPframes_x <= 0}
+edge:IandPframes:extra3:L0:bstart004{provided:IandPframes_x <= 0}
+edge:IandPframes:L2:L1:tau{provided:IandPframes_x == 515 : do:IandPframes_x = 0}
+edge:IandPframes:L3:L2:dctq{provided:IandPframes_x == 521 : do:IandPframes_x = 0}
+edge:IandPframes:L4:L3:tau{provided:perror == 1 && IandPframes_x <= 0 : do:IandPframes_x = 0; perror = 0}
+edge:IandPframes:L5:L4:tau{provided:IandPframes_x == 32 : do:IandPframes_x = 0}
+edge:IandPframes:L6:L5:tau{provided:IandPframes_x >= 1180 && IandPframes_x <= 1181 && P == 1 : do:mvp = 1; P = 0; IandPframes_x = 0}
+edge:IandPframes:L7:extra4:ibx001{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra4:extra5:ibx002{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra5:extra6:ibx003{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra6:L6:ibx004{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:L8:L7:tau{provided:IandPframes_x == 673 : do:IandPframes_x = 0}
+edge:IandPframes:I:L8:dctq1{provided:IandPframes_x == 595 : do:IandPframes_x = 0}
+
+
+
+# Synchronizations
+sync:IandPframes@bstart001:BFrame001@bstart001
+sync:IandPframes@bstart002:BFrame002@bstart002
+sync:IandPframes@bstart003:BFrame003@bstart003
+sync:IandPframes@bstart004:BFrame004@bstart004
+sync:IandPframes@dctq:Pfinish@dctq
+sync:IandPframes@dctq1:Ifinish@dctq1
+sync:IandPframes@ibx001:BFrame001@ibx001
+sync:IandPframes@ibx002:BFrame002@ibx002
+sync:IandPframes@ibx003:BFrame003@ibx003
+sync:IandPframes@ibx004:BFrame004@ibx004

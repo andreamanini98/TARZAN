@@ -1,0 +1,17 @@
+create automaton Ifinish
+{
+    clocks { x; }
+    actions { a, dctq1; }
+    integers { B001, B002, B003, B004, B005, B006, B007, B008, berror001, berror002, berror003, berror004, berror005, berror006, berror007, berror008, ib001, ib002, ib003, ib004, ib005, ib006, ib007, ib008, mvb001, mvb002, mvb003, mvb004, mvb005, mvb006, mvb007, mvb008, mvp; }
+    locations {
+        Iout <ini: F>,
+        L0   <ini: F>,
+        L1   <ini: F>,
+        L2   <ini: T>;
+    }
+    transitions {
+        (L0, a, [(x, <=, 0)], [], Iout),
+        (L1, a, [(x, >=, 298), (x, <=, 358)], [x], L0),
+        (L2, dctq1?, [], [x], L1);
+    }
+}

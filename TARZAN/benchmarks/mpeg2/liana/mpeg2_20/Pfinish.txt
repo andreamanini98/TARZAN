@@ -1,0 +1,17 @@
+create automaton Pfinish
+{
+    clocks { x; }
+    actions { a, dctq; }
+    integers { B001, B002, B003, B004, B005, B006, B007, B008, B009, B010, B011, B012, B013, B014, B015, B016, B017, B018, B019, B020, berror001, berror002, berror003, berror004, berror005, berror006, berror007, berror008, berror009, berror010, berror011, berror012, berror013, berror014, berror015, berror016, berror017, berror018, berror019, berror020, ib001, ib002, ib003, ib004, ib005, ib006, ib007, ib008, ib009, ib010, ib011, ib012, ib013, ib014, ib015, ib016, ib017, ib018, ib019, ib020, mvb001, mvb002, mvb003, mvb004, mvb005, mvb006, mvb007, mvb008, mvb009, mvb010, mvb011, mvb012, mvb013, mvb014, mvb015, mvb016, mvb017, mvb018, mvb019, mvb020, mvp; }
+    locations {
+        Pout <ini: F>,
+        L0   <ini: F>,
+        L1   <ini: F>,
+        L2   <ini: T>;
+    }
+    transitions {
+        (L0, a, [(x, <=, 0)], [], Pout),
+        (L1, a, [(x, >=, 378), (x, <=, 389)], mvp == 1, [x], [mvp = 0], L0),
+        (L2, dctq?, [], [x], L1);
+    }
+}

@@ -1,0 +1,795 @@
+system:mpeg2_20
+
+# Events
+event:bstart001
+event:bstart002
+event:bstart003
+event:bstart004
+event:bstart005
+event:bstart006
+event:bstart007
+event:bstart008
+event:bstart009
+event:bstart010
+event:bstart011
+event:bstart012
+event:bstart013
+event:bstart014
+event:bstart015
+event:bstart016
+event:bstart017
+event:bstart018
+event:bstart019
+event:bstart020
+event:dctq
+event:dctq1
+event:ibx001
+event:ibx002
+event:ibx003
+event:ibx004
+event:ibx005
+event:ibx006
+event:ibx007
+event:ibx008
+event:ibx009
+event:ibx010
+event:ibx011
+event:ibx012
+event:ibx013
+event:ibx014
+event:ibx015
+event:ibx016
+event:ibx017
+event:ibx018
+event:ibx019
+event:ibx020
+event:tau
+
+
+
+# Global declarations
+int:1:0:1000:20:N
+int:1:0:13346:6673:DEADLINE
+
+
+
+# Processes
+process:Time
+process:BFrame001
+process:BFrame002
+process:BFrame003
+process:BFrame004
+process:BFrame005
+process:BFrame006
+process:BFrame007
+process:BFrame008
+process:BFrame009
+process:BFrame010
+process:BFrame011
+process:BFrame012
+process:BFrame013
+process:BFrame014
+process:BFrame015
+process:BFrame016
+process:BFrame017
+process:BFrame018
+process:BFrame019
+process:BFrame020
+process:Pfinish
+process:Ifinish
+process:IandPframes
+
+# Process: Time
+## Clocks for Time
+clock:1:Time_x
+
+## Locations for Time
+location:Time:L0{initial: : invariant:Time_x <= DEADLINE}
+
+## Edges for Time
+edge:Time:L0:L0:tau
+
+
+
+# Process: BFrame001
+## Clocks for BFrame001
+clock:1:BFrame001_x
+
+## Locations for BFrame001
+location:BFrame001:Bout{labels: goal001}
+location:BFrame001:L0
+location:BFrame001:L1
+location:BFrame001:L2
+location:BFrame001:L3
+location:BFrame001:L4
+location:BFrame001:L5
+location:BFrame001:L6{initial:}
+
+## Edges for BFrame001
+edge:BFrame001:L6:L6:ibx001{do:ib001 = 1}
+edge:BFrame001:L0:Bout:tau{provided:BFrame001_x <= 0}
+edge:BFrame001:L1:L0:tau{provided:BFrame001_x >= 189 && BFrame001_x <= 454 && mvb001 == 1 : do:BFrame001_x = 0; mvb001 = 0}
+edge:BFrame001:L2:L1:tau{provided:BFrame001_x == 521 : do:BFrame001_x = 0}
+edge:BFrame001:L3:L2:tau{provided:BFrame001_x <= 0 && berror001 == 1 : do:BFrame001_x = 0; berror001 = 0}
+edge:BFrame001:L4:L3:tau{provided:BFrame001_x == 48 : do:BFrame001_x = 0}
+edge:BFrame001:L5:L4:tau{provided:BFrame001_x >= 2399 && BFrame001_x <= 2422 && ib001 == 1 && B001 == 1 : do:mvb001 = 1; ib001 = 0; B001 = 0; BFrame001_x = 0}
+edge:BFrame001:L6:L5:bstart001{do:BFrame001_x = 0; B001 = 1; berror001 = 1}
+
+
+
+# Process: BFrame002
+## Clocks for BFrame002
+clock:1:BFrame002_x
+
+## Locations for BFrame002
+location:BFrame002:Bout{labels: goal002}
+location:BFrame002:L0
+location:BFrame002:L1
+location:BFrame002:L2
+location:BFrame002:L3
+location:BFrame002:L4
+location:BFrame002:L5
+location:BFrame002:L6{initial:}
+
+## Edges for BFrame002
+edge:BFrame002:L6:L6:ibx002{do:ib002 = 1}
+edge:BFrame002:L0:Bout:tau{provided:BFrame002_x <= 0}
+edge:BFrame002:L1:L0:tau{provided:BFrame002_x >= 189 && BFrame002_x <= 454 && mvb002 == 1 : do:BFrame002_x = 0; mvb002 = 0}
+edge:BFrame002:L2:L1:tau{provided:BFrame002_x == 521 : do:BFrame002_x = 0}
+edge:BFrame002:L3:L2:tau{provided:BFrame002_x <= 0 && berror002 == 1 : do:BFrame002_x = 0; berror002 = 0}
+edge:BFrame002:L4:L3:tau{provided:BFrame002_x == 48 : do:BFrame002_x = 0}
+edge:BFrame002:L5:L4:tau{provided:BFrame002_x >= 2399 && BFrame002_x <= 2422 && ib002 == 1 && B002 == 1 : do:mvb002 = 1; ib002 = 0; B002 = 0; BFrame002_x = 0}
+edge:BFrame002:L6:L5:bstart002{do:BFrame002_x = 0; B002 = 1; berror002 = 1}
+
+
+
+# Process: BFrame003
+## Clocks for BFrame003
+clock:1:BFrame003_x
+
+## Locations for BFrame003
+location:BFrame003:Bout{labels: goal003}
+location:BFrame003:L0
+location:BFrame003:L1
+location:BFrame003:L2
+location:BFrame003:L3
+location:BFrame003:L4
+location:BFrame003:L5
+location:BFrame003:L6{initial:}
+
+## Edges for BFrame003
+edge:BFrame003:L6:L6:ibx003{do:ib003 = 1}
+edge:BFrame003:L0:Bout:tau{provided:BFrame003_x <= 0}
+edge:BFrame003:L1:L0:tau{provided:BFrame003_x >= 189 && BFrame003_x <= 454 && mvb003 == 1 : do:BFrame003_x = 0; mvb003 = 0}
+edge:BFrame003:L2:L1:tau{provided:BFrame003_x == 521 : do:BFrame003_x = 0}
+edge:BFrame003:L3:L2:tau{provided:BFrame003_x <= 0 && berror003 == 1 : do:BFrame003_x = 0; berror003 = 0}
+edge:BFrame003:L4:L3:tau{provided:BFrame003_x == 48 : do:BFrame003_x = 0}
+edge:BFrame003:L5:L4:tau{provided:BFrame003_x >= 2399 && BFrame003_x <= 2422 && ib003 == 1 && B003 == 1 : do:mvb003 = 1; ib003 = 0; B003 = 0; BFrame003_x = 0}
+edge:BFrame003:L6:L5:bstart003{do:BFrame003_x = 0; B003 = 1; berror003 = 1}
+
+
+
+# Process: BFrame004
+## Clocks for BFrame004
+clock:1:BFrame004_x
+
+## Locations for BFrame004
+location:BFrame004:Bout{labels: goal004}
+location:BFrame004:L0
+location:BFrame004:L1
+location:BFrame004:L2
+location:BFrame004:L3
+location:BFrame004:L4
+location:BFrame004:L5
+location:BFrame004:L6{initial:}
+
+## Edges for BFrame004
+edge:BFrame004:L6:L6:ibx004{do:ib004 = 1}
+edge:BFrame004:L0:Bout:tau{provided:BFrame004_x <= 0}
+edge:BFrame004:L1:L0:tau{provided:BFrame004_x >= 189 && BFrame004_x <= 454 && mvb004 == 1 : do:BFrame004_x = 0; mvb004 = 0}
+edge:BFrame004:L2:L1:tau{provided:BFrame004_x == 521 : do:BFrame004_x = 0}
+edge:BFrame004:L3:L2:tau{provided:BFrame004_x <= 0 && berror004 == 1 : do:BFrame004_x = 0; berror004 = 0}
+edge:BFrame004:L4:L3:tau{provided:BFrame004_x == 48 : do:BFrame004_x = 0}
+edge:BFrame004:L5:L4:tau{provided:BFrame004_x >= 2399 && BFrame004_x <= 2422 && ib004 == 1 && B004 == 1 : do:mvb004 = 1; ib004 = 0; B004 = 0; BFrame004_x = 0}
+edge:BFrame004:L6:L5:bstart004{do:BFrame004_x = 0; B004 = 1; berror004 = 1}
+
+
+
+# Process: BFrame005
+## Clocks for BFrame005
+clock:1:BFrame005_x
+
+## Locations for BFrame005
+location:BFrame005:Bout{labels: goal005}
+location:BFrame005:L0
+location:BFrame005:L1
+location:BFrame005:L2
+location:BFrame005:L3
+location:BFrame005:L4
+location:BFrame005:L5
+location:BFrame005:L6{initial:}
+
+## Edges for BFrame005
+edge:BFrame005:L6:L6:ibx005{do:ib005 = 1}
+edge:BFrame005:L0:Bout:tau{provided:BFrame005_x <= 0}
+edge:BFrame005:L1:L0:tau{provided:BFrame005_x >= 189 && BFrame005_x <= 454 && mvb005 == 1 : do:BFrame005_x = 0; mvb005 = 0}
+edge:BFrame005:L2:L1:tau{provided:BFrame005_x == 521 : do:BFrame005_x = 0}
+edge:BFrame005:L3:L2:tau{provided:BFrame005_x <= 0 && berror005 == 1 : do:BFrame005_x = 0; berror005 = 0}
+edge:BFrame005:L4:L3:tau{provided:BFrame005_x == 48 : do:BFrame005_x = 0}
+edge:BFrame005:L5:L4:tau{provided:BFrame005_x >= 2399 && BFrame005_x <= 2422 && ib005 == 1 && B005 == 1 : do:mvb005 = 1; ib005 = 0; B005 = 0; BFrame005_x = 0}
+edge:BFrame005:L6:L5:bstart005{do:BFrame005_x = 0; B005 = 1; berror005 = 1}
+
+
+
+# Process: BFrame006
+## Clocks for BFrame006
+clock:1:BFrame006_x
+
+## Locations for BFrame006
+location:BFrame006:Bout{labels: goal006}
+location:BFrame006:L0
+location:BFrame006:L1
+location:BFrame006:L2
+location:BFrame006:L3
+location:BFrame006:L4
+location:BFrame006:L5
+location:BFrame006:L6{initial:}
+
+## Edges for BFrame006
+edge:BFrame006:L6:L6:ibx006{do:ib006 = 1}
+edge:BFrame006:L0:Bout:tau{provided:BFrame006_x <= 0}
+edge:BFrame006:L1:L0:tau{provided:BFrame006_x >= 189 && BFrame006_x <= 454 && mvb006 == 1 : do:BFrame006_x = 0; mvb006 = 0}
+edge:BFrame006:L2:L1:tau{provided:BFrame006_x == 521 : do:BFrame006_x = 0}
+edge:BFrame006:L3:L2:tau{provided:BFrame006_x <= 0 && berror006 == 1 : do:BFrame006_x = 0; berror006 = 0}
+edge:BFrame006:L4:L3:tau{provided:BFrame006_x == 48 : do:BFrame006_x = 0}
+edge:BFrame006:L5:L4:tau{provided:BFrame006_x >= 2399 && BFrame006_x <= 2422 && ib006 == 1 && B006 == 1 : do:mvb006 = 1; ib006 = 0; B006 = 0; BFrame006_x = 0}
+edge:BFrame006:L6:L5:bstart006{do:BFrame006_x = 0; B006 = 1; berror006 = 1}
+
+
+
+# Process: BFrame007
+## Clocks for BFrame007
+clock:1:BFrame007_x
+
+## Locations for BFrame007
+location:BFrame007:Bout{labels: goal007}
+location:BFrame007:L0
+location:BFrame007:L1
+location:BFrame007:L2
+location:BFrame007:L3
+location:BFrame007:L4
+location:BFrame007:L5
+location:BFrame007:L6{initial:}
+
+## Edges for BFrame007
+edge:BFrame007:L6:L6:ibx007{do:ib007 = 1}
+edge:BFrame007:L0:Bout:tau{provided:BFrame007_x <= 0}
+edge:BFrame007:L1:L0:tau{provided:BFrame007_x >= 189 && BFrame007_x <= 454 && mvb007 == 1 : do:BFrame007_x = 0; mvb007 = 0}
+edge:BFrame007:L2:L1:tau{provided:BFrame007_x == 521 : do:BFrame007_x = 0}
+edge:BFrame007:L3:L2:tau{provided:BFrame007_x <= 0 && berror007 == 1 : do:BFrame007_x = 0; berror007 = 0}
+edge:BFrame007:L4:L3:tau{provided:BFrame007_x == 48 : do:BFrame007_x = 0}
+edge:BFrame007:L5:L4:tau{provided:BFrame007_x >= 2399 && BFrame007_x <= 2422 && ib007 == 1 && B007 == 1 : do:mvb007 = 1; ib007 = 0; B007 = 0; BFrame007_x = 0}
+edge:BFrame007:L6:L5:bstart007{do:BFrame007_x = 0; B007 = 1; berror007 = 1}
+
+
+
+# Process: BFrame008
+## Clocks for BFrame008
+clock:1:BFrame008_x
+
+## Locations for BFrame008
+location:BFrame008:Bout{labels: goal008}
+location:BFrame008:L0
+location:BFrame008:L1
+location:BFrame008:L2
+location:BFrame008:L3
+location:BFrame008:L4
+location:BFrame008:L5
+location:BFrame008:L6{initial:}
+
+## Edges for BFrame008
+edge:BFrame008:L6:L6:ibx008{do:ib008 = 1}
+edge:BFrame008:L0:Bout:tau{provided:BFrame008_x <= 0}
+edge:BFrame008:L1:L0:tau{provided:BFrame008_x >= 189 && BFrame008_x <= 454 && mvb008 == 1 : do:BFrame008_x = 0; mvb008 = 0}
+edge:BFrame008:L2:L1:tau{provided:BFrame008_x == 521 : do:BFrame008_x = 0}
+edge:BFrame008:L3:L2:tau{provided:BFrame008_x <= 0 && berror008 == 1 : do:BFrame008_x = 0; berror008 = 0}
+edge:BFrame008:L4:L3:tau{provided:BFrame008_x == 48 : do:BFrame008_x = 0}
+edge:BFrame008:L5:L4:tau{provided:BFrame008_x >= 2399 && BFrame008_x <= 2422 && ib008 == 1 && B008 == 1 : do:mvb008 = 1; ib008 = 0; B008 = 0; BFrame008_x = 0}
+edge:BFrame008:L6:L5:bstart008{do:BFrame008_x = 0; B008 = 1; berror008 = 1}
+
+
+
+# Process: BFrame009
+## Clocks for BFrame009
+clock:1:BFrame009_x
+
+## Locations for BFrame009
+location:BFrame009:Bout{labels: goal009}
+location:BFrame009:L0
+location:BFrame009:L1
+location:BFrame009:L2
+location:BFrame009:L3
+location:BFrame009:L4
+location:BFrame009:L5
+location:BFrame009:L6{initial:}
+
+## Edges for BFrame009
+edge:BFrame009:L6:L6:ibx009{do:ib009 = 1}
+edge:BFrame009:L0:Bout:tau{provided:BFrame009_x <= 0}
+edge:BFrame009:L1:L0:tau{provided:BFrame009_x >= 189 && BFrame009_x <= 454 && mvb009 == 1 : do:BFrame009_x = 0; mvb009 = 0}
+edge:BFrame009:L2:L1:tau{provided:BFrame009_x == 521 : do:BFrame009_x = 0}
+edge:BFrame009:L3:L2:tau{provided:BFrame009_x <= 0 && berror009 == 1 : do:BFrame009_x = 0; berror009 = 0}
+edge:BFrame009:L4:L3:tau{provided:BFrame009_x == 48 : do:BFrame009_x = 0}
+edge:BFrame009:L5:L4:tau{provided:BFrame009_x >= 2399 && BFrame009_x <= 2422 && ib009 == 1 && B009 == 1 : do:mvb009 = 1; ib009 = 0; B009 = 0; BFrame009_x = 0}
+edge:BFrame009:L6:L5:bstart009{do:BFrame009_x = 0; B009 = 1; berror009 = 1}
+
+
+
+# Process: BFrame010
+## Clocks for BFrame010
+clock:1:BFrame010_x
+
+## Locations for BFrame010
+location:BFrame010:Bout{labels: goal010}
+location:BFrame010:L0
+location:BFrame010:L1
+location:BFrame010:L2
+location:BFrame010:L3
+location:BFrame010:L4
+location:BFrame010:L5
+location:BFrame010:L6{initial:}
+
+## Edges for BFrame010
+edge:BFrame010:L6:L6:ibx010{do:ib010 = 1}
+edge:BFrame010:L0:Bout:tau{provided:BFrame010_x <= 0}
+edge:BFrame010:L1:L0:tau{provided:BFrame010_x >= 189 && BFrame010_x <= 454 && mvb010 == 1 : do:BFrame010_x = 0; mvb010 = 0}
+edge:BFrame010:L2:L1:tau{provided:BFrame010_x == 521 : do:BFrame010_x = 0}
+edge:BFrame010:L3:L2:tau{provided:BFrame010_x <= 0 && berror010 == 1 : do:BFrame010_x = 0; berror010 = 0}
+edge:BFrame010:L4:L3:tau{provided:BFrame010_x == 48 : do:BFrame010_x = 0}
+edge:BFrame010:L5:L4:tau{provided:BFrame010_x >= 2399 && BFrame010_x <= 2422 && ib010 == 1 && B010 == 1 : do:mvb010 = 1; ib010 = 0; B010 = 0; BFrame010_x = 0}
+edge:BFrame010:L6:L5:bstart010{do:BFrame010_x = 0; B010 = 1; berror010 = 1}
+
+
+
+# Process: BFrame011
+## Clocks for BFrame011
+clock:1:BFrame011_x
+
+## Locations for BFrame011
+location:BFrame011:Bout{labels: goal011}
+location:BFrame011:L0
+location:BFrame011:L1
+location:BFrame011:L2
+location:BFrame011:L3
+location:BFrame011:L4
+location:BFrame011:L5
+location:BFrame011:L6{initial:}
+
+## Edges for BFrame011
+edge:BFrame011:L6:L6:ibx011{do:ib011 = 1}
+edge:BFrame011:L0:Bout:tau{provided:BFrame011_x <= 0}
+edge:BFrame011:L1:L0:tau{provided:BFrame011_x >= 189 && BFrame011_x <= 454 && mvb011 == 1 : do:BFrame011_x = 0; mvb011 = 0}
+edge:BFrame011:L2:L1:tau{provided:BFrame011_x == 521 : do:BFrame011_x = 0}
+edge:BFrame011:L3:L2:tau{provided:BFrame011_x <= 0 && berror011 == 1 : do:BFrame011_x = 0; berror011 = 0}
+edge:BFrame011:L4:L3:tau{provided:BFrame011_x == 48 : do:BFrame011_x = 0}
+edge:BFrame011:L5:L4:tau{provided:BFrame011_x >= 2399 && BFrame011_x <= 2422 && ib011 == 1 && B011 == 1 : do:mvb011 = 1; ib011 = 0; B011 = 0; BFrame011_x = 0}
+edge:BFrame011:L6:L5:bstart011{do:BFrame011_x = 0; B011 = 1; berror011 = 1}
+
+
+
+# Process: BFrame012
+## Clocks for BFrame012
+clock:1:BFrame012_x
+
+## Locations for BFrame012
+location:BFrame012:Bout{labels: goal012}
+location:BFrame012:L0
+location:BFrame012:L1
+location:BFrame012:L2
+location:BFrame012:L3
+location:BFrame012:L4
+location:BFrame012:L5
+location:BFrame012:L6{initial:}
+
+## Edges for BFrame012
+edge:BFrame012:L6:L6:ibx012{do:ib012 = 1}
+edge:BFrame012:L0:Bout:tau{provided:BFrame012_x <= 0}
+edge:BFrame012:L1:L0:tau{provided:BFrame012_x >= 189 && BFrame012_x <= 454 && mvb012 == 1 : do:BFrame012_x = 0; mvb012 = 0}
+edge:BFrame012:L2:L1:tau{provided:BFrame012_x == 521 : do:BFrame012_x = 0}
+edge:BFrame012:L3:L2:tau{provided:BFrame012_x <= 0 && berror012 == 1 : do:BFrame012_x = 0; berror012 = 0}
+edge:BFrame012:L4:L3:tau{provided:BFrame012_x == 48 : do:BFrame012_x = 0}
+edge:BFrame012:L5:L4:tau{provided:BFrame012_x >= 2399 && BFrame012_x <= 2422 && ib012 == 1 && B012 == 1 : do:mvb012 = 1; ib012 = 0; B012 = 0; BFrame012_x = 0}
+edge:BFrame012:L6:L5:bstart012{do:BFrame012_x = 0; B012 = 1; berror012 = 1}
+
+
+
+# Process: BFrame013
+## Clocks for BFrame013
+clock:1:BFrame013_x
+
+## Locations for BFrame013
+location:BFrame013:Bout{labels: goal013}
+location:BFrame013:L0
+location:BFrame013:L1
+location:BFrame013:L2
+location:BFrame013:L3
+location:BFrame013:L4
+location:BFrame013:L5
+location:BFrame013:L6{initial:}
+
+## Edges for BFrame013
+edge:BFrame013:L6:L6:ibx013{do:ib013 = 1}
+edge:BFrame013:L0:Bout:tau{provided:BFrame013_x <= 0}
+edge:BFrame013:L1:L0:tau{provided:BFrame013_x >= 189 && BFrame013_x <= 454 && mvb013 == 1 : do:BFrame013_x = 0; mvb013 = 0}
+edge:BFrame013:L2:L1:tau{provided:BFrame013_x == 521 : do:BFrame013_x = 0}
+edge:BFrame013:L3:L2:tau{provided:BFrame013_x <= 0 && berror013 == 1 : do:BFrame013_x = 0; berror013 = 0}
+edge:BFrame013:L4:L3:tau{provided:BFrame013_x == 48 : do:BFrame013_x = 0}
+edge:BFrame013:L5:L4:tau{provided:BFrame013_x >= 2399 && BFrame013_x <= 2422 && ib013 == 1 && B013 == 1 : do:mvb013 = 1; ib013 = 0; B013 = 0; BFrame013_x = 0}
+edge:BFrame013:L6:L5:bstart013{do:BFrame013_x = 0; B013 = 1; berror013 = 1}
+
+
+
+# Process: BFrame014
+## Clocks for BFrame014
+clock:1:BFrame014_x
+
+## Locations for BFrame014
+location:BFrame014:Bout{labels: goal014}
+location:BFrame014:L0
+location:BFrame014:L1
+location:BFrame014:L2
+location:BFrame014:L3
+location:BFrame014:L4
+location:BFrame014:L5
+location:BFrame014:L6{initial:}
+
+## Edges for BFrame014
+edge:BFrame014:L6:L6:ibx014{do:ib014 = 1}
+edge:BFrame014:L0:Bout:tau{provided:BFrame014_x <= 0}
+edge:BFrame014:L1:L0:tau{provided:BFrame014_x >= 189 && BFrame014_x <= 454 && mvb014 == 1 : do:BFrame014_x = 0; mvb014 = 0}
+edge:BFrame014:L2:L1:tau{provided:BFrame014_x == 521 : do:BFrame014_x = 0}
+edge:BFrame014:L3:L2:tau{provided:BFrame014_x <= 0 && berror014 == 1 : do:BFrame014_x = 0; berror014 = 0}
+edge:BFrame014:L4:L3:tau{provided:BFrame014_x == 48 : do:BFrame014_x = 0}
+edge:BFrame014:L5:L4:tau{provided:BFrame014_x >= 2399 && BFrame014_x <= 2422 && ib014 == 1 && B014 == 1 : do:mvb014 = 1; ib014 = 0; B014 = 0; BFrame014_x = 0}
+edge:BFrame014:L6:L5:bstart014{do:BFrame014_x = 0; B014 = 1; berror014 = 1}
+
+
+
+# Process: BFrame015
+## Clocks for BFrame015
+clock:1:BFrame015_x
+
+## Locations for BFrame015
+location:BFrame015:Bout{labels: goal015}
+location:BFrame015:L0
+location:BFrame015:L1
+location:BFrame015:L2
+location:BFrame015:L3
+location:BFrame015:L4
+location:BFrame015:L5
+location:BFrame015:L6{initial:}
+
+## Edges for BFrame015
+edge:BFrame015:L6:L6:ibx015{do:ib015 = 1}
+edge:BFrame015:L0:Bout:tau{provided:BFrame015_x <= 0}
+edge:BFrame015:L1:L0:tau{provided:BFrame015_x >= 189 && BFrame015_x <= 454 && mvb015 == 1 : do:BFrame015_x = 0; mvb015 = 0}
+edge:BFrame015:L2:L1:tau{provided:BFrame015_x == 521 : do:BFrame015_x = 0}
+edge:BFrame015:L3:L2:tau{provided:BFrame015_x <= 0 && berror015 == 1 : do:BFrame015_x = 0; berror015 = 0}
+edge:BFrame015:L4:L3:tau{provided:BFrame015_x == 48 : do:BFrame015_x = 0}
+edge:BFrame015:L5:L4:tau{provided:BFrame015_x >= 2399 && BFrame015_x <= 2422 && ib015 == 1 && B015 == 1 : do:mvb015 = 1; ib015 = 0; B015 = 0; BFrame015_x = 0}
+edge:BFrame015:L6:L5:bstart015{do:BFrame015_x = 0; B015 = 1; berror015 = 1}
+
+
+
+# Process: BFrame016
+## Clocks for BFrame016
+clock:1:BFrame016_x
+
+## Locations for BFrame016
+location:BFrame016:Bout{labels: goal016}
+location:BFrame016:L0
+location:BFrame016:L1
+location:BFrame016:L2
+location:BFrame016:L3
+location:BFrame016:L4
+location:BFrame016:L5
+location:BFrame016:L6{initial:}
+
+## Edges for BFrame016
+edge:BFrame016:L6:L6:ibx016{do:ib016 = 1}
+edge:BFrame016:L0:Bout:tau{provided:BFrame016_x <= 0}
+edge:BFrame016:L1:L0:tau{provided:BFrame016_x >= 189 && BFrame016_x <= 454 && mvb016 == 1 : do:BFrame016_x = 0; mvb016 = 0}
+edge:BFrame016:L2:L1:tau{provided:BFrame016_x == 521 : do:BFrame016_x = 0}
+edge:BFrame016:L3:L2:tau{provided:BFrame016_x <= 0 && berror016 == 1 : do:BFrame016_x = 0; berror016 = 0}
+edge:BFrame016:L4:L3:tau{provided:BFrame016_x == 48 : do:BFrame016_x = 0}
+edge:BFrame016:L5:L4:tau{provided:BFrame016_x >= 2399 && BFrame016_x <= 2422 && ib016 == 1 && B016 == 1 : do:mvb016 = 1; ib016 = 0; B016 = 0; BFrame016_x = 0}
+edge:BFrame016:L6:L5:bstart016{do:BFrame016_x = 0; B016 = 1; berror016 = 1}
+
+
+
+# Process: BFrame017
+## Clocks for BFrame017
+clock:1:BFrame017_x
+
+## Locations for BFrame017
+location:BFrame017:Bout{labels: goal017}
+location:BFrame017:L0
+location:BFrame017:L1
+location:BFrame017:L2
+location:BFrame017:L3
+location:BFrame017:L4
+location:BFrame017:L5
+location:BFrame017:L6{initial:}
+
+## Edges for BFrame017
+edge:BFrame017:L6:L6:ibx017{do:ib017 = 1}
+edge:BFrame017:L0:Bout:tau{provided:BFrame017_x <= 0}
+edge:BFrame017:L1:L0:tau{provided:BFrame017_x >= 189 && BFrame017_x <= 454 && mvb017 == 1 : do:BFrame017_x = 0; mvb017 = 0}
+edge:BFrame017:L2:L1:tau{provided:BFrame017_x == 521 : do:BFrame017_x = 0}
+edge:BFrame017:L3:L2:tau{provided:BFrame017_x <= 0 && berror017 == 1 : do:BFrame017_x = 0; berror017 = 0}
+edge:BFrame017:L4:L3:tau{provided:BFrame017_x == 48 : do:BFrame017_x = 0}
+edge:BFrame017:L5:L4:tau{provided:BFrame017_x >= 2399 && BFrame017_x <= 2422 && ib017 == 1 && B017 == 1 : do:mvb017 = 1; ib017 = 0; B017 = 0; BFrame017_x = 0}
+edge:BFrame017:L6:L5:bstart017{do:BFrame017_x = 0; B017 = 1; berror017 = 1}
+
+
+
+# Process: BFrame018
+## Clocks for BFrame018
+clock:1:BFrame018_x
+
+## Locations for BFrame018
+location:BFrame018:Bout{labels: goal018}
+location:BFrame018:L0
+location:BFrame018:L1
+location:BFrame018:L2
+location:BFrame018:L3
+location:BFrame018:L4
+location:BFrame018:L5
+location:BFrame018:L6{initial:}
+
+## Edges for BFrame018
+edge:BFrame018:L6:L6:ibx018{do:ib018 = 1}
+edge:BFrame018:L0:Bout:tau{provided:BFrame018_x <= 0}
+edge:BFrame018:L1:L0:tau{provided:BFrame018_x >= 189 && BFrame018_x <= 454 && mvb018 == 1 : do:BFrame018_x = 0; mvb018 = 0}
+edge:BFrame018:L2:L1:tau{provided:BFrame018_x == 521 : do:BFrame018_x = 0}
+edge:BFrame018:L3:L2:tau{provided:BFrame018_x <= 0 && berror018 == 1 : do:BFrame018_x = 0; berror018 = 0}
+edge:BFrame018:L4:L3:tau{provided:BFrame018_x == 48 : do:BFrame018_x = 0}
+edge:BFrame018:L5:L4:tau{provided:BFrame018_x >= 2399 && BFrame018_x <= 2422 && ib018 == 1 && B018 == 1 : do:mvb018 = 1; ib018 = 0; B018 = 0; BFrame018_x = 0}
+edge:BFrame018:L6:L5:bstart018{do:BFrame018_x = 0; B018 = 1; berror018 = 1}
+
+
+
+# Process: BFrame019
+## Clocks for BFrame019
+clock:1:BFrame019_x
+
+## Locations for BFrame019
+location:BFrame019:Bout{labels: goal019}
+location:BFrame019:L0
+location:BFrame019:L1
+location:BFrame019:L2
+location:BFrame019:L3
+location:BFrame019:L4
+location:BFrame019:L5
+location:BFrame019:L6{initial:}
+
+## Edges for BFrame019
+edge:BFrame019:L6:L6:ibx019{do:ib019 = 1}
+edge:BFrame019:L0:Bout:tau{provided:BFrame019_x <= 0}
+edge:BFrame019:L1:L0:tau{provided:BFrame019_x >= 189 && BFrame019_x <= 454 && mvb019 == 1 : do:BFrame019_x = 0; mvb019 = 0}
+edge:BFrame019:L2:L1:tau{provided:BFrame019_x == 521 : do:BFrame019_x = 0}
+edge:BFrame019:L3:L2:tau{provided:BFrame019_x <= 0 && berror019 == 1 : do:BFrame019_x = 0; berror019 = 0}
+edge:BFrame019:L4:L3:tau{provided:BFrame019_x == 48 : do:BFrame019_x = 0}
+edge:BFrame019:L5:L4:tau{provided:BFrame019_x >= 2399 && BFrame019_x <= 2422 && ib019 == 1 && B019 == 1 : do:mvb019 = 1; ib019 = 0; B019 = 0; BFrame019_x = 0}
+edge:BFrame019:L6:L5:bstart019{do:BFrame019_x = 0; B019 = 1; berror019 = 1}
+
+
+
+# Process: BFrame020
+## Clocks for BFrame020
+clock:1:BFrame020_x
+
+## Locations for BFrame020
+location:BFrame020:Bout{labels: goal020}
+location:BFrame020:L0
+location:BFrame020:L1
+location:BFrame020:L2
+location:BFrame020:L3
+location:BFrame020:L4
+location:BFrame020:L5
+location:BFrame020:L6{initial:}
+
+## Edges for BFrame020
+edge:BFrame020:L6:L6:ibx020{do:ib020 = 1}
+edge:BFrame020:L0:Bout:tau{provided:BFrame020_x <= 0}
+edge:BFrame020:L1:L0:tau{provided:BFrame020_x >= 189 && BFrame020_x <= 454 && mvb020 == 1 : do:BFrame020_x = 0; mvb020 = 0}
+edge:BFrame020:L2:L1:tau{provided:BFrame020_x == 521 : do:BFrame020_x = 0}
+edge:BFrame020:L3:L2:tau{provided:BFrame020_x <= 0 && berror020 == 1 : do:BFrame020_x = 0; berror020 = 0}
+edge:BFrame020:L4:L3:tau{provided:BFrame020_x == 48 : do:BFrame020_x = 0}
+edge:BFrame020:L5:L4:tau{provided:BFrame020_x >= 2399 && BFrame020_x <= 2422 && ib020 == 1 && B020 == 1 : do:mvb020 = 1; ib020 = 0; B020 = 0; BFrame020_x = 0}
+edge:BFrame020:L6:L5:bstart020{do:BFrame020_x = 0; B020 = 1; berror020 = 1}
+
+
+
+# Process: Pfinish
+## Clocks for Pfinish
+clock:1:Pfinish_x
+
+## Locations for Pfinish
+location:Pfinish:Pout
+location:Pfinish:L0
+location:Pfinish:L1
+location:Pfinish:L2{initial:}
+
+## Edges for Pfinish
+edge:Pfinish:L0:Pout:tau{provided:Pfinish_x <= 0}
+edge:Pfinish:L1:L0:tau{provided:Pfinish_x >= 378 && Pfinish_x <= 389 && mvp == 1 : do:Pfinish_x = 0; mvp = 0}
+edge:Pfinish:L2:L1:dctq{do:Pfinish_x = 0}
+
+
+
+# Process: Ifinish
+## Clocks for Ifinish
+clock:1:Ifinish_x
+
+## Locations for Ifinish
+location:Ifinish:Iout
+location:Ifinish:L0
+location:Ifinish:L1
+location:Ifinish:L2{initial:}
+
+## Edges for Ifinish
+edge:Ifinish:L0:Iout:tau{provided:Ifinish_x <= 0}
+edge:Ifinish:L1:L0:tau{provided:Ifinish_x >= 298 && Ifinish_x <= 358 : do:Ifinish_x = 0}
+edge:Ifinish:L2:L1:dctq1{do:Ifinish_x = 0}
+
+
+
+# Process: IandPframes
+## Clocks for IandPframes
+clock:1:IandPframes_x
+
+## Locations for IandPframes
+location:IandPframes:L0
+location:IandPframes:extra1{urgent:}
+location:IandPframes:extra2{urgent:}
+location:IandPframes:extra3{urgent:}
+location:IandPframes:extra4{urgent:}
+location:IandPframes:extra5{urgent:}
+location:IandPframes:extra6{urgent:}
+location:IandPframes:extra7{urgent:}
+location:IandPframes:extra8{urgent:}
+location:IandPframes:extra9{urgent:}
+location:IandPframes:extra10{urgent:}
+location:IandPframes:extra11{urgent:}
+location:IandPframes:extra12{urgent:}
+location:IandPframes:extra13{urgent:}
+location:IandPframes:extra14{urgent:}
+location:IandPframes:extra15{urgent:}
+location:IandPframes:extra16{urgent:}
+location:IandPframes:extra17{urgent:}
+location:IandPframes:extra18{urgent:}
+location:IandPframes:extra19{urgent:}
+location:IandPframes:extra20{urgent:}
+location:IandPframes:extra21{urgent:}
+location:IandPframes:extra22{urgent:}
+location:IandPframes:extra23{urgent:}
+location:IandPframes:extra24{urgent:}
+location:IandPframes:extra25{urgent:}
+location:IandPframes:extra26{urgent:}
+location:IandPframes:extra27{urgent:}
+location:IandPframes:extra28{urgent:}
+location:IandPframes:extra29{urgent:}
+location:IandPframes:extra30{urgent:}
+location:IandPframes:extra31{urgent:}
+location:IandPframes:extra32{urgent:}
+location:IandPframes:extra33{urgent:}
+location:IandPframes:extra34{urgent:}
+location:IandPframes:extra35{urgent:}
+location:IandPframes:extra36{urgent:}
+location:IandPframes:extra37{urgent:}
+location:IandPframes:extra38{urgent:}
+location:IandPframes:L1
+location:IandPframes:L2
+location:IandPframes:L3
+location:IandPframes:L4
+location:IandPframes:L5
+location:IandPframes:L6
+location:IandPframes:L7
+location:IandPframes:L8
+location:IandPframes:I{initial:}
+
+## Edges for IandPframes
+edge:IandPframes:L1:extra1:bstart001{provided:IandPframes_x <= 0}
+edge:IandPframes:extra1:extra2:bstart002{provided:IandPframes_x <= 0}
+edge:IandPframes:extra2:extra3:bstart003{provided:IandPframes_x <= 0}
+edge:IandPframes:extra3:extra4:bstart004{provided:IandPframes_x <= 0}
+edge:IandPframes:extra4:extra5:bstart005{provided:IandPframes_x <= 0}
+edge:IandPframes:extra5:extra6:bstart006{provided:IandPframes_x <= 0}
+edge:IandPframes:extra6:extra7:bstart007{provided:IandPframes_x <= 0}
+edge:IandPframes:extra7:extra8:bstart008{provided:IandPframes_x <= 0}
+edge:IandPframes:extra8:extra9:bstart009{provided:IandPframes_x <= 0}
+edge:IandPframes:extra9:extra10:bstart010{provided:IandPframes_x <= 0}
+edge:IandPframes:extra10:extra11:bstart011{provided:IandPframes_x <= 0}
+edge:IandPframes:extra11:extra12:bstart012{provided:IandPframes_x <= 0}
+edge:IandPframes:extra12:extra13:bstart013{provided:IandPframes_x <= 0}
+edge:IandPframes:extra13:extra14:bstart014{provided:IandPframes_x <= 0}
+edge:IandPframes:extra14:extra15:bstart015{provided:IandPframes_x <= 0}
+edge:IandPframes:extra15:extra16:bstart016{provided:IandPframes_x <= 0}
+edge:IandPframes:extra16:extra17:bstart017{provided:IandPframes_x <= 0}
+edge:IandPframes:extra17:extra18:bstart018{provided:IandPframes_x <= 0}
+edge:IandPframes:extra18:extra19:bstart019{provided:IandPframes_x <= 0}
+edge:IandPframes:extra19:L0:bstart020{provided:IandPframes_x <= 0}
+edge:IandPframes:L2:L1:tau{provided:IandPframes_x == 515 : do:IandPframes_x = 0}
+edge:IandPframes:L3:L2:dctq{provided:IandPframes_x == 521 : do:IandPframes_x = 0}
+edge:IandPframes:L4:L3:tau{provided:perror == 1 && IandPframes_x <= 0 : do:IandPframes_x = 0; perror = 0}
+edge:IandPframes:L5:L4:tau{provided:IandPframes_x == 32 : do:IandPframes_x = 0}
+edge:IandPframes:L6:L5:tau{provided:IandPframes_x >= 1180 && IandPframes_x <= 1181 && P == 1 : do:mvp = 1; P = 0; IandPframes_x = 0}
+edge:IandPframes:L7:extra20:ibx001{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra20:extra21:ibx002{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra21:extra22:ibx003{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra22:extra23:ibx004{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra23:extra24:ibx005{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra24:extra25:ibx006{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra25:extra26:ibx007{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra26:extra27:ibx008{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra27:extra28:ibx009{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra28:extra29:ibx010{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra29:extra30:ibx011{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra30:extra31:ibx012{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra31:extra32:ibx013{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra32:extra33:ibx014{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra33:extra34:ibx015{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra34:extra35:ibx016{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra35:extra36:ibx017{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra36:extra37:ibx018{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra37:extra38:ibx019{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:extra38:L6:ibx020{provided:IandPframes_x <= 0 : do:perror = 1; P = 1; IandPframes_x = 0}
+edge:IandPframes:L8:L7:tau{provided:IandPframes_x == 673 : do:IandPframes_x = 0}
+edge:IandPframes:I:L8:dctq1{provided:IandPframes_x == 595 : do:IandPframes_x = 0}
+
+
+
+# Synchronizations
+sync:IandPframes@bstart001:BFrame001@bstart001
+sync:IandPframes@bstart002:BFrame002@bstart002
+sync:IandPframes@bstart003:BFrame003@bstart003
+sync:IandPframes@bstart004:BFrame004@bstart004
+sync:IandPframes@bstart005:BFrame005@bstart005
+sync:IandPframes@bstart006:BFrame006@bstart006
+sync:IandPframes@bstart007:BFrame007@bstart007
+sync:IandPframes@bstart008:BFrame008@bstart008
+sync:IandPframes@bstart009:BFrame009@bstart009
+sync:IandPframes@bstart010:BFrame010@bstart010
+sync:IandPframes@bstart011:BFrame011@bstart011
+sync:IandPframes@bstart012:BFrame012@bstart012
+sync:IandPframes@bstart013:BFrame013@bstart013
+sync:IandPframes@bstart014:BFrame014@bstart014
+sync:IandPframes@bstart015:BFrame015@bstart015
+sync:IandPframes@bstart016:BFrame016@bstart016
+sync:IandPframes@bstart017:BFrame017@bstart017
+sync:IandPframes@bstart018:BFrame018@bstart018
+sync:IandPframes@bstart019:BFrame019@bstart019
+sync:IandPframes@bstart020:BFrame020@bstart020
+sync:IandPframes@dctq:Pfinish@dctq
+sync:IandPframes@dctq1:Ifinish@dctq1
+sync:IandPframes@ibx001:BFrame001@ibx001
+sync:IandPframes@ibx002:BFrame002@ibx002
+sync:IandPframes@ibx003:BFrame003@ibx003
+sync:IandPframes@ibx004:BFrame004@ibx004
+sync:IandPframes@ibx005:BFrame005@ibx005
+sync:IandPframes@ibx006:BFrame006@ibx006
+sync:IandPframes@ibx007:BFrame007@ibx007
+sync:IandPframes@ibx008:BFrame008@ibx008
+sync:IandPframes@ibx009:BFrame009@ibx009
+sync:IandPframes@ibx010:BFrame010@ibx010
+sync:IandPframes@ibx011:BFrame011@ibx011
+sync:IandPframes@ibx012:BFrame012@ibx012
+sync:IandPframes@ibx013:BFrame013@ibx013
+sync:IandPframes@ibx014:BFrame014@ibx014
+sync:IandPframes@ibx015:BFrame015@ibx015
+sync:IandPframes@ibx016:BFrame016@ibx016
+sync:IandPframes@ibx017:BFrame017@ibx017
+sync:IandPframes@ibx018:BFrame018@ibx018
+sync:IandPframes@ibx019:BFrame019@ibx019
+sync:IandPframes@ibx020:BFrame020@ibx020

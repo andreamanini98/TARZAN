@@ -1,0 +1,26 @@
+create automaton BFrame013
+{
+    clocks { x; }
+    actions { a, bstart013, ibx013; }
+    integers { B001, B002, B003, B004, B005, B006, B007, B008, B009, B010, B011, B012, B013, B014, B015, B016, berror001, berror002, berror003, berror004, berror005, berror006, berror007, berror008, berror009, berror010, berror011, berror012, berror013, berror014, berror015, berror016, ib001, ib002, ib003, ib004, ib005, ib006, ib007, ib008, ib009, ib010, ib011, ib012, ib013, ib014, ib015, ib016, mvb001, mvb002, mvb003, mvb004, mvb005, mvb006, mvb007, mvb008, mvb009, mvb010, mvb011, mvb012, mvb013, mvb014, mvb015, mvb016, mvp; }
+    locations {
+        Bout <ini: F>,
+        L0   <ini: F>,
+        L1   <ini: F>,
+        L2   <ini: F>,
+        L3   <ini: F>,
+        L4   <ini: F>,
+        L5   <ini: F>,
+        L6   <ini: T>;
+    }
+    transitions {
+        (L6, ibx013?, [], [], [ib013 = 1], L6),
+        (L0, a, [(x, <=, 0)], [], Bout),
+        (L1, a, [(x, >=, 189), (x, <=, 454)], mvb013 == 1, [x], [mvb013 = 0], L0),
+        (L2, a, [(x, ==, 521)], [x], L1),
+        (L3, a, [(x, <=, 0)], berror013 == 1, [x], [berror013 = 0], L2),
+        (L4, a, [(x, ==, 48)], [x], L3),
+        (L5, a, [(x, >=, 2399), (x, <=, 2422)], ib013 == 1 && B013 == 1, [x], [mvb013 = 1, ib013 = 0, B013 = 0], L4),
+        (L6, bstart013?, [], [x], [B013 = 1, berror013 = 1], L5);
+    }
+}

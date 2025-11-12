@@ -1,0 +1,41 @@
+create automaton IandPframes
+{
+    clocks { x; }
+    actions { a, bstart001, bstart002, bstart003, bstart004, dctq, dctq1, ibx001, ibx002, ibx003, ibx004; }
+    integers { B001, B002, B003, B004, P, berror001, berror002, berror003, berror004, ib001, ib002, ib003, ib004, mvb001, mvb002, mvb003, mvb004, mvp, perror; }
+    locations {
+        L0     <ini: F>,
+        extra1 <ini: F>,
+        extra2 <ini: F>,
+        extra3 <ini: F>,
+        extra4 <ini: F>,
+        extra5 <ini: F>,
+        extra6 <ini: F>,
+        L1     <ini: F>,
+        L2     <ini: F>,
+        L3     <ini: F>,
+        L4     <ini: F>,
+        L5     <ini: F>,
+        L6     <ini: F>,
+        L7     <ini: F>,
+        L8     <ini: F>,
+        I      <ini: T>;
+    }
+    transitions {
+        (L1, bstart001!, [(x, <=, 0)], [], extra1),
+        (extra1, bstart002!, [(x, <=, 0)], [], extra2),
+        (extra2, bstart003!, [(x, <=, 0)], [], extra3),
+        (extra3, bstart004!, [(x, <=, 0)], [], L0),
+        (L2, a, [(x, ==, 515)], [x], L1),
+        (L3, dctq!, [(x, ==, 521)], [x], L2),
+        (L4, a, [(x, <=, 0)], perror == 1, [x], [perror = 0], L3),
+        (L5, a, [(x, ==, 32)], [x], L4),
+        (L6, a, [(x, >=, 1180), (x, <=, 1181)], P == 1, [x], [mvp = 1, P = 0], L5),
+        (L7, ibx001!, [(x, <=, 0)], [x], [perror = 1, P = 1], extra4),
+        (extra4, ibx002!, [(x, <=, 0)], [x], [perror = 1, P = 1], extra5),
+        (extra5, ibx003!, [(x, <=, 0)], [x], [perror = 1, P = 1], extra6),
+        (extra6, ibx004!, [(x, <=, 0)], [x], [perror = 1, P = 1], L6),
+        (L8, a, [(x, ==, 673)], [x], L7),
+        (I, dctq1!, [(x, ==, 595)], [x], L8);
+    }
+}

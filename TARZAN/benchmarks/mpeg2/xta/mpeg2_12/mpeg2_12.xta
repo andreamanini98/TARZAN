@@ -1,0 +1,272 @@
+const int N = 12;
+const int DEADLINE = 6673;
+
+chan dctq1, dctq, ibx001, bstart001, ibx002, bstart002, ibx003, bstart003, ibx004, bstart004, ibx005, bstart005, ibx006, bstart006, ibx007, bstart007, ibx008, bstart008, ibx009, bstart009, ibx010, bstart010, ibx011, bstart011, ibx012, bstart012;
+
+int mvp, ib001, mvb001, B001, berror001, ib002, mvb002, B002, berror002, ib003, mvb003, B003, berror003, ib004, mvb004, B004, berror004, ib005, mvb005, B005, berror005, ib006, mvb006, B006, berror006, ib007, mvb007, B007, berror007, ib008, mvb008, B008, berror008, ib009, mvb009, B009, berror009, ib010, mvb010, B010, berror010, ib011, mvb011, B011, berror011, ib012, mvb012, B012, berror012;
+
+
+process Time() {
+    clock x;
+    state L0 { x <= DEADLINE };
+    init L0;
+    trans
+        L0 -> L0 {};
+}
+
+process BFrame001() {
+    clock x;
+    state Bout, L0, L1, L2, L3, L4, L5, L6;
+    init L6;
+    trans
+        L6 -> L6 { sync ibx001?; assign ib001 = 1; },
+        L0 -> Bout { guard x <= 0; },
+        L1 -> L0 { guard x >= 189 && x <= 454 && mvb001 == 1; assign x = 0, mvb001 = 0; },
+        L2 -> L1 { guard x == 521; assign x = 0; },
+        L3 -> L2 { guard x <= 0 && berror001 == 1; assign x = 0, berror001 = 0; },
+        L4 -> L3 { guard x == 48; assign x = 0; },
+        L5 -> L4 { guard x >= 2399 && x <= 2422 && ib001 == 1 && B001 == 1;
+                    assign mvb001 = 1, ib001 = 0, B001 = 0, x = 0; },
+        L6 -> L5 { sync bstart001?; assign x = 0, B001 = 1, berror001 = 1; };
+}
+
+process BFrame002() {
+    clock x;
+    state Bout, L0, L1, L2, L3, L4, L5, L6;
+    init L6;
+    trans
+        L6 -> L6 { sync ibx002?; assign ib002 = 1; },
+        L0 -> Bout { guard x <= 0; },
+        L1 -> L0 { guard x >= 189 && x <= 454 && mvb002 == 1; assign x = 0, mvb002 = 0; },
+        L2 -> L1 { guard x == 521; assign x = 0; },
+        L3 -> L2 { guard x <= 0 && berror002 == 1; assign x = 0, berror002 = 0; },
+        L4 -> L3 { guard x == 48; assign x = 0; },
+        L5 -> L4 { guard x >= 2399 && x <= 2422 && ib002 == 1 && B002 == 1;
+                    assign mvb002 = 1, ib002 = 0, B002 = 0, x = 0; },
+        L6 -> L5 { sync bstart002?; assign x = 0, B002 = 1, berror002 = 1; };
+}
+
+process BFrame003() {
+    clock x;
+    state Bout, L0, L1, L2, L3, L4, L5, L6;
+    init L6;
+    trans
+        L6 -> L6 { sync ibx003?; assign ib003 = 1; },
+        L0 -> Bout { guard x <= 0; },
+        L1 -> L0 { guard x >= 189 && x <= 454 && mvb003 == 1; assign x = 0, mvb003 = 0; },
+        L2 -> L1 { guard x == 521; assign x = 0; },
+        L3 -> L2 { guard x <= 0 && berror003 == 1; assign x = 0, berror003 = 0; },
+        L4 -> L3 { guard x == 48; assign x = 0; },
+        L5 -> L4 { guard x >= 2399 && x <= 2422 && ib003 == 1 && B003 == 1;
+                    assign mvb003 = 1, ib003 = 0, B003 = 0, x = 0; },
+        L6 -> L5 { sync bstart003?; assign x = 0, B003 = 1, berror003 = 1; };
+}
+
+process BFrame004() {
+    clock x;
+    state Bout, L0, L1, L2, L3, L4, L5, L6;
+    init L6;
+    trans
+        L6 -> L6 { sync ibx004?; assign ib004 = 1; },
+        L0 -> Bout { guard x <= 0; },
+        L1 -> L0 { guard x >= 189 && x <= 454 && mvb004 == 1; assign x = 0, mvb004 = 0; },
+        L2 -> L1 { guard x == 521; assign x = 0; },
+        L3 -> L2 { guard x <= 0 && berror004 == 1; assign x = 0, berror004 = 0; },
+        L4 -> L3 { guard x == 48; assign x = 0; },
+        L5 -> L4 { guard x >= 2399 && x <= 2422 && ib004 == 1 && B004 == 1;
+                    assign mvb004 = 1, ib004 = 0, B004 = 0, x = 0; },
+        L6 -> L5 { sync bstart004?; assign x = 0, B004 = 1, berror004 = 1; };
+}
+
+process BFrame005() {
+    clock x;
+    state Bout, L0, L1, L2, L3, L4, L5, L6;
+    init L6;
+    trans
+        L6 -> L6 { sync ibx005?; assign ib005 = 1; },
+        L0 -> Bout { guard x <= 0; },
+        L1 -> L0 { guard x >= 189 && x <= 454 && mvb005 == 1; assign x = 0, mvb005 = 0; },
+        L2 -> L1 { guard x == 521; assign x = 0; },
+        L3 -> L2 { guard x <= 0 && berror005 == 1; assign x = 0, berror005 = 0; },
+        L4 -> L3 { guard x == 48; assign x = 0; },
+        L5 -> L4 { guard x >= 2399 && x <= 2422 && ib005 == 1 && B005 == 1;
+                    assign mvb005 = 1, ib005 = 0, B005 = 0, x = 0; },
+        L6 -> L5 { sync bstart005?; assign x = 0, B005 = 1, berror005 = 1; };
+}
+
+process BFrame006() {
+    clock x;
+    state Bout, L0, L1, L2, L3, L4, L5, L6;
+    init L6;
+    trans
+        L6 -> L6 { sync ibx006?; assign ib006 = 1; },
+        L0 -> Bout { guard x <= 0; },
+        L1 -> L0 { guard x >= 189 && x <= 454 && mvb006 == 1; assign x = 0, mvb006 = 0; },
+        L2 -> L1 { guard x == 521; assign x = 0; },
+        L3 -> L2 { guard x <= 0 && berror006 == 1; assign x = 0, berror006 = 0; },
+        L4 -> L3 { guard x == 48; assign x = 0; },
+        L5 -> L4 { guard x >= 2399 && x <= 2422 && ib006 == 1 && B006 == 1;
+                    assign mvb006 = 1, ib006 = 0, B006 = 0, x = 0; },
+        L6 -> L5 { sync bstart006?; assign x = 0, B006 = 1, berror006 = 1; };
+}
+
+process BFrame007() {
+    clock x;
+    state Bout, L0, L1, L2, L3, L4, L5, L6;
+    init L6;
+    trans
+        L6 -> L6 { sync ibx007?; assign ib007 = 1; },
+        L0 -> Bout { guard x <= 0; },
+        L1 -> L0 { guard x >= 189 && x <= 454 && mvb007 == 1; assign x = 0, mvb007 = 0; },
+        L2 -> L1 { guard x == 521; assign x = 0; },
+        L3 -> L2 { guard x <= 0 && berror007 == 1; assign x = 0, berror007 = 0; },
+        L4 -> L3 { guard x == 48; assign x = 0; },
+        L5 -> L4 { guard x >= 2399 && x <= 2422 && ib007 == 1 && B007 == 1;
+                    assign mvb007 = 1, ib007 = 0, B007 = 0, x = 0; },
+        L6 -> L5 { sync bstart007?; assign x = 0, B007 = 1, berror007 = 1; };
+}
+
+process BFrame008() {
+    clock x;
+    state Bout, L0, L1, L2, L3, L4, L5, L6;
+    init L6;
+    trans
+        L6 -> L6 { sync ibx008?; assign ib008 = 1; },
+        L0 -> Bout { guard x <= 0; },
+        L1 -> L0 { guard x >= 189 && x <= 454 && mvb008 == 1; assign x = 0, mvb008 = 0; },
+        L2 -> L1 { guard x == 521; assign x = 0; },
+        L3 -> L2 { guard x <= 0 && berror008 == 1; assign x = 0, berror008 = 0; },
+        L4 -> L3 { guard x == 48; assign x = 0; },
+        L5 -> L4 { guard x >= 2399 && x <= 2422 && ib008 == 1 && B008 == 1;
+                    assign mvb008 = 1, ib008 = 0, B008 = 0, x = 0; },
+        L6 -> L5 { sync bstart008?; assign x = 0, B008 = 1, berror008 = 1; };
+}
+
+process BFrame009() {
+    clock x;
+    state Bout, L0, L1, L2, L3, L4, L5, L6;
+    init L6;
+    trans
+        L6 -> L6 { sync ibx009?; assign ib009 = 1; },
+        L0 -> Bout { guard x <= 0; },
+        L1 -> L0 { guard x >= 189 && x <= 454 && mvb009 == 1; assign x = 0, mvb009 = 0; },
+        L2 -> L1 { guard x == 521; assign x = 0; },
+        L3 -> L2 { guard x <= 0 && berror009 == 1; assign x = 0, berror009 = 0; },
+        L4 -> L3 { guard x == 48; assign x = 0; },
+        L5 -> L4 { guard x >= 2399 && x <= 2422 && ib009 == 1 && B009 == 1;
+                    assign mvb009 = 1, ib009 = 0, B009 = 0, x = 0; },
+        L6 -> L5 { sync bstart009?; assign x = 0, B009 = 1, berror009 = 1; };
+}
+
+process BFrame010() {
+    clock x;
+    state Bout, L0, L1, L2, L3, L4, L5, L6;
+    init L6;
+    trans
+        L6 -> L6 { sync ibx010?; assign ib010 = 1; },
+        L0 -> Bout { guard x <= 0; },
+        L1 -> L0 { guard x >= 189 && x <= 454 && mvb010 == 1; assign x = 0, mvb010 = 0; },
+        L2 -> L1 { guard x == 521; assign x = 0; },
+        L3 -> L2 { guard x <= 0 && berror010 == 1; assign x = 0, berror010 = 0; },
+        L4 -> L3 { guard x == 48; assign x = 0; },
+        L5 -> L4 { guard x >= 2399 && x <= 2422 && ib010 == 1 && B010 == 1;
+                    assign mvb010 = 1, ib010 = 0, B010 = 0, x = 0; },
+        L6 -> L5 { sync bstart010?; assign x = 0, B010 = 1, berror010 = 1; };
+}
+
+process BFrame011() {
+    clock x;
+    state Bout, L0, L1, L2, L3, L4, L5, L6;
+    init L6;
+    trans
+        L6 -> L6 { sync ibx011?; assign ib011 = 1; },
+        L0 -> Bout { guard x <= 0; },
+        L1 -> L0 { guard x >= 189 && x <= 454 && mvb011 == 1; assign x = 0, mvb011 = 0; },
+        L2 -> L1 { guard x == 521; assign x = 0; },
+        L3 -> L2 { guard x <= 0 && berror011 == 1; assign x = 0, berror011 = 0; },
+        L4 -> L3 { guard x == 48; assign x = 0; },
+        L5 -> L4 { guard x >= 2399 && x <= 2422 && ib011 == 1 && B011 == 1;
+                    assign mvb011 = 1, ib011 = 0, B011 = 0, x = 0; },
+        L6 -> L5 { sync bstart011?; assign x = 0, B011 = 1, berror011 = 1; };
+}
+
+process BFrame012() {
+    clock x;
+    state Bout, L0, L1, L2, L3, L4, L5, L6;
+    init L6;
+    trans
+        L6 -> L6 { sync ibx012?; assign ib012 = 1; },
+        L0 -> Bout { guard x <= 0; },
+        L1 -> L0 { guard x >= 189 && x <= 454 && mvb012 == 1; assign x = 0, mvb012 = 0; },
+        L2 -> L1 { guard x == 521; assign x = 0; },
+        L3 -> L2 { guard x <= 0 && berror012 == 1; assign x = 0, berror012 = 0; },
+        L4 -> L3 { guard x == 48; assign x = 0; },
+        L5 -> L4 { guard x >= 2399 && x <= 2422 && ib012 == 1 && B012 == 1;
+                    assign mvb012 = 1, ib012 = 0, B012 = 0, x = 0; },
+        L6 -> L5 { sync bstart012?; assign x = 0, B012 = 1, berror012 = 1; };
+}
+
+
+process Pfinish() {
+    clock x;
+    state Pout, L0, L1, L2;
+    init L2;
+    trans
+        L0 -> Pout { guard x <= 0; },
+        L1 -> L0 { guard x >= 378 && x <= 389 && mvp == 1; assign x = 0, mvp = 0; },
+        L2 -> L1 { sync dctq?; assign x = 0; };
+}
+
+process Ifinish() {
+    clock x;
+    state Iout, L0, L1, L2;
+    init L2;
+    trans
+        L0 -> Iout { guard x <= 0; },
+        L1 -> L0 { guard x >= 298 && x <= 358; assign x = 0; },
+        L2 -> L1 { sync dctq1?; assign x = 0; };
+}
+
+process IandPframes() {
+    clock x;
+    int perror = 0;
+    int P = 0;
+    state L0, extra1, extra2, extra3, extra4, extra5, extra6, extra7, extra8, extra9, extra10, extra11, extra12, extra13, extra14, extra15, extra16, extra17, extra18, extra19, extra20, extra21, extra22, L1, L2, L3, L4, L5, L6, L7, L8, I;
+    urgent extra1, extra2, extra3, extra4, extra5, extra6, extra7, extra8, extra9, extra10, extra11, extra12, extra13, extra14, extra15, extra16, extra17, extra18, extra19, extra20, extra21, extra22;
+    init I;
+    trans
+    L1 -> extra1 { guard x <= 0; sync bstart001!; },
+    extra1 -> extra2 { guard x <= 0; sync bstart002!; },
+    extra2 -> extra3 { guard x <= 0; sync bstart003!; },
+    extra3 -> extra4 { guard x <= 0; sync bstart004!; },
+    extra4 -> extra5 { guard x <= 0; sync bstart005!; },
+    extra5 -> extra6 { guard x <= 0; sync bstart006!; },
+    extra6 -> extra7 { guard x <= 0; sync bstart007!; },
+    extra7 -> extra8 { guard x <= 0; sync bstart008!; },
+    extra8 -> extra9 { guard x <= 0; sync bstart009!; },
+    extra9 -> extra10 { guard x <= 0; sync bstart010!; },
+    extra10 -> extra11 { guard x <= 0; sync bstart011!; },
+    extra11 -> L0 { guard x <= 0; sync bstart012!; },
+    L2 -> L1 { guard x == 515; assign x = 0; },
+    L3 -> L2 { guard x == 521; sync dctq!; assign x = 0; },
+    L4 -> L3 { guard perror == 1 && x <= 0; assign x = 0, perror = 0; },
+    L5 -> L4 { guard x == 32; assign x = 0; },
+    L6 -> L5 { guard x >= 1180 && x <= 1181 && P == 1; assign mvp = 1, P = 0, x = 0; },
+    L7 -> extra12 { guard x <= 0; sync ibx001!; assign perror = 1, P = 1, x = 0; },
+    extra12 -> extra13 { guard x <= 0; sync ibx002!; assign perror = 1, P = 1, x = 0; },
+    extra13 -> extra14 { guard x <= 0; sync ibx003!; assign perror = 1, P = 1, x = 0; },
+    extra14 -> extra15 { guard x <= 0; sync ibx004!; assign perror = 1, P = 1, x = 0; },
+    extra15 -> extra16 { guard x <= 0; sync ibx005!; assign perror = 1, P = 1, x = 0; },
+    extra16 -> extra17 { guard x <= 0; sync ibx006!; assign perror = 1, P = 1, x = 0; },
+    extra17 -> extra18 { guard x <= 0; sync ibx007!; assign perror = 1, P = 1, x = 0; },
+    extra18 -> extra19 { guard x <= 0; sync ibx008!; assign perror = 1, P = 1, x = 0; },
+    extra19 -> extra20 { guard x <= 0; sync ibx009!; assign perror = 1, P = 1, x = 0; },
+    extra20 -> extra21 { guard x <= 0; sync ibx010!; assign perror = 1, P = 1, x = 0; },
+    extra21 -> extra22 { guard x <= 0; sync ibx011!; assign perror = 1, P = 1, x = 0; },
+    extra22 -> L6 { guard x <= 0; sync ibx012!; assign perror = 1, P = 1, x = 0; },
+    L8 -> L7 { guard x == 673; assign x = 0; },
+    I -> L8 { guard x == 595; sync dctq1!; assign x = 0; };
+}
+
+
+system IandPframes, Ifinish, Pfinish, BFrame001, BFrame002, BFrame003, BFrame004, BFrame005, BFrame006, BFrame007, BFrame008, BFrame009, BFrame010, BFrame011, BFrame012, Time;
