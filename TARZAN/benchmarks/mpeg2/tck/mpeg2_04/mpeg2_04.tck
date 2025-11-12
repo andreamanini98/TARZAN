@@ -18,6 +18,25 @@ event:tau
 # Global declarations
 int:1:0:1000:4:N
 int:1:0:13346:6673:DEADLINE
+int:1:0:1000:0:perror
+int:1:0:1000:0:P
+int:1:0:1000:0:mvp
+int:1:0:1000:0:ib001
+int:1:0:1000:0:mvb001
+int:1:0:1000:0:B001
+int:1:0:1000:0:berror001
+int:1:0:1000:0:ib002
+int:1:0:1000:0:mvb002
+int:1:0:1000:0:B002
+int:1:0:1000:0:berror002
+int:1:0:1000:0:ib003
+int:1:0:1000:0:mvb003
+int:1:0:1000:0:B003
+int:1:0:1000:0:berror003
+int:1:0:1000:0:ib004
+int:1:0:1000:0:mvb004
+int:1:0:1000:0:B004
+int:1:0:1000:0:berror004
 
 
 
