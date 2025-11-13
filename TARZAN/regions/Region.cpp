@@ -621,6 +621,21 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
             }
         } else
         {
+            // Checking if the region is legal (every reset clock must be exactly zero with no fractional part).
+            bool canProducePredecessors = true;
+            for (const auto &resetClock: transition.clocksToReset)
+            {
+                // ReSharper disable once CppTooWideScopeInitStatement
+                auto [intVal, hasFracPart] = clockValuation[clockIndices.at(resetClock)];
+
+                // If the clock does not satisfy the above conditions (integer part zero and no fractional part), no discrete predecessors can be computed from the current region.
+                if (intVal != 0 || hasFracPart == true)
+                    canProducePredecessors = false;
+            }
+
+            if (!canProducePredecessors)
+                continue;
+
             const int numOfClocks = getNumberOfClocks();
 
             // Vector acting as the clock valuation (only integer values) for the clocks of the new regions.
