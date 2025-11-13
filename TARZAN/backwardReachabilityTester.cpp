@@ -1,6 +1,6 @@
 #include <string>
+#include <fstream>
 
-#include "regions/networkOfTA/RTSNetwork.h"
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
 #include "TARZAN/utilities/partition_utilities.h"
 #include "TARZAN/utilities/file_utilities.h"
@@ -11,8 +11,10 @@
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
 
 
-inline void test1()
+inline void test0()
 {
+    std::cout << "Test 0 (Flower04): total number of region of the forward explored state space.\n\n";
+
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_04/";
 
     const std::string automatonFileName = "Flower.txt";
@@ -20,14 +22,34 @@ inline void test1()
 
     const region::RTS regionTransitionSystem(automaton);
 
-    std::cout << "\n";
+    std::cout << "Forward computation output:" << std::endl;
+
+    const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(10, DFS);
+
+    std::cout << '\n';
+}
+
+
+inline void test1()
+{
+    std::cout << "Test 1 (Flower04): showing that from the region reached forward it is possible to go back to an initial region.\n\n";
+
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_04/";
+
+    const std::string automatonFileName = "Flower.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const region::RTS regionTransitionSystem(automaton);
+
+    std::cout << "Forward computation output:" << std::endl;
 
     const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(0, DFS);
 
-    std::cout << "\n\n";
+    std::cout << '\n';
 
-    std::cout << "Test 1 (Flower04): showing that from the region reached forward it is possible to go back to an initial region.\n";
     std::cout << "Starting from region:\n" << rts[0].toString() << std::endl;
+
+    std::cout << "Backward computation output:" << std::endl;
 
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(rts, DFS);
 
@@ -39,6 +61,8 @@ inline void test1()
 
 inline void test2()
 {
+    std::cout << "Test 2 (Flower04): showing that from a reachable region it is possible to reach an initial region.\n\n";
+
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_04/";
 
     const std::string automatonFileName = "Flower.txt";
@@ -46,13 +70,15 @@ inline void test2()
 
     const region::RTS regionTransitionSystem(automaton);
 
-    std::cout << "\n";
+    // Suppress forwardReachability output
+    std::streambuf *oldCoutBuffer = std::cout.rdbuf();
+    std::ofstream nullStream("/dev/null");
+    std::cout.rdbuf(nullStream.rdbuf());
 
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(0, DFS);
 
-    std::cout << "\n\n";
-
-    std::cout << "Test 2: showing that from a reachable region it is possible to reach an initial region.\n";
+    // Restore cout
+    std::cout.rdbuf(oldCoutBuffer);
 
     const std::vector new_h = { 1, 2, 0, 0, 1 };
     rts[0].set_h(new_h);
@@ -76,6 +102,8 @@ inline void test2()
     // When clocks have integer value 1, 2, 3, 4, 1 (y is unbounded), it is possible to reset x3 and x4 to get this starting region.
     std::cout << "Starting from region:\n" << rts[0].toString() << std::endl;
 
+    std::cout << "Backward computation output:" << std::endl;
+
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(rts, DFS);
 
     std::cout << "Predecessors contents:\n";
@@ -86,6 +114,9 @@ inline void test2()
 
 inline void test3()
 {
+    std::cout << "Test 3 (Flower04): showing that from an unreachable region it is not possible to reach an initial region.\n";
+    std::cout << "In this case, the region is unreachable since it assumes that clock y goes unbounded simultaneously with clock x2.\n\n";
+
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_04/";
 
     const std::string automatonFileName = "Flower.txt";
@@ -93,14 +124,15 @@ inline void test3()
 
     const region::RTS regionTransitionSystem(automaton);
 
-    std::cout << "\n";
+    // Suppress forwardReachability output
+    std::streambuf *oldCoutBuffer = std::cout.rdbuf();
+    std::ofstream nullStream("/dev/null");
+    std::cout.rdbuf(nullStream.rdbuf());
 
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(0, DFS);
 
-    std::cout << "\n\n";
-
-    std::cout << "Test 3: showing that from an unreachable region it is not possible to reach an initial region.\n";
-    std::cout << "In this case, the region is unreachable since it assumes that clock y goes unbounded simultaneously with clock x2.\n";
+    // Restore cout
+    std::cout.rdbuf(oldCoutBuffer);
 
     const std::vector new_h = { 1, 2, 0, 0, 1 };
     rts[0].set_h(new_h);
@@ -122,6 +154,8 @@ inline void test3()
 
     std::cout << "Starting from region:\n" << rts[0].toString() << std::endl;
 
+    std::cout << "Backward computation output:" << std::endl;
+
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(rts, DFS);
 
     std::cout << "Predecessors contents:\n";
@@ -132,6 +166,9 @@ inline void test3()
 
 void test4()
 {
+    std::cout << "Test 4 (Flower04): showing that from a reachable region it is possible to reach an initial region.\n";
+    std::cout << "In this case, the region is reachable since clock y goes unbounded before clock x2.\n\n";
+
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_04/";
 
     const std::string automatonFileName = "Flower.txt";
@@ -139,14 +176,15 @@ void test4()
 
     const region::RTS regionTransitionSystem(automaton);
 
-    std::cout << "\n";
+    // Suppress forwardReachability output
+    std::streambuf *oldCoutBuffer = std::cout.rdbuf();
+    std::ofstream nullStream("/dev/null");
+    std::cout.rdbuf(nullStream.rdbuf());
 
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(0, DFS);
 
-    std::cout << "\n\n";
-
-    std::cout << "Test 4: showing that from a reachable region it is possible to reach an initial region.\n";
-    std::cout << "In this case, the region is reachable since clock y goes unbounded before clock x2.\n";
+    // Restore cout
+    std::cout.rdbuf(oldCoutBuffer);
 
     const std::vector new_h = { 1, 2, 0, 0, 1 };
     rts[0].set_h(new_h);
@@ -171,6 +209,8 @@ void test4()
 
     std::cout << "Starting from region:\n" << rts[0].toString() << std::endl;
 
+    std::cout << "Backward computation output:" << std::endl;
+
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(rts, DFS);
 
     std::cout << "Predecessors contents:\n";
@@ -181,6 +221,8 @@ void test4()
 
 void test5()
 {
+    std::cout << "Test 5 (Flower04): showing that from a region with an invalid location it is not possible to go back to an initial region.\n\n";
+
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_04/";
 
     const std::string automatonFileName = "Flower.txt";
@@ -188,18 +230,23 @@ void test5()
 
     const region::RTS regionTransitionSystem(automaton);
 
-    std::cout << "\n";
+    // Suppress forwardReachability output
+    std::streambuf *oldCoutBuffer = std::cout.rdbuf();
+    std::ofstream nullStream("/dev/null");
+    std::cout.rdbuf(nullStream.rdbuf());
 
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(0, DFS);
 
-    std::cout << "\n\n";
+    // Restore cout
+    std::cout.rdbuf(oldCoutBuffer);
 
-    std::cout << "Test 5: showing that from a region with an invalid location it is not possible to go back to an initial region.\n";
     std::cout << "Starting from region:\n" << rts[0].toString() << std::endl;
 
     rts[0].set_q(10);
 
     std::cout << "Starting from region:\n" << rts[0].toString() << std::endl;
+
+    std::cout << "Backward computation output:" << std::endl;
 
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(rts, DFS);
 
@@ -211,6 +258,8 @@ void test5()
 
 void test6()
 {
+    std::cout << "Test 6 (exSITH): showing that from the region reached forward it is possible to go back to an initial region.\n\n";
+
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/exSITH/liana/exSITH/";
 
     const std::string automatonFileName = "exSITH.txt";
@@ -218,14 +267,15 @@ void test6()
 
     const region::RTS regionTransitionSystem(automaton);
 
-    std::cout << "\n";
+    std::cout << "Forward computation output:" << std::endl;
 
     const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(2, DFS);
 
-    std::cout << "\n\n";
+    std::cout << '\n';
 
-    std::cout << "Test 6 (exSITH): showing that from the region reached forward it is possible to go back to an initial region.\n";
     std::cout << "Starting from region:\n" << rts[0].toString() << std::endl;
+
+    std::cout << "Backward computation output:" << std::endl;
 
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(rts, DFS);
 
@@ -237,6 +287,10 @@ void test6()
 
 inline void test7()
 {
+    std::cout << "Test 7 (simple1000): showing that from the region reached forward it is possible to go back to an initial region.\n";
+    std::cout << "Recall that in backward reachability integer variables are not supported. In this case, the variable i does not affect\n";
+    std::cout << "the execution of the automaton, hence we are able to perform backward reachability.\n\n";
+
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/simple/liana/simple_1000/";
 
     const std::string automatonFileName = "Template.txt";
@@ -244,16 +298,15 @@ inline void test7()
 
     const region::RTS regionTransitionSystem(automaton);
 
-    std::cout << "\n";
+    std::cout << "Forward computation output:" << std::endl;
 
     const std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(0, DFS);
 
-    std::cout << "\n\n";
+    std::cout << '\n';
 
-    std::cout << "Test 7 (simple1000): showing that from the region reached forward it is possible to go back to an initial region.\n";
-    std::cout << "Recall that in backward reachability integer variables are not supported. In this case, the variable i does not affect\n";
-    std::cout << "the execution of the automaton, hence we are able to perform backward reachability.";
     std::cout << "Starting from region:\n" << rts[0].toString() << std::endl;
+
+    std::cout << "Backward computation output:" << std::endl;
 
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(rts, DFS);
 
@@ -265,29 +318,35 @@ inline void test7()
 
 int main()
 {
+    std::cout << "\n--------------------\n\n";
+
+    test0();
+
+    std::cout << "\n--------------------\n\n";
+
     test1();
 
-    std::cout << "\n\n--------------------\n";
+    std::cout << "\n\n--------------------\n\n";
 
     test2();
 
-    std::cout << "\n\n--------------------\n";
+    std::cout << "\n\n--------------------\n\n";
 
     test3();
 
-    std::cout << "\n\n--------------------\n";
+    std::cout << "\n\n--------------------\n\n";
 
     test4();
 
-    std::cout << "\n\n--------------------\n";
+    std::cout << "\n\n--------------------\n\n";
 
     test5();
 
-    std::cout << "\n\n--------------------\n";
+    std::cout << "\n\n--------------------\n\n";
 
     test6();
 
-    std::cout << "\n\n--------------------\n";
+    std::cout << "\n\n--------------------\n\n";
 
     test7();
 
