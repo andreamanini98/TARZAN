@@ -9,7 +9,7 @@
 #include "TARZAN/utilities/file_utilities.h"
 
 // #define RTS_DEBUG
-#define EARLY_EXIT
+// #define EARLY_EXIT
 
 
 // A pointer to a region object.
@@ -288,13 +288,37 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
             return { currentRegion };
         }
 
+#ifdef RTS_DEBUG
+
+        std::cout << "Current region:\n" << currentRegion.toString() << std::endl;
+
+#endif
+
         // Computing immediate delay predecessors if there is at least one clock in the region and the current location is not urgent.
         const bool isDelayComputable = isThereAnyClock && !urgentLocations.contains(currentRegionLocation);
         const std::vector<Region> delayPredecessors = isDelayComputable ? currentRegion.getImmediateDelayPredecessors() : std::vector<Region>{};
 
+#ifdef RTS_DEBUG
+
+        std::cout << "Current delay predecessors" << std::endl;
+        for (const auto &delP : delayPredecessors)
+            std::cout << delP.toString() << std::endl;
+
+#endif
+
         // Computing discrete predecessors.
         const std::vector<transition> &transitions = inTransitions[currentRegion.getLocation()];
         const std::vector<Region> &discPreds = currentRegion.getImmediateDiscretePredecessors(transitions, clocksIndices, locationsToInt, maxConstants);
+
+#ifdef RTS_DEBUG
+
+        std::cout << "Current discrete predecessors" << std::endl;
+        for (const auto &discP : discPreds)
+            std::cout << discP.toString() << std::endl;
+
+        std::cout << "\n\n\n";
+
+#endif
 
         totalRegions += delayPredecessors.size() + discPreds.size();
 
