@@ -632,7 +632,6 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
                 if (intVal != 0 || hasFracPart == true)
                     canProducePredecessors = false;
             }
-
             if (!canProducePredecessors)
                 continue;
 
