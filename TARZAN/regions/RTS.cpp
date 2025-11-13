@@ -9,7 +9,8 @@
 #include "TARZAN/utilities/file_utilities.h"
 
 // #define RTS_DEBUG
-// #define EARLY_EXIT
+#define EARLY_EXIT
+//#define BACKWARD_EARLY_EXIT
 
 
 // A pointer to a region object.
@@ -279,7 +280,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
             std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
 
-#ifdef EARLY_EXIT
+#ifdef BACKWARD_EARLY_EXIT
 
             std::quick_exit(EXIT_SUCCESS);
 
@@ -344,7 +345,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
 
-#ifdef EARLY_EXIT
+#ifdef BACKWARD_EARLY_EXIT
 
     std::quick_exit(EXIT_SUCCESS);
 
