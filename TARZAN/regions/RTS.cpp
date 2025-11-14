@@ -9,7 +9,7 @@
 #include "TARZAN/utilities/file_utilities.h"
 
 // #define RTS_DEBUG
-// #define EARLY_EXIT
+#define EARLY_EXIT
 // #define BACKWARD_EARLY_EXIT
 
 
