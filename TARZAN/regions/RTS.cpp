@@ -10,7 +10,7 @@
 
 // #define RTS_DEBUG
 // #define EARLY_EXIT
-//#define BACKWARD_EARLY_EXIT
+// #define BACKWARD_EARLY_EXIT
 
 
 // A pointer to a region object.
@@ -236,7 +236,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
         toProcess.push_back(&*iter);
     }
 
-    // Boolean used to track whether a region has clocks or not. If not, delay successors must not be computed.
+    // Boolean used to track whether a region has clocks or not. If not, delay predecessors must not be computed.
     const bool isThereAnyClock = !clocksIndices.empty();
 
     unsigned long long int totalRegions = 0;
@@ -274,7 +274,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
             // Ending the timer for measuring computation.
             const auto end = std::chrono::high_resolution_clock::now();
 
-            std::cout << "Goal is reachable\n";
+            std::cout << "An initial region is reachable\n";
             std::cout << "Number of regions: " << totalRegions << std::endl;
 
             const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
@@ -302,7 +302,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
 #ifdef RTS_DEBUG
 
         std::cout << "Current delay predecessors" << std::endl;
-        for (const auto &delP : delayPredecessors)
+        for (const auto &delP: delayPredecessors)
             std::cout << delP.toString() << std::endl;
 
 #endif
@@ -314,7 +314,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
 #ifdef RTS_DEBUG
 
         std::cout << "Current discrete predecessors" << std::endl;
-        for (const auto &discP : discPreds)
+        for (const auto &discP: discPreds)
             std::cout << discP.toString() << std::endl;
 
         std::cout << "\n\n\n";
@@ -339,7 +339,7 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
     // Ending the timer for measuring computation.
     const auto end = std::chrono::high_resolution_clock::now();
 
-    std::cout << "Goal is not reachable\n";
+    std::cout << "An initial region is not reachable\n";
     std::cout << "Number of regions: " << totalRegions << std::endl;
 
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
