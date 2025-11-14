@@ -382,7 +382,7 @@ inline std::vector<std::vector<std::pair<int, int>>> generateAllIntegerIntervalC
         combination.reserve(keys.size());
 
         size_t temp = i;
-        for (size_t j = 0; j < keys.size(); ++j)
+        for (size_t j = 0; j < keys.size(); j++)
         {
             const int min_val = ranges[j].first;
             const int max_val = ranges[j].second;

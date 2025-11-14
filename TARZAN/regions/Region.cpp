@@ -621,10 +621,17 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
             }
         } else
         {
+            const int numOfClocks = getNumberOfClocks();
+
+            // Getting the reset clocks as a bitset to ease the computation over clock constraints.
+            boost::dynamic_bitset<> resetClocksBitset(numOfClocks);
+
             // Checking if the region is legal (every reset clock must be exactly zero with no fractional part).
             bool canProducePredecessors = true;
             for (const auto &resetClock: transition.clocksToReset)
             {
+                resetClocksBitset.set(cIdx(numOfClocks, clockIndices.at(resetClock)));
+
                 // ReSharper disable once CppTooWideScopeInitStatement
                 auto [intVal, hasFracPart] = clockValuation[clockIndices.at(resetClock)];
 
@@ -632,10 +639,9 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
                 if (intVal != 0 || hasFracPart == true)
                     canProducePredecessors = false;
             }
+
             if (!canProducePredecessors)
                 continue;
-
-            const int numOfClocks = getNumberOfClocks();
 
             // Vector acting as the clock valuation (only integer values) for the clocks of the new regions.
             std::vector<int> H(numOfClocks);
@@ -664,6 +670,9 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
             boost::dynamic_bitset<> newX0 = x0;
             std::deque<boost::dynamic_bitset<>> newBounded = bounded;
 
+            // Bitmask for keeping track of the reset clocks after checking all clock constraints.
+            boost::dynamic_bitset<> stillInReset(numOfClocks);
+
 #ifdef REGION_DEBUG
 
             std::cout << "\n\ngetImmediateDiscretePredecessor_DEBUG: qReg = " << qReg << std::endl;
@@ -683,18 +692,6 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
             for (const auto &bitset: newBounded)
                 std::cout << bitset << " ";
             std::cout << std::endl;
-
-#endif
-
-            // Getting the reset clocks as a bitset to ease the computation over clock constraints.
-            boost::dynamic_bitset<> resetClocksBitset(numOfClocks);
-            for (const std::string &clock: transition.clocksToReset)
-                resetClocksBitset.set(cIdx(numOfClocks, clockIndices.at(clock)));
-
-            // Bitmask for keeping track of the reset clocks after checking all clock constraints.
-            boost::dynamic_bitset<> stillInReset(numOfClocks);
-
-#ifdef REGION_DEBUG
 
             std::cout << "getImmediateDiscretePredecessor_DEBUG: resetClocksBitset: " << resetClocksBitset << std::endl;
 
@@ -742,12 +739,6 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
             }
 
             resetClocksBitset &= ~stillInReset;
-
-#ifdef REGION_DEBUG
-
-            std::cout << "getImmediateDiscretePredecessor_DEBUG: resetClocksBitset after still in reset deletion: " << resetClocksBitset << std::endl;
-
-#endif
 
             if (resetClocksBitset.any())
             {
@@ -809,7 +800,7 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
 
                 if (transition.isTransitionSatisfied(tmpReg.getClockValuation(), clockIndices, {}))
                 {
-                    std::vector<Region> discretePredecessors = permRegsUnbounded(qReg, H, newUnbounded, newX0, newBounded, numOfClocks, xOob);
+                    const std::vector<Region> discretePredecessors = permRegsUnbounded(qReg, H, newUnbounded, newX0, newBounded, numOfClocks, xOob);
                     res.insert(res.end(), discretePredecessors.begin(), discretePredecessors.end());
                 }
             } else
