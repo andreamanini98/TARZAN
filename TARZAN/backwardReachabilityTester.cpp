@@ -13,7 +13,9 @@
 
 inline void test0()
 {
-    std::cout << "Test 0 (Flower04): total number of region of the forward explored state space.\n\n";
+    std::cout << "Test 0 (Flower04): total number of region of the forward explored state space.\n";
+    std::cout << "Notice that when going backwards, the total number of regions may be greater than forward exploration, since when going backwards we use the\n";
+    std::cout << "additional information about the ordering in which clock became unbounded, thus producing a finer partitioning of the state space.\n\n";
 
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_04/";
 
