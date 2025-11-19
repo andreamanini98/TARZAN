@@ -139,8 +139,8 @@ def parse_benchmark_summary(file_path: str) -> List[Experiment]:
                         current_result.peak_memory = match.group(1)
 
                 # TChecker fields
-                elif "Stored states:" in line:
-                    current_result.stored_states = line.split("Stored states:")[1].strip()
+                elif "Visited states:" in line:
+                    current_result.stored_states = line.split("Visited states:")[1].strip()
                 elif "Memory (MB):" in line:
                     current_result.memory_mb = line.split("Memory (MB):")[1].strip()
                 elif "Reachable:" in line:
