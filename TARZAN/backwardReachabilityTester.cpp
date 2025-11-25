@@ -323,7 +323,7 @@ void testFischerFlat2()
 {
     std::cout << "\n\nFischer Flat 2" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff2/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff_02/";
     const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
@@ -334,41 +334,54 @@ void testFischerFlat2()
 
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
-    const int goal = locToIntMap.at("req1_cs2_id2");
+    const int goal = locToIntMap.at("cs1_cs2_id2");
 
     std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
-    intVarOrClockConstr.emplace_back("x1", GT, 1);
-    intVarOrClockConstr.emplace_back("x1", LT, 2);
+    intVarOrClockConstr.emplace_back("x1", GT, 2);
     intVarOrClockConstr.emplace_back("x2", GT, 2);
 
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
 
-    // intero che rappresenta req1_cs2_id2: 21
+    // intero che rappresenta cs1_cs2_id2: 0
 
     std::cout << "\n\n";
 
-    constexpr int q = 21;
-    const std::vector h = { 1, 2 };
+    constexpr int q = 0;
+    const std::vector h = { 2, 2 };
 
     boost::dynamic_bitset<> unbounded0(2);
+    boost::dynamic_bitset<> unbounded1(2);
     unbounded0[0] = true;
+    unbounded1[1] = true;
 
-    std::deque<boost::dynamic_bitset<>> unboundedVec;
-    unboundedVec.push_front(unbounded0);
+    std::deque<boost::dynamic_bitset<>> unboundedVec0;
+    unboundedVec0.push_front(unbounded0);
+    unboundedVec0.push_front(unbounded1);
 
-    boost::dynamic_bitset<> bounded0(2);
-    bounded0[1] = true;
+    std::deque<boost::dynamic_bitset<>> unboundedVec1;
+    unboundedVec1.push_front(unbounded1);
+    unboundedVec1.push_front(unbounded0);
 
-    std::deque<boost::dynamic_bitset<>> boundedVec;
-    boundedVec.push_front(bounded0);
+    boost::dynamic_bitset<> unbounded2(2);
+    unbounded2[0] = true;
+    unbounded2[1] = true;
+
+    std::deque<boost::dynamic_bitset<>> unboundedVec2;
+    unboundedVec2.push_front(unbounded2);
+
+    std::deque<boost::dynamic_bitset<>> boundedVec{};
 
     boost::dynamic_bitset<> x0(2);
 
-    region::Region reg(q, h, unboundedVec, x0, boundedVec, {});
+    region::Region reg0(q, h, unboundedVec0, x0, boundedVec, {});
+    region::Region reg1(q, h, unboundedVec1, x0, boundedVec, {});
+    region::Region reg2(q, h, unboundedVec2, x0, boundedVec, {});
 
-    std::vector startingRegions = { reg };
+    std::vector startingRegions = { reg0, reg1, reg2 };
 
-    std::cout << "Starting from region:\n" << reg.toString() << std::endl;
+    std::cout << "Starting from regions:" << std::endl;
+    for (const auto &reg: startingRegions)
+        std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
 
@@ -380,7 +393,7 @@ void testFischerFlat3()
 {
     std::cout << "\n\nFischer Flat 3" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff3/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff_03/";
     const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
@@ -441,7 +454,7 @@ void testFischerFlat4()
 {
     std::cout << "\n\nFischer Flat 4" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff4/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff_04/";
     const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
@@ -505,7 +518,7 @@ void testFischerFlat5()
 {
     std::cout << "\n\nFischer Flat 5" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff5/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff_05/";
     const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
@@ -580,7 +593,7 @@ void testFischerFlat6()
 {
     std::cout << "\n\nFischer Flat 6" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff6/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff_06/";
     const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
@@ -921,7 +934,7 @@ int main()
     //
     //test7();
 
-    //testFischerFlat2();
+    testFischerFlat2();
     //
     //testFischerFlat3();
     //
@@ -931,21 +944,21 @@ int main()
     //
     //testFischerFlat6();
 
-    testFlowerBackward2();
-
-    testFlowerBackward4();
-
-    testFlowerBackward6();
-
-    testFlowerBackward8();
-
-    testFlowerBackward10();
-
-    testFlowerBackward12();
-
-    testFlowerBackward14();
-
-    testFlowerBackward16();
+    //testFlowerBackward2();
+    //
+    //testFlowerBackward4();
+    //
+    //testFlowerBackward6();
+    //
+    //testFlowerBackward8();
+    //
+    //testFlowerBackward10();
+    //
+    //testFlowerBackward12();
+    //
+    //testFlowerBackward14();
+    //
+    //testFlowerBackward16();
 
     return 0;
 }
