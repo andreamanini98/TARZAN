@@ -548,7 +548,7 @@ void testFischerFlat5()
     boost::dynamic_bitset<> unbounded0(5);
     boost::dynamic_bitset<> unbounded1(5);
     unbounded0[0] = true;
-    unbounded0[1] = true;
+    unbounded1[1] = true;
 
     std::deque<boost::dynamic_bitset<>> unboundedVec;
     unboundedVec.push_front(unbounded0);
@@ -563,6 +563,85 @@ void testFischerFlat5()
     boundedVec.push_front(bounded0);
 
     boost::dynamic_bitset<> x0(5);
+
+    region::Region reg(q, h, unboundedVec, x0, boundedVec, {});
+
+    std::vector startingRegions = { reg };
+
+    std::cout << "Starting from region:\n" << reg.toString() << std::endl;
+
+    std::cout << "Backward computation output:" << std::endl;
+
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
+}
+
+
+void testFischerFlat6()
+{
+    std::cout << "\n\nFischer Flat 6" << std::endl;
+
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff6/";
+    const std::string automatonFileName = "ff.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const region::RTS regionTransitionSystem(automaton);
+
+    // Redirect cout to file
+    std::ofstream outFile(path + "rts_output.txt");
+    std::streambuf *coutBuffer = std::cout.rdbuf();
+    std::cout.rdbuf(outFile.rdbuf());
+
+    // std::cout << "\n\n\n";
+    // std::cout << regionTransitionSystem.to_string() << std::endl;
+
+    // Restore cout to terminal
+    std::cout.rdbuf(coutBuffer);
+
+    const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
+
+    const int goal = locToIntMap.at("req1_req2_req3_req4_cs5_cs6_id6");
+
+    std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
+    intVarOrClockConstr.emplace_back("x1", GT, 1);
+    intVarOrClockConstr.emplace_back("x1", LT, 2);
+    intVarOrClockConstr.emplace_back("x2", GT, 1);
+    intVarOrClockConstr.emplace_back("x2", LT, 2);
+    intVarOrClockConstr.emplace_back("x3", GT, 1);
+    intVarOrClockConstr.emplace_back("x3", LT, 2);
+    intVarOrClockConstr.emplace_back("x4", GT, 1);
+    intVarOrClockConstr.emplace_back("x4", LT, 2);
+    intVarOrClockConstr.emplace_back("x5", GT, 2);
+    intVarOrClockConstr.emplace_back("x6", GT, 2);
+
+    // It goes out of memory with forward exploration.
+    // std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+
+    // intero che rappresenta req1_req2_req3_req4_cs5_cs6_id6: 27734
+
+    std::cout << "\n\n";
+
+    constexpr int q = 27734;
+    const std::vector h = { 1, 1, 1, 1, 2, 2 };
+
+    boost::dynamic_bitset<> unbounded0(6);
+    boost::dynamic_bitset<> unbounded1(6);
+    unbounded0[0] = true;
+    unbounded1[1] = true;
+
+    std::deque<boost::dynamic_bitset<>> unboundedVec;
+    unboundedVec.push_front(unbounded0);
+    unboundedVec.push_front(unbounded1);
+
+    boost::dynamic_bitset<> bounded0(6);
+    bounded0[2] = true;
+    bounded0[3] = true;
+    bounded0[4] = true;
+    bounded0[5] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec;
+    boundedVec.push_front(bounded0);
+
+    boost::dynamic_bitset<> x0(6);
 
     region::Region reg(q, h, unboundedVec, x0, boundedVec, {});
 
@@ -617,6 +696,8 @@ int main()
     testFischerFlat4();
 
     testFischerFlat5();
+
+    testFischerFlat6();
 
     return 0;
 }
