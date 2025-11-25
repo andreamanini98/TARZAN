@@ -614,25 +614,240 @@ void testFischerFlat5()
     unbounded0[0] = true;
     unbounded1[1] = true;
 
-    std::deque<boost::dynamic_bitset<>> unboundedVec;
-    unboundedVec.push_front(unbounded0);
-    unboundedVec.push_front(unbounded1);
+    std::deque<boost::dynamic_bitset<>> unboundedVec0;
+    unboundedVec0.push_front(unbounded0);
+    unboundedVec0.push_front(unbounded1);
 
+    std::deque<boost::dynamic_bitset<>> unboundedVec1;
+    unboundedVec1.push_front(unbounded1);
+    unboundedVec1.push_front(unbounded0);
+
+    boost::dynamic_bitset<> unbounded2(5);
+    unbounded2[0] = true;
+    unbounded2[1] = true;
+
+    std::deque<boost::dynamic_bitset<>> unboundedVec2;
+    unboundedVec2.push_front(unbounded2);
+
+
+    // Ordered partition 0: [[2], [3], [4]]
     boost::dynamic_bitset<> bounded0(5);
     bounded0[2] = true;
-    bounded0[3] = true;
-    bounded0[4] = true;
+    boost::dynamic_bitset<> bounded1(5);
+    bounded1[3] = true;
+    boost::dynamic_bitset<> bounded2(5);
+    bounded2[4] = true;
 
-    std::deque<boost::dynamic_bitset<>> boundedVec;
-    boundedVec.push_front(bounded0);
+    std::deque<boost::dynamic_bitset<>> boundedVec0;
+    boundedVec0.push_front(bounded2);
+    boundedVec0.push_front(bounded1);
+    boundedVec0.push_front(bounded0);
+
+
+    // Ordered partition 1: [[2], [4], [3]]
+    boost::dynamic_bitset<> bounded3(5);
+    bounded3[2] = true;
+    boost::dynamic_bitset<> bounded4(5);
+    bounded4[4] = true;
+    boost::dynamic_bitset<> bounded5(5);
+    bounded5[3] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec1;
+    boundedVec1.push_front(bounded5);
+    boundedVec1.push_front(bounded4);
+    boundedVec1.push_front(bounded3);
+
+
+    // Ordered partition 2: [[3], [2], [4]]
+    boost::dynamic_bitset<> bounded6(5);
+    bounded6[3] = true;
+    boost::dynamic_bitset<> bounded7(5);
+    bounded7[2] = true;
+    boost::dynamic_bitset<> bounded8(5);
+    bounded8[4] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec2;
+    boundedVec2.push_front(bounded8);
+    boundedVec2.push_front(bounded7);
+    boundedVec2.push_front(bounded6);
+
+
+    // Ordered partition 3: [[3], [4], [2]]
+    boost::dynamic_bitset<> bounded9(5);
+    bounded9[3] = true;
+    boost::dynamic_bitset<> bounded10(5);
+    bounded10[4] = true;
+    boost::dynamic_bitset<> bounded11(5);
+    bounded11[2] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec3;
+    boundedVec3.push_front(bounded11);
+    boundedVec3.push_front(bounded10);
+    boundedVec3.push_front(bounded9);
+
+
+    // Ordered partition 4: [[4], [2], [3]]
+    boost::dynamic_bitset<> bounded12(5);
+    bounded12[4] = true;
+    boost::dynamic_bitset<> bounded13(5);
+    bounded13[2] = true;
+    boost::dynamic_bitset<> bounded14(5);
+    bounded14[3] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec4;
+    boundedVec4.push_front(bounded14);
+    boundedVec4.push_front(bounded13);
+    boundedVec4.push_front(bounded12);
+
+
+    // Ordered partition 5: [[4], [3], [2]]
+    boost::dynamic_bitset<> bounded15(5);
+    bounded15[4] = true;
+    boost::dynamic_bitset<> bounded16(5);
+    bounded16[3] = true;
+    boost::dynamic_bitset<> bounded17(5);
+    bounded17[2] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec5;
+    boundedVec5.push_front(bounded17);
+    boundedVec5.push_front(bounded16);
+    boundedVec5.push_front(bounded15);
+
+
+    // Ordered partition 6: [[2, 3], [4]]
+    boost::dynamic_bitset<> bounded18(5);
+    bounded18[2] = true;
+    bounded18[3] = true;
+    boost::dynamic_bitset<> bounded19(5);
+    bounded19[4] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec6;
+    boundedVec6.push_front(bounded19);
+    boundedVec6.push_front(bounded18);
+
+
+    // Ordered partition 7: [[4], [2, 3]]
+    boost::dynamic_bitset<> bounded20(5);
+    bounded20[4] = true;
+    boost::dynamic_bitset<> bounded21(5);
+    bounded21[2] = true;
+    bounded21[3] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec7;
+    boundedVec7.push_front(bounded21);
+    boundedVec7.push_front(bounded20);
+
+
+    // Ordered partition 8: [[3], [2, 4]]
+    boost::dynamic_bitset<> bounded22(5);
+    bounded22[3] = true;
+    boost::dynamic_bitset<> bounded23(5);
+    bounded23[2] = true;
+    bounded23[4] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec8;
+    boundedVec8.push_front(bounded23);
+    boundedVec8.push_front(bounded22);
+
+
+    // Ordered partition 9: [[2, 4], [3]]
+    boost::dynamic_bitset<> bounded24(5);
+    bounded24[2] = true;
+    bounded24[4] = true;
+    boost::dynamic_bitset<> bounded25(5);
+    bounded25[3] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec9;
+    boundedVec9.push_front(bounded25);
+    boundedVec9.push_front(bounded24);
+
+
+    // Ordered partition 10: [[2], [3, 4]]
+    boost::dynamic_bitset<> bounded26(5);
+    bounded26[2] = true;
+    boost::dynamic_bitset<> bounded27(5);
+    bounded27[3] = true;
+    bounded27[4] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec10;
+    boundedVec10.push_front(bounded27);
+    boundedVec10.push_front(bounded26);
+
+
+    // Ordered partition 11: [[3, 4], [2]]
+    boost::dynamic_bitset<> bounded28(5);
+    bounded28[3] = true;
+    bounded28[4] = true;
+    boost::dynamic_bitset<> bounded29(5);
+    bounded29[2] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec11;
+    boundedVec11.push_front(bounded29);
+    boundedVec11.push_front(bounded28);
+
+
+    // Ordered partition 12: [[2, 3, 4]]
+    boost::dynamic_bitset<> bounded30(5);
+    bounded30[2] = true;
+    bounded30[3] = true;
+    bounded30[4] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec12;
+    boundedVec12.push_front(bounded30);
 
     boost::dynamic_bitset<> x0(5);
 
-    region::Region reg(q, h, unboundedVec, x0, boundedVec, {});
+    region::Region reg0(q, h, unboundedVec0, x0, boundedVec0, {});
+    region::Region reg1(q, h, unboundedVec0, x0, boundedVec1, {});
+    region::Region reg2(q, h, unboundedVec0, x0, boundedVec2, {});
+    region::Region reg3(q, h, unboundedVec0, x0, boundedVec3, {});
+    region::Region reg4(q, h, unboundedVec0, x0, boundedVec4, {});
+    region::Region reg5(q, h, unboundedVec0, x0, boundedVec5, {});
+    region::Region reg6(q, h, unboundedVec0, x0, boundedVec6, {});
+    region::Region reg7(q, h, unboundedVec0, x0, boundedVec7, {});
+    region::Region reg8(q, h, unboundedVec0, x0, boundedVec8, {});
+    region::Region reg9(q, h, unboundedVec0, x0, boundedVec9, {});
+    region::Region reg10(q, h, unboundedVec0, x0, boundedVec10, {});
+    region::Region reg11(q, h, unboundedVec0, x0, boundedVec11, {});
 
-    std::vector startingRegions = { reg };
+    region::Region reg12(q, h, unboundedVec1, x0, boundedVec0, {});
+    region::Region reg13(q, h, unboundedVec1, x0, boundedVec1, {});
+    region::Region reg14(q, h, unboundedVec1, x0, boundedVec2, {});
+    region::Region reg15(q, h, unboundedVec1, x0, boundedVec3, {});
+    region::Region reg16(q, h, unboundedVec1, x0, boundedVec4, {});
+    region::Region reg17(q, h, unboundedVec1, x0, boundedVec5, {});
+    region::Region reg18(q, h, unboundedVec1, x0, boundedVec6, {});
+    region::Region reg19(q, h, unboundedVec1, x0, boundedVec7, {});
+    region::Region reg20(q, h, unboundedVec1, x0, boundedVec8, {});
+    region::Region reg21(q, h, unboundedVec1, x0, boundedVec9, {});
+    region::Region reg22(q, h, unboundedVec1, x0, boundedVec10, {});
+    region::Region reg23(q, h, unboundedVec1, x0, boundedVec11, {});
 
-    std::cout << "Starting from region:\n" << reg.toString() << std::endl;
+    region::Region reg24(q, h, unboundedVec2, x0, boundedVec0, {});
+    region::Region reg25(q, h, unboundedVec2, x0, boundedVec1, {});
+    region::Region reg26(q, h, unboundedVec2, x0, boundedVec2, {});
+    region::Region reg27(q, h, unboundedVec2, x0, boundedVec3, {});
+    region::Region reg28(q, h, unboundedVec2, x0, boundedVec4, {});
+    region::Region reg29(q, h, unboundedVec2, x0, boundedVec5, {});
+    region::Region reg30(q, h, unboundedVec2, x0, boundedVec6, {});
+    region::Region reg31(q, h, unboundedVec2, x0, boundedVec7, {});
+    region::Region reg32(q, h, unboundedVec2, x0, boundedVec8, {});
+    region::Region reg33(q, h, unboundedVec2, x0, boundedVec9, {});
+    region::Region reg34(q, h, unboundedVec2, x0, boundedVec10, {});
+    region::Region reg35(q, h, unboundedVec2, x0, boundedVec11, {});
+
+    std::vector startingRegions = {
+        reg0, reg1, reg2, reg3, reg4, reg5,
+        reg6, reg7, reg8, reg9, reg10, reg11,
+        reg12, reg13, reg14, reg15, reg16, reg17,
+        reg18, reg19, reg20, reg21, reg22, reg23,
+        reg24, reg25, reg26, reg27, reg28, reg29,
+        reg30, reg31, reg32, reg33, reg34, reg35
+    };
+
+    std::cout << "Starting from regions:" << std::endl;
+    for (const auto &reg: startingRegions)
+        std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
 
@@ -989,9 +1204,9 @@ int main()
     //
     //testFischerFlat3();
     //
-    testFischerFlat4();
+    //testFischerFlat4();
     //
-    //testFischerFlat5();
+    testFischerFlat5();
     //
     //testFischerFlat6();
 
