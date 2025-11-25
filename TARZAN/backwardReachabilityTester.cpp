@@ -426,9 +426,20 @@ void testFischerFlat3()
     unbounded0[0] = true;
     unbounded1[1] = true;
 
-    std::deque<boost::dynamic_bitset<>> unboundedVec;
-    unboundedVec.push_front(unbounded0);
-    unboundedVec.push_front(unbounded1);
+    std::deque<boost::dynamic_bitset<>> unboundedVec0;
+    unboundedVec0.push_front(unbounded0);
+    unboundedVec0.push_front(unbounded1);
+
+    std::deque<boost::dynamic_bitset<>> unboundedVec1;
+    unboundedVec1.push_front(unbounded1);
+    unboundedVec1.push_front(unbounded0);
+
+    boost::dynamic_bitset<> unbounded2(3);
+    unbounded2[0] = true;
+    unbounded2[1] = true;
+
+    std::deque<boost::dynamic_bitset<>> unboundedVec2;
+    unboundedVec2.push_front(unbounded2);
 
     boost::dynamic_bitset<> bounded0(3);
     bounded0[2] = true;
@@ -438,11 +449,15 @@ void testFischerFlat3()
 
     boost::dynamic_bitset<> x0(3);
 
-    region::Region reg(q, h, unboundedVec, x0, boundedVec, {});
+    region::Region reg0(q, h, unboundedVec0, x0, boundedVec, {});
+    region::Region reg1(q, h, unboundedVec1, x0, boundedVec, {});
+    region::Region reg2(q, h, unboundedVec2, x0, boundedVec, {});
 
-    std::vector startingRegions = { reg };
+    std::vector startingRegions = { reg0, reg1, reg2 };
 
-    std::cout << "Starting from region:\n" << reg.toString() << std::endl;
+    std::cout << "Starting from regions:" << std::endl;
+    for (const auto &reg: startingRegions)
+        std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
 
@@ -934,9 +949,9 @@ int main()
     //
     //test7();
 
-    testFischerFlat2();
+    //testFischerFlat2();
     //
-    //testFischerFlat3();
+    testFischerFlat3();
     //
     //testFischerFlat4();
     //
