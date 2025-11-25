@@ -379,9 +379,9 @@ void testFischerFlat2()
 
     std::vector startingRegions = { reg0, reg1, reg2 };
 
-    std::cout << "Starting from regions:" << std::endl;
-    for (const auto &reg: startingRegions)
-        std::cout << reg.toString() << std::endl;
+    // std::cout << "Starting from regions:" << std::endl;
+    // for (const auto &reg: startingRegions)
+    //     std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
 
@@ -455,9 +455,9 @@ void testFischerFlat3()
 
     std::vector startingRegions = { reg0, reg1, reg2 };
 
-    std::cout << "Starting from regions:" << std::endl;
-    for (const auto &reg: startingRegions)
-        std::cout << reg.toString() << std::endl;
+    // std::cout << "Starting from regions:" << std::endl;
+    // for (const auto &reg: startingRegions)
+    //     std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
 
@@ -555,9 +555,9 @@ void testFischerFlat4()
 
     std::vector startingRegions = { reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8 };
 
-    std::cout << "Starting from regions:" << std::endl;
-    for (const auto &reg: startingRegions)
-        std::cout << reg.toString() << std::endl;
+    // std::cout << "Starting from regions:" << std::endl;
+    // for (const auto &reg: startingRegions)
+    //     std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
 
@@ -845,9 +845,9 @@ void testFischerFlat5()
         reg30, reg31, reg32, reg33, reg34, reg35
     };
 
-    std::cout << "Starting from regions:" << std::endl;
-    for (const auto &reg: startingRegions)
-        std::cout << reg.toString() << std::endl;
+    // std::cout << "Starting from regions:" << std::endl;
+    // for (const auto &reg: startingRegions)
+    //     std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
 
@@ -2598,30 +2598,30 @@ int main()
     //
     //test7();
 
-    //testFischerFlat2();
-    //
-    //testFischerFlat3();
-    //
-    //testFischerFlat4();
-    //
-    //testFischerFlat5();
-    //
+    testFischerFlat2();
+
+    testFischerFlat3();
+
+    testFischerFlat4();
+
+    testFischerFlat5();
+
     testFischerFlat6();
 
     //testFlowerBackward2();
-    //
+//
     //testFlowerBackward4();
-    //
+//
     //testFlowerBackward6();
-    //
+//
     //testFlowerBackward8();
-    //
+//
     //testFlowerBackward10();
-    //
+//
     //testFlowerBackward12();
-    //
+//
     //testFlowerBackward14();
-    //
+//
     //testFlowerBackward16();
 
     return 0;
