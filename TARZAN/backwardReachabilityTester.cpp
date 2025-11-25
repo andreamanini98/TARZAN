@@ -321,6 +321,8 @@ inline void test7()
 
 void testFischerFlat2()
 {
+    std::cout << "\n\nFischer Flat 2" << std::endl;
+
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff2/";
     const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
@@ -376,14 +378,16 @@ void testFischerFlat2()
 
 void testFischerFlat3()
 {
+    std::cout << "\n\nFischer Flat 3" << std::endl;
+
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff3/";
     const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
 
-    std::cout << "\n\n\n";
-    std::cout << regionTransitionSystem.to_string() << std::endl;
+    // std::cout << "\n\n\n";
+    // std::cout << regionTransitionSystem.to_string() << std::endl;
 
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
@@ -397,12 +401,46 @@ void testFischerFlat3()
 
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
 
-    // intero che rappresenta req1_req2_cs3_cs4_id4: 571
+    // intero che rappresenta req1_cs2_cs3_id3: 85
+
+    std::cout << "\n\n";
+
+    constexpr int q = 85;
+    const std::vector h = { 1, 2, 2 };
+
+    boost::dynamic_bitset<> unbounded0(3);
+    boost::dynamic_bitset<> unbounded1(3);
+    unbounded0[0] = true;
+    unbounded1[1] = true;
+
+    std::deque<boost::dynamic_bitset<>> unboundedVec;
+    unboundedVec.push_front(unbounded0);
+    unboundedVec.push_front(unbounded1);
+
+    boost::dynamic_bitset<> bounded0(3);
+    bounded0[2] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec;
+    boundedVec.push_front(bounded0);
+
+    boost::dynamic_bitset<> x0(3);
+
+    region::Region reg(q, h, unboundedVec, x0, boundedVec, {});
+
+    std::vector startingRegions = { reg };
+
+    std::cout << "Starting from region:\n" << reg.toString() << std::endl;
+
+    std::cout << "Backward computation output:" << std::endl;
+
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
 }
 
 
 void testFischerFlat4()
 {
+    std::cout << "\n\nFischer Flat 4" << std::endl;
+
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff4/";
     const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
@@ -464,7 +502,78 @@ void testFischerFlat4()
 
 
 void testFischerFlat5()
-{}
+{
+    std::cout << "\n\nFischer Flat 5" << std::endl;
+
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischerFlat/ff5/";
+    const std::string automatonFileName = "ff.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const region::RTS regionTransitionSystem(automaton);
+
+    // Redirect cout to file
+    std::ofstream outFile(path + "rts_output.txt");
+    std::streambuf *coutBuffer = std::cout.rdbuf();
+    std::cout.rdbuf(outFile.rdbuf());
+
+    std::cout << "\n\n\n";
+    std::cout << regionTransitionSystem.to_string() << std::endl;
+
+    // Restore cout to terminal
+    std::cout.rdbuf(coutBuffer);
+
+    const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
+
+    const int goal = locToIntMap.at("req1_req2_req3_cs4_cs5_id5");
+
+    std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
+    intVarOrClockConstr.emplace_back("x1", GT, 1);
+    intVarOrClockConstr.emplace_back("x1", LT, 2);
+    intVarOrClockConstr.emplace_back("x2", GT, 1);
+    intVarOrClockConstr.emplace_back("x2", LT, 2);
+    intVarOrClockConstr.emplace_back("x3", GT, 1);
+    intVarOrClockConstr.emplace_back("x3", LT, 2);
+    intVarOrClockConstr.emplace_back("x4", GT, 2);
+    intVarOrClockConstr.emplace_back("x5", GT, 2);
+
+    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+
+    // intero che rappresenta req1_req2_req3_cs4_cs5_id5: 2868
+
+    std::cout << "\n\n";
+
+    constexpr int q = 2868;
+    const std::vector h = { 1, 1, 1, 2, 2 };
+
+    boost::dynamic_bitset<> unbounded0(5);
+    boost::dynamic_bitset<> unbounded1(5);
+    unbounded0[0] = true;
+    unbounded0[1] = true;
+
+    std::deque<boost::dynamic_bitset<>> unboundedVec;
+    unboundedVec.push_front(unbounded0);
+    unboundedVec.push_front(unbounded1);
+
+    boost::dynamic_bitset<> bounded0(5);
+    bounded0[2] = true;
+    bounded0[3] = true;
+    bounded0[4] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec;
+    boundedVec.push_front(bounded0);
+
+    boost::dynamic_bitset<> x0(5);
+
+    region::Region reg(q, h, unboundedVec, x0, boundedVec, {});
+
+    std::vector startingRegions = { reg };
+
+    std::cout << "Starting from region:\n" << reg.toString() << std::endl;
+
+    std::cout << "Backward computation output:" << std::endl;
+
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
+}
 
 
 int main()
@@ -501,7 +610,13 @@ int main()
     //
     //test7();
 
+    testFischerFlat2();
+
     testFischerFlat3();
+
+    testFischerFlat4();
+
+    testFischerFlat5();
 
     return 0;
 }
