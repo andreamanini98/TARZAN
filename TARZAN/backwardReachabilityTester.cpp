@@ -2755,6 +2755,65 @@ inline void testTrainAHV93Flat4()
 }
 
 
+inline void testTrainAHV93Flat2Reachable()
+{
+    std::cout << "\n\nTrainAHV93 Flat 2" << std::endl;
+
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/trainAHV93Flat/tf_02/";
+    const std::string automatonFileName = "Flatten.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const region::RTS regionTransitionSystem(automaton);
+
+    std::cout << "\n\n\n";
+    std::cout << regionTransitionSystem.to_string() << std::endl;
+
+    const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
+
+    const int goal = locToIntMap.at("gate0_controller1_train1_train0_cnt1");
+
+    std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
+    intVarOrClockConstr.emplace_back("x1", EQ, 0);
+    intVarOrClockConstr.emplace_back("x2", EQ, 4);
+    intVarOrClockConstr.emplace_back("y", GT, 2);
+    intVarOrClockConstr.emplace_back("z", EQ, 0);
+
+    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+
+    // intero che rappresenta gate0_controller0_train1_train1_cnt0: 667
+
+    std::cout << "\n\n";
+
+    constexpr int q = 667;
+    const std::vector h = { 0, 4, 2, 0 };
+
+    boost::dynamic_bitset<> unbounded0(4);
+    unbounded0[1] = true;
+
+    std::deque<boost::dynamic_bitset<>> unboundedVec{};
+    unboundedVec.push_front(unbounded0);
+
+    std::deque<boost::dynamic_bitset<>> boundedVec{};
+
+    boost::dynamic_bitset<> x0(4);
+    x0[0] = true;
+    x0[2] = true;
+    x0[3] = true;
+
+    region::Region reg0(q, h, unboundedVec, x0, boundedVec, {});
+
+    std::vector startingRegions = { reg0 };
+
+    std::cout << "Starting from regions:" << std::endl;
+    for (const auto &reg: startingRegions)
+        std::cout << reg.toString() << std::endl;
+
+    std::cout << "Backward computation output:" << std::endl;
+
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
+}
+
+
 int main()
 {
     //std::cout << "\n--------------------\n\n";
@@ -2818,11 +2877,13 @@ int main()
     //testFlowerBackward16();
 
 
-    testTrainAHV93Flat2();
+    //testTrainAHV93Flat2();
 
-    testTrainAHV93Flat3();
+    //testTrainAHV93Flat3();
 
-    testTrainAHV93Flat4();
+    //testTrainAHV93Flat4();
+
+    testTrainAHV93Flat2Reachable();
 
     return 0;
 }
