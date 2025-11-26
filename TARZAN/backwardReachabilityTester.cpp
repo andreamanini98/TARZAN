@@ -2707,9 +2707,9 @@ inline void testTrainAHV93Flat4()
     // // Restore cout to terminal
     // std::cout.rdbuf(coutBuffer);
 
-    const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
+    // const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
-    const int goal = locToIntMap.at("gate1_controller3_train3_train3_train3_train3_cnt4");
+    // const int goal = locToIntMap.at("gate1_controller3_train3_train3_train3_train3_cnt4");
 
     std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
     intVarOrClockConstr.emplace_back("x1", EQ, 4);
