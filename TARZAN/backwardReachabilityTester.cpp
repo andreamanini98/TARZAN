@@ -2564,6 +2564,129 @@ inline void testFlowerBackward16()
 }
 
 
+inline void testVikingsFlat2()
+{
+    std::cout << "\n\nVikings Flat 2" << std::endl;
+
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/vikingsFlat/vf2/";
+    const std::string automatonFileName = "vf.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const region::RTS regionTransitionSystem(automaton);
+
+    std::cout << "\n\n\n";
+    std::cout << regionTransitionSystem.to_string() << std::endl;
+
+    const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
+
+    const int goal = locToIntMap.at("free_safe_safe_L1");
+
+    std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
+    intVarOrClockConstr.emplace_back("y1", EQ, 20);
+    intVarOrClockConstr.emplace_back("y2", EQ, 20);
+    intVarOrClockConstr.emplace_back("z", GT, 0);
+
+    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+
+    std::cout << rts[0].toString();
+
+    // intero che rappresenta free_safe_safe_L1: 38
+
+    std::cout << "\n\n";
+
+    constexpr int q = 38;
+    const std::vector h = { 20, 20, 0 };
+
+    boost::dynamic_bitset<> unbounded0(3);
+    unbounded0[0] = true;
+
+    std::deque<boost::dynamic_bitset<>> unboundedVec{};
+    unboundedVec.push_front(unbounded0);
+
+    std::deque<boost::dynamic_bitset<>> boundedVec{};
+
+    boost::dynamic_bitset<> x0(3);
+    x0[1] = true;
+    x0[2] = true;
+
+    region::Region reg0(q, h, unboundedVec, x0, boundedVec, {});
+
+    std::vector startingRegions = { reg0 };
+
+    std::cout << "Starting from regions:" << std::endl;
+    for (const auto &reg: startingRegions)
+        std::cout << reg.toString() << std::endl;
+
+    std::cout << "Backward computation output:" << std::endl;
+
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
+}
+
+
+inline void testVikingsFlat3()
+{
+    std::cout << "\n\nVikings Flat 3" << std::endl;
+
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/vikingsFlat/vf3/";
+    const std::string automatonFileName = "vf.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const region::RTS regionTransitionSystem(automaton);
+
+    std::cout << "\n\n\n";
+    std::cout << regionTransitionSystem.to_string() << std::endl;
+
+    const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
+
+    const int goal = locToIntMap.at("free_safe_safe_safe_L1");
+
+    std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
+    intVarOrClockConstr.emplace_back("y1", EQ, 20);
+    intVarOrClockConstr.emplace_back("y2", GT, 20);
+    intVarOrClockConstr.emplace_back("y3", EQ, 20);
+    intVarOrClockConstr.emplace_back("z", GT, 0);
+
+    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+
+    std::cout << rts[0].toString();
+
+    // intero che rappresenta free_safe_safe_L1: 144
+
+    std::cout << "\n\n";
+
+    constexpr int q = 144;
+    const std::vector h = { 20, 20, 20, 0 };
+
+    boost::dynamic_bitset<> unbounded0(4);
+    unbounded0[0] = true;
+
+    boost::dynamic_bitset<> unbounded1(4);
+    unbounded1[2] = true;
+
+    std::deque<boost::dynamic_bitset<>> unboundedVec{};
+    unboundedVec.push_front(unbounded1);
+    unboundedVec.push_front(unbounded0);
+
+    std::deque<boost::dynamic_bitset<>> boundedVec{};
+
+    boost::dynamic_bitset<> x0(4);
+    x0[1] = true;
+    x0[3] = true;
+
+    region::Region reg0(q, h, unboundedVec, x0, boundedVec, {});
+
+    std::vector startingRegions = { reg0 };
+
+    std::cout << "Starting from regions:" << std::endl;
+    for (const auto &reg: startingRegions)
+        std::cout << reg.toString() << std::endl;
+
+    std::cout << "Backward computation output:" << std::endl;
+
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
+}
+
+
 inline void testTrainAHV93Flat2()
 {
     std::cout << "\n\nTrainAHV93 Flat 2" << std::endl;
@@ -2770,35 +2893,39 @@ inline void testTrainAHV93Flat2Reachable()
 
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
-    const int goal = locToIntMap.at("gate0_controller1_train1_train0_cnt1");
+    const int goal = locToIntMap.at("gate2_controller2_train3_train3_cnt2");
 
     std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
-    intVarOrClockConstr.emplace_back("x1", EQ, 0);
-    intVarOrClockConstr.emplace_back("x2", EQ, 4);
-    intVarOrClockConstr.emplace_back("y", GT, 2);
-    intVarOrClockConstr.emplace_back("z", EQ, 0);
 
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
 
-    // intero che rappresenta gate0_controller0_train1_train1_cnt0: 667
+    std::cout << rts[0].toString() << std::endl;
+
+    // intero che rappresenta gate2_controller2_train3_train3_cnt2: 714
 
     std::cout << "\n\n";
 
-    constexpr int q = 667;
-    const std::vector h = { 0, 4, 2, 0 };
+    constexpr int q = 714;
+    const std::vector h = { 3, 2, 2, 1 };
 
     boost::dynamic_bitset<> unbounded0(4);
-    unbounded0[1] = true;
+    unbounded0[0] = true;
+
+    boost::dynamic_bitset<> unbounded1(4);
+    unbounded1[1] = true;
 
     std::deque<boost::dynamic_bitset<>> unboundedVec{};
     unboundedVec.push_front(unbounded0);
+    unboundedVec.push_front(unbounded1);
+
+    boost::dynamic_bitset<> bounded0(4);
+    bounded0[2] = true;
+    bounded0[3] = true;
 
     std::deque<boost::dynamic_bitset<>> boundedVec{};
+    boundedVec.push_front(bounded0);
 
     boost::dynamic_bitset<> x0(4);
-    x0[0] = true;
-    x0[2] = true;
-    x0[3] = true;
 
     region::Region reg0(q, h, unboundedVec, x0, boundedVec, {});
 
@@ -2816,73 +2943,6 @@ inline void testTrainAHV93Flat2Reachable()
 
 int main()
 {
-    //std::cout << "\n--------------------\n\n";
-    //
-    //test0();
-    //
-    //std::cout << "\n--------------------\n\n";
-    //
-    //test1();
-    //
-    //std::cout << "\n\n--------------------\n\n";
-    //
-    //test2();
-    //
-    //std::cout << "\n\n--------------------\n\n";
-    //
-    //test3();
-    //
-    //std::cout << "\n\n--------------------\n\n";
-    //
-    //test4();
-    //
-    //std::cout << "\n\n--------------------\n\n";
-    //
-    //test5();
-    //
-    //std::cout << "\n\n--------------------\n\n";
-    //
-    //test6();
-    //
-    //std::cout << "\n\n--------------------\n\n";
-    //
-    //test7();
-
-
-    //testFischerFlat2();
-    //
-    //testFischerFlat3();
-    //
-    //testFischerFlat4();
-    //
-    //testFischerFlat5();
-    //
-    //testFischerFlat6();
-
-
-    //testFlowerBackward2();
-    //
-    //testFlowerBackward4();
-    //
-    //testFlowerBackward6();
-    //
-    //testFlowerBackward8();
-    //
-    //testFlowerBackward10();
-    //
-    //testFlowerBackward12();
-    //
-    //testFlowerBackward14();
-    //
-    //testFlowerBackward16();
-
-
-    //testTrainAHV93Flat2();
-
-    //testTrainAHV93Flat3();
-
-    //testTrainAHV93Flat4();
-
     testTrainAHV93Flat2Reachable();
 
     return 0;
