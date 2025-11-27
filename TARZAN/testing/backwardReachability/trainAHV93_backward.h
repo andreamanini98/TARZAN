@@ -36,7 +36,7 @@ inline void testTrainAHV93Flat2Explodes()
     intVarOrClockConstr.emplace_back("y", EQ, 0);
     intVarOrClockConstr.emplace_back("z", EQ, 1);
 
-    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, BFS, false);
 
     // intero che rappresenta gate3_controller0_train0_train3_cnt0: 89
 
@@ -67,7 +67,7 @@ inline void testTrainAHV93Flat2Explodes()
 
     std::cout << "Backward computation output:" << std::endl;
 
-    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, BFS);
 }
 
 
@@ -97,7 +97,7 @@ inline void testTrainAHV93Flat2Efficient()
     intVarOrClockConstr.emplace_back("y", LT, 2);
     intVarOrClockConstr.emplace_back("z", GT, 1); // unbounded
 
-    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, BFS, false);
 
     //std::exit(1);
 
@@ -147,7 +147,7 @@ inline void testTrainAHV93Flat2Efficient()
     //     std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
-    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, BFS);
 }
 
 
@@ -183,7 +183,7 @@ inline void testTrainAHV93Flat3Explodes()
     intVarOrClockConstr.emplace_back("y", EQ, 0);
     intVarOrClockConstr.emplace_back("z", EQ, 1);
 
-    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, BFS, false);
 
     // intero che rappresenta gate3_controller0_train0_train0_train3_cnt0: 972
 
@@ -214,7 +214,7 @@ inline void testTrainAHV93Flat3Explodes()
     //     std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
-    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, BFS);
 }
 
 
@@ -246,7 +246,7 @@ inline void testTrainAHV93Flat3Efficient()
     intVarOrClockConstr.emplace_back("y", LT, 2);
     intVarOrClockConstr.emplace_back("z", GT, 1);
 
-    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, BFS, false);
 
     //std::exit(1);
 
@@ -451,7 +451,7 @@ inline void testTrainAHV93Flat3Efficient()
     //     std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
-    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, BFS);
 }
 
 
@@ -474,7 +474,7 @@ inline void testTrainAHV93Flat2Reachable()
 
     std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
 
-    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, BFS, false);
 
     std::cout << rts[0].toString() << std::endl;
 
@@ -514,7 +514,7 @@ inline void testTrainAHV93Flat2Reachable()
 
     std::cout << "Backward computation output:" << std::endl;
 
-    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, BFS);
 }
 
 
@@ -545,7 +545,7 @@ inline void testTrainAHV93Flat3Reachable()
 
     std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
 
-    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, BFS, false);
 
     std::cout << rts[0].toString() << std::endl;
 
@@ -592,7 +592,7 @@ inline void testTrainAHV93Flat3Reachable()
     std::cout << "Backward computation output:" << std::endl;
 
     // It goes out of memory.
-    //const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, BFS);
 }
 
 #endif //TARZAN_TRAINAHV93_BACKWARD_H
