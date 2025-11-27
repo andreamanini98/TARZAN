@@ -2687,22 +2687,22 @@ inline void testVikingsFlat3()
 }
 
 
-inline void testTrainAHV93Flat2()
+inline void testTrainAHV93Flat2Explodes()
 {
     std::cout << "\n\nTrainAHV93 Flat 2" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/trainAHV93Flat/tf_02/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
     const std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
 
-    // std::cout << "\n\n\n";
-    // std::cout << regionTransitionSystem.to_string() << std::endl;
+    std::cout << "\n\n\n";
+    std::cout << regionTransitionSystem.to_string() << std::endl;
 
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
-    const int goal = locToIntMap.at("gate1_controller3_train3_train3_cnt2");
+    const int goal = locToIntMap.at("gate3_controller0_train0_train3_cnt0");
 
     std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
     intVarOrClockConstr.emplace_back("x1", EQ, 4);
@@ -2712,11 +2712,13 @@ inline void testTrainAHV93Flat2()
 
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
 
-    // intero che rappresenta gate1_controller3_train3_train3_cnt2: 372
+    // intero che rappresenta gate3_controller0_train0_train3_cnt0: 89
+
+    //std::exit(1);
 
     std::cout << "\n\n";
 
-    constexpr int q = 372;
+    constexpr int q = 89;
     const std::vector h = { 4, 4, 0, 1 };
 
     std::deque<boost::dynamic_bitset<>> unboundedVec{};
@@ -2743,11 +2745,69 @@ inline void testTrainAHV93Flat2()
 }
 
 
-inline void testTrainAHV93Flat3()
+inline void testTrainAHV93Flat2Efficient()
+{
+    std::cout << "\n\nTrainAHV93 Flat 2" << std::endl;
+
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
+    const std::string automatonFileName = "Flatten.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const region::RTS regionTransitionSystem(automaton);
+
+    std::cout << "\n\n\n";
+    std::cout << regionTransitionSystem.to_string() << std::endl;
+
+    const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
+
+    const int goal = locToIntMap.at("gate3_controller0_train0_train3_cnt1");
+
+    std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
+    intVarOrClockConstr.emplace_back("x1", EQ, 4);
+    intVarOrClockConstr.emplace_back("x2", EQ, 4);
+    intVarOrClockConstr.emplace_back("y", EQ, 0);
+    intVarOrClockConstr.emplace_back("z", EQ, 1);
+
+    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+
+    // intero che rappresenta gate3_controller0_train0_train3_cnt1: 88
+
+    //std::exit(1);
+
+    std::cout << "\n\n";
+
+    constexpr int q = 88;
+    const std::vector h = { 4, 4, 0, 1 };
+
+    std::deque<boost::dynamic_bitset<>> unboundedVec{};
+
+    std::deque<boost::dynamic_bitset<>> boundedVec{};
+
+    boost::dynamic_bitset<> x0(4);
+    x0[0] = true;
+    x0[1] = true;
+    x0[2] = true;
+    x0[3] = true;
+
+    region::Region reg0(q, h, unboundedVec, x0, boundedVec, {});
+
+    std::vector startingRegions = { reg0 };
+
+    // std::cout << "Starting from regions:" << std::endl;
+    // for (const auto &reg: startingRegions)
+    //     std::cout << reg.toString() << std::endl;
+
+    std::cout << "Backward computation output:" << std::endl;
+
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
+}
+
+
+inline void testTrainAHV93Flat3Explodes()
 {
     std::cout << "\n\nTrainAHV93 Flat 3" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/trainAHV93Flat/tf_03/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
     const std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
@@ -2758,15 +2818,15 @@ inline void testTrainAHV93Flat3()
     std::streambuf *coutBuffer = std::cout.rdbuf();
     std::cout.rdbuf(outFile.rdbuf());
 
-    // std::cout << "\n\n\n";
-    // std::cout << regionTransitionSystem.to_string() << std::endl;
+    std::cout << "\n\n\n";
+    std::cout << regionTransitionSystem.to_string() << std::endl;
 
     // Restore cout to terminal
     std::cout.rdbuf(coutBuffer);
 
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
-    const int goal = locToIntMap.at("gate1_controller3_train3_train3_train3_cnt3");
+    const int goal = locToIntMap.at("gate3_controller0_train0_train0_train3_cnt0");
 
     std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
     intVarOrClockConstr.emplace_back("x1", EQ, 4);
@@ -2777,11 +2837,13 @@ inline void testTrainAHV93Flat3()
 
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
 
-    // intero che rappresenta gate1_controller3_train3_train3_train3_cnt3: 4047
+    // intero che rappresenta gate3_controller0_train0_train0_train3_cnt0: 972
+
+    //std::exit(1);
 
     std::cout << "\n\n";
 
-    constexpr int q = 4047;
+    constexpr int q = 972;
     const std::vector h = { 4, 4, 4, 0, 1 };
 
     std::deque<boost::dynamic_bitset<>> unboundedVec{};
@@ -2799,81 +2861,78 @@ inline void testTrainAHV93Flat3()
 
     std::vector startingRegions = { reg0 };
 
-    // std::cout << "Starting from regions:" << std::endl;
-    // for (const auto &reg: startingRegions)
-    //     std::cout << reg.toString() << std::endl;
+    std::cout << "Starting from regions:" << std::endl;
+    for (const auto &reg: startingRegions)
+        std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
-
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
 }
 
 
-inline void testTrainAHV93Flat4()
+inline void testTrainAHV93Flat3Efficient()
 {
-    std::cout << "\n\nTrainAHV93 Flat 4" << std::endl;
+    std::cout << "\n\nTrainAHV93 Flat 3" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/trainAHV93Flat/tf_04/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
     const std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
 
     // Redirect cout to file
-    // std::ofstream outFile(path + "rts_output.txt");
-    // std::streambuf *coutBuffer = std::cout.rdbuf();
-    // std::cout.rdbuf(outFile.rdbuf());
-    //
-    // std::cout << "\n\n\n";
-    // std::cout << regionTransitionSystem.to_string() << std::endl;
-    //
-    // // Restore cout to terminal
-    // std::cout.rdbuf(coutBuffer);
+    std::ofstream outFile(path + "rts_output.txt");
+    std::streambuf *coutBuffer = std::cout.rdbuf();
+    std::cout.rdbuf(outFile.rdbuf());
 
-    // const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
+    std::cout << "\n\n\n";
+    std::cout << regionTransitionSystem.to_string() << std::endl;
 
-    // const int goal = locToIntMap.at("gate1_controller3_train3_train3_train3_train3_cnt4");
+    // Restore cout to terminal
+    std::cout.rdbuf(coutBuffer);
+
+    const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
+
+    const int goal = locToIntMap.at("gate3_controller0_train0_train0_train3_cnt1");
 
     std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
     intVarOrClockConstr.emplace_back("x1", EQ, 4);
     intVarOrClockConstr.emplace_back("x2", EQ, 4);
     intVarOrClockConstr.emplace_back("x3", EQ, 4);
-    intVarOrClockConstr.emplace_back("x4", EQ, 4);
     intVarOrClockConstr.emplace_back("y", EQ, 0);
     intVarOrClockConstr.emplace_back("z", EQ, 1);
 
-    // It goes out of memory
-    // std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
 
-    // intero che rappresenta gate1_controller3_train3_train3_train3_train3_cnt4: 6636
+    // intero che rappresenta gate3_controller0_train0_train0_train3_cnt0: 972
+
+    //std::exit(1);
 
     std::cout << "\n\n";
 
-    constexpr int q = 6636;
-    const std::vector h = { 4, 4, 4, 4, 0, 1 };
+    constexpr int q = 2200;
+    const std::vector h = { 4, 4, 4, 0, 1 };
 
     std::deque<boost::dynamic_bitset<>> unboundedVec{};
 
     std::deque<boost::dynamic_bitset<>> boundedVec{};
 
-    boost::dynamic_bitset<> x0(6);
+    boost::dynamic_bitset<> x0(5);
     x0[0] = true;
     x0[1] = true;
     x0[2] = true;
     x0[3] = true;
     x0[4] = true;
-    x0[5] = true;
 
     region::Region reg0(q, h, unboundedVec, x0, boundedVec, {});
 
     std::vector startingRegions = { reg0 };
 
-    // std::cout << "Starting from regions:" << std::endl;
-    // for (const auto &reg: startingRegions)
-    //    std::cout << reg.toString() << std::endl;
+    std::cout << "Starting from regions:" << std::endl;
+    for (const auto &reg: startingRegions)
+        std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
-
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
 }
 
@@ -2882,7 +2941,7 @@ inline void testTrainAHV93Flat2Reachable()
 {
     std::cout << "\n\nTrainAHV93 Flat 2" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/trainAHV93Flat/tf_02/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
     const std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
 
@@ -2943,7 +3002,9 @@ inline void testTrainAHV93Flat2Reachable()
 
 int main()
 {
-    testTrainAHV93Flat2Reachable();
+    //testTrainAHV93Flat2Efficient();
+
+    testTrainAHV93Flat3Explodes();
 
     return 0;
 }
