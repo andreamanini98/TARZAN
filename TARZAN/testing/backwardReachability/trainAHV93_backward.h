@@ -265,7 +265,7 @@ inline void testTrainAHV93Flat3Efficient()
 
 inline void testTrainAHV93Flat2Reachable()
 {
-    std::cout << "\n\nTrainAHV93 Flat 2" << std::endl;
+    std::cout << "\n\nTrainAHV93 Flat 2 reachable" << std::endl;
 
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
     const std::string automatonFileName = "Flatten.txt";
@@ -319,6 +319,83 @@ inline void testTrainAHV93Flat2Reachable()
     // std::cout << "Starting from regions:" << std::endl;
     // for (const auto &reg: startingRegions)
     //     std::cout << reg.toString() << std::endl;
+
+    std::cout << "Backward computation output:" << std::endl;
+
+    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
+}
+
+
+inline void testTrainAHV93Flat3Reachable()
+{
+    std::cout << "\n\nTrainAHV93 Flat 3 reachable" << std::endl;
+
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
+    const std::string automatonFileName = "Flatten.txt";
+    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+
+    const region::RTS regionTransitionSystem(automaton);
+
+    // Redirect cout to file
+    std::ofstream outFile(path + "rts_output.txt");
+    std::streambuf *coutBuffer = std::cout.rdbuf();
+    std::cout.rdbuf(outFile.rdbuf());
+
+    std::cout << "\n\n\n";
+    std::cout << regionTransitionSystem.to_string() << std::endl;
+
+    // Restore cout to terminal
+    std::cout.rdbuf(coutBuffer);
+
+    const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
+
+    const int goal = locToIntMap.at("gate2_controller2_train3_train3_train3_cnt3");
+
+    std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
+
+    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+
+    std::cout << rts[0].toString() << std::endl;
+
+    //std::exit(1);
+
+    // intero che rappresenta gate2_controller2_train3_train3_train3_cnt3: 775
+
+    std::cout << "\n\n";
+
+    constexpr int q = 775;
+    const std::vector h = { 4, 3, 2, 2, 1 };
+
+    boost::dynamic_bitset<> unbounded0(5);
+    unbounded0[0] = true;
+
+    boost::dynamic_bitset<> unbounded1(5);
+    unbounded1[1] = true;
+
+    std::deque<boost::dynamic_bitset<>> unboundedVec{};
+    unboundedVec.push_front(unbounded0);
+    unboundedVec.push_front(unbounded1);
+
+    boost::dynamic_bitset<> bounded0(5);
+    bounded0[2] = true;
+    bounded0[3] = true;
+
+    boost::dynamic_bitset<> bounded1(5);
+    bounded1[4] = true;
+
+    std::deque<boost::dynamic_bitset<>> boundedVec{};
+    boundedVec.push_front(bounded1);
+    boundedVec.push_front(bounded0);
+
+    boost::dynamic_bitset<> x0(5);
+
+    region::Region reg0(q, h, unboundedVec, x0, boundedVec, {});
+
+    std::vector startingRegions = { reg0 };
+
+    std::cout << "Starting from regions:" << std::endl;
+    for (const auto &reg: startingRegions)
+        std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
 
