@@ -15,7 +15,7 @@
 
 inline void testTrainAHV93Flat2Explodes()
 {
-    std::cout << "\n\nTrainAHV93 Flat 2" << std::endl;
+    std::cout << "\n\nTrainAHV93 Flat 2 explodes" << std::endl;
 
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
     const std::string automatonFileName = "Flatten.txt";
@@ -23,8 +23,8 @@ inline void testTrainAHV93Flat2Explodes()
 
     const region::RTS regionTransitionSystem(automaton);
 
-    std::cout << "\n\n\n";
-    std::cout << regionTransitionSystem.to_string() << std::endl;
+    // std::cout << "\n\n\n";
+    // std::cout << regionTransitionSystem.to_string() << std::endl;
 
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
@@ -73,7 +73,7 @@ inline void testTrainAHV93Flat2Explodes()
 
 inline void testTrainAHV93Flat2Efficient()
 {
-    std::cout << "\n\nTrainAHV93 Flat 2" << std::endl;
+    std::cout << "\n\nTrainAHV93 Flat 2 efficient" << std::endl;
 
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
     const std::string automatonFileName = "Flatten.txt";
@@ -81,8 +81,8 @@ inline void testTrainAHV93Flat2Efficient()
 
     const region::RTS regionTransitionSystem(automaton);
 
-    std::cout << "\n\n\n";
-    std::cout << regionTransitionSystem.to_string() << std::endl;
+    // std::cout << "\n\n\n";
+    // std::cout << regionTransitionSystem.to_string() << std::endl;
 
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
@@ -131,7 +131,7 @@ inline void testTrainAHV93Flat2Efficient()
 
 inline void testTrainAHV93Flat3Explodes()
 {
-    std::cout << "\n\nTrainAHV93 Flat 3" << std::endl;
+    std::cout << "\n\nTrainAHV93 Flat 3 explodes" << std::endl;
 
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
     const std::string automatonFileName = "Flatten.txt";
@@ -140,15 +140,15 @@ inline void testTrainAHV93Flat3Explodes()
     const region::RTS regionTransitionSystem(automaton);
 
     // Redirect cout to file
-    std::ofstream outFile(path + "rts_output.txt");
-    std::streambuf *coutBuffer = std::cout.rdbuf();
-    std::cout.rdbuf(outFile.rdbuf());
+    // std::ofstream outFile(path + "rts_output.txt");
+    // std::streambuf *coutBuffer = std::cout.rdbuf();
+    // std::cout.rdbuf(outFile.rdbuf());
 
-    std::cout << "\n\n\n";
-    std::cout << regionTransitionSystem.to_string() << std::endl;
+    // std::cout << "\n\n\n";
+    // std::cout << regionTransitionSystem.to_string() << std::endl;
 
     // Restore cout to terminal
-    std::cout.rdbuf(coutBuffer);
+    // std::cout.rdbuf(coutBuffer);
 
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
@@ -187,9 +187,9 @@ inline void testTrainAHV93Flat3Explodes()
 
     std::vector startingRegions = { reg0 };
 
-    std::cout << "Starting from regions:" << std::endl;
-    for (const auto &reg: startingRegions)
-        std::cout << reg.toString() << std::endl;
+    // std::cout << "Starting from regions:" << std::endl;
+    // for (const auto &reg: startingRegions)
+    //     std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
@@ -198,7 +198,7 @@ inline void testTrainAHV93Flat3Explodes()
 
 inline void testTrainAHV93Flat3Efficient()
 {
-    std::cout << "\n\nTrainAHV93 Flat 3" << std::endl;
+    std::cout << "\n\nTrainAHV93 Flat 3 efficient" << std::endl;
 
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
     const std::string automatonFileName = "Flatten.txt";
@@ -207,15 +207,15 @@ inline void testTrainAHV93Flat3Efficient()
     const region::RTS regionTransitionSystem(automaton);
 
     // Redirect cout to file
-    std::ofstream outFile(path + "rts_output.txt");
-    std::streambuf *coutBuffer = std::cout.rdbuf();
-    std::cout.rdbuf(outFile.rdbuf());
+    // std::ofstream outFile(path + "rts_output.txt");
+    // std::streambuf *coutBuffer = std::cout.rdbuf();
+    // std::cout.rdbuf(outFile.rdbuf());
 
-    std::cout << "\n\n\n";
-    std::cout << regionTransitionSystem.to_string() << std::endl;
+    // std::cout << "\n\n\n";
+    // std::cout << regionTransitionSystem.to_string() << std::endl;
 
     // Restore cout to terminal
-    std::cout.rdbuf(coutBuffer);
+    // std::cout.rdbuf(coutBuffer);
 
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
@@ -254,9 +254,9 @@ inline void testTrainAHV93Flat3Efficient()
 
     std::vector startingRegions = { reg0 };
 
-    std::cout << "Starting from regions:" << std::endl;
-    for (const auto &reg: startingRegions)
-        std::cout << reg.toString() << std::endl;
+    // std::cout << "Starting from regions:" << std::endl;
+    // for (const auto &reg: startingRegions)
+    //     std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
@@ -273,8 +273,8 @@ inline void testTrainAHV93Flat2Reachable()
 
     const region::RTS regionTransitionSystem(automaton);
 
-    std::cout << "\n\n\n";
-    std::cout << regionTransitionSystem.to_string() << std::endl;
+    // std::cout << "\n\n\n";
+    // std::cout << regionTransitionSystem.to_string() << std::endl;
 
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
@@ -316,9 +316,9 @@ inline void testTrainAHV93Flat2Reachable()
 
     std::vector startingRegions = { reg0 };
 
-    std::cout << "Starting from regions:" << std::endl;
-    for (const auto &reg: startingRegions)
-        std::cout << reg.toString() << std::endl;
+    // std::cout << "Starting from regions:" << std::endl;
+    // for (const auto &reg: startingRegions)
+    //     std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
 
