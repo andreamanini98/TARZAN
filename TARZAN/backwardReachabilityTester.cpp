@@ -7,13 +7,11 @@
 
 int main()
 {
-    //testTrainAHV93Flat2Efficient();
+    testTrainAHV93Flat2Efficient();
 
-    //testTrainAHV93Flat2Explodes();
+    testTrainAHV93Flat3Efficient();
 
-    //testTrainAHV93Flat3Efficient();
-
-    //testTrainAHV93Flat3Explodes();
+    testTrainAHV93Flat2Reachable();
 
     testTrainAHV93Flat3Reachable();
 
