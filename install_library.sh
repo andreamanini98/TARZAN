@@ -6,7 +6,8 @@ cd build
 
 cmake ..
 
-cmake --build .
+# Build only the TARZAN library target (skip executables).
+cmake --build . --target TARZAN
 
 cmake --install .
 

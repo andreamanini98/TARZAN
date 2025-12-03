@@ -4,6 +4,18 @@
 #include <string>
 
 #include "TARZAN/parser/ast.h"
+#include "TARZAN/regions/Region.h"
+#include "TARZAN/regions/networkOfTA/RTSNetwork.h"
+
+
+// Namespace aliases to support TARZAN:: prefix
+// This allows using both region::RTS and TARZAN::region::RTS
+namespace TARZAN {
+    namespace region = region;
+    namespace networkOfTA = networkOfTA;
+    namespace timed_automaton = timed_automaton;
+    namespace expr = expr;
+}
 
 
 /**
