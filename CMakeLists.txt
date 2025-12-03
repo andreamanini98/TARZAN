@@ -123,7 +123,16 @@ set(TARZAN_LIBRARIES
         Boost::headers
         # Boost::system Removed since it causes build bugs in Boost 1.89.0
         Boost::filesystem
-        absl::abseil)
+        absl::base
+        absl::strings
+        absl::flat_hash_map
+        absl::flat_hash_set
+        absl::btree
+        absl::throw_delegate
+        absl::raw_logging_internal
+        absl::raw_hash_set
+        absl::hash
+        absl::hashtablez_sampler)
 
 
 # Add conditional libraries.
