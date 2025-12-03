@@ -38,7 +38,23 @@ TODO
 
 # Using TARZAN
 
-For a detailed description of TARZAN please refer to:
+Assuming that TARZAN has been installed as described above, using it in a CMake project requires the following steps:
+
+i. Add these lines to the CMakeLists.txt file inside your new project:
+```cmake
+find_package(TARZAN REQUIRED)
+target_link_libraries(your_project_name PRIVATE TARZAN::TARZAN)
+```
+If TARZAN has been installed in a custom directory, it may be necessary to also specify the corresponding path in your CMakeLists.txt file.
+
+ii. Include TARZAN in your C++ or header files as follows:
+```c++
+#include "TARZAN/path/to/header_to_include.h"
+```
+
+# References
+
+For a detailed description of TARZAN, please refer to:
 - The TARZAN <a href="https://github.com/andreamanini98/TARZAN/wiki" target="_blank" rel="noopener noreferrer">wiki</a>.
 
 
