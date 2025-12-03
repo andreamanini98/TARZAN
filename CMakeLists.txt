@@ -86,9 +86,8 @@ endif ()
 
 
 # Find Boost libraries.
-# TODO: delete the line below (keep only find_package(Boost 1.89.0 REQUIRED system filesystem) when they fix the 1.89 build bug)
-set(BOOST_ROOT "/Users/echo/Desktop/boostinstall")
-find_package(Boost 1.88.0 REQUIRED system filesystem)
+# set(BOOST_ROOT "/path/to/boost/dir")
+find_package(Boost 1.89.0 REQUIRED filesystem)
 
 
 # Find Abseil libraries.
@@ -122,7 +121,7 @@ add_library(TARZAN STATIC ${LIBRARY_SOURCES})
 # Configure library dependencies.
 set(TARZAN_LIBRARIES
         Boost::headers
-        Boost::system
+        # Boost::system Removed since it causes build bugs in Boost 1.89.0
         Boost::filesystem
         absl::base
         absl::strings
