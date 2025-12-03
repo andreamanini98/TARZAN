@@ -92,7 +92,12 @@ find_package(Boost 1.89.0 REQUIRED filesystem)
 
 # Force CMake to not use Anaconda's abseil.
 # This prevents version conflicts between abseil installations.
-set(CMAKE_IGNORE_PATH "/opt/anaconda3")
+# Users can specify a custom path via: cmake -DANACONDA_PATH=/custom/path ..
+set(ANACONDA_PATH "/opt/anaconda3" CACHE PATH "Path to Anaconda installation to ignore")
+if(ANACONDA_PATH)
+    set(CMAKE_IGNORE_PATH "${ANACONDA_PATH}")
+    message(STATUS "Ignoring Anaconda path: ${ANACONDA_PATH}")
+endif()
 
 
 # Find Abseil libraries.
