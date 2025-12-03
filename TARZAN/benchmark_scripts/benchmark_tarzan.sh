@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Force C locale to ensure consistent number formatting (period as decimal separator).
+export LC_ALL=C
+export LANG=C
+
+
 EXECUTABLES_PATH="../../executables/benchmark_executables"
 BENCHMARKS_PATH="../benchmarks"
 OUTPUT_PATH="../../output/benchmark_tarzan_results"

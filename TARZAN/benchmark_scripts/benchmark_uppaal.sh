@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Force C locale to ensure consistent number formatting (period as decimal separator).
+export LC_ALL=C
+export LANG=C
+
+
 # Benchmarks that should use --search-order 0 instead of 1.
 SEARCH_ORDER_0_BENCHMARKS=("trainAHV93")
 
