@@ -125,23 +125,9 @@ set(TARZAN_LIBRARIES
         Boost::headers
         # Boost::system Removed since it causes build bugs in Boost 1.89.0
         Boost::filesystem
-        # High-level Abseil containers (what we actually use in code)
-        absl::flat_hash_map
-        absl::flat_hash_set
-        absl::btree
-        # Mid-level dependencies
-        absl::raw_hash_set
-        absl::container_memory
-        absl::container_common
-        absl::hashtablez_sampler
-        absl::hash
-        # Low-level base libraries
+        absl::base
         absl::strings
-        absl::throw_delegate
-        absl::function_ref
-        absl::raw_logging_internal
-        absl::log_severity
-        absl::base)
+        absl::flat_hash_map)
 
 
 # Add conditional libraries.
