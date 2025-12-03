@@ -3,23 +3,7 @@
 
 #include <string>
 
-// Core data structures and AST
 #include "TARZAN/parser/ast.h"
-
-// Region operations
-#include "TARZAN/regions/Region.h"
-#include "TARZAN/regions/RTS.h"
-
-// Network of Timed Automata
-#include "TARZAN/regions/networkOfTA/NetworkRegion.h"
-#include "TARZAN/regions/networkOfTA/RTSNetwork.h"
-
-// Enums
-#include "TARZAN/regions/enums/state_space_exploration_enum.h"
-#include "TARZAN/parser/enums/arithmetic_enum.h"
-#include "TARZAN/parser/enums/boolean_op_enum.h"
-#include "TARZAN/parser/enums/comparison_op_enum.h"
-#include "TARZAN/parser/enums/input_output_action_enum.h"
 
 
 /**

@@ -160,7 +160,23 @@ target_include_directories(TARZAN
 
 
 # Define the headers to expose.
-set(LIBRARY_HEADERS TARZAN/headers/library.h)
+set(LIBRARY_HEADERS
+    TARZAN/headers/library.h
+    TARZAN/parser/ast.h
+    TARZAN/parser/enums/arithmetic_enum.h
+    TARZAN/parser/enums/boolean_op_enum.h
+    TARZAN/parser/enums/comparison_op_enum.h
+    TARZAN/parser/enums/input_output_action_enum.h
+    TARZAN/regions/Region.h
+    TARZAN/regions/RTS.h
+    TARZAN/regions/enums/state_space_exploration_enum.h
+    TARZAN/regions/networkOfTA/NetworkRegion.h
+    TARZAN/regions/networkOfTA/RTSNetwork.h
+    TARZAN/utilities/hash_utilities.h
+    TARZAN/utilities/function_utilities.h
+    TARZAN/utilities/file_utilities.h
+    TARZAN/utilities/partition_utilities.h
+    TARZAN/utilities/printing_utilities.h)
 
 
 # Copying the headers to expose for better retrieve the library.
@@ -231,9 +247,16 @@ install(TARGETS TARZAN       # Install target, the one created with add_library(
         INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}) # Specifies where to look for include files.
 
 
-# Install headers.
-install(FILES ${LIBRARY_HEADERS}
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/TARZAN)
+# Install headers with directory structure preserved.
+foreach(header ${LIBRARY_HEADERS})
+    # Get the relative path from TARZAN/ directory.
+    file(RELATIVE_PATH rel_path "${CMAKE_CURRENT_SOURCE_DIR}/TARZAN" "${CMAKE_CURRENT_SOURCE_DIR}/${header}")
+    get_filename_component(header_dir ${rel_path} DIRECTORY)
+
+    # Install to the appropriate subdirectory.
+    install(FILES ${header}
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/TARZAN/${header_dir})
+endforeach()
 
 
 # Export targets to make the library discoverable by other CMake projects.
