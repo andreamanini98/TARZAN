@@ -6,7 +6,11 @@ include(CMakeFindDependencyMacro)
 
 
 # Find Boost library.
-find_dependency(Boost 1.88.0 REQUIRED system filesystem)
+find_dependency(Boost 1.89.0 REQUIRED filesystem)
+
+
+# Find Abseil libraries.
+find_package(absl CONFIG REQUIRED)
 
 
 # Import the targets.
