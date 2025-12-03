@@ -38,7 +38,7 @@ TODO
 
 # Using TARZAN
 
-Assuming that TARZAN has been installed as described above, using it in a CMake project requires the following steps:
+Assuming TARZAN has been installed as described above, using it in a CMake project requires the following steps:
 
 i. Add these lines to the CMakeLists.txt file inside your new project:
 ```cmake
