@@ -12,7 +12,7 @@
 inline void testFischer(const std::string &path, const std::string &benchmarkKey)
 {
     // Symmetry reduction (carefully handling the pid variable) should help.
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     const int numElements = std::stoi(benchmarkKey) + 2;

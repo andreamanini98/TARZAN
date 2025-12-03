@@ -11,7 +11,7 @@
 inline void testFlower(const std::string &path)
 {
     const std::string automatonFileName = "Flower.txt";
-    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+    const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
 

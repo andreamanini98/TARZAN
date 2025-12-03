@@ -10,7 +10,7 @@
  */
 inline void testSoldiers(const std::string &path)
 {
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     const auto &locationsToInt = net.getLocationsToInt();

@@ -17,7 +17,7 @@ inline void testFlower()
     // const std::string automatonFileName = "light_switch.txt";
 
     const std::string automatonFileName = "Flower.txt";
-    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+    const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     region::RTS regionTransitionSystem(automaton);
 
@@ -40,7 +40,7 @@ inline void testFlower()
 void testRingNetwork()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/ring/liana/ring_14";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -57,7 +57,7 @@ void testRingNetwork()
 void testVikings()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/vikings/liana/vikings_20";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     networkOfTA::RTSNetwork net(automata);
 
     net.enableSymmetryReduction();
@@ -79,7 +79,7 @@ void testVikings()
 void testFischer()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/fischer/liana/fischer_05";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -99,7 +99,7 @@ void test_exSITH()
 
     const std::string automatonFileName = "exSITH.txt";
 
-    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+    const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
 
@@ -123,7 +123,7 @@ void test_exSITH()
 void test_rcp()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/rcp";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -144,7 +144,7 @@ void test_rcp()
 void test_AndOr_original()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/AndOr_original";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -163,7 +163,7 @@ void test_AndOr_original()
 void test_csma_20n()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/csma/liana/csma_20N";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     // Locations:
@@ -203,7 +203,7 @@ void test_csma_20n()
 void test_csma_50n()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/csma/liana/csma_50N";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     // Locations:
@@ -273,7 +273,7 @@ void test_csma_50n()
 void test_maler()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/maler";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -292,7 +292,7 @@ void test_maler()
 void test_soldiers()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/soldiers";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -312,7 +312,7 @@ void test_soldiers()
 void test_SRlatch()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/SRlatch";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -330,7 +330,7 @@ void test_SRlatch()
 void test_latch()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/latch/liana/latch";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -352,7 +352,7 @@ void test_latch()
 void test_lynch_4_16()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/lynch_4_16";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -372,7 +372,7 @@ void test_simple()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/simple/liana/simple_1000/";
     const std::string automatonFileName = "Template.txt";
-    const timed_automaton::ast::timedAutomaton automaton = parseTimedAutomaton(path + automatonFileName);
+    const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
 
@@ -390,7 +390,7 @@ void test_TrainAHV93_9()
     // Uppaal esplode anche lui con 9 treni e con l'intero (sia BFS che DFS).
 
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/TrainAHV93/liana/TrainAHV93_9";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -426,7 +426,7 @@ void test_TrainAHV93_9()
 void test_boolean()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/boolean";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -475,7 +475,7 @@ void test_boolean()
 void test_pagerank()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/pagerank/liana/pagerank_full";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -512,7 +512,7 @@ void test_pagerank()
 void test_gates()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/gates/liana/gates_08";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -539,7 +539,7 @@ void test_gates()
 void test_patient()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/patientFlow";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;
@@ -658,7 +658,7 @@ void test_patient()
 void test_mpeg2()
 {
     const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/mpeg2";
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     std::cout << net.toString() << std::endl;

@@ -12,7 +12,7 @@
 inline void testCsma(const std::string &path, const std::string &benchmarkKey)
 {
     // Symmetry reduction cannot be applied as is due to the different names in the channels.
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     const auto &locationsToInt = net.getLocationsToInt();

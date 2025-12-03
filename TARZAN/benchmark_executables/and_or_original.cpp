@@ -10,7 +10,7 @@
  */
 inline void testAndOrOriginal(const std::string &path)
 {
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     // Inserting placeholder values such that the entire state space is explored.

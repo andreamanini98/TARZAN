@@ -11,7 +11,7 @@
  */
 inline void testMpeg2(const std::string &path, const std::string &benchmarkKey)
 {
-    const std::vector<timed_automaton::ast::timedAutomaton> automata = parseTimedAutomataFromFolder(path);
+    const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
 
     const auto &locationsToInt = net.getLocationsToInt();

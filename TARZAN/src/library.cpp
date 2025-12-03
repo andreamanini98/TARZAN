@@ -15,7 +15,7 @@
 // #define PARSER_LOG
 
 
-timed_automaton::ast::timedArena parseTimedArena(std::string const &path)
+timed_automaton::ast::timedArena TARZAN::parseTimedArena(std::string const &path)
 {
     std::stringstream out;
     const std::string source = readFromFile(path);
@@ -61,7 +61,7 @@ timed_automaton::ast::timedArena parseTimedArena(std::string const &path)
 }
 
 
-timed_automaton::ast::timedAutomaton parseTimedAutomaton(std::string const &path)
+timed_automaton::ast::timedAutomaton TARZAN::parseTimedAutomaton(std::string const &path)
 {
     std::stringstream out;
     const std::string source = readFromFile(path);
@@ -107,7 +107,7 @@ timed_automaton::ast::timedAutomaton parseTimedAutomaton(std::string const &path
 }
 
 
-std::vector<timed_automaton::ast::timedAutomaton> parseTimedAutomataFromFolder(std::string const &folderPath)
+std::vector<timed_automaton::ast::timedAutomaton> TARZAN::parseTimedAutomataFromFolder(std::string const &folderPath)
 {
     std::vector<timed_automaton::ast::timedAutomaton> automata;
 
@@ -147,7 +147,7 @@ std::vector<timed_automaton::ast::timedAutomaton> parseTimedAutomataFromFolder(s
 }
 
 
-std::vector<timed_automaton::ast::timedArena> parseTimedArenasFromFolder(std::string const &folderPath)
+std::vector<timed_automaton::ast::timedArena> TARZAN::parseTimedArenasFromFolder(std::string const &folderPath)
 {
     std::vector<timed_automaton::ast::timedArena> arenas;
 
