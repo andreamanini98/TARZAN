@@ -58,12 +58,11 @@ Note that the above paths refer to macOS running on an Apple Silicon chip (Intel
 
 Assuming TARZAN has been installed as described above, using it in a CMake project requires the following steps:
 
-1. Add these lines to the CMakeLists.txt file inside your new project:
+1. Add these lines to the CMakeLists.txt file inside your new project (f TARZAN has been installed in a custom directory, it may be necessary to also specify the corresponding path in your CMakeLists.txt file.):
 ```cmake
 find_package(TARZAN REQUIRED)
 target_link_libraries(your_project_name PRIVATE TARZAN::TARZAN)
 ```
-If TARZAN has been installed in a custom directory, it may be necessary to also specify the corresponding path in your CMakeLists.txt file.
 
 2. Include TARZAN in your C++ or header files as follows:
 ```c++
