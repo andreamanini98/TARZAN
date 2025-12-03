@@ -7,7 +7,7 @@
 # target_link_libraries(new_project_name PRIVATE TARZAN::TARZAN)
 
 # (2) Include the library in your files as follows:
-# #include "TARZAN/file_where_to_include_the_library"
+# #include "TARZAN/folder/file_to_include.h"
 
 
 # Setting the minimum required version for cmake.
