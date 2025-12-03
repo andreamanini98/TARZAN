@@ -28,7 +28,7 @@ A complete test on Linux is deferred to future work.
 TARZAN needs the following dependencies to be installed:
 - <a href="https://www.boost.org" target="_blank" rel="noopener noreferrer">Boost libraries</a> v. 1.89.0 (on macOS, suggested installation via Homebrew).
 - <a href="https://abseil.io" target="_blank" rel="noopener noreferrer">Abseil libraries</a> v. 20250814.1 (previous versions should work as well, though they have not been tested; on macOS, suggested installation via Homebrew).
-- <a href="https://cmake.org" target="_blank" rel="noopener noreferrer">CMake</a> v. 3.31.
+- <a href="https://cmake.org" target="_blank" rel="noopener noreferrer">CMake</a> v. 3.31 (minimum required version).
 - A C++20 compatible compiler.
 
 ## Build and install
