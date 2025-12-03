@@ -19,15 +19,15 @@ Consequently, integrating TARZAN into existing zone-based state-of-the-art tools
 | macOS            | ✅     |
 | Linux            | ⚠️     |
 
-**Warning:** TARZAN have been developed and tested on macOS Sequoia 15.6.1, but should work even on Linux distributions (this may require adjusting the CMakeLists.txt file).
-A complete test on Linux distributions is defedder to future work.
+**Warning:** TARZAN have been developed and tested on macOS Sequoia 15.6.1, but should work on Linux distributions (this may require adjusting the CMakeLists.txt file).
+A complete test on Linux is deferred to future work.
 
 
 ## Prerequisites
 
 TARZAN needs the following dependencies to be installed:
 - <a href="https://www.boost.org" target="_blank" rel="noopener noreferrer">Boost libraries</a> v. 1.89.0 (on macOS, suggested installation via Homebrew).
-- <a href="https://abseil.io" target="_blank" rel="noopener noreferrer">Abseil libraries</a> v. 20250814.1 (other not ancient versions should work as well; on macOS, suggested installation via Homebrew).
+- <a href="https://abseil.io" target="_blank" rel="noopener noreferrer">Abseil libraries</a> v. 20250814.1 (previous versions should work as well; on macOS, suggested installation via Homebrew).
 - <a href="https://cmake.org" target="_blank" rel="noopener noreferrer">CMake</a> v. 3.31.
 - A C++20 compatible compiler.
 
