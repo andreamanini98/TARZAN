@@ -125,7 +125,8 @@ set(TARZAN_LIBRARIES
         Boost::filesystem
         absl::base
         absl::strings
-        absl::flat_hash_map)
+        absl::flat_hash_map
+        absl::throw_delegate)
 
 
 # Add conditional libraries.
