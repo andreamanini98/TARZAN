@@ -90,13 +90,13 @@ endif ()
 find_package(Boost 1.89.0 REQUIRED filesystem)
 
 
-# Find Abseil libraries.
-find_package(absl CONFIG REQUIRED)
-
-
 # Force CMake to not use Anaconda's abseil.
 # This prevents version conflicts between abseil installations.
 set(CMAKE_IGNORE_PATH "/opt/anaconda3")
+
+
+# Find Abseil libraries.
+find_package(absl CONFIG REQUIRED)
 
 
 # Add compiler warnings.
