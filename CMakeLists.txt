@@ -120,24 +120,28 @@ add_library(TARZAN STATIC ${LIBRARY_SOURCES})
 
 # Configure library dependencies.
 # Link all necessary Abseil libraries to avoid undefined symbols
+# Order: high-level containers first, then their dependencies (hash, base internals)
 set(TARZAN_LIBRARIES
         Boost::headers
         # Boost::system Removed since it causes build bugs in Boost 1.89.0
         Boost::filesystem
-        absl::base
-        absl::throw_delegate
-        absl::raw_logging_internal
-        absl::log_severity
-        absl::strings
-        absl::hash
+        # High-level Abseil containers (what we actually use in code)
         absl::flat_hash_map
         absl::flat_hash_set
         absl::btree
+        # Mid-level dependencies
         absl::raw_hash_set
-        absl::hashtablez_sampler
-        absl::function_ref
+        absl::container_memory
         absl::container_common
-        absl::container_memory)
+        absl::hashtablez_sampler
+        absl::hash
+        # Low-level base libraries
+        absl::strings
+        absl::throw_delegate
+        absl::function_ref
+        absl::raw_logging_internal
+        absl::log_severity
+        absl::base)
 
 
 # Add conditional libraries.
