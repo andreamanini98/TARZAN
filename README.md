@@ -33,21 +33,39 @@ TARZAN needs the following dependencies to be installed:
 
 ## Build and install
 
-TODO
+To build TARZAN, simply clone the repository and execute the following commands:
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+Note that building TARZAN generates executable files necessary to automatically perform pre-built tests.
+
+To use TARZAN inside your project, you must install it (installation does not build nor generate any executable file).
+This can be done by executing the script `install_library.sh` (note that this may require root permissions).
+The script itself contains instructions on how to specify a custom installation path.
+If the installation is left to default, TARZAN will be installed in the following directories:
+
+- `/usr/local/include/TARZAN`: this contains the headers.
+-  `/usr/local/lib/cmake/TARZAN`: this contains cmake files.
+- `/usr/local/lib/libTARZAN.a`: this is the library archive.
+
+Note that the above paths refer to macOS running on an Apple Silicon chip (Intel-based macOS paths may differ).
 
 
 # Using TARZAN
 
 Assuming TARZAN has been installed as described above, using it in a CMake project requires the following steps:
 
-i. Add these lines to the CMakeLists.txt file inside your new project:
+1. Add these lines to the CMakeLists.txt file inside your new project:
 ```cmake
 find_package(TARZAN REQUIRED)
 target_link_libraries(your_project_name PRIVATE TARZAN::TARZAN)
 ```
 If TARZAN has been installed in a custom directory, it may be necessary to also specify the corresponding path in your CMakeLists.txt file.
 
-ii. Include TARZAN in your C++ or header files as follows:
+2. Include TARZAN in your C++ or header files as follows:
 ```c++
 #include "TARZAN/path/to/header_to_include.h"
 ```
