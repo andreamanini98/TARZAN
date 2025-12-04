@@ -31,6 +31,9 @@ TARZAN needs the following dependencies to be installed:
 - <a href="https://abseil.io" target="_blank" rel="noopener noreferrer">Abseil libraries</a> v. 20250814.1 (previous versions should work as well, though they have not been tested; on macOS, suggested installation via Homebrew).
 - <a href="https://cmake.org" target="_blank" rel="noopener noreferrer">CMake</a> v. 3.31 (minimum required version).
 - A C++20 compatible compiler.
+If you want to run the benchmarks against Uppaal and TChecker, you also need to install those tools:
+- <a href="https://uppaal.org" target="_blank" rel="noopener noreferrer">Uppaal</a> v. 5.0 (other versions should work as well).
+- <a href="https://github.com/ticktac-project/tchecker" target="_blank" rel="noopener noreferrer">TChecker</a> v. 0.8 (other versions should work as well).
 
 ## Build and Install
 
@@ -41,7 +44,7 @@ cd build
 cmake ..
 make
 ```
-Note that building TARZAN generates executable files necessary to automatically perform pre-built tests.
+Note that building TARZAN generates executable files necessary to automatically perform pre-built benchmarks comparing the performance of TARZAN against Uppaal and TChecker.
 
 To use TARZAN inside your project, you must install it (installation does not build nor generate any executable file).
 This can be done by executing the script `install_library.sh` (note that this may require root permissions).
