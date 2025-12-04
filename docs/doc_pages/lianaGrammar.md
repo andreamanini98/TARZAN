@@ -7,6 +7,7 @@ T and F are syntactic sugar for true and false.
 Since clock guards cannot directly express disjunctions, OR conditions must be modeled by defining one transition per disjunct.
 Timed Automata marked as symmetric must be structurally identical (the integer indicates the symmetry group to which they are assigned).
 
+
 <pre style="font-family: monospace; font-size: 1.1em;">
 <span style="font-weight:bold;">⟨automaton⟩</span> ――> <span style="color:orange;">'create'</span> <span style="color:orange;">'automaton'</span> <span style="font-weight:bold;">⟨literal⟩</span> (ε | <span style="font-weight:bold;">⟨symm_rule⟩</span>)
 <span style="color:orange;">                '{'</span>
