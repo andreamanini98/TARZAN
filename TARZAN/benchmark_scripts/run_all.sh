@@ -10,13 +10,19 @@ rm -f ../../output/benchmark_summary.txt
 NUM_RUNS="$1"
 TIMEOUT="$2"
 
+UPPAAL_PATH="$3"
+# /Users/echo/Desktop/PoliPrograms/UPPAAL-5.0.0.app/Contents/Resources/uppaal/bin/verifyta
+
+TCHECKER_PATH="$4"
+# /Users/echo/Desktop/PoliPrograms/tchecker-0.8/bin/tck-reach
+
 echo "Starting uppaal benchmarking"
 
-./benchmark_uppaal.sh /Users/echo/Desktop/PoliPrograms/UPPAAL-5.0.0.app/Contents/Resources/uppaal/bin/verifyta "${NUM_RUNS}" "${TIMEOUT}"
+./benchmark_uppaal.sh "${UPPAAL_PATH}" "${NUM_RUNS}" "${TIMEOUT}"
 
 echo "Starting tChecker benchmarking"
 
-./benchmark_tchecker.sh /Users/echo/Desktop/PoliPrograms/tchecker-0.8/bin/tck-reach "${NUM_RUNS}" "${TIMEOUT}"
+./benchmark_tchecker.sh "${TCHECKER_PATH}" "${NUM_RUNS}" "${TIMEOUT}"
 
 echo "Starting tarzan benchmarking"
 
