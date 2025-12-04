@@ -18,6 +18,7 @@ Consequently, integrating TARZAN into existing zone-based state-of-the-art tools
 |------------------|:------:|
 | macOS            | ✅     |
 | Linux            | ⚠️     |
+| Windows          | ❌    |
 
 **Warning:** TARZAN have been developed and tested on macOS Sequoia 15.6.1, but should work on Linux (this may require adjusting the CMakeLists.txt file).
 A complete test on Linux is deferred to future work.
