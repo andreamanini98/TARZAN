@@ -1,12 +1,12 @@
-@mainpage This is the title of the main page
+@mainpage TARZAN Documentation
 
-This is the content of the main page. Add your project description, overview,
-and other introductory information here.
+This documentation has been generated with Doxygen.
+Here you can find additional technical details, which are not included in
+the TARZAN <a href="https://github.com/andreamanini98/TARZAN/wiki" target="_blank" rel="noopener noreferrer">wiki</a>,
+on the internals of TARZAN.
 
-AGGIUNGERE DOCUMENTAZIONE FATTA BENE, ES. LA GRAMMATICA DI LIANA.
 
-## Documentation Structure
+### Table of Contents
 
-- @ref subsystem1
+- @ref lianaGrammar
 
-@page subsystem1 Subsystem 1

@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['rcp_2ecpp_0',['rcp.cpp',['../rcp_8cpp.html',1,'']]],
+  ['reachable_1',['reachable',['../classgenerate__latex__tables_1_1_benchmark_result.html#a44c2eb9592354e0fd9cc3745eb287476',1,'generate_latex_tables::BenchmarkResult']]],
+  ['readfromfile_2',['readFromFile',['../file__utilities_8h.html#aadfbcf88d6e5df6d70438d8b15d4c02a',1,'file_utilities.h']]],
+  ['region_3',['Region',['../classregion_1_1_region.html',1,'region::Region'],['../classregion_1_1_region.html#ad98db1d6f0aac9d8bf0ae55c18318cc5',1,'region::Region::Region()=default'],['../classregion_1_1_region.html#a72dc4ad7c80d22cd25715e61c41afbdf',1,'region::Region::Region(const int numClocks, const absl::btree_map&lt; std::string, int &gt; &amp;variables)'],['../classregion_1_1_region.html#a99149138565c18b3ed1b69e4190869f4',1,'region::Region::Region(const int numClocks, const int q, const absl::btree_map&lt; std::string, int &gt; &amp;variables)'],['../classregion_1_1_region.html#a628701bbf58364f2334b206d5ddaa17b',1,'region::Region::Region(const int q, const std::vector&lt; int &gt; &amp;h, const std::deque&lt; boost::dynamic_bitset&lt;&gt; &gt; &amp;unbounded, const boost::dynamic_bitset&lt;&gt; &amp;x0, const std::deque&lt; boost::dynamic_bitset&lt;&gt; &gt; &amp;bounded, const absl::btree_map&lt; std::string, int &gt; &amp;variables)'],['../classregion_1_1_region.html#a63c6a779371e7edcc51bf77958d8c542',1,'region::Region::Region(const Region &amp;other)=default']]],
+  ['region_4',['region',['../namespaceregion.html',1,'']]],
+  ['region_2ecpp_5',['Region.cpp',['../_region_8cpp.html',1,'']]],
+  ['region_2eh_6',['Region.h',['../_region_8h.html',1,'']]],
+  ['regionhash_7',['RegionHash',['../structregion_1_1_region_hash.html',1,'region::RegionHash'],['../classregion_1_1_region.html#aecb01c7e946d62d88e4cd4c7154cef38',1,'region::Region::RegionHash()']]],
+  ['regionptr_8',['RegionPtr',['../_r_t_s_8cpp.html#aa5a40e9c3ff552251be8155396c47a8c',1,'RTS.cpp']]],
+  ['regions_9',['regions',['../classnetwork_of_t_a_1_1_network_region.html#a75fa2d1a7920100be34fefc0c194e877',1,'networkOfTA::NetworkRegion']]],
+  ['remove_5fid_5fconjuncts_10',['remove_id_conjuncts',['../namespace_fischer_generator.html#a8415e37efbdf70130d980c3b1ded6dd0',1,'FischerGenerator']]],
+  ['replace_5ftrain_5fx_11',['replace_train_x',['../namespace_train_gate_controller_generator.html#ae5d7ee5174ac944bc2337eb729bad45f',1,'TrainGateControllerGenerator']]],
+  ['replace_5fy_12',['replace_y',['../namespace_vikings_generator.html#a6401327500354bbfafc254bcad9811c9',1,'VikingsGenerator']]],
+  ['resident_5fmemory_13',['resident_memory',['../classgenerate__latex__tables_1_1_benchmark_result.html#ab18b528e8cbd541263a0a999f4d4ec3b',1,'generate_latex_tables::BenchmarkResult']]],
+  ['rhs_14',['rhs',['../structexpr_1_1ast_1_1assignment_expr.html#acdb7353d83a38ef0bee923979e60357d',1,'expr::ast::assignmentExpr']]],
+  ['right_5fexpr_15',['right_expr',['../structexpr_1_1ast_1_1binary_expr.html#a98dd34f623e2834686c6b30eccc99103',1,'expr::ast::binaryExpr::right_expr'],['../structexpr_1_1ast_1_1comparison_expr.html#a7262fd2b8d00097172251ca4e1437470',1,'expr::ast::comparisonExpr::right_expr'],['../structexpr_1_1ast_1_1boolean_binary_expr.html#acac2aaee1eaac8c4c9ff7c383776318a',1,'expr::ast::booleanBinaryExpr::right_expr']]],
+  ['ring_2ecpp_16',['ring.cpp',['../ring_8cpp.html',1,'']]],
+  ['ring_5fproc_17',['Ring_PROC',['../namespacegenerate__ring.html#ab61791d42ae64a562381156b18fcc734',1,'generate_ring']]],
+  ['rts_18',['RTS',['../classregion_1_1_r_t_s.html',1,'region::RTS'],['../classregion_1_1_r_t_s.html#a1e6ee8b5f296f6b4f07db3663ce93d55',1,'region::RTS::RTS()']]],
+  ['rts_2ecpp_19',['RTS.cpp',['../_r_t_s_8cpp.html',1,'']]],
+  ['rts_2eh_20',['RTS.h',['../_r_t_s_8h.html',1,'']]],
+  ['rtsnetwork_21',['RTSNetwork',['../classnetwork_of_t_a_1_1_r_t_s_network.html',1,'networkOfTA::RTSNetwork'],['../classnetwork_of_t_a_1_1_r_t_s_network.html#ac42a2af6ace141e9dee91d4632a20901',1,'networkOfTA::RTSNetwork::RTSNetwork()']]],
+  ['rtsnetwork_2ecpp_22',['RTSNetwork.cpp',['../_r_t_s_network_8cpp.html',1,'']]],
+  ['rtsnetwork_2eh_23',['RTSNetwork.h',['../_r_t_s_network_8h.html',1,'']]],
+  ['running_5ftime_24',['running_time',['../classgenerate__latex__tables_1_1_benchmark_result.html#a81e761c8e25ee2711e7ea6895ba63d15',1,'generate_latex_tables::BenchmarkResult']]]
+];
