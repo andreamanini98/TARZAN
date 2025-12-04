@@ -10,7 +10,7 @@ Consequently, integrating TARZAN into existing zone-based state-of-the-art tools
 
 
 
-# Getting started
+# Getting Started
 
 ## Operating System Compatibility
 
@@ -32,7 +32,7 @@ TARZAN needs the following dependencies to be installed:
 - <a href="https://cmake.org" target="_blank" rel="noopener noreferrer">CMake</a> v. 3.31 (minimum required version).
 - A C++20 compatible compiler.
 
-## Build and install
+## Build and Install
 
 To build TARZAN, simply clone the repository and execute the following commands:
 ```bash
