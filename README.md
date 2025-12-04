@@ -31,6 +31,7 @@ TARZAN needs the following dependencies to be installed:
 - <a href="https://abseil.io" target="_blank" rel="noopener noreferrer">Abseil libraries</a> v. 20250814.1 (previous versions should work as well, though they have not been tested; on macOS, suggested installation via Homebrew).
 - <a href="https://cmake.org" target="_blank" rel="noopener noreferrer">CMake</a> v. 3.31 (minimum required version).
 - A C++20 compatible compiler.
+- Python v. 3.10 (required for benchmark summary generation).
   
 If you want to run the benchmarks against Uppaal and TChecker, you also need to install those tools:
 - <a href="https://uppaal.org" target="_blank" rel="noopener noreferrer">Uppaal</a> v. 5.0 (other versions should work as well).
