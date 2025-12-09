@@ -117,6 +117,26 @@ namespace parser
         }
     } my_boolean;
 
+    inline struct bin_cltloc_op : x3::symbols<binary_cltloc_op>
+    {
+        bin_cltloc_op()
+        {
+            auto &self = add
+                    ("UNTIL", UNTIL);
+            (void) self;
+        }
+    } bin_cltloc_op;
+
+    inline struct un_cltloc_op : x3::symbols<unary_cltloc_op>
+    {
+        un_cltloc_op()
+        {
+            auto &self = add
+                    ("BOX", BOX);
+            (void) self;
+        }
+    } un_cltloc_op;
+
 
     namespace x3 = boost::spirit::x3;
     namespace ascii = x3::ascii;
@@ -152,11 +172,16 @@ namespace parser
     constexpr x3::rule<arena_loc_pair_class, timed_automaton::ast::arena_loc_pair> arena_loc_pair_rule = "arena_loc_pair_rule";
     constexpr x3::rule<arena_loc_map_class, timed_automaton::ast::arena_loc_map> arena_loc_map_rule = "arena_loc_map_rule";
 
-    constexpr x3::rule<clockConstraint_class, timed_automaton::ast::clockConstraint> clockConstraint_rule = " clockConstraint_rule";
+    constexpr x3::rule<clockConstraint_class, timed_automaton::ast::clockConstraint> clockConstraint_rule = "clockConstraint_rule";
     constexpr x3::rule<locationContent_class, timed_automaton::ast::locationContent> locationContent_rule = "locationContent_rule";
     constexpr x3::rule<transition_class, timed_automaton::ast::transition> transition_rule = "transition_rule";
     constexpr x3::rule<timedAutomaton_class, timed_automaton::ast::timedAutomaton> timedAutomaton_rule = "timedAutomaton_rule";
     constexpr x3::rule<timedArena_class, timed_automaton::ast::timedArena> timedArena_rule = "timedArena_rule";
+
+    constexpr x3::rule<pureCLTLocFormula_class, cltloc::ast::pureCLTLocFormula> pureCLTLocFormula_rule = "pureCLTLocFormula_rule";
+    constexpr x3::rule<unaryCLTLocFormula_class, cltloc::ast::unaryCLTLocFormula> unaryCLTLocFormula_rule = "unaryCLTLocFormula_rule";
+    constexpr x3::rule<binaryCLTLocFormula_class, cltloc::ast::binaryCLTLocFormula> binaryCLTLocFormula_rule = "binaryCLTLocFormula_rule";
+    constexpr x3::rule<generalCLTLocFormula_class, cltloc::ast::generalCLTLocFormula> generalCLTLocFormula_rule = "generalCLTLocFormula_rule";
 
 
     inline auto literal =
@@ -310,7 +335,6 @@ namespace parser
             )
             > lit('>');
 
-
     inline auto transition_rule_def =
             lit('(')
             > literal > lit(',')
@@ -328,7 +352,6 @@ namespace parser
 
     inline auto symm_rule =
             lit("::") > lit("symm") > lit('<') > int_ > lit('>');
-
 
     inline auto timedAutomaton_rule_def =
             lit("create")
@@ -386,6 +409,30 @@ namespace parser
             > lit('}')
             > lit('}');
 
+    // --- CLTLOC RULES --- //
+
+    inline auto pureCLTLocFormula_rule_def =
+            lit('[') > -(literal % ',') > lit(']') > lit(',')
+            > lit('[') > -(clockConstraint_rule % ',') > lit(']');
+
+    inline auto unaryCLTLocFormula_rule_def =
+            un_cltloc_op > lit(',')
+            > generalCLTLocFormula_rule;
+
+    inline auto binaryCLTLocFormula_rule_def =
+            generalCLTLocFormula_rule > lit(',')
+            > bin_cltloc_op > lit(',')
+            > generalCLTLocFormula_rule;
+
+    inline auto generalCLTLocFormula_rule_def =
+            lit('(')
+            > (unaryCLTLocFormula_rule[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })]
+               | binaryCLTLocFormula_rule[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })]
+               | pureCLTLocFormula_rule[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })]
+               | clockConstraint_rule[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })]
+               | literal[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })])
+            > lit(')');
+
     BOOST_SPIRIT_DEFINE(primary_rule,
                         multiplicative_rule,
                         additive_rule,
@@ -407,7 +454,11 @@ namespace parser
                         locationContent_rule,
                         transition_rule,
                         timedAutomaton_rule,
-                        timedArena_rule);
+                        timedArena_rule,
+                        pureCLTLocFormula_rule,
+                        unaryCLTLocFormula_rule,
+                        binaryCLTLocFormula_rule,
+                        generalCLTLocFormula_rule);
 
     struct primary_class : success_handler
     {};
@@ -477,6 +528,18 @@ namespace parser
 
     struct timedArena_class : error_handler_base, success_handler
     {};
+
+    struct pureCLTLocFormula_class : error_handler_base, success_handler
+    {};
+
+    struct unaryCLTLocFormula_class : error_handler_base, success_handler
+    {};
+
+    struct binaryCLTLocFormula_class : error_handler_base, success_handler
+    {};
+
+    struct generalCLTLocFormula_class : error_handler_base, success_handler
+    {};
 }
 
 
@@ -538,6 +601,37 @@ namespace expr
     inline parser::booleanExpr_type booleanExpr()
     {
         return parser::booleanExpr_rule;
+    }
+}
+
+
+namespace cltloc
+{
+    // NOLINTNEXTLINE
+    inline parser::pureCLTLocFormula_type pureCLTLocFormula()
+    {
+        return parser::pureCLTLocFormula_rule;
+    }
+
+
+    // NOLINTNEXTLINE
+    inline parser::unaryCLTLocFormula_type unaryCLTLocFormula()
+    {
+        return parser::unaryCLTLocFormula_rule;
+    }
+
+
+    // NOLINTNEXTLINE
+    inline parser::binaryCLTLocFormula_type binaryCLTLocFormula()
+    {
+        return parser::binaryCLTLocFormula_rule;
+    }
+
+
+    // NOLINTNEXTLINE
+    inline parser::generalCLTLocFormula_type generalCLTLocFormula()
+    {
+        return parser::generalCLTLocFormula_rule;
     }
 }
 

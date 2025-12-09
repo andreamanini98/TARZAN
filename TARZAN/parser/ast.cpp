@@ -697,3 +697,81 @@ std::string timed_automaton::ast::timedArena::to_string() const
     oss << "Transitions:\n" << join_elements(transitions, "\n") << std::endl;
     return oss.str();
 }
+
+
+// ---
+
+
+// Pure CLTLoc Formula class.
+
+std::string cltloc::ast::pureCLTLocFormula::to_string() const
+{
+    std::ostringstream oss;
+
+    // Print locations.
+    if (!locations.empty())
+    {
+        oss << join_elements(locations, " && ");
+        if (!clockConstraints.empty())
+            oss << " && ";
+    }
+
+    // Print clock constraints.
+    if (!clockConstraints.empty())
+        oss << join_elements(clockConstraints, " && ");
+
+    return oss.str();
+}
+
+
+// ---
+
+
+// Unary CLTLoc Formula class.
+
+std::string cltloc::ast::unaryCLTLocFormula::to_string() const
+{
+    std::ostringstream oss;
+    oss << op << " " << rightFormula.to_string();
+    return oss.str();
+}
+
+
+// ---
+
+
+// Binary CLTLoc Formula class.
+
+std::string cltloc::ast::binaryCLTLocFormula::to_string() const
+{
+    std::ostringstream oss;
+    oss << leftFormula.to_string() << " " << op << " " << rightFormula.to_string();
+    return oss.str();
+}
+
+
+// ---
+
+
+// General CLTLoc Formula class.
+
+std::string cltloc::ast::generalCLTLocFormula::to_string() const
+{
+    std::ostringstream oss;
+
+    oss << std::visit([]<typename T0>(T0 const &val) -> std::string {
+        using T = std::decay_t<T0>;
+
+        if constexpr (std::is_same_v<T, std::string>)
+            // Location name.
+            return val;
+        else if constexpr (std::is_same_v<T, timed_automaton::ast::clockConstraint>)
+            // Clock constraint.
+            return val.to_string();
+        else
+            // Recursive case: pure, unary, or binary formula.
+            return "(" + val.get().to_string() + ")";
+    }, value);
+
+    return oss.str();
+}

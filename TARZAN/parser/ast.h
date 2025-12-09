@@ -5,6 +5,7 @@
 #include "enums/boolean_op_enum.h"
 #include "enums/comparison_op_enum.h"
 #include "enums/input_output_action_enum.h"
+#include "enums/cltloc_op_enum.h"
 
 #include <vector>
 #include <map>
@@ -15,6 +16,8 @@
 #include "absl/container/flat_hash_map.h"
 #include "absl/container/btree_map.h"
 #include <boost/spirit/home/x3/support/ast/variant.hpp>
+
+#include "ast.h"
 
 // TODO: avoid code duplication (if possible).
 
@@ -106,9 +109,13 @@
 //
 //  <and_op> -> '&&'
 
+// Up to now, we do not deal with parentheses precedence in cltloc formulae.
+
 
 // TODO: aggiustare grammatica di Liana con le arene.
 //       Al momento tenere comunque arene e ta separati, vedere poi se unire tutto eliminando duplicazione del codice o no.
+
+// TODO: aggiustare con la grammatica di cltloc.
 
 
 // Reference examples for expression parser:
@@ -623,6 +630,110 @@ namespace timed_automaton::ast
 }
 
 
+namespace cltloc::ast
+{
+    /// A pure CLTLoc formula is (up to now) a conjunction of location names and clock constraints.
+    struct pureCLTLocFormula
+    {
+        std::vector<std::string> locations;
+        std::vector<timed_automaton::ast::clockConstraint> clockConstraints;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    // Forward declaring this struct so that it can be used in the structs below.
+    struct unaryCLTLocFormula;
+
+
+    // Forward declaring this struct so that it can be used in the structs below.
+    struct binaryCLTLocFormula;
+
+
+    struct generalCLTLocFormula
+    {
+        std::variant<
+            std::string,
+            timed_automaton::ast::clockConstraint,
+            boost::spirit::x3::forward_ast<pureCLTLocFormula>,
+            boost::spirit::x3::forward_ast<unaryCLTLocFormula>,
+            boost::spirit::x3::forward_ast<binaryCLTLocFormula>> value;
+
+
+        // Implicit constructors.
+        generalCLTLocFormula() = default;
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(std::string v) : value(std::move(v)) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(timed_automaton::ast::clockConstraint v) : value(std::move(v)) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(boost::spirit::x3::forward_ast<pureCLTLocFormula> v) : value(std::move(v)) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(boost::spirit::x3::forward_ast<unaryCLTLocFormula> v) : value(std::move(v)) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(boost::spirit::x3::forward_ast<binaryCLTLocFormula> v) : value(std::move(v)) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(pureCLTLocFormula const &v);
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(pureCLTLocFormula &&v);
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(unaryCLTLocFormula const &v);
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(unaryCLTLocFormula &&v);
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(binaryCLTLocFormula const &v);
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(binaryCLTLocFormula &&v);
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    struct unaryCLTLocFormula
+    {
+        unary_cltloc_op op;
+        generalCLTLocFormula rightFormula;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    struct binaryCLTLocFormula
+    {
+        generalCLTLocFormula leftFormula;
+        binary_cltloc_op op;
+        generalCLTLocFormula rightFormula;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    // Implementing the deferred constructors after unaryCLTLocFormula and binaryCLTLocFormula are complete.
+    // Needed to break circular dependencies at compile time, as it happens, for example, when declaring a constructor of generalCLTLocFormula passing a unaryCLTLocFormula.
+    inline generalCLTLocFormula::generalCLTLocFormula(pureCLTLocFormula const &v) : value(boost::spirit::x3::forward_ast(v)) {}
+    inline generalCLTLocFormula::generalCLTLocFormula(pureCLTLocFormula &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
+    inline generalCLTLocFormula::generalCLTLocFormula(unaryCLTLocFormula const &v) : value(boost::spirit::x3::forward_ast(v)) {}
+    inline generalCLTLocFormula::generalCLTLocFormula(unaryCLTLocFormula &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
+    inline generalCLTLocFormula::generalCLTLocFormula(binaryCLTLocFormula const &v) : value(boost::spirit::x3::forward_ast(v)) {}
+    inline generalCLTLocFormula::generalCLTLocFormula(binaryCLTLocFormula &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
+}
+
+
 inline std::ostream &operator<<(std::ostream &os, const expr::ast::arithmeticExpr &a)
 {
     return os << a.to_string();
@@ -686,6 +797,30 @@ inline std::ostream &operator<<(std::ostream &os, const timed_automaton::ast::ti
 inline std::ostream &operator<<(std::ostream &os, const timed_automaton::ast::timedArena &t)
 {
     return os << t.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::pureCLTLocFormula &p)
+{
+    return os << p.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::unaryCLTLocFormula &u)
+{
+    return os << u.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::binaryCLTLocFormula &b)
+{
+    return os << b.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::generalCLTLocFormula &g)
+{
+    return os << g.to_string();
 }
 
 #endif //AST_H

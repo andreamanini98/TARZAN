@@ -8,6 +8,7 @@
 
 // We do not need to adapt the 'variable', 'arithmeticExpr', and 'booleanExpr' structs, as they consist only of one field (and we construct them with a semantic action).
 // We do not need to adapt the 'binaryExpr' and 'booleanBinaryExpr' structs, as we construct them with a semantic action.
+// We do not need to adapt the 'generalCLTLocFormula' struct, as we construct it with a semantic action.
 
 BOOST_FUSION_ADAPT_STRUCT(expr::ast::assignmentExpr, lhs, rhs)
 
@@ -22,5 +23,11 @@ BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::transition, startingLocation, ac
 BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::timedAutomaton, name, symmetryGroup, clocks, actions, integerVariables, locations, transitions)
 
 BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::timedArena, name, symmetryGroup, clocks, actions, integerVariables, locations, transitions)
+
+BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::pureCLTLocFormula, locations, clockConstraints)
+
+BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::unaryCLTLocFormula, op, rightFormula)
+
+BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::binaryCLTLocFormula, leftFormula, op, rightFormula)
 
 #endif //AST_ADAPTED_H
