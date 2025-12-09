@@ -525,7 +525,7 @@ int timed_automaton::ast::timedArena::getMaxConstant() const
                 maxConstant = cc.comparingConstant;
 
     // Checking for maximum constant in invariants.
-    for (const auto &[isInitial, locContent]: locations | std::views::values)
+    for (const auto &[player, locContent]: locations | std::views::values)
         for (const clockConstraint &cc: locContent.invariant)
             if (maxConstant < cc.comparingConstant)
                 maxConstant = cc.comparingConstant;
@@ -549,8 +549,8 @@ std::vector<int> timed_automaton::ast::timedArena::getMaxConstants(const std::un
                     maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
 
         // Checking for maximum constants in invariants.
-        for (const auto &[fst, snd]: locations | std::views::values)
-            for (const clockConstraint &cc: snd.invariant)
+        for (const auto &[player, locContent]: locations | std::views::values)
+            for (const clockConstraint &cc: locContent.invariant)
                 if (maxConstants[clocksIndices.at(cc.clock)] < cc.comparingConstant)
                     maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
     }
