@@ -15,7 +15,7 @@
 // #define PARSER_LOG
 
 
-timed_automaton::ast::timedArena TARZAN::parseTimedArena(std::string const &path)
+timed_automaton::ast::timedArena TARZAN::parseTimedArena(const std::string &path)
 {
     std::stringstream out;
     const std::string source = readFromFile(path);
@@ -61,7 +61,7 @@ timed_automaton::ast::timedArena TARZAN::parseTimedArena(std::string const &path
 }
 
 
-timed_automaton::ast::timedAutomaton TARZAN::parseTimedAutomaton(std::string const &path)
+timed_automaton::ast::timedAutomaton TARZAN::parseTimedAutomaton(const std::string &path)
 {
     std::stringstream out;
     const std::string source = readFromFile(path);
@@ -107,7 +107,7 @@ timed_automaton::ast::timedAutomaton TARZAN::parseTimedAutomaton(std::string con
 }
 
 
-std::vector<timed_automaton::ast::timedAutomaton> TARZAN::parseTimedAutomataFromFolder(std::string const &folderPath)
+std::vector<timed_automaton::ast::timedAutomaton> TARZAN::parseTimedAutomataFromFolder(const std::string &folderPath)
 {
     std::vector<timed_automaton::ast::timedAutomaton> automata;
 
@@ -147,7 +147,7 @@ std::vector<timed_automaton::ast::timedAutomaton> TARZAN::parseTimedAutomataFrom
 }
 
 
-std::vector<timed_automaton::ast::timedArena> TARZAN::parseTimedArenasFromFolder(std::string const &folderPath)
+std::vector<timed_automaton::ast::timedArena> TARZAN::parseTimedArenasFromFolder(const std::string &folderPath)
 {
     std::vector<timed_automaton::ast::timedArena> arenas;
 
@@ -184,4 +184,48 @@ std::vector<timed_automaton::ast::timedArena> TARZAN::parseTimedArenasFromFolder
     }
 
     return arenas;
+}
+
+
+cltloc::ast::generalCLTLocFormula TARZAN::parseGeneralCLTLocFormula(const std::string &path)
+{
+    std::stringstream out;
+    const std::string source = readFromFile(path);
+
+    using parser::iterator_type;
+    iterator_type iter(source.begin());
+    iterator_type const end(source.end());
+
+    cltloc::ast::generalCLTLocFormula phi;
+
+    // Our error handler.
+    using boost::spirit::x3::with;
+    using parser::error_handler_type;
+    using parser::error_handler_tag;
+    error_handler_type error_handler(iter, end, out, path);
+
+    // Our parser.
+    // We pass our error handler to the parser so we can access it later on in our on_error and on_success handlers.
+    auto const parser = with<error_handler_tag>(std::ref(error_handler))[cltloc::generalCLTLocFormula()];
+
+    // Now we parse.
+    using boost::spirit::x3::ascii::space;
+    // ReSharper disable once CppTooWideScope
+    bool success = phrase_parse(iter, end, parser, space, phi);
+
+    if (success)
+    {
+        if (iter != end)
+            error_handler(iter, "Error! Expecting end of input here: ");
+        else
+        {
+#ifdef PARSER_LOG
+
+            std::cout << "SUCCESSFUL parsing" << std::endl;
+#endif
+        }
+    } else
+        std::cerr << "Wrong parsing" << std::endl;
+
+    return phi;
 }
