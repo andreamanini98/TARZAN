@@ -278,9 +278,8 @@ std::string timed_automaton::ast::locationContent::to_string() const
 {
     std::ostringstream oss;
     oss << "<";
-    oss << "initial: " << (isInitial ? "true" : "false");
-    oss << "urgent: " << (isUrgent ? "true" : "false");
-    oss << ", ";
+    oss << "initial: " << (isInitial ? "true, " : "false, ");
+    oss << "urgent: " << (isUrgent ? "true, " : "false, ");
     oss << "invariant: [" << join_elements(invariant, " and ") << "]";
     oss << ">";
     return oss.str();
@@ -670,20 +669,30 @@ absl::btree_map<std::string, int> timed_automaton::ast::timedArena::getVariables
 }
 
 
+absl::flat_hash_map<int, char> timed_automaton::ast::timedArena::mapLocationsToPlayers(const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    absl::flat_hash_map<int, char> res{};
+
+    for (const auto &[locName, locContent]: locations)
+        res[locToIntMap.at(locName)] = locContent.first;
+
+    return res;
+}
+
+
 std::string timed_automaton::ast::timedArena::to_string() const
 {
     std::ostringstream oss;
     oss << "Timed Arena " << name << std::endl;
     oss << "Clocks:\n" << join_elements(clocks, ", ") << std::endl;
     oss << "Actions:\n" << join_elements(actions, ", ") << std::endl;
-    oss << "Integer variables:\n" << join_elements(integerVariables, ", ") << std::endl;
+    oss << "Integer variables:\n" << (integerVariables.empty() ? "[]" : join_elements(integerVariables, ", ")) << std::endl;
     oss << "Locations:\n";
     for (const auto &[location_name, location_info]: locations)
     {
         const auto &[player, locContent] = location_info;
         oss << location_name << ", <" << player << ", ";
         oss << locContent << std::endl;
-        oss << ">\n";
     }
     oss << "Transitions:\n" << join_elements(transitions, "\n") << std::endl;
     return oss.str();

@@ -107,6 +107,10 @@
 //  <and_op> -> '&&'
 
 
+// TODO: aggiustare grammatica di Liana con le arene.
+//       Al momento tenere comunque arene e ta separati, vedere poi se unire tutto eliminando duplicazione del codice o no.
+
+
 // Reference examples for expression parser:
 // https://wandbox.org/permlink/YlVEPhgKPNMiKADh
 // https://www.boost.org/doc/libs/1_67_0/libs/spirit/example/x3/rexpr/rexpr_min/rexpr.cpp
@@ -598,6 +602,20 @@ namespace timed_automaton::ast
          * @warning The variables are initialized to 0. It is possible to initialize them by adding a transition to the Timed Arena.
          */
         [[nodiscard]] absl::btree_map<std::string, int> getVariables() const;
+
+
+        /**
+         * @brief Maps locations to players in a given arena.
+         *
+         * Since locations are represented by integer values, this function is best suited to be used in algorithms directly working with regions,
+         * as regions directly encode their location with an integer q.
+         *
+         * @param locToIntMap a mapping from locations (represented by std::string) to int.
+         * @return a map from locations (represented by integers) to players (represented by char).
+         *
+         * @remark Arena-specific function!
+         */
+        [[nodiscard]] absl::flat_hash_map<int, char> mapLocationsToPlayers(const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
         [[nodiscard]] std::string to_string() const;
