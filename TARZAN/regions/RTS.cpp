@@ -415,12 +415,29 @@ std::string region::RTS::to_string() const
     oss << "Initial Regions (" << initialRegions.size() << "):\n";
     for (size_t i = 0; i < initialRegions.size(); ++i)
         oss << "  Region " << i << ":\n" << initialRegions[i].toString() << "\n";
-    oss << "\n";
 
     // Invariants.
     oss << "Invariants (" << invariants.size() << " locations with invariants):\n";
     for (const auto &[loc, constraints]: invariants)
         oss << "  Location " << loc << " (" << constraints.size() << " constraints)\n";
+    oss << "\n";
+
+    // Urgent locations.
+    oss << "Urgent Locations (" << urgentLocations.size() << "):\n";
+    if (urgentLocations.empty())
+        oss << "  (none)\n";
+    else
+        for (const int loc: urgentLocations)
+            oss << "  " << loc << "\n";
+    oss << "\n";
+
+    // Locations to players (arena-specific, may be empty).
+    oss << "Locations to Players (" << locationsToPlayers.size() << "):\n";
+    if (locationsToPlayers.empty())
+        oss << "  (none)\n";
+    else
+        for (const auto &[loc, player]: locationsToPlayers)
+            oss << "  Location " << loc << " -> Player '" << player << "'\n";
 
     return oss.str();
 }

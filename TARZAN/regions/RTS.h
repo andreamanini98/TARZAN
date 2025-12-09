@@ -10,8 +10,6 @@ namespace region
 {
     class RTS
     {
-        timed_automaton::ast::timedAutomaton automaton;
-
         // The size of this map corresponds to the number of 'automaton' clocks.
         std::unordered_map<std::string, int> clocksIndices{};
 
@@ -31,9 +29,12 @@ namespace region
 
         absl::flat_hash_set<int> urgentLocations{};
 
+        // Arena-specific field. May change this if the arena code gets merged with timed automata.
+        absl::flat_hash_map<int, char> locationsToPlayers{};
+
 
     public:
-        explicit RTS(const timed_automaton::ast::timedAutomaton &automaton) : automaton(automaton)
+        explicit RTS(const timed_automaton::ast::timedAutomaton &automaton)
         {
             clocksIndices = automaton.getClocksIndices();
             locationsToInt = automaton.mapLocationsToInt();
@@ -46,6 +47,26 @@ namespace region
 
             const int numOfClocks = static_cast<int>(clocksIndices.size());
             const auto &variables = automaton.getVariables();
+
+            for (const int loc: initialLocations)
+                initialRegions.emplace_back(numOfClocks, loc, variables);
+        }
+
+
+        explicit RTS(const timed_automaton::ast::timedArena &arena)
+        {
+            clocksIndices = arena.getClocksIndices();
+            locationsToInt = arena.mapLocationsToInt();
+            maxConstants = arena.getMaxConstants(clocksIndices);
+            initialLocations = arena.getInitialLocations(locationsToInt);
+            outTransitions = arena.getOutTransitions(locationsToInt);
+            inTransitions = arena.getInTransitions(locationsToInt);
+            invariants = arena.getInvariants(locationsToInt);
+            urgentLocations = arena.getUrgentLocations(locationsToInt);
+            locationsToPlayers = arena.mapLocationsToPlayers(locationsToInt);
+
+            const int numOfClocks = static_cast<int>(clocksIndices.size());
+            const auto &variables = arena.getVariables();
 
             for (const int loc: initialLocations)
                 initialRegions.emplace_back(numOfClocks, loc, variables);

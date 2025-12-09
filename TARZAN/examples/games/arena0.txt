@@ -7,21 +7,19 @@ create arena arena_0
 
     actions
     {
-        a, b, c;
+        a, b;
     }
 
     locations
     {
         q0 <player: c, <ini: T>>,
         q1 <player: e, <ini: F>>,
-        q2 <player: c, <>>,
-        q3 <player: e, <>>,
-        q4 <player: c, <ini: T>>;
+        q2 <player: c, <urg: T>>;
     }
 
     transitions
     {
-        (start,  action,  [(x, <, 4),   (y, ==, 5)],  [x, y, z],    target),
-        (start2, action2, [(x2, >=, 4), (y2, <=, 5)], [x2, y2, z2], target2);
+        (q0, a, [(x, <, 4),  (y, ==, 5)], [x, y, z], q1),
+        (q1, b, [(x, >=, 4), (z, <=, 5)], [z],       q2);
     }
 }

@@ -21,13 +21,23 @@ inline void testArenaParsing()
 
     const auto &locToIntMap = arena.mapLocationsToInt();
 
+    std::cout << "Locations to int map: " << locToIntMap.size() << std::endl;
     for (const auto &locToInt : locToIntMap)
         std::cout << locToInt.first << " - " << locToInt.second << std::endl;
 
     const auto &locToPlayerMap = arena.mapLocationsToPlayers(locToIntMap);
 
+    std::cout << "Locations to player map: " << locToPlayerMap.size() << std::endl;
     for (const auto &locToPlayer : locToPlayerMap)
         std::cout << locToPlayer.first << " - " << locToPlayer.second << std::endl;
+
+    std::cout << "Clock indices: " << std::endl;
+    for (const auto &clockIndices : arena.getClocksIndices())
+        std::cout << clockIndices.first << " - " << clockIndices.second << std::endl;
+
+    const region::RTS rts(arena);
+
+    std::cout << rts.to_string() << std::endl;
 }
 
 
