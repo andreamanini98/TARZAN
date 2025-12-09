@@ -110,8 +110,6 @@
 // TODO: aggiustare grammatica di Liana con le arene.
 //       Al momento tenere comunque arene e ta separati, vedere poi se unire tutto eliminando duplicazione del codice o no.
 
-// TODO: NELLE FUNZIONI DELLE ARENE CHE SONO UGUALI A QUELLE DEI TA, RICHIAMA QUELLE DEI TA DIRETTAMENTE NELLA FUNZIONE DELL'ARENA, LA QUALE AGISCE COME UN WRAPPER.
-
 
 // Reference examples for expression parser:
 // https://wandbox.org/permlink/YlVEPhgKPNMiKADh
