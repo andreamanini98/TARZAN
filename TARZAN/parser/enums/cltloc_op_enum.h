@@ -30,7 +30,7 @@ inline std::ostream &operator<<(std::ostream &os, const binary_cltloc_op op)
 
 
 // Enumeration containing unary operators used in CLTLoc formulae.
-enum unary_cltloc_op { BOX };
+enum unary_cltloc_op { BOX, DIAMOND };
 
 
 // Convert unary_cltloc_op to string.
@@ -39,6 +39,7 @@ inline std::string unary_cltloc_op_to_string(const unary_cltloc_op op)
     switch (op)
     {
         case BOX: return "[]";
+        case DIAMOND: return "<>";
         default: return "invalid_unary_cltloc_op";
     }
 }

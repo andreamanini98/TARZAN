@@ -26,6 +26,10 @@
 // Whether the actions are input or output actions must be specified only in the transitions.
 // T and F are syntax sugar for true and false.
 // Integer variables in Timed Automata are automatically initialized to 0. To overcome this, a transition can be added to initialize them in the Timed Automaton itself.
+// Up to now, we do not deal with parentheses precedence in cltloc formulae.
+//
+//
+// The following is the grammar of timed automata and timed arenas:
 //
 //  <automaton> -> 'create' 'automaton' <literal> (eps | <symm_rule>)
 //                 '{'
@@ -36,11 +40,28 @@
 //                 'transitions'     '{' <transition_rule> (, <transition_rule>)* ';' '}'
 //                 '}'
 //
+//  <arena> -> 'create' 'arena' <literal> (eps | <symm_rule>)
+//             '{'
+//             'clocks'          '{' (eps | <literal> (, <literal>)* ';') '}'
+//             'actions'         '{' <literal> (, <literal>)* ';' '}'
+//             (eps | 'integers' '{' <literal> (, <literal>)* ';' '}')
+//             'locations'       '{' <arena_locations_rule> '}'
+//             'transitions'     '{' <transition_rule> (, <transition_rule>)* ';' '}'
+//             '}'
+//
 //  <symm_rule> -> '::' 'symm' '<' <int> '>'
 //
 //  <locations_rule> -> <loc_rule> (, <loc_rule>)* ';'
 //
 //  <loc_rule> -> <literal> <loc_content_rule>
+//
+//  <arena_locations_rule> -> <arena_loc_rule> (, <arena_loc_rule>)* ';'
+//
+//  <arena_loc_rule> -> <literal> <arena_loc_content_rule>
+//
+//  <arena_loc_content_rule> '<' 'player' ':' <player> ',' <loc_content_rule> '>'
+//
+//  <player> -> 'c' | 'e'
 //
 //  <loc_content_rule> -> '<' (eps | <ini> | <urg> | <inv> | <ini> ',' <urg> | <ini> ',' <inv> | <urg> ',' <inv> | <ini> ',' <urg> ',' <inv>) '>'
 //
@@ -77,7 +98,7 @@
 //  <literal> -> ('a..z' | 'A..Z' | '0..9' | '_' )+
 //
 //
-// The following is the grammar of expressions.
+// The following is the grammar of expressions:
 //
 //  <assignment_expr> -> <variable> '=' <arithmetic_expr>
 //
@@ -108,14 +129,32 @@
 //  <or_op> -> '||'
 //
 //  <and_op> -> '&&'
-
-// Up to now, we do not deal with parentheses precedence in cltloc formulae.
+//
+//
+// The following is the grammar of CLTLoc formulae:
+//
+//  <general_cltloc_formula> -> '('
+//                              (<bool>
+//                               | <literal>
+//                               | <clock_constraint_rule>
+//                               | <unary_cltloc_formula>
+//                               | <binary_cltloc_formula>
+//                               | <pure_cltloc_formula>)
+//                              ')'
+//
+//  <unary_cltloc_formula> -> <unary_cltloc_op> ',' <general_cltloc_formula>
+//
+//  <binary_cltloc_formula> -> <general_cltloc_formula> ',' <binary_cltloc_op> ',' <general_cltloc_formula>
+//
+//  <pure_cltloc_formula> -> '[' (eps | <literal> (, <literal>)*) ']' ',' '[' (eps | <clock_constraint_rule> (, <clock_constraint_rule>)*) ']'
+//
+//  <unary_cltloc_op> -> 'BOX' | 'DIAMOND'
+//
+//  <binary_cltloc_op> -> 'UNTIL'
 
 
 // TODO: aggiustare grammatica di Liana con le arene.
 //       Al momento tenere comunque arene e ta separati, vedere poi se unire tutto eliminando duplicazione del codice o no.
-
-// TODO: aggiustare con la grammatica di cltloc.
 
 
 // Reference examples for expression parser:
@@ -651,9 +690,11 @@ namespace cltloc::ast
     struct binaryCLTLocFormula;
 
 
+    /// Up to now, a general CLTLoc formula is a nesting of until and box formulae (though for our current needs the nesting is not needed).
     struct generalCLTLocFormula
     {
         std::variant<
+            bool,
             std::string,
             timed_automaton::ast::clockConstraint,
             boost::spirit::x3::forward_ast<pureCLTLocFormula>,
@@ -663,6 +704,9 @@ namespace cltloc::ast
 
         // Implicit constructors.
         generalCLTLocFormula() = default;
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(bool v) : value(v) {}
 
         // NOLINTNEXTLINE(google-explicit-constructor)
         generalCLTLocFormula(std::string v) : value(std::move(v)) {}

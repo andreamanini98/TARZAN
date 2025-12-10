@@ -132,7 +132,8 @@ namespace parser
         un_cltloc_op()
         {
             auto &self = add
-                    ("BOX", BOX);
+                    ("BOX", BOX)
+                    ("DIAMOND", DIAMOND);
             (void) self;
         }
     } un_cltloc_op;
@@ -430,7 +431,8 @@ namespace parser
                | binaryCLTLocFormula_rule[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })]
                | pureCLTLocFormula_rule[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })]
                | clockConstraint_rule[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })]
-               | literal[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })])
+               | literal[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })]
+               | my_boolean[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })])
             > lit(')');
 
     BOOST_SPIRIT_DEFINE(primary_rule,

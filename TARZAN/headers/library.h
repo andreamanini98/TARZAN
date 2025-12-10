@@ -8,8 +8,8 @@
 #include "TARZAN/regions/networkOfTA/RTSNetwork.h"
 
 
-// Namespace aliases to support TARZAN:: prefix
-// This allows using both region::RTS and TARZAN::region::RTS
+// Namespace aliases to support TARZAN:: prefix.
+// This allows using both region::RTS and TARZAN::region::RTS.
 namespace TARZAN
 {
     namespace region = region;

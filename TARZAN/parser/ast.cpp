@@ -762,7 +762,10 @@ std::string cltloc::ast::generalCLTLocFormula::to_string() const
     oss << std::visit([]<typename T0>(T0 const &val) -> std::string {
         using T = std::decay_t<T0>;
 
-        if constexpr (std::is_same_v<T, std::string>)
+        if constexpr (std::is_same_v<T, bool>)
+            // Boolean value.
+            return val ? "true" : "false";
+        else if constexpr (std::is_same_v<T, std::string>)
             // Location name.
             return val;
         else if constexpr (std::is_same_v<T, timed_automaton::ast::clockConstraint>)

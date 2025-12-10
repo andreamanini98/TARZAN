@@ -1,1 +1,1 @@
-(BOX, ([c, d], [(y, >, 5)]))
+(DIAMOND, (true))
