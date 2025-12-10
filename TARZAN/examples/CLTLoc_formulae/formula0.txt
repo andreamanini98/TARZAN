@@ -1,1 +1,1 @@
-(DIAMOND, (true))
+(DIAMOND, ([piso],[(o, >, 3)]))

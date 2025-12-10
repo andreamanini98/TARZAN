@@ -430,8 +430,6 @@ namespace parser
             > (unaryCLTLocFormula_rule[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })]
                | binaryCLTLocFormula_rule[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })]
                | pureCLTLocFormula_rule[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })]
-               | clockConstraint_rule[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })]
-               | literal[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })]
                | my_boolean[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })])
             > lit(')');
 

@@ -133,14 +133,7 @@
 //
 // The following is the grammar of CLTLoc formulae:
 //
-//  <general_cltloc_formula> -> '('
-//                              (<bool>
-//                               | <literal>
-//                               | <clock_constraint_rule>
-//                               | <unary_cltloc_formula>
-//                               | <binary_cltloc_formula>
-//                               | <pure_cltloc_formula>)
-//                              ')'
+//  <general_cltloc_formula> -> '(' (<bool> | <unary_cltloc_formula> | <binary_cltloc_formula> | <pure_cltloc_formula>) ')'
 //
 //  <unary_cltloc_formula> -> <unary_cltloc_op> ',' <general_cltloc_formula>
 //
@@ -695,8 +688,6 @@ namespace cltloc::ast
     {
         std::variant<
             bool,
-            std::string,
-            timed_automaton::ast::clockConstraint,
             boost::spirit::x3::forward_ast<pureCLTLocFormula>,
             boost::spirit::x3::forward_ast<unaryCLTLocFormula>,
             boost::spirit::x3::forward_ast<binaryCLTLocFormula>> value;
@@ -707,12 +698,6 @@ namespace cltloc::ast
 
         // NOLINTNEXTLINE(google-explicit-constructor)
         generalCLTLocFormula(bool v) : value(v) {}
-
-        // NOLINTNEXTLINE(google-explicit-constructor)
-        generalCLTLocFormula(std::string v) : value(std::move(v)) {}
-
-        // NOLINTNEXTLINE(google-explicit-constructor)
-        generalCLTLocFormula(timed_automaton::ast::clockConstraint v) : value(std::move(v)) {}
 
         // NOLINTNEXTLINE(google-explicit-constructor)
         generalCLTLocFormula(boost::spirit::x3::forward_ast<pureCLTLocFormula> v) : value(std::move(v)) {}

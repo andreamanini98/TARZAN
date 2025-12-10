@@ -765,12 +765,6 @@ std::string cltloc::ast::generalCLTLocFormula::to_string() const
         if constexpr (std::is_same_v<T, bool>)
             // Boolean value.
             return val ? "true" : "false";
-        else if constexpr (std::is_same_v<T, std::string>)
-            // Location name.
-            return val;
-        else if constexpr (std::is_same_v<T, timed_automaton::ast::clockConstraint>)
-            // Clock constraint.
-            return val.to_string();
         else
             // Recursive case: pure, unary, or binary formula.
             return "(" + val.get().to_string() + ")";
