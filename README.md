@@ -5,7 +5,7 @@
 ---
 
 TARZAN (Timed Automata Region and Zone library for real-time systems ANalysis) is a region-based verification library for (networks of) Timed Automata (TA).
-Although zones are the de facto standard in the formal verifiation of TA, TARZAN exhibits superior performance on TA having punctual guards (i.e., guards restricted to equality constraints) an on closed TA.
+Although zones are the de facto standard in the formal verification of TA, TARZAN exhibits superior performance on TA having punctual guards (i.e., guards restricted to equality constraints) and on closed TA.
 Consequently, integrating TARZAN into existing zone-based state-of-the-art tools has the potential to significantly enhance their overall verification capabilities.
 
 
