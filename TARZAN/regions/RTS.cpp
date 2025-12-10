@@ -6,7 +6,6 @@
 #include <sstream>
 #include <utility>
 #include "absl/container/flat_hash_set.h"
-#include "TARZAN/utilities/file_utilities.h"
 
 // #define RTS_DEBUG
 #define EARLY_EXIT
@@ -429,15 +428,6 @@ std::string region::RTS::to_string() const
     else
         for (const int loc: urgentLocations)
             oss << "  " << loc << "\n";
-    oss << "\n";
-
-    // Locations to players (arena-specific, may be empty).
-    oss << "Locations to Players (" << locationsToPlayers.size() << "):\n";
-    if (locationsToPlayers.empty())
-        oss << "  (none)\n";
-    else
-        for (const auto &[loc, player]: locationsToPlayers)
-            oss << "  Location " << loc << " -> Player '" << player << "'\n";
 
     return oss.str();
 }

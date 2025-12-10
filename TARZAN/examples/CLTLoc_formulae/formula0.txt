@@ -1,1 +1,1 @@
-(DIAMOND, ([piso],[(o, >, 3)]))
+(DIAMOND ([a,b,c],[(y, ==, 98)]))

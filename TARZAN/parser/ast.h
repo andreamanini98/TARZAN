@@ -23,7 +23,8 @@
 // The following is the grammar for the Liana DSL used to create Timed Automata.
 // Whether the actions are input or output actions must be specified only in the transitions.
 // T and F are syntax sugar for true and false.
-// Integer variables in Timed Automata are automatically initialized to 0. To overcome this, a transition can be added to initialize them in the Timed Automaton itself.
+// Integer variables in Timed Automata are automatically initialized to 0.
+// To overcome this, a transition can be added to initialize them in the Timed Automaton itself.
 // Up to now, we do not deal with parentheses precedence in cltloc formulae.
 //
 //
@@ -143,9 +144,7 @@
 //
 //  <binary_cltloc_op> -> 'UNTIL'
 
-
-// TODO: aggiustare grammatica di Liana con le arene.
-//       Al momento tenere comunque arene e ta separati, vedere poi se unire tutto eliminando duplicazione del codice o no.
+// TODO: aggiornare grammatica su Doxygen quando farai il merge del branch games nel branch main.
 
 
 // Reference examples for expression parser:
@@ -195,6 +194,7 @@ namespace expr::ast
          *
          * @param variables a map from variables to their integer values.
          * @return the integer result of the evaluation.
+         *
          * @throws std::runtime_error if a variable is not found or division by zero occurs.
          */
         [[nodiscard]] int evaluate(const absl::btree_map<std::string, int> &variables) const;
@@ -233,6 +233,7 @@ namespace expr::ast
          * @brief Evaluates an assignment expression and updates the variable context.
          *
          * @param variables a map from variables to their integer values (is updated in the function).
+         *
          * @throws std::runtime_error if evaluation fails.
          */
         void evaluate(absl::btree_map<std::string, int> &variables) const;
@@ -255,6 +256,7 @@ namespace expr::ast
          *
          * @param variables a map from variables to their integer values.
          * @return the result of the comparison.
+         *
          * @throws std::runtime_error if evaluation fails.
          */
         [[nodiscard]] bool evaluate(const absl::btree_map<std::string, int> &variables) const;
@@ -298,6 +300,7 @@ namespace expr::ast
          *
          * @param variables a map from variables to their integer values.
          * @return the boolean value of the expression.
+         *
          * @throws std::runtime_error if evaluation fails.
          */
         [[nodiscard]] bool evaluate(const absl::btree_map<std::string, int> &variables) const;
@@ -322,6 +325,13 @@ namespace expr::ast
     // Needed to break circular dependencies at compile time, as it happens, for example, when declaring a constructor of booleanExpr passing a booleanBinaryExpr.
     inline booleanExpr::booleanExpr(booleanBinaryExpr const &v) : value(boost::spirit::x3::forward_ast(v)) {}
     inline booleanExpr::booleanExpr(booleanBinaryExpr &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
+}
+
+
+// Forward declaring this namespace, as it is required in the timed_automaton namespace below.
+namespace cltloc::ast
+{
+    struct generalCLTLocFormula;
 }
 
 
@@ -423,6 +433,10 @@ namespace timed_automaton::ast
          *
          * @param clocksIndices a map from clock names to their index in the clocks vector.
          * @return a vector containing in position i the maximum constant of the i-th clock, where the index i of the clock is given by clockIndices.
+         *
+         * @warning Clocks that are not used in guards nor in invariants are assigned 0 as their maximum constant.
+         *          If a global timer must be declared, please add an artificial constraint in the automaton such that the clock can assume that maximum constant.
+         *          This can be done, for example, by inserting a clock constraint in which the constant is the one used in the reachability query.
          */
         [[nodiscard]] std::vector<int> getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices) const;
 
@@ -548,8 +562,28 @@ namespace timed_automaton::ast
          *
          * @param clocksIndices a map from clock names to their index in the clocks vector.
          * @return a vector containing in position i the maximum constant of the i-th clock, where the index i of the clock is given by clockIndices.
+         *
+         * @warning Clocks that are not used in guards nor in invariants are assigned 0 as their maximum constant.
+         *          If a global timer must be declared, please add an artificial constraint in the arena such that the clock can assume that maximum constant.
+         *          This can be done, for example, by inserting a clock constraint in which the constant is the one used in the reachability query.
          */
         [[nodiscard]] std::vector<int> getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices) const;
+
+
+        /**
+         * @brief Computes the maximum constant appearing in a Timed Arena for each clock, also considering a general CLTLoc formula.
+         *
+         * @param clocksIndices a map from clock names to their index in the clocks vector.
+         * @param formula a general CLTLoc formula.
+         * @return a vector containing in position i the maximum constant of the i-th clock, where the index i of the clock is given by clockIndices.
+         *
+         * @warning Clocks that are not used in guards nor in invariants are assigned 0 as their maximum constant.
+         *          If a global timer must be declared, please add an artificial constraint in the arena such that the clock can assume that maximum constant.
+         *          This can be done, for example, by inserting a clock constraint in which the constant is the one used in the reachability query.
+         *          In this case, the maximum constant of these clocks may not be 0 due to the general CLTLoc formula.
+         */
+        [[nodiscard]] std::vector<int> getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices,
+                                                       const cltloc::ast::generalCLTLocFormula &formula) const;
 
 
         /**
@@ -660,6 +694,12 @@ namespace timed_automaton::ast
 }
 
 
+/**
+ * It is assumed that CLTLoc formulae only predicate over clocks of a given Timed Arena.
+ * That is, despite in the paper we say that the clock sets of arenas and CLTLoc formulae may overlap, here we assume they are identical.
+ * CLTLoc formulae are not required to predicate over every such clock but cannot predicate on clocks not declared in an arena.
+ * In this case, the arena may contain clocks not appearing in guards nor resets, since they are used only in the formula's predicates.
+ */
 namespace cltloc::ast
 {
     /// A pure CLTLoc formula is (up to now) a conjunction of location names and clock constraints.

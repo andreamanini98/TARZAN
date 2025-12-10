@@ -559,6 +559,54 @@ std::vector<int> timed_automaton::ast::timedArena::getMaxConstants(const std::un
 }
 
 
+/**
+ * @brief Updates the maximum constants of the arena's clocks considering clock constraints appearing in a general CLTLoc formula.
+ *
+ * @param clocksIndices a map from clock names to their index in the clocks vector.
+ * @param formula a general CLTLoc formula used to update the maximum constants of clocks.
+ * @param maxConstants the maximum constants of clocks to be updated.
+ * @return an updated version of maxConstants in which clock values may be constrained by the general CLTLoc formula.
+ */
+std::vector<int> getMaxConstantsRecursive(const std::unordered_map<std::string, int> &clocksIndices,
+                                          const cltloc::ast::generalCLTLocFormula &formula,
+                                          std::vector<int> &maxConstants)
+{
+    std::visit([&maxConstants, &clocksIndices]<typename T0>(T0 const &val) -> void {
+        using T = std::decay_t<T0>;
+
+        if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
+        {
+            // ReSharper disable once CppTooWideScopeInitStatement
+            const auto &pureFormula = val.get();
+
+            for (const auto &cc: pureFormula.clockConstraints)
+                if (maxConstants[clocksIndices.at(cc.clock)] < cc.comparingConstant)
+                    maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
+        } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>)
+        {
+            const auto &unaryFormula = val.get();
+            getMaxConstantsRecursive(clocksIndices, unaryFormula.rightFormula, maxConstants);
+        } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
+        {
+            const auto &binaryFormula = val.get();
+            getMaxConstantsRecursive(clocksIndices, binaryFormula.leftFormula, maxConstants);
+            getMaxConstantsRecursive(clocksIndices, binaryFormula.rightFormula, maxConstants);
+        }
+    }, formula.value);
+
+    return maxConstants;
+}
+
+
+std::vector<int> timed_automaton::ast::timedArena::getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices,
+                                                                   const cltloc::ast::generalCLTLocFormula &formula) const
+{
+    std::vector<int> maxConstants = getMaxConstants(clocksIndices);
+    getMaxConstantsRecursive(clocksIndices, formula, maxConstants);
+    return maxConstants;
+}
+
+
 bool timed_automaton::ast::timedArena::hasUrgentLocations() const
 {
     return std::ranges::any_of(locations | std::views::values, [](const auto &pair) { return pair.second.isUrgent; });
@@ -708,6 +756,9 @@ std::string cltloc::ast::pureCLTLocFormula::to_string() const
 {
     std::ostringstream oss;
 
+    if (locations.empty() && clockConstraints.empty())
+        return "empty_pure_CLTLoc_formula";
+
     // Print locations.
     if (!locations.empty())
     {
@@ -715,13 +766,13 @@ std::string cltloc::ast::pureCLTLocFormula::to_string() const
         if (!clockConstraints.empty())
             oss << " && ";
     } else
-        oss << "[],";
+        oss << "";
 
     // Print clock constraints.
     if (!clockConstraints.empty())
         oss << join_elements(clockConstraints, " && ");
     else
-        oss << "[]";
+        oss << "";
 
     return oss.str();
 }

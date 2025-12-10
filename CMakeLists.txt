@@ -1,15 +1,3 @@
-####################################################
-###   How to use the library in other projects   ###
-####################################################
-
-# (1) Add these lines to the CMakeLists.txt file in the new project if the library has been installed in the default path:
-# find_package(TARZAN REQUIRED)
-# target_link_libraries(new_project_name PRIVATE TARZAN::TARZAN)
-
-# (2) Include the library in your files as follows:
-# #include "TARZAN/folder/file_to_include.h"
-
-
 # Setting the minimum required version for cmake.
 cmake_minimum_required(VERSION 3.31)
 
@@ -90,14 +78,14 @@ endif ()
 find_package(Boost 1.89.0 REQUIRED filesystem)
 
 
-# Force CMake to not use Anaconda's abseil.
+# Force CMake to NOT use Anaconda's abseil.
 # This prevents version conflicts between abseil installations.
 # Users can specify a custom path via: cmake -DANACONDA_PATH=/custom/path ..
 set(ANACONDA_PATH "/opt/anaconda3" CACHE PATH "Path to Anaconda installation to ignore")
-if(ANACONDA_PATH)
+if (ANACONDA_PATH)
     set(CMAKE_IGNORE_PATH "${ANACONDA_PATH}")
     message(STATUS "Ignoring Anaconda path: ${ANACONDA_PATH}")
-endif()
+endif ()
 
 
 # Find Abseil libraries.
@@ -120,6 +108,7 @@ set(LIBRARY_SOURCES
         TARZAN/regions/Region.cpp
         TARZAN/parser/ast.cpp
         TARZAN/regions/RTS.cpp
+        TARZAN/regions/RTSArena.cpp
         TARZAN/regions/networkOfTA/RTSNetwork.cpp
         TARZAN/regions/networkOfTA/NetworkRegion.cpp)
 
@@ -161,22 +150,23 @@ target_include_directories(TARZAN
 
 # Define the headers to expose.
 set(LIBRARY_HEADERS
-    TARZAN/headers/library.h
-    TARZAN/parser/ast.h
-    TARZAN/parser/enums/arithmetic_enum.h
-    TARZAN/parser/enums/boolean_op_enum.h
-    TARZAN/parser/enums/comparison_op_enum.h
-    TARZAN/parser/enums/input_output_action_enum.h
-    TARZAN/regions/Region.h
-    TARZAN/regions/RTS.h
-    TARZAN/regions/enums/state_space_exploration_enum.h
-    TARZAN/regions/networkOfTA/NetworkRegion.h
-    TARZAN/regions/networkOfTA/RTSNetwork.h
-    TARZAN/utilities/hash_utilities.h
-    TARZAN/utilities/function_utilities.h
-    TARZAN/utilities/file_utilities.h
-    TARZAN/utilities/partition_utilities.h
-    TARZAN/utilities/printing_utilities.h)
+        TARZAN/headers/library.h
+        TARZAN/parser/ast.h
+        TARZAN/parser/enums/arithmetic_enum.h
+        TARZAN/parser/enums/boolean_op_enum.h
+        TARZAN/parser/enums/comparison_op_enum.h
+        TARZAN/parser/enums/input_output_action_enum.h
+        TARZAN/regions/Region.h
+        TARZAN/regions/RTS.h
+        TARZAN/regions/RTSArena.h
+        TARZAN/regions/enums/state_space_exploration_enum.h
+        TARZAN/regions/networkOfTA/NetworkRegion.h
+        TARZAN/regions/networkOfTA/RTSNetwork.h
+        TARZAN/utilities/hash_utilities.h
+        TARZAN/utilities/function_utilities.h
+        TARZAN/utilities/file_utilities.h
+        TARZAN/utilities/partition_utilities.h
+        TARZAN/utilities/printing_utilities.h)
 
 
 # Copying the headers to expose for better retrieve the library.
@@ -248,7 +238,7 @@ install(TARGETS TARZAN       # Install target, the one created with add_library(
 
 
 # Install headers with directory structure preserved.
-foreach(header ${LIBRARY_HEADERS})
+foreach (header ${LIBRARY_HEADERS})
     # Get the relative path from TARZAN/ directory.
     file(RELATIVE_PATH rel_path "${CMAKE_CURRENT_SOURCE_DIR}/TARZAN" "${CMAKE_CURRENT_SOURCE_DIR}/${header}")
     get_filename_component(header_dir ${rel_path} DIRECTORY)
@@ -256,7 +246,7 @@ foreach(header ${LIBRARY_HEADERS})
     # Install to the appropriate subdirectory.
     install(FILES ${header}
             DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/TARZAN/${header_dir})
-endforeach()
+endforeach ()
 
 
 # Export targets to make the library discoverable by other CMake projects.
@@ -294,6 +284,6 @@ execute_process(COMMAND chmod 777 ${CMAKE_CURRENT_SOURCE_DIR}/install_library.sh
 
 # Add executable permissions to all shell scripts in TARZAN/benchmark_scripts.
 file(GLOB BENCHMARK_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmark_scripts/*.sh)
-foreach(script ${BENCHMARK_SCRIPTS})
+foreach (script ${BENCHMARK_SCRIPTS})
     execute_process(COMMAND chmod +x ${script})
-endforeach()
+endforeach ()

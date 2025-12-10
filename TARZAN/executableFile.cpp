@@ -7,9 +7,10 @@
 #include "TARZAN/utilities/file_utilities.h"
 #include "TARZAN/headers/library.h"
 #include "TARZAN/parser/ast.h"
-#include "TARZAN/regions/RTS.h"
+#include "TARZAN/regions/RTSArena.h"
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
+#include "TARZAN/exceptions/nestedCLTLocFormula_exception.h"
 
 
 inline void testArenaParsing()
@@ -23,20 +24,20 @@ inline void testArenaParsing()
     const auto &locToIntMap = arena.mapLocationsToInt();
 
     std::cout << "Locations to int map: " << locToIntMap.size() << std::endl;
-    for (const auto &locToInt: locToIntMap)
-        std::cout << locToInt.first << " - " << locToInt.second << std::endl;
+    for (const auto &[fst, snd]: locToIntMap)
+        std::cout << fst << " - " << snd << std::endl;
 
     const auto &locToPlayerMap = arena.mapLocationsToPlayers(locToIntMap);
 
     std::cout << "Locations to player map: " << locToPlayerMap.size() << std::endl;
-    for (const auto &locToPlayer: locToPlayerMap)
-        std::cout << locToPlayer.first << " - " << locToPlayer.second << std::endl;
+    for (const auto &[fst, snd]: locToPlayerMap)
+        std::cout << fst << " - " << snd << std::endl;
 
     std::cout << "Clock indices: " << std::endl;
-    for (const auto &clockIndices: arena.getClocksIndices())
-        std::cout << clockIndices.first << " - " << clockIndices.second << std::endl;
+    for (const auto &[fst, snd]: arena.getClocksIndices())
+        std::cout << fst << " - " << snd << std::endl;
 
-    const region::RTS rts(arena);
+    const region::RTSArena rts(arena);
 
     std::cout << rts.to_string() << std::endl;
 }
@@ -52,9 +53,34 @@ inline void testCLTLocFormulaParsing()
 }
 
 
+inline void testCLTLocGetRegions()
+{
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/";
+    const std::string arenaName = "arena0.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
+
+    std::cout << arena.to_string() << std::endl;
+
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/CLTLoc_formulae/formula0.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+    std::cout << phi.to_string() << std::endl;
+
+    const region::RTSArena rts(arena, phi);
+    std::cout << rts.to_string() << std::endl;
+
+    try
+    {
+        std::vector<std::vector<region::Region>> res = rts.getRegionsFromGeneralCLTLocFormula(phi);
+    } catch (const region::NestedCLTLocFormulaException &e)
+    {
+        std::cerr << "Invalid formula: " << e.what() << std::endl;
+    }
+}
+
+
 int main()
 {
-    testCLTLocFormulaParsing();
+    testCLTLocGetRegions();
 
     return 0;
 }
