@@ -133,9 +133,9 @@
 //
 //  <general_cltloc_formula> -> '(' (<bool> | <unary_cltloc_formula> | <binary_cltloc_formula> | <pure_cltloc_formula>) ')'
 //
-//  <unary_cltloc_formula> -> <unary_cltloc_op> ',' <general_cltloc_formula>
+//  <unary_cltloc_formula> -> <unary_cltloc_op> <general_cltloc_formula>
 //
-//  <binary_cltloc_formula> -> <general_cltloc_formula> ',' <binary_cltloc_op> ',' <general_cltloc_formula>
+//  <binary_cltloc_formula> -> <general_cltloc_formula> <binary_cltloc_op> <general_cltloc_formula>
 //
 //  <pure_cltloc_formula> -> '[' (eps | <literal> (, <literal>)*) ']' ',' '[' (eps | <clock_constraint_rule> (, <clock_constraint_rule>)*) ']'
 //
@@ -665,7 +665,9 @@ namespace cltloc::ast
     /// A pure CLTLoc formula is (up to now) a conjunction of location names and clock constraints.
     struct pureCLTLocFormula
     {
+        /// This represents a disjunction of predicates on locations (it makes no sense to define a conjunction of predicates on locations).
         std::vector<std::string> locations;
+        /// This represents a conjunction of clock constraints (disjunctions can be simulated by defining multiple formulae).
         std::vector<timed_automaton::ast::clockConstraint> clockConstraints;
 
 

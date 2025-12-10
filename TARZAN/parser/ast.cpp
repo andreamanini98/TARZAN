@@ -714,11 +714,14 @@ std::string cltloc::ast::pureCLTLocFormula::to_string() const
         oss << join_elements(locations, " && ");
         if (!clockConstraints.empty())
             oss << " && ";
-    }
+    } else
+        oss << "[],";
 
     // Print clock constraints.
     if (!clockConstraints.empty())
         oss << join_elements(clockConstraints, " && ");
+    else
+        oss << "[]";
 
     return oss.str();
 }
