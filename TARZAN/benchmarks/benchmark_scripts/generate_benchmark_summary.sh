@@ -2,7 +2,7 @@
 
 # Script to generate a comprehensive benchmark summary from TARZAN, TChecker, and UPPAAL results.
 
-OUTPUT_DIR="../../output"
+OUTPUT_DIR="../../../output"
 SUMMARY_FILE="$OUTPUT_DIR/benchmark_summary.txt"
 
 # Check if output directories exist.

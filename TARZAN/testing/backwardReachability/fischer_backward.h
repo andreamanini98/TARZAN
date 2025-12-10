@@ -17,7 +17,7 @@ inline void testFischerFlat2()
 {
     std::cout << "\n\nFischer Flat 2" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/fischerFlat/ff_02/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_02/";
     const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -87,7 +87,7 @@ inline void testFischerFlat3()
 {
     std::cout << "\n\nFischer Flat 3" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/fischerFlat/ff_03/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_03/";
     const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -163,7 +163,7 @@ inline void testFischerFlat4()
 {
     std::cout << "\n\nFischer Flat 4" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/fischerFlat/ff_04/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_04/";
     const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -263,7 +263,7 @@ inline void testFischerFlat5()
 {
     std::cout << "\n\nFischer Flat 5" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/fischerFlat/ff_05/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_05/";
     const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -553,7 +553,7 @@ inline void testFischerFlat6()
 {
     std::cout << "\n\nFischer Flat 6" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/fischerFlat/ff_06/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_06/";
     const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 

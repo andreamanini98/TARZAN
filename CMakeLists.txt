@@ -198,7 +198,7 @@ endforeach ()
 
 
 # Collect all .cpp files from benchmarkExecutables directory.
-file(GLOB BENCHMARK_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmark_executables/*.cpp)
+file(GLOB BENCHMARK_EXECUTABLES TARZAN/benchmarks/benchmark_executables/*.cpp)
 
 # Create benchmark executables in executables/benchmarkExecutables subdirectory.
 if (BENCHMARK_EXECUTABLES)
@@ -283,7 +283,7 @@ execute_process(COMMAND chmod 777 ${CMAKE_CURRENT_SOURCE_DIR}/install_library.sh
 
 
 # Add executable permissions to all shell scripts in TARZAN/benchmark_scripts.
-file(GLOB BENCHMARK_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmark_scripts/*.sh)
+file(GLOB BENCHMARK_SCRIPTS TARZAN/benchmarks/benchmark_scripts/*.sh)
 foreach (script ${BENCHMARK_SCRIPTS})
     execute_process(COMMAND chmod +x ${script})
 endforeach ()

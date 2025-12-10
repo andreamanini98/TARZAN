@@ -17,7 +17,7 @@ inline void testTrainAHV93Flat2Explodes()
 {
     std::cout << "\n\nTrainAHV93 Flat 2 explodes" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/benchmarksFlat/trainAHV93Flat/tf_02/";
     const std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -75,7 +75,7 @@ inline void testTrainAHV93Flat2Efficient()
 {
     std::cout << "\n\nTrainAHV93 Flat 2 efficient" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/benchmarksFlat/trainAHV93Flat/tf_02/";
     const std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -155,7 +155,7 @@ inline void testTrainAHV93Flat3Explodes()
 {
     std::cout << "\n\nTrainAHV93 Flat 3 explodes" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/benchmarksFlat/trainAHV93Flat/tf_03/";
     const std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -222,7 +222,7 @@ inline void testTrainAHV93Flat3Efficient()
 {
     std::cout << "\n\nTrainAHV93 Flat 3 efficient" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/benchmarksFlat/trainAHV93Flat/tf_03/";
     const std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -459,7 +459,7 @@ inline void testTrainAHV93Flat2Reachable()
 {
     std::cout << "\n\nTrainAHV93 Flat 2 reachable" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/benchmarksFlat/trainAHV93Flat/tf_02/";
     const std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -522,7 +522,7 @@ inline void testTrainAHV93Flat3Reachable()
 {
     std::cout << "\n\nTrainAHV93 Flat 3 reachable" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/benchmarksFlat/trainAHV93Flat/tf_03/";
     const std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 

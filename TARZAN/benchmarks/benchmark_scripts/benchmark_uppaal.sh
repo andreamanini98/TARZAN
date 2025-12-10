@@ -30,8 +30,8 @@ NUM_RUNS="$2"
 # Timeout configuration (in seconds).
 TIMEOUT="$3"
 
-BENCHMARK_DIR="../benchmarks"
-OUTPUT_DIR="../../output/benchmark_uppaal_results"
+BENCHMARK_DIR="../models"
+OUTPUT_DIR="../../../output/benchmark_uppaal_results"
 
 # Create output directory if it doesn't exist.
 mkdir -p "$OUTPUT_DIR"

@@ -17,7 +17,7 @@ inline void testVikingsFlat2()
 {
     std::cout << "\n\nVikings Flat 2" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/vikingsFlat/vf2/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/benchmarksFlat/vikingsFlat/vf2/";
     const std::string automatonFileName = "vf.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -76,7 +76,7 @@ inline void testVikingsFlat3()
 {
     std::cout << "\n\nVikings Flat 3" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/vikingsFlat/vf3/";
+    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/benchmarksFlat/vikingsFlat/vf3/";
     const std::string automatonFileName = "vf.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
