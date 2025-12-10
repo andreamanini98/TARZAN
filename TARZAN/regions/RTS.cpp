@@ -428,6 +428,7 @@ std::string region::RTS::to_string() const
     else
         for (const int loc: urgentLocations)
             oss << "  " << loc << "\n";
+    oss << "\n";
 
     return oss.str();
 }

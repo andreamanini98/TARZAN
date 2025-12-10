@@ -175,6 +175,7 @@ std::string region::RTSArena::to_string() const
     else
         for (const int loc: urgentLocations)
             oss << "  " << loc << "\n";
+    oss << "\n";
 
     // Locations to players (arena-specific, may be empty).
     oss << "Locations to Players (" << locationsToPlayers.size() << "):\n";
