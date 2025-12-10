@@ -417,12 +417,12 @@ namespace parser
             > lit('[') > -(clockConstraint_rule % ',') > lit(']');
 
     inline auto unaryCLTLocFormula_rule_def =
-            un_cltloc_op > lit(',')
+            un_cltloc_op
             > generalCLTLocFormula_rule;
 
     inline auto binaryCLTLocFormula_rule_def =
-            generalCLTLocFormula_rule > lit(',')
-            > bin_cltloc_op > lit(',')
+            generalCLTLocFormula_rule
+            > bin_cltloc_op
             > generalCLTLocFormula_rule;
 
     inline auto generalCLTLocFormula_rule_def =
