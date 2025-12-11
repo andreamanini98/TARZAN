@@ -23,8 +23,10 @@ namespace region
          *          psi are pure CLTLoc formulae).
          *
          * @throws NestedCLTLocFormulaException
+         * @throws std::logic_error
          */
-        std::vector<std::vector<Region>> getRegionsFromGeneralCLTLocFormulaWithDepth(const cltloc::ast::generalCLTLocFormula &formula, int depth) const;
+        [[nodiscard]] std::vector<std::vector<Region>> getRegionsFromGeneralCLTLocFormulaWithDepth(
+            const cltloc::ast::generalCLTLocFormula &formula, int depth) const;
 
 
     public:

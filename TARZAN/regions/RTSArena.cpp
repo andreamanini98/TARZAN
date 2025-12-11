@@ -30,7 +30,8 @@ std::vector<region::Region> region::RTSArena::getRegionsFromPureCLTLocFormula(co
 //       tipo di algoritmo di games da applicare (safety o reachability). Questa funzione ti conviene farla direttamente in ast.h.
 //       Dato che restituisci un vettore di vettori, nel caso di BOX e DIAMOND avrai un solo vettore al suo interno,
 //       con UNTIL ne avrai due, okkio a quale si riferisce alla formula sx e dx.
-std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneralCLTLocFormulaWithDepth(const cltloc::ast::generalCLTLocFormula &formula, int depth) const // NOLINT
+std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneralCLTLocFormulaWithDepth(
+    const cltloc::ast::generalCLTLocFormula &formula, int depth) const // NOLINT
 {
     std::vector<std::vector<Region>> res{};
 
@@ -39,45 +40,52 @@ std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneral
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
         {
-            // Base case - pure formula: compute regions from this formula.
-            std::cout << "Calling getRegionsFromGeneralCLTLocFormula from pure case" << std::endl;
+            std::cout << "Calling getRegionsFromGeneralCLTLocFormulaWithDepth from pure case" << std::endl;
 
+            // Base case - pure formula: compute regions from this formula.
             const auto &pureFormula = val.get();
-            auto regions = getRegionsFromPureCLTLocFormula(pureFormula);
+
+            std::vector<Region> regions = getRegionsFromPureCLTLocFormula(pureFormula);
             res.push_back(std::move(regions));
+            // ---
         } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>)
         {
-            // Recursive case - unary formula.
-            std::cout << "Calling getRegionsFromGeneralCLTLocFormula from unary case" << std::endl;
+            std::cout << "Calling getRegionsFromGeneralCLTLocFormulaWithDepth from unary case" << std::endl;
 
 #ifdef THROW_NESTEDCLTLOC_EXCEPTION
 
             if (depth >= 1)
-                throw NestedCLTLocFormulaException("Nested formulae with depth > 1 are not supported.");
+                throw NestedCLTLocFormulaException("Nested formulae with depth > 0 are not supported.");
 
 #endif
 
+            // Recursive case - unary formula.
             const auto &unaryFormula = val.get();
-            auto tmp = getRegionsFromGeneralCLTLocFormulaWithDepth(unaryFormula.rightFormula, depth + 1);
-            res.insert(res.end(), std::make_move_iterator(tmp.begin()), std::make_move_iterator(tmp.end()));
+
+            std::vector<std::vector<Region>> tmp = getRegionsFromGeneralCLTLocFormulaWithDepth(unaryFormula.rightFormula, depth + 1);
+            std::ranges::move(tmp, std::back_inserter(res));
+            // ---
         } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
         {
-            // Recursive case - binary formula.
-            std::cout << "Calling getRegionsFromGeneralCLTLocFormula from binary case" << std::endl;
+            std::cout << "Calling getRegionsFromGeneralCLTLocFormulaWithDepth from binary case" << std::endl;
 
 #ifdef THROW_NESTEDCLTLOC_EXCEPTION
 
             if (depth >= 1)
-                throw NestedCLTLocFormulaException("Nested formulae with depth > 1 are not supported.");
+                throw NestedCLTLocFormulaException("Nested formulae with depth > 0 are not supported.");
 
 #endif
 
+            // Recursive case - binary formula.
             const auto &binaryFormula = val.get();
-            auto leftTmp = getRegionsFromGeneralCLTLocFormulaWithDepth(binaryFormula.leftFormula, depth + 1);
-            res.insert(res.end(), std::make_move_iterator(leftTmp.begin()), std::make_move_iterator(leftTmp.end()));
-            auto rightTmp = getRegionsFromGeneralCLTLocFormulaWithDepth(binaryFormula.rightFormula, depth + 1);
-            res.insert(res.end(), std::make_move_iterator(rightTmp.begin()), std::make_move_iterator(rightTmp.end()));
-        }
+
+            std::vector<std::vector<Region>> leftTmp = getRegionsFromGeneralCLTLocFormulaWithDepth(binaryFormula.leftFormula, depth + 1);
+            std::ranges::move(leftTmp, std::back_inserter(res));
+
+            std::vector<std::vector<Region>> rightTmp = getRegionsFromGeneralCLTLocFormulaWithDepth(binaryFormula.rightFormula, depth + 1);
+            std::ranges::move(rightTmp, std::back_inserter(res));
+        } else
+            throw std::logic_error("Unhandled formula type in getRegionsFromGeneralCLTLocFormulaWithDepth.");
     }, formula.value);
 
     return res;
