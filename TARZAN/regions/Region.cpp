@@ -893,6 +893,215 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
 }
 
 
+/**
+ * @brief Auxiliary function to verify that a region satisfies all given clock constraints.
+ *
+ * @param reg the region to verify.
+ * @param clockConstraints the vector of clock constraints to check.
+ * @param clockIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
+ * @return true if the region satisfies all clock constraints, false otherwise.
+ */
+inline bool satisfiesAllClockConstraints(const region::Region &reg,
+                                         const std::vector<timed_automaton::ast::clockConstraint> &clockConstraints,
+                                         const std::unordered_map<std::string, int> &clockIndices)
+{
+    const std::vector<std::pair<int, bool>> clockValuation = reg.getClockValuation();
+
+    return std::ranges::all_of(clockConstraints, [&](const auto &constraint) {
+        // Skip constraints for clocks not in the index map.
+        if (!clockIndices.contains(constraint.clock))
+            return true;
+
+        const int clockIdx = clockIndices.at(constraint.clock);
+        const auto &[intVal, hasFracPart] = clockValuation[clockIdx];
+
+        return constraint.isSatisfied(intVal, hasFracPart);
+    });
+}
+
+
+std::vector<region::Region> region::Region::generateRegionsFromConstraints(
+    const std::vector<std::string> &locations,
+    const std::vector<timed_automaton::ast::clockConstraint> &clockConstraints,
+    const std::unordered_map<std::string, int> &clockIndices,
+    const std::unordered_map<std::string, int> &locationsAsIntMap,
+    const std::vector<int> &maxConstants,
+    const int numOfClocks)
+{
+    std::vector<Region> res{};
+
+    if (locations.empty())
+    {
+        // TODO: handle the case where all locations are admissible (should give as parameter all the location names).
+        std::cerr << "Warning: Empty locations vector." << std::endl;
+        throw std::invalid_argument("Empty locations vector.");
+    }
+
+    // Process each location in the disjunction.
+    for (const std::string &locationName: locations)
+    {
+        if (!locationsAsIntMap.contains(locationName))
+        {
+            std::cerr << "Warning: Location '" << locationName << "' not found in locationsAsIntMap." << std::endl;
+            throw std::invalid_argument("Location not found.");
+        }
+
+        const int qReg = locationsAsIntMap.at(locationName);
+
+        // Initialize H vector with all clocks starting at 0.
+        std::vector H(numOfClocks, 0);
+
+        // Bitsets for bounded and unbounded clocks.
+        boost::dynamic_bitset<> xBnd(numOfClocks);
+        boost::dynamic_bitset<> xOob(numOfClocks);
+
+        // Maps for constraint handling.
+        absl::flat_hash_map<int, int> notInX0{};
+        absl::flat_hash_map<int, int> notFractionalPart{};
+        absl::flat_hash_map<int, std::pair<int, int>> minMaxValues{};
+
+        // Initial empty deques for unbounded, x0, and bounded clock sets.
+        std::deque<boost::dynamic_bitset<>> newUnbounded{};
+        boost::dynamic_bitset<> newX0(numOfClocks);
+        std::deque<boost::dynamic_bitset<>> newBounded{};
+
+        // Process all clock constraints (recall they are in conjunction).
+        for (const auto &[clock, constraintOperator, comparingConstant]: clockConstraints)
+        {
+            if (!clockIndices.contains(clock))
+            {
+                std::cerr << "Warning: Clock '" << clock << "' not found in clockIndices." << std::endl;
+                throw std::invalid_argument("Clock not found.");
+            }
+
+            const int clockIndex = clockIndices.at(clock);
+
+            if (constraintOperator == EQ)
+            {
+                H[clockIndex] = comparingConstant;
+                // Inserting clocks with no fractional part in x0.
+                newX0.set(cIdx(numOfClocks, clockIndex));
+            } else if (constraintOperator == GT && comparingConstant == maxConstants[clockIndex])
+            {
+                H[clockIndex] = maxConstants[clockIndex];
+                xOob.set(cIdx(numOfClocks, clockIndex));
+            } else
+            {
+                xBnd.set(cIdx(numOfClocks, clockIndex));
+
+                handleConstraintOperator(clockIndex,
+                                         constraintOperator,
+                                         comparingConstant,
+                                         maxConstants[clockIndex],
+                                         notInX0,
+                                         notFractionalPart,
+                                         minMaxValues);
+            }
+        }
+
+        // Treating clocks that did not appear in a constraint as having the implicit constraint clock_value >= 0.
+        for (int i = 0; i < numOfClocks; i++)
+        {
+            // ReSharper disable once CppTooWideScopeInitStatement
+            const int pos = cIdx(numOfClocks, i);
+            if (!xBnd.test(pos) && !xOob.test(pos) && !newX0.test(pos))
+            {
+                xBnd.set(pos);
+                minMaxValues[i] = std::make_pair(0, maxConstants[i] + 1);
+            }
+        }
+
+        // Generate regions based on bounded/unbounded clocks.
+        if (xBnd.none())
+        {
+            // ReSharper disable once CppTooWideScopeInitStatement
+            const Region testReg(qReg, H, newUnbounded, newX0, newBounded, {});
+
+            if (satisfiesAllClockConstraints(testReg, clockConstraints, clockIndices))
+            {
+                if (xOob.any())
+                {
+                    // Generate all possible orderings for unbounded clocks.
+                    const std::vector<Region> tmp = permRegsUnbounded(qReg, H, newUnbounded, newX0, newBounded, numOfClocks, xOob);
+                    res.insert(res.end(), tmp.begin(), tmp.end());
+                } else
+                    res.emplace_back(testReg);
+            }
+        } else
+        {
+            // Generate all interval combinations for bounded clocks.
+            // ReSharper disable once CppTooWideScopeInitStatement
+            const std::vector<std::vector<std::pair<int, int>>> &intervalCombinations = generateAllIntegerIntervalCombinations(minMaxValues);
+
+            for (const auto &combination: intervalCombinations)
+            {
+                boost::dynamic_bitset<> delta(numOfClocks);
+                boost::dynamic_bitset<> notInX0Bitset(numOfClocks);
+                boost::dynamic_bitset<> notFractionalPartBitset(numOfClocks);
+                std::vector<int> HCopy = H;
+
+                for (const auto &[clockIdx, clockValue]: combination)
+                {
+                    if (clockValue > maxConstants[clockIdx])
+                        delta.set(cIdx(numOfClocks, clockIdx));
+
+                    if (notInX0.contains(clockIdx) && notInX0.at(clockIdx) == clockValue)
+                        notInX0Bitset.set(cIdx(numOfClocks, clockIdx));
+
+                    if (notFractionalPart.contains(clockIdx) && notFractionalPart.at(clockIdx) == clockValue)
+                        notFractionalPartBitset.set(cIdx(numOfClocks, clockIdx));
+
+                    HCopy[clockIdx] = clockValue > maxConstants[clockIdx] ? maxConstants[clockIdx] : clockValue;
+                }
+
+                boost::dynamic_bitset<> deltaUnionOob = delta | xOob;
+                boost::dynamic_bitset<> xBndMinusDelta = xBnd & ~delta;
+
+                // ReSharper disable once CppTooWideScopeInitStatement
+                std::vector<Region> tmp = permRegsUnbounded(qReg, HCopy, newUnbounded, newX0, newBounded, numOfClocks, deltaUnionOob);
+
+                if (!tmp.empty() && xBndMinusDelta.any())
+                {
+                    for (const auto &reg: tmp)
+                    {
+                        std::vector<Region> tmp2 = permRegsBounded(reg.q,
+                                                                   HCopy,
+                                                                   reg.unbounded,
+                                                                   reg.x0,
+                                                                   reg.bounded,
+                                                                   numOfClocks,
+                                                                   xBndMinusDelta,
+                                                                   maxConstants,
+                                                                   notInX0Bitset,
+                                                                   notFractionalPartBitset);
+
+                        // Verify that each generated region satisfies all clock constraints.
+                        for (const auto &reg2: tmp2)
+                            if (satisfiesAllClockConstraints(reg2, clockConstraints, clockIndices))
+                                res.emplace_back(reg2);
+                    }
+                } else
+                {
+                    // Verify that each generated region satisfies all clock constraints.
+                    // This is done as in the case where xBnd.none() is satisfied (regions have the same clock valuations in these cases).
+                    // ReSharper disable once CppTooWideScopeInitStatement
+                    const Region tmpReg(qReg, HCopy, newUnbounded, newX0, newBounded, {});
+                    if (satisfiesAllClockConstraints(tmpReg, clockConstraints, clockIndices))
+                        res.insert(res.end(), tmp.begin(), tmp.end());
+                }
+            }
+        }
+    }
+
+    // Performing deduplication here, as regions may be generated twice (e.g., when no constraints are declared) and,
+    // differently from getImmediateDiscretePredecessors(), no other function determines which regions to keep (deduplicate them).
+    std::unordered_set<Region, RegionHash> uniqueRes(res.begin(), res.end());
+    res.assign(uniqueRes.begin(), uniqueRes.end());
+
+    return res;
+}
+
+
 std::string region::Region::toString() const
 {
     std::ostringstream oss;

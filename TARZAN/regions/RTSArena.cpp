@@ -1,35 +1,32 @@
 #include "RTSArena.h"
 #include "TARZAN/utilities/file_utilities.h"
 #include "TARZAN/exceptions/nestedCLTLocFormula_exception.h"
+#include "TARZAN/utilities/function_utilities.h"
 
+#define RTSARENA_DEBUG
 #define THROW_NESTEDCLTLOC_EXCEPTION
 
 
 std::vector<region::Region> region::RTSArena::getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const
 {
+#ifdef RTSARENA_DEBUG
+
     std::cout << "Now handling the following pure CLTLoc formula: " << formula << std::endl;
 
-    std::vector<Region> res{};
+#endif
 
-    // Questa dovrà essere la funzione da cui, data una formula cltloc pura, derivi l'insieme di regioni che la caratterizza.
-    // Prova a vedere nell'algoritmo di backward reachability se puoi riusare del codice.
-    // Ricorda che in una formula pura le locations rappresentano una disgiunzione (predichi su una disgiunzione di locations).
-    // I clock constraints invece rappresentano una congiunzione di vincoli.
-    // Come scritto sotto, [],[] è un caso degenere in cui tutto lo state space viene considerato, in questo caso si può direttamente decretare il vincitore.
-    // Possiamo anche assumere che una tale situazione non si verifichi mai (ma se fai l'algoritmo di generazione delle regioni sufficientemente generale
-    // dovresti potere gestire anche quel caso, anche se poi nella realtà non ti serve).
-
-    // In a pure formula, an empty vector of locations or clock constraints means that all possible combinations are admissible.
-    // In this way, [],[] may require the computation of the entire state space. We can simplify the analysis in this case (e.g., (BOX, ([],[])) is trivially satisfied???).
-
-    return res;
+    const int numOfClocks = static_cast<int>(clocksIndices.size());
+    return Region::generateRegionsFromConstraints(formula.locations, formula.clockConstraints, clocksIndices, locationsToInt, maxConstants, numOfClocks);
 }
 
 
 // TODO: in seguito ti servirà potere determinare il tipo di operatore per decidere che algoritmo usare (es. differenza tra box e diamond) per determinare il
 //       tipo di algoritmo di games da applicare (safety o reachability). Questa funzione ti conviene farla direttamente in ast.h.
 //       Dato che restituisci un vettore di vettori, nel caso di BOX e DIAMOND avrai un solo vettore al suo interno,
-//       con UNTIL ne avrai due, okkio a quale si riferisce alla formula sx e dx.
+//       con UNTIL ne avrai due, attenzione a quale si riferisce alla formula sx e dx.
+
+// TODO: per ora l'implementazione corrente va bene perchè non hai annidamenti e quindi hai al più due vettori nel vettore esterno risultante.
+//       vedere di trovare il modo di rendere il tutto più generale qualora vengano resi disponibili livelli di annidamento nelle formule.
 std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneralCLTLocFormulaWithDepth(
     const cltloc::ast::generalCLTLocFormula &formula, int depth) const // NOLINT
 {
@@ -40,7 +37,11 @@ std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneral
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
         {
+#ifdef RTSARENA_DEBUG
+
             std::cout << "Calling getRegionsFromGeneralCLTLocFormulaWithDepth from pure case" << std::endl;
+
+#endif
 
             // Base case - pure formula: compute regions from this formula.
             const auto &pureFormula = val.get();
@@ -50,7 +51,11 @@ std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneral
             // ---
         } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>)
         {
+#ifdef RTSARENA_DEBUG
+
             std::cout << "Calling getRegionsFromGeneralCLTLocFormulaWithDepth from unary case" << std::endl;
+
+#endif
 
 #ifdef THROW_NESTEDCLTLOC_EXCEPTION
 
@@ -67,7 +72,11 @@ std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneral
             // ---
         } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
         {
+#ifdef RTSARENA_DEBUG
+
             std::cout << "Calling getRegionsFromGeneralCLTLocFormulaWithDepth from binary case" << std::endl;
+
+#endif
 
 #ifdef THROW_NESTEDCLTLOC_EXCEPTION
 

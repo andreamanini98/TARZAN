@@ -78,9 +78,67 @@ inline void testCLTLocGetRegions()
 }
 
 
+void testRegionGeneration()
+{
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/";
+    const std::string arenaName = "arena0.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
+
+    std::cout << arena.to_string() << std::endl;
+
+    std::vector<std::string> locations = { "q0", "q1" };
+
+    const region::RTSArena rts(arena);
+
+    std::vector<timed_automaton::ast::clockConstraint> clockConstraints = {
+
+    };
+
+    const std::vector<region::Region> regions = region::Region::generateRegionsFromConstraints(
+        locations,
+        clockConstraints,
+        rts.getClocksIndices(),
+        rts.getLocationsToInt(),
+        rts.getMaxConstants(),
+        static_cast<int>(rts.getClocksIndices().size()));
+
+    for (const auto &reg: regions)
+        std::cout << reg.toString() << "\n\n";
+}
+
+
+void testGetRegionsFromGeneralCLTLocFormula()
+{
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/";
+    const std::string arenaName = "arena0.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
+
+    std::cout << arena.to_string() << std::endl;
+
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/CLTLoc_formulae/formula1.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+    std::cout << phi.to_string() << std::endl;
+
+    const region::RTSArena rts(arena, phi);
+
+    std::vector<std::vector<region::Region>> startingRegions = rts.getRegionsFromGeneralCLTLocFormula(phi);
+
+    std::cout << startingRegions.size() << std::endl;
+
+    for (const auto &regVec : startingRegions)
+    {
+        std::cout << "===================\n";
+        std::cout << regVec.size() << std::endl;
+        for (const auto &reg: regVec)
+            std::cout << reg.toString() << std::endl;
+        std::cout << "===================\n";
+    }
+}
+
+
 int main()
 {
-    testCLTLocGetRegions();
+    testGetRegionsFromGeneralCLTLocFormula();
 
     return 0;
 }

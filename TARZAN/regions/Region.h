@@ -227,6 +227,38 @@ namespace region
 
 
         /**
+         * @brief Generates all regions that satisfy the given location and clock constraint predicates.
+         *
+         * This function directly constructs regions from a pure CLTLoc formula specification, without requiring transitions or an existing region.
+         * It handles:
+         * - Location disjunction (regions for each specified location).
+         * - Clock constraint conjunction (all constraints must be satisfied).
+         * - Both bounded and unbounded clock values.
+         * - Proper fractional part handling (x0 placement).
+         *
+         * @param locations vector of location names (this represents a disjunction: generates regions for each location).
+         * @param clockConstraints vector of clock constraints (this represents a conjunction: all must be satisfied).
+         * @param clockIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
+         * @param locationsAsIntMap a std::unordered_map associating an integer with each string name.
+         * @param maxConstants the maximum constants appearing in a Timed Automaton.
+         * @param numOfClocks total number of clocks.
+         * @return vector of all regions satisfying the constraints.
+         *
+         * @throws std::invalid_argument if the locations vector is empty.
+         *
+         * @warning Empty locations vector is not yet fully implemented.
+         * @warning It is assumed that clock constraints are compatible with the given parameters of the underlying Timed Automaton / Arena.
+         */
+        [[nodiscard]] static std::vector<Region> generateRegionsFromConstraints(
+            const std::vector<std::string> &locations,
+            const std::vector<timed_automaton::ast::clockConstraint> &clockConstraints,
+            const std::unordered_map<std::string, int> &clockIndices,
+            const std::unordered_map<std::string, int> &locationsAsIntMap,
+            const std::vector<int> &maxConstants,
+            int numOfClocks);
+
+
+        /**
          * @brief Creates a deep copy of this region.
          *
          * @return a new Region object that is a copy of this one.
