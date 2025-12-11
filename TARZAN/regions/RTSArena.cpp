@@ -37,18 +37,7 @@ std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneral
     std::visit([this, &res, depth]<typename T0>(T0 const &val) {
         using T = std::decay_t<T0>;
 
-        if constexpr (std::is_same_v<T, bool>)
-        {
-            // Base case - Boolean value: if true, all possible regions must be generated.
-            if (val)
-            {
-                std::cout << "Calling getRegionsFromGeneralCLTLocFormula from boolean case" << std::endl;
-
-                const cltloc::ast::pureCLTLocFormula pureFormula{};
-                auto regions = getRegionsFromPureCLTLocFormula(pureFormula);
-                res.push_back(std::move(regions));
-            }
-        } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
+        if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
         {
             // Base case - pure formula: compute regions from this formula.
             std::cout << "Calling getRegionsFromGeneralCLTLocFormula from pure case" << std::endl;

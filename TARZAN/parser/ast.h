@@ -132,7 +132,7 @@
 //
 // The following is the grammar of CLTLoc formulae:
 //
-//  <general_cltloc_formula> -> '(' (<bool> | <unary_cltloc_formula> | <binary_cltloc_formula> | <pure_cltloc_formula>) ')'
+//  <general_cltloc_formula> -> '(' (<unary_cltloc_formula> | <binary_cltloc_formula> | <pure_cltloc_formula>) ')'
 //
 //  <unary_cltloc_formula> -> <unary_cltloc_op> <general_cltloc_formula>
 //
@@ -727,7 +727,6 @@ namespace cltloc::ast
     struct generalCLTLocFormula
     {
         std::variant<
-            bool,
             boost::spirit::x3::forward_ast<pureCLTLocFormula>,
             boost::spirit::x3::forward_ast<unaryCLTLocFormula>,
             boost::spirit::x3::forward_ast<binaryCLTLocFormula>> value;
@@ -735,9 +734,6 @@ namespace cltloc::ast
 
         // Implicit constructors.
         generalCLTLocFormula() = default;
-
-        // NOLINTNEXTLINE(google-explicit-constructor)
-        generalCLTLocFormula(bool v) : value(v) {}
 
         // NOLINTNEXTLINE(google-explicit-constructor)
         generalCLTLocFormula(boost::spirit::x3::forward_ast<pureCLTLocFormula> v) : value(std::move(v)) {}

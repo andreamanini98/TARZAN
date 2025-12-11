@@ -813,15 +813,10 @@ std::string cltloc::ast::generalCLTLocFormula::to_string() const
 {
     std::ostringstream oss;
 
+    // Keeping the visit pattern for future extensions (currently, it is unnecessary).
     oss << std::visit([]<typename T0>(T0 const &val) -> std::string {
-        using T = std::decay_t<T0>;
-
-        if constexpr (std::is_same_v<T, bool>)
-            // Boolean value.
-            return val ? "true" : "false";
-        else
-            // Recursive case: pure, unary, or binary formula.
-            return "(" + val.get().to_string() + ")";
+        // Recursive case: pure, unary, or binary formula.
+        return "(" + val.get().to_string() + ")";
     }, value);
 
     return oss.str();
