@@ -5,6 +5,10 @@
 #include "TARZAN/regions/RTS.h"
 
 
+// A pointer to a region object.
+using RegionPtr = const region::Region *;
+
+
 namespace region
 {
     class RTSArena : public RTS
@@ -108,6 +112,20 @@ namespace region
          */
         [[nodiscard]] std::vector<std::unordered_set<Region, RegionHash>> getRegionsFromGeneralCLTLocFormula(
             const cltloc::ast::generalCLTLocFormula &formula) const;
+
+
+        /**
+         * @brief Applies omega filter for backward reachability in Timed Arenas.
+         *
+         * Iteratively processes regions from toProcess, computes their discrete predecessors, and adds valid predecessors to setG and toProcess.
+         * A predecessor is valid if: (1) a transition with a unique action leads to setG, or (2) all transitions with a non-unique action lead to setG.
+         *
+         * @param setG set of goal regions, updated in-place with valid predecessors.
+         * @param toProcess vector of pointers to regions in setG to process. May grow during execution.
+         *
+         * @warning The function updates setG and toProcess.
+         */
+        void omegaFilter(std::unordered_set<Region, RegionHash> &setG, std::vector<RegionPtr> &toProcess) const;
 
 
         [[nodiscard]] std::string to_string() const;

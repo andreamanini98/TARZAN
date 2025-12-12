@@ -109,6 +109,108 @@ std::vector<std::unordered_set<region::Region, region::RegionHash>> region::RTSA
 }
 
 
+void region::RTSArena::omegaFilter(std::unordered_set<Region, RegionHash> &setG, std::vector<RegionPtr> &toProcess) const
+{
+    for (int i = 0; i < static_cast<int>(toProcess.size()); i++)
+    {
+        // Getting the current region to process and its incoming transitions.
+        const Region &currentRegion = *toProcess[i];
+        const std::vector<transition> &currTransitions = inTransitions[currentRegion.getLocation()];
+
+        // We collect every discrete predecessor that we filter later based on the omega filter requirements.
+        // ReSharper disable once CppTooWideScopeInitStatement
+        const std::vector<Region> discPreds = currentRegion.getImmediateDiscretePredecessors(currTransitions, clocksIndices, locationsToInt, maxConstants);
+
+        // Processing each discrete predecessor to see if it can be inserted in setG and toProcess.
+        for (const auto &reg: discPreds)
+        {
+            bool isRegionValid{};
+            const std::vector<transition> &regOutTransitions = outTransitions[reg.getLocation()];
+
+            // Building a map from actions names to transitions indices to ease the check required by the omega filter.
+            absl::flat_hash_map<std::string, std::vector<int>> actionsToTransitionIndices{};
+            for (int tIdx = 0; tIdx < static_cast<int>(regOutTransitions.size()); tIdx++)
+                actionsToTransitionIndices[regOutTransitions[tIdx].action.first].push_back(tIdx);
+
+            // Track which actions have been processed to avoid redundant checks.
+            absl::flat_hash_set<std::string> processedActions{};
+
+            // Outgoing transitions must be such that (at least one transition must satisfy these requirements for a region to be valid):
+            // - If its action is unique, it must lead to a region in setG, or
+            // - If its action is not unique, all other transitions with the same action must lead to a region in setG.
+            for (const auto &transition: regOutTransitions)
+            {
+                const std::string &action = transition.action.first;
+
+                // Skip if we've already processed this action.
+                if (processedActions.contains(action))
+                    continue;
+                processedActions.insert(action);
+
+                // ReSharper disable once CppTooWideScopeInitStatement
+                const auto &transitionIndices = actionsToTransitionIndices[action];
+
+                if (transitionIndices.size() == 1)
+                {
+                    // There is no other transition with the same action, so the current transition must lead to a region in setG.
+                    // ReSharper disable once CppTooWideScopeInitStatement
+                    const std::vector<Region> discSuccs = reg.getImmediateDiscreteSuccessors({ transition }, clocksIndices, locationsToInt);
+
+                    // We use a loop here, but since we are computing discrete successors over a single transition, the content of discSuccs is a single region.
+                    for (const auto &discSucc: discSuccs)
+                        if (setG.contains(discSucc))
+                        {
+                            isRegionValid = true;
+                            break;
+                        }
+                } else
+                {
+                    // There exists at least another transition with the same action: all such transitions must lead to a region in setG.
+                    bool allTransitionsValid = true;
+
+                    for (const int tIdx: transitionIndices)
+                    {
+                        // ReSharper disable once CppTooWideScopeInitStatement
+                        const std::vector<Region> discSuccs = reg.getImmediateDiscreteSuccessors({ regOutTransitions[tIdx] }, clocksIndices, locationsToInt);
+
+                        bool foundInSetG{};
+
+                        // We use a loop here, but since we are computing discrete successors over a single transition, the content of discSuccs is a single region.
+                        for (const auto &discSucc: discSuccs)
+                            if (setG.contains(discSucc))
+                            {
+                                foundInSetG = true;
+                                break;
+                            }
+
+                        if (!foundInSetG)
+                        {
+                            allTransitionsValid = false;
+                            break;
+                        }
+                    }
+
+                    if (allTransitionsValid)
+                        isRegionValid = true;
+                }
+
+                if (isRegionValid)
+                    break;
+            }
+
+            if (isRegionValid)
+            {
+                // ReSharper disable once CppTooWideScopeInitStatement
+                auto [iter, inserted] = setG.insert(reg);
+                // Only add to toProcess if it's a new region.
+                if (inserted)
+                    toProcess.push_back(&*iter);
+            }
+        }
+    }
+}
+
+
 std::string region::RTSArena::to_string() const
 {
     std::ostringstream oss;
