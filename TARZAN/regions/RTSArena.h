@@ -21,7 +21,7 @@ namespace region
          *
          * @param formula the general CLTLoc formula to process.
          * @param depth the current nesting depth (0 for top-level formula, incremented in recursive calls).
-         * @return a vector containing vectors of regions, where:
+         * @return a vector containing unordered sets of regions, where:
          *         - Pure formulae produce one vector of regions.
          *         - Unary formulae (BOX, DIAMOND) produce one vector from their subformula.
          *         - Binary formulae (UNTIL) produce two vectors: left subformula regions followed by right subformula regions.
@@ -32,7 +32,7 @@ namespace region
          * @throws NestedCLTLocFormulaException if depth >= 1 when processing unary or binary operators (nested formulae not supported).
          * @throws std::logic_error if an unhandled formula type is encountered.
          */
-        [[nodiscard]] std::vector<std::vector<Region>> getRegionsFromGeneralCLTLocFormulaWithDepth(
+        [[nodiscard]] std::vector<std::unordered_set<Region, RegionHash>> getRegionsFromGeneralCLTLocFormulaWithDepth(
             const cltloc::ast::generalCLTLocFormula &formula, int depth) const;
 
 
@@ -84,29 +84,30 @@ namespace region
          * regions that satisfy those constraints. This is the base case for region extraction from CLTLoc formulae.
          *
          * @param formula the pure CLTLoc formula containing locations and clock constraints.
-         * @return a vector of regions satisfying the formula's location and clock constraints.
+         * @return an unordered set of regions satisfying the formula's location and clock constraints.
          */
-        [[nodiscard]] std::vector<Region> getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const;
+        [[nodiscard]] std::unordered_set<Region, RegionHash> getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const;
 
 
         /**
          * @brief Extracts regions from a general CLTLoc formula.
          *
          * This is a convenience wrapper around getRegionsFromGeneralCLTLocFormulaWithDepth() that initializes the depth to 0.
-         * It processes general CLTLoc formulae and returns a vector of region vectors, with each vector corresponding to a pure subformula.
-         * The result is a vector of vectors, since we want a set of regions for each pure CLTLoc formula in the general one.
+         * It processes general CLTLoc formulae and returns a vector of unordered sets of regions, with each unordered set corresponding to a pure subformula.
+         * The result is a vector of unordered sets, since we want a set of regions for each pure CLTLoc formula in the general one.
          * For example:
          * - BOX phi produces one vector (regions for phi).
          * - DIAMOND phi produces one vector (regions for phi).
          * - phi UNTIL psi produces two vectors (regions for phi, then regions for psi).
          *
          * @param formula the general CLTLoc formula to process.
-         * @return a vector containing vectors of regions, where each inner vector corresponds to a pure subformula.
+         * @return a vector containing unordered sets of regions, where each inner vector corresponds to a pure subformula.
          *
          * @throws NestedCLTLocFormulaException if nested formulae with depth > 0 are encountered.
          * @throws std::logic_error if an unhandled formula type is encountered.
          */
-        [[nodiscard]] std::vector<std::vector<Region>> getRegionsFromGeneralCLTLocFormula(const cltloc::ast::generalCLTLocFormula &formula) const;
+        [[nodiscard]] std::vector<std::unordered_set<Region, RegionHash>> getRegionsFromGeneralCLTLocFormula(
+            const cltloc::ast::generalCLTLocFormula &formula) const;
 
 
         [[nodiscard]] std::string to_string() const;

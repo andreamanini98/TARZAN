@@ -920,7 +920,7 @@ inline bool satisfiesAllClockConstraints(const region::Region &reg,
 }
 
 
-std::vector<region::Region> region::Region::generateRegionsFromConstraints(
+std::unordered_set<region::Region, region::RegionHash> region::Region::generateRegionsFromConstraints(
     const std::vector<std::string> &locations,
     const std::vector<timed_automaton::ast::clockConstraint> &clockConstraints,
     const std::unordered_map<std::string, int> &clockIndices,
@@ -928,7 +928,7 @@ std::vector<region::Region> region::Region::generateRegionsFromConstraints(
     const std::vector<int> &maxConstants,
     const int numOfClocks)
 {
-    std::vector<Region> res{};
+    std::unordered_set<Region, RegionHash> res{};
 
     if (locations.empty())
     {
@@ -1023,9 +1023,9 @@ std::vector<region::Region> region::Region::generateRegionsFromConstraints(
                 {
                     // Generate all possible orderings for unbounded clocks.
                     const std::vector<Region> tmp = permRegsUnbounded(qReg, H, newUnbounded, newX0, newBounded, numOfClocks, xOob);
-                    res.insert(res.end(), tmp.begin(), tmp.end());
+                    res.insert(tmp.begin(), tmp.end());
                 } else
-                    res.emplace_back(testReg);
+                    res.insert(testReg);
             }
         } else
         {
@@ -1078,7 +1078,7 @@ std::vector<region::Region> region::Region::generateRegionsFromConstraints(
                         // Verify that each generated region satisfies all clock constraints.
                         for (const auto &reg2: tmp2)
                             if (satisfiesAllClockConstraints(reg2, clockConstraints, clockIndices))
-                                res.emplace_back(reg2);
+                                res.insert(reg2);
                     }
                 } else
                 {
@@ -1087,16 +1087,11 @@ std::vector<region::Region> region::Region::generateRegionsFromConstraints(
                     // ReSharper disable once CppTooWideScopeInitStatement
                     const Region tmpReg(qReg, HCopy, newUnbounded, newX0, newBounded, {});
                     if (satisfiesAllClockConstraints(tmpReg, clockConstraints, clockIndices))
-                        res.insert(res.end(), tmp.begin(), tmp.end());
+                        res.insert(tmp.begin(), tmp.end());
                 }
             }
         }
     }
-
-    // Performing deduplication here, as regions may be generated twice (e.g., when no constraints are declared) and,
-    // differently from getImmediateDiscretePredecessors(), no other function determines which regions to keep (deduplicate them).
-    std::unordered_set<Region, RegionHash> uniqueRes(res.begin(), res.end());
-    res.assign(uniqueRes.begin(), uniqueRes.end());
 
     return res;
 }

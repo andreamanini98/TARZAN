@@ -17,6 +17,10 @@ using transition = timed_automaton::ast::transition;
 
 namespace region
 {
+    // Forward declaration of this struct as it is required in the Region class.
+    struct RegionHash;
+
+
     class Region
     {
         /// The location of the region.
@@ -242,14 +246,14 @@ namespace region
          * @param locationsAsIntMap a std::unordered_map associating an integer with each string name.
          * @param maxConstants the maximum constants appearing in a Timed Automaton.
          * @param numOfClocks total number of clocks.
-         * @return vector of all regions satisfying the constraints.
+         * @return unordered_set of all regions satisfying the constraints.
          *
          * @throws std::invalid_argument if the locations vector is empty.
          *
          * @warning Empty locations vector is not yet fully implemented.
          * @warning It is assumed that clock constraints are compatible with the given parameters of the underlying Timed Automaton / Arena.
          */
-        [[nodiscard]] static std::vector<Region> generateRegionsFromConstraints(
+        [[nodiscard]] static std::unordered_set<Region, RegionHash> generateRegionsFromConstraints(
             const std::vector<std::string> &locations,
             const std::vector<timed_automaton::ast::clockConstraint> &clockConstraints,
             const std::unordered_map<std::string, int> &clockIndices,

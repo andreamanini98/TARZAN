@@ -7,7 +7,7 @@
 #define THROW_NESTEDCLTLOC_EXCEPTION
 
 
-std::vector<region::Region> region::RTSArena::getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const
+std::unordered_set<region::Region, region::RegionHash> region::RTSArena::getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const
 {
 #ifdef RTSARENA_DEBUG
 
@@ -27,10 +27,10 @@ std::vector<region::Region> region::RTSArena::getRegionsFromPureCLTLocFormula(co
 
 // TODO: per ora l'implementazione corrente va bene perchè non hai annidamenti e quindi hai al più due vettori nel vettore esterno risultante.
 //       vedere di trovare il modo di rendere il tutto più generale qualora vengano resi disponibili livelli di annidamento nelle formule.
-std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneralCLTLocFormulaWithDepth(
+std::vector<std::unordered_set<region::Region, region::RegionHash>> region::RTSArena::getRegionsFromGeneralCLTLocFormulaWithDepth(
     const cltloc::ast::generalCLTLocFormula &formula, int depth) const // NOLINT
 {
-    std::vector<std::vector<Region>> res{};
+    std::vector<std::unordered_set<Region, RegionHash>> res{};
 
     std::visit([this, &res, depth]<typename T0>(T0 const &val) {
         using T = std::decay_t<T0>;
@@ -45,9 +45,7 @@ std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneral
 
             // Base case - pure formula: compute regions from this formula.
             const auto &pureFormula = val.get();
-
-            std::vector<Region> regions = getRegionsFromPureCLTLocFormula(pureFormula);
-            res.push_back(std::move(regions));
+            res.push_back(getRegionsFromPureCLTLocFormula(pureFormula));
             // ---
         } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>)
         {
@@ -67,8 +65,9 @@ std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneral
             // Recursive case - unary formula.
             const auto &unaryFormula = val.get();
 
-            std::vector<std::vector<Region>> tmp = getRegionsFromGeneralCLTLocFormulaWithDepth(unaryFormula.rightFormula, depth + 1);
-            std::ranges::move(tmp, std::back_inserter(res));
+            std::vector<std::unordered_set<Region, RegionHash>> tmp = getRegionsFromGeneralCLTLocFormulaWithDepth(unaryFormula.rightFormula, depth + 1);
+            res.reserve(res.size() + tmp.size());
+            res.insert(res.end(), std::make_move_iterator(tmp.begin()), std::make_move_iterator(tmp.end()));
             // ---
         } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
         {
@@ -88,11 +87,13 @@ std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneral
             // Recursive case - binary formula.
             const auto &binaryFormula = val.get();
 
-            std::vector<std::vector<Region>> leftTmp = getRegionsFromGeneralCLTLocFormulaWithDepth(binaryFormula.leftFormula, depth + 1);
-            std::ranges::move(leftTmp, std::back_inserter(res));
+            std::vector<std::unordered_set<Region, RegionHash>> leftTmp = getRegionsFromGeneralCLTLocFormulaWithDepth(binaryFormula.leftFormula, depth + 1);
+            res.reserve(res.size() + leftTmp.size());
+            res.insert(res.end(), std::make_move_iterator(leftTmp.begin()), std::make_move_iterator(leftTmp.end()));
 
-            std::vector<std::vector<Region>> rightTmp = getRegionsFromGeneralCLTLocFormulaWithDepth(binaryFormula.rightFormula, depth + 1);
-            std::ranges::move(rightTmp, std::back_inserter(res));
+            std::vector<std::unordered_set<Region, RegionHash>> rightTmp = getRegionsFromGeneralCLTLocFormulaWithDepth(binaryFormula.rightFormula, depth + 1);
+            res.reserve(res.size() + rightTmp.size());
+            res.insert(res.end(), std::make_move_iterator(rightTmp.begin()), std::make_move_iterator(rightTmp.end()));
         } else
             throw std::logic_error("Unhandled formula type in getRegionsFromGeneralCLTLocFormulaWithDepth.");
     }, formula.value);
@@ -101,7 +102,8 @@ std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneral
 }
 
 
-std::vector<std::vector<region::Region>> region::RTSArena::getRegionsFromGeneralCLTLocFormula(const cltloc::ast::generalCLTLocFormula &formula) const
+std::vector<std::unordered_set<region::Region, region::RegionHash>> region::RTSArena::getRegionsFromGeneralCLTLocFormula(
+    const cltloc::ast::generalCLTLocFormula &formula) const
 {
     return getRegionsFromGeneralCLTLocFormulaWithDepth(formula, 0);
 }

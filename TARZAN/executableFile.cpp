@@ -70,7 +70,7 @@ inline void testCLTLocGetRegions()
 
     try
     {
-        std::vector<std::vector<region::Region>> res = rts.getRegionsFromGeneralCLTLocFormula(phi);
+        std::vector<std::unordered_set<region::Region, region::RegionHash>> res = rts.getRegionsFromGeneralCLTLocFormula(phi);
     } catch (const region::NestedCLTLocFormulaException &e)
     {
         std::cerr << "Invalid formula: " << e.what() << std::endl;
@@ -94,7 +94,7 @@ void testRegionGeneration()
 
     };
 
-    const std::vector<region::Region> regions = region::Region::generateRegionsFromConstraints(
+    const std::unordered_set<region::Region, region::RegionHash> regions = region::Region::generateRegionsFromConstraints(
         locations,
         clockConstraints,
         rts.getClocksIndices(),
@@ -121,7 +121,7 @@ void testGetRegionsFromGeneralCLTLocFormula()
 
     const region::RTSArena rts(arena, phi);
 
-    std::vector<std::vector<region::Region>> startingRegions = rts.getRegionsFromGeneralCLTLocFormula(phi);
+    std::vector<std::unordered_set<region::Region, region::RegionHash>> startingRegions = rts.getRegionsFromGeneralCLTLocFormula(phi);
 
     std::cout << startingRegions.size() << std::endl;
 
