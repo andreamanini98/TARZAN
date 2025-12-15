@@ -46,7 +46,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/lib
 # When changing the value of the options, remember to:
 # (1) click on the cmake icon at the bottom left corner -> (2) three dots -> (3) reset cache and reload project.
 option(ENABLE_OPTIMIZATION "Enable O3 optimization level." ON)
-option(ENABLE_OPENMP "Enable OpenMP parallelization." OFF)
+option(ENABLE_OPENMP "Enable OpenMP parallelization." ON)
 
 
 # Handle O3 optimization.
@@ -69,6 +69,10 @@ if (ENABLE_OPENMP)
         include_directories(${LIBOMP_INCLUDE_DIR})
         link_directories(${LIBOMP_LIB_DIR})
         message(STATUS "OpenMP enabled.")
+
+        # Disable absl debug assertions (fixes OpenMP reentrancy errors with absl containers).
+        add_compile_definitions(NDEBUG)
+        message(STATUS "Disabled absl debug assertions (NDEBUG defined).")
     endif ()
 endif ()
 

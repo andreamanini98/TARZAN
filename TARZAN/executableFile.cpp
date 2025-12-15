@@ -1,5 +1,10 @@
 #include <string>
 #include <algorithm>
+#include <chrono>
+
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 #include "regions/networkOfTA/RTSNetwork.h"
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
@@ -163,18 +168,21 @@ void testOmegaFilter()
 
     toProcess.reserve(setG.size());
     for (const auto &region: setG)
-    {
         toProcess.push_back(&region);
-    }
+
+    std::cout << "\n\n\n\nSTARTING SERIAL EXECUTION\n\n";
 
     std::cout << "Before omega filter: " << std::endl;
     std::cout << "setG size: " << setG.size() << std::endl;
     std::cout << "toProcess size: " << toProcess.size() << std::endl;
 
+    std::unordered_set<region::Region, region::RegionHash> filteredRegions{};
+    std::vector<RegionPtr> filteredRegionsPtr{};
+
     // Starting the timer for measuring computation.
     const auto start = std::chrono::high_resolution_clock::now();
 
-    rts.omegaFilter(setG, toProcess);
+    rts.omegaFilterSerial(setG, toProcess, filteredRegions, filteredRegionsPtr);
 
     // Ending the timer for measuring computation.
     const auto end = std::chrono::high_resolution_clock::now();
@@ -183,10 +191,71 @@ void testOmegaFilter()
 
     std::cout << "After omega filter: " << std::endl;
     std::cout << "setG size: " << setG.size() << std::endl;
+    std::cout << "filteredRegions size: " << filteredRegions.size() << std::endl;
+    std::cout << "toProcess size: " << toProcess.size() << std::endl;
+    std::cout << "filteredRegionsPtr size: " << filteredRegionsPtr.size() << std::endl;
+
+    //for (const auto &reg: setG)
+    //    std::cout << reg.toString() << std::endl;
+    //for (const auto &reg: filteredRegions)
+    //    std::cout << reg.toString() << std::endl;
+
+    std::cout << "\n\nSTARTING PARALLEL EXECUTION\n\n";
+
+    std::cout << "Before omega filter: " << std::endl;
+    std::cout << "setG size: " << setG.size() << std::endl;
     std::cout << "toProcess size: " << toProcess.size() << std::endl;
 
-    for (const auto &reg: setG)
-        std::cout << reg.toString() << std::endl;
+    std::unordered_set<region::Region, region::RegionHash> filteredRegions1{};
+    std::vector<RegionPtr> filteredRegionsPtr1{};
+
+    // Starting the timer for measuring computation.
+#ifdef _OPENMP
+    const auto start1 = omp_get_wtime();
+#else
+    const auto start1 = std::chrono::high_resolution_clock::now();
+#endif
+
+    rts.omegaFilter(setG, toProcess, filteredRegions1, filteredRegionsPtr1, true);
+
+    // Ending the timer for measuring computation.
+#ifdef _OPENMP
+    const auto end1 = omp_get_wtime();
+    const auto duration1 = end1 - start1;
+    std::cout << "Total time       : " << duration1 * 1000000 << " microseconds." << std::endl;
+#else
+    const auto end1 = std::chrono::high_resolution_clock::now();
+    const auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(end1 - start1).count();
+    std::cout << "Total time       : " << duration1 << " microseconds." << std::endl;
+#endif
+
+    std::cout << "After omega filter: " << std::endl;
+    std::cout << "setG size: " << setG.size() << std::endl;
+    std::cout << "filteredRegions1 size: " << filteredRegions1.size() << std::endl;
+    std::cout << "toProcess size: " << toProcess.size() << std::endl;
+    std::cout << "filteredRegionsPtr1 size: " << filteredRegionsPtr1.size() << std::endl;
+
+    //for (const auto &reg: setG)
+    //    std::cout << reg.toString() << std::endl;
+    //for (const auto &reg: filteredRegions1)
+    //    std::cout << reg.toString() << std::endl;
+
+    std::unordered_set<region::Region, region::RegionHash> updatedSetG{};
+    for (const auto &region: setG)
+        updatedSetG.insert(region);
+    for (const auto &region: filteredRegions)
+        updatedSetG.insert(region);
+
+    std::unordered_set<region::Region, region::RegionHash> updatedSetG1{};
+    for (const auto &region: setG)
+        updatedSetG1.insert(region);
+    for (const auto &region: filteredRegions1)
+        updatedSetG1.insert(region);
+
+    if (updatedSetG == updatedSetG1)
+        std::cout << "\nSets coincide!!!" << std::endl;
+    else
+        std::cout << "\nSets differ!!!";
 }
 
 

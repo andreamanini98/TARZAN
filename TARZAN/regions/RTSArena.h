@@ -114,18 +114,33 @@ namespace region
             const cltloc::ast::generalCLTLocFormula &formula) const;
 
 
+        /// @warning Use only in comparisons with the parallel one.
+        [[deprecated]] void omegaFilterSerial(const std::unordered_set<Region, RegionHash> &setG,
+                                              const std::vector<RegionPtr> &toProcess,
+                                              std::unordered_set<Region, RegionHash> &filteredRegions,
+                                              std::vector<RegionPtr> &filteredRegionsPtr) const;
+
+
         /**
          * @brief Applies omega filter for backward reachability in Timed Arenas.
          *
-         * Iteratively processes regions from toProcess, computes their discrete predecessors, and adds valid predecessors to setG and toProcess.
+         * Iteratively processes regions from toProcess, computes their discrete predecessors, and adds valid predecessors to filteredRegions and filteredRegionsPtr.
          * A predecessor is valid if: (1) a transition with a unique action leads to setG, or (2) all transitions with a non-unique action lead to setG.
          *
-         * @param setG set of goal regions, updated in-place with valid predecessors.
-         * @param toProcess vector of pointers to regions in setG to process. May grow during execution.
+         * @param setG set of goal regions.
+         * @param toProcess vector of pointers to regions in setG that must be processed.
+         * @param filteredRegions at the end of execution, will contain the filtered discrete predecessors regions ensuring the controller can reach setG.
+         * @param filteredRegionsPtr at the end of execution, will contain the filtered discrete predecessors regions pointers ensuring the controller can reach setG.
+         * @param skipPredecessorsInSetG if true, a predecessor already contained in setG is automatically considered valid.
          *
-         * @warning The function updates setG and toProcess.
+         * @warning The function updates filteredRegions and filteredRegionsPtr.
+         * @warning toProcess and filteredRegionsPtr are vectors, since we may use OpenMP parallelization.
          */
-        void omegaFilter(std::unordered_set<Region, RegionHash> &setG, std::vector<RegionPtr> &toProcess) const;
+        void omegaFilter(const std::unordered_set<Region, RegionHash> &setG,
+                         const std::vector<RegionPtr> &toProcess,
+                         std::unordered_set<Region, RegionHash> &filteredRegions,
+                         std::vector<RegionPtr> &filteredRegionsPtr,
+                         bool skipPredecessorsInSetG) const;
 
 
         [[nodiscard]] std::string to_string() const;

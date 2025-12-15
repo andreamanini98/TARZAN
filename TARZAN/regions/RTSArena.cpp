@@ -3,8 +3,16 @@
 #include "TARZAN/exceptions/nestedCLTLocFormula_exception.h"
 #include "TARZAN/utilities/function_utilities.h"
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
+
 #define RTSARENA_DEBUG
 #define THROW_NESTEDCLTLOC_EXCEPTION
+
+// Threshold for enabling parallel execution (derived from manual experiments).
+#define PARALLEL_THRESHOLD 400
 
 
 std::unordered_set<region::Region, region::RegionHash> region::RTSArena::getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const
@@ -109,12 +117,15 @@ std::vector<std::unordered_set<region::Region, region::RegionHash>> region::RTSA
 }
 
 
-void region::RTSArena::omegaFilter(std::unordered_set<Region, RegionHash> &setG, std::vector<RegionPtr> &toProcess) const
+void region::RTSArena::omegaFilterSerial(const std::unordered_set<Region, RegionHash> &setG,
+                                         const std::vector<RegionPtr> &toProcess,
+                                         std::unordered_set<Region, RegionHash> &filteredRegions,
+                                         std::vector<RegionPtr> &filteredRegionsPtr) const
 {
-    for (int i = 0; i < static_cast<int>(toProcess.size()); i++)
+    for (const auto &toProc: toProcess)
     {
         // Getting the current region to process and its incoming transitions.
-        const Region &currentRegion = *toProcess[i];
+        const Region &currentRegion = *toProc;
         const std::vector<transition> &currTransitions = inTransitions[currentRegion.getLocation()];
 
         // We collect every discrete predecessor that we filter later based on the omega filter requirements.
@@ -124,6 +135,9 @@ void region::RTSArena::omegaFilter(std::unordered_set<Region, RegionHash> &setG,
         // Processing each discrete predecessor to see if it can be inserted in setG and toProcess.
         for (const auto &reg: discPreds)
         {
+            if (setG.contains(reg))
+                continue;
+
             bool isRegionValid{};
             const std::vector<transition> &regOutTransitions = outTransitions[reg.getLocation()];
 
@@ -201,11 +215,143 @@ void region::RTSArena::omegaFilter(std::unordered_set<Region, RegionHash> &setG,
             if (isRegionValid)
             {
                 // ReSharper disable once CppTooWideScopeInitStatement
-                auto [iter, inserted] = setG.insert(reg);
+                auto [iter, inserted] = filteredRegions.insert(reg);
                 // Only add to toProcess if it's a new region.
                 if (inserted)
-                    toProcess.push_back(&*iter);
+                    filteredRegionsPtr.push_back(&*iter);
             }
+        }
+    }
+}
+
+
+void region::RTSArena::omegaFilter(const std::unordered_set<Region, RegionHash> &setG,
+                                   const std::vector<RegionPtr> &toProcess,
+                                   std::unordered_set<Region, RegionHash> &filteredRegions,
+                                   std::vector<RegionPtr> &filteredRegionsPtr,
+                                   const bool skipPredecessorsInSetG) const
+{
+    constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
+
+    // Thread-local storage for valid predecessors.
+#ifdef _OPENMP
+    std::vector<std::vector<Region>> threadLocalRegions(omp_get_max_threads());
+#else
+    std::vector<std::vector<Region>> threadLocalRegions(1);
+#endif
+
+    // Reserve space to reduce allocations.
+    if (toProcess.size() >= parallelThreshold)
+    {
+#ifdef _OPENMP
+        const size_t estimatedSize = toProcess.size() / omp_get_max_threads();
+#else
+        const size_t estimatedSize = toProcess.size();
+#endif
+
+        for (auto &vec: threadLocalRegions)
+            vec.reserve(estimatedSize);
+    }
+
+#pragma omp parallel for if(toProcess.size() >= parallelThreshold) schedule(dynamic) default(none) \
+shared(setG, toProcess, skipPredecessorsInSetG, threadLocalRegions, inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants)
+    for (int i = 0; i < static_cast<int>(toProcess.size()); i++) // NOLINT(modernize-loop-convert)
+    {
+        // Getting the current region to process and its incoming transitions.
+        const Region &currentRegion = *toProcess[i];
+        const std::vector<transition> &currTransitions = inTransitions[currentRegion.getLocation()];
+
+        // We collect every discrete predecessor that we filter later based on the omega filter requirements.
+        // ReSharper disable once CppTooWideScopeInitStatement
+        const std::vector<Region> discPreds = currentRegion.getImmediateDiscretePredecessors(currTransitions, clocksIndices, locationsToInt, maxConstants);
+
+        // Processing each discrete predecessor to see if it can be inserted in setG and toProcess.
+        for (const auto &reg: discPreds)
+        {
+            // If skipPredecessorsInSetG is true and the predecessor is already in setG, skip it.
+            if (skipPredecessorsInSetG && setG.contains(reg))
+                continue;
+
+            bool isRegionValid{};
+            const std::vector<transition> &regOutTransitions = outTransitions[reg.getLocation()];
+
+            // Building a map from actions names to transitions indices to ease the check required by the omega filter.
+            absl::flat_hash_map<std::string, std::vector<int>> actionsToTransitionIndices{};
+            for (int tIdx = 0; tIdx < static_cast<int>(regOutTransitions.size()); tIdx++)
+                actionsToTransitionIndices[regOutTransitions[tIdx].action.first].push_back(tIdx);
+
+            // Track which actions have been processed to avoid redundant checks.
+            absl::flat_hash_set<std::string> processedActions{};
+
+            // Outgoing transitions must be such that (at least one transition must satisfy these requirements for a region to be valid):
+            // - If its action is unique, it must lead to a region in setG, or
+            // - If its action is not unique, all other transitions with the same action must lead to a region in setG.
+            // TODO: we can stop at the first action satisfying the above requirements, since we are computing regions and not transitions for now.
+            for (const auto &transition: regOutTransitions)
+            {
+                const std::string &action = transition.action.first;
+
+                // Skip if we've already processed this action.
+                if (processedActions.contains(action))
+                    continue;
+                processedActions.insert(action);
+
+                // Getting the indices of the transitions corresponding to 'action'.
+                // ReSharper disable once CppTooWideScopeInitStatement
+                const std::vector<int> &transitionIndices = actionsToTransitionIndices[action];
+
+                // All transitions must lead to a region in setG.
+                bool allTransitionsValid = true;
+
+                for (const int tIdx: transitionIndices)
+                {
+                    bool foundInSetG{};
+
+                    // ReSharper disable once CppTooWideScopeInitStatement
+                    const std::vector<Region> discSuccs = reg.getImmediateDiscreteSuccessors({ regOutTransitions[tIdx] }, clocksIndices, locationsToInt);
+
+                    // We use a loop here, but since we are computing discrete successors over a single transition, the content of discSuccs is a single region.
+                    for (const auto &discSucc: discSuccs)
+                        if (setG.contains(discSucc))
+                        {
+                            foundInSetG = true;
+                            break;
+                        }
+
+                    if (!foundInSetG)
+                    {
+                        allTransitionsValid = false;
+                        break;
+                    }
+                }
+
+                if (allTransitionsValid)
+                {
+                    isRegionValid = true;
+                    break;
+                }
+            }
+
+            if (isRegionValid)
+            {
+#ifdef _OPENMP
+                threadLocalRegions[omp_get_thread_num()].push_back(reg);
+#else
+                threadLocalRegions[0].push_back(reg);
+#endif
+            }
+        }
+    }
+
+    // Sequential merge of thread-local results
+    for (const auto &localRegions: threadLocalRegions)
+    {
+        for (const auto &reg: localRegions)
+        {
+            // ReSharper disable once CppTooWideScopeInitStatement
+            auto [iter, inserted] = filteredRegions.insert(reg);
+            if (inserted)
+                filteredRegionsPtr.push_back(&*iter);
         }
     }
 }
