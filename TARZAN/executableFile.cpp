@@ -166,6 +166,8 @@ void testOmegaFilter()
 
     auto &setG = startingRegions[1];
 
+    // const auto &intersectionSet = startingRegions[0];
+
     toProcess.reserve(setG.size());
     for (const auto &region: setG)
         toProcess.push_back(&region);
@@ -182,7 +184,7 @@ void testOmegaFilter()
     // Starting the timer for measuring computation.
     const auto start = std::chrono::high_resolution_clock::now();
 
-    rts.omegaFilterSerial(setG, toProcess, filteredRegions, filteredRegionsPtr);
+    rts.omegaFilterSerial(setG, toProcess, filteredRegions, filteredRegionsPtr, {});
 
     // Ending the timer for measuring computation.
     const auto end = std::chrono::high_resolution_clock::now();
@@ -216,7 +218,7 @@ void testOmegaFilter()
     const auto start1 = std::chrono::high_resolution_clock::now();
 #endif
 
-    rts.omegaFilter(setG, toProcess, filteredRegions1, filteredRegionsPtr1, true);
+    rts.omegaFilter(setG, toProcess, filteredRegions1, filteredRegionsPtr1, {}, true);
 
     // Ending the timer for measuring computation.
 #ifdef _OPENMP

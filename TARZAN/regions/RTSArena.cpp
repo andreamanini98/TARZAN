@@ -120,7 +120,8 @@ std::vector<std::unordered_set<region::Region, region::RegionHash>> region::RTSA
 void region::RTSArena::omegaFilterSerial(const std::unordered_set<Region, RegionHash> &setG,
                                          const std::vector<RegionPtr> &toProcess,
                                          std::unordered_set<Region, RegionHash> &filteredRegions,
-                                         std::vector<RegionPtr> &filteredRegionsPtr) const
+                                         std::vector<RegionPtr> &filteredRegionsPtr,
+                                         const std::unordered_set<Region, RegionHash> &intersectionSet) const
 {
     for (const auto &toProc: toProcess)
     {
@@ -164,52 +165,37 @@ void region::RTSArena::omegaFilterSerial(const std::unordered_set<Region, Region
                 // ReSharper disable once CppTooWideScopeInitStatement
                 const auto &transitionIndices = actionsToTransitionIndices[action];
 
-                if (transitionIndices.size() == 1)
+                // There exists at least another transition with the same action: all such transitions must lead to a region in setG.
+                bool allTransitionsValid = true;
+
+                for (const int tIdx: transitionIndices)
                 {
-                    // There is no other transition with the same action, so the current transition must lead to a region in setG.
                     // ReSharper disable once CppTooWideScopeInitStatement
-                    const std::vector<Region> discSuccs = reg.getImmediateDiscreteSuccessors({ transition }, clocksIndices, locationsToInt);
+                    const std::vector<Region> discSuccs = reg.getImmediateDiscreteSuccessors({ regOutTransitions[tIdx] }, clocksIndices, locationsToInt);
+
+                    bool foundInSetG{};
 
                     // We use a loop here, but since we are computing discrete successors over a single transition, the content of discSuccs is a single region.
                     for (const auto &discSucc: discSuccs)
                         if (setG.contains(discSucc))
                         {
-                            isRegionValid = true;
+                            foundInSetG = true;
                             break;
                         }
-                } else
-                {
-                    // There exists at least another transition with the same action: all such transitions must lead to a region in setG.
-                    bool allTransitionsValid = true;
 
-                    for (const int tIdx: transitionIndices)
+                    if (!foundInSetG)
                     {
-                        // ReSharper disable once CppTooWideScopeInitStatement
-                        const std::vector<Region> discSuccs = reg.getImmediateDiscreteSuccessors({ regOutTransitions[tIdx] }, clocksIndices, locationsToInt);
-
-                        bool foundInSetG{};
-
-                        // We use a loop here, but since we are computing discrete successors over a single transition, the content of discSuccs is a single region.
-                        for (const auto &discSucc: discSuccs)
-                            if (setG.contains(discSucc))
-                            {
-                                foundInSetG = true;
-                                break;
-                            }
-
-                        if (!foundInSetG)
-                        {
-                            allTransitionsValid = false;
-                            break;
-                        }
+                        allTransitionsValid = false;
+                        break;
                     }
-
-                    if (allTransitionsValid)
-                        isRegionValid = true;
                 }
 
-                if (isRegionValid)
+                if (allTransitionsValid)
+                {
+                    // A region is valid if intersectionSet is empty (no filtering) or if the region is in intersectionSet.
+                    isRegionValid = intersectionSet.empty() || intersectionSet.contains(reg);
                     break;
+                }
             }
 
             if (isRegionValid)
@@ -229,6 +215,7 @@ void region::RTSArena::omegaFilter(const std::unordered_set<Region, RegionHash> 
                                    const std::vector<RegionPtr> &toProcess,
                                    std::unordered_set<Region, RegionHash> &filteredRegions,
                                    std::vector<RegionPtr> &filteredRegionsPtr,
+                                   const std::unordered_set<Region, RegionHash> &intersectionSet,
                                    const bool skipPredecessorsInSetG) const
 {
     constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
@@ -254,7 +241,7 @@ void region::RTSArena::omegaFilter(const std::unordered_set<Region, RegionHash> 
     }
 
 #pragma omp parallel for if(toProcess.size() >= parallelThreshold) schedule(dynamic) default(none) \
-shared(setG, toProcess, skipPredecessorsInSetG, threadLocalRegions, inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants)
+shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, threadLocalRegions, inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants)
     for (int i = 0; i < static_cast<int>(toProcess.size()); i++) // NOLINT(modernize-loop-convert)
     {
         // Getting the current region to process and its incoming transitions.
@@ -327,7 +314,8 @@ shared(setG, toProcess, skipPredecessorsInSetG, threadLocalRegions, inTransition
 
                 if (allTransitionsValid)
                 {
-                    isRegionValid = true;
+                    // A region is valid if intersectionSet is empty (no filtering) or if the region is in intersectionSet.
+                    isRegionValid = intersectionSet.empty() || intersectionSet.contains(reg);
                     break;
                 }
             }

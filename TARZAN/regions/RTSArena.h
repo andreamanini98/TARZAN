@@ -118,7 +118,8 @@ namespace region
         [[deprecated]] void omegaFilterSerial(const std::unordered_set<Region, RegionHash> &setG,
                                               const std::vector<RegionPtr> &toProcess,
                                               std::unordered_set<Region, RegionHash> &filteredRegions,
-                                              std::vector<RegionPtr> &filteredRegionsPtr) const;
+                                              std::vector<RegionPtr> &filteredRegionsPtr,
+                                              const std::unordered_set<Region, RegionHash> &intersectionSet) const;
 
 
         /**
@@ -131,6 +132,7 @@ namespace region
          * @param toProcess vector of pointers to regions in setG that must be processed.
          * @param filteredRegions at the end of execution, will contain the filtered discrete predecessors regions ensuring the controller can reach setG.
          * @param filteredRegionsPtr at the end of execution, will contain the filtered discrete predecessors regions pointers ensuring the controller can reach setG.
+         * @param intersectionSet for a region to be valid, it must also belong to intersectionSet.
          * @param skipPredecessorsInSetG if true, a predecessor already contained in setG is automatically considered valid.
          *
          * @warning The function updates filteredRegions and filteredRegionsPtr.
@@ -140,6 +142,7 @@ namespace region
                          const std::vector<RegionPtr> &toProcess,
                          std::unordered_set<Region, RegionHash> &filteredRegions,
                          std::vector<RegionPtr> &filteredRegionsPtr,
+                         const std::unordered_set<Region, RegionHash> &intersectionSet,
                          bool skipPredecessorsInSetG) const;
 
 
