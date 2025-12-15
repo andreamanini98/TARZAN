@@ -93,6 +93,17 @@ namespace parser
         }
     } comp_op;
 
+    inline struct p_sym : x3::symbols<players_sym>
+    {
+        p_sym()
+        {
+            auto &self = add
+                    ("c", CONTROLLER)
+                    ("e", ENVIRONMENT);
+            (void) self;
+        }
+    } p_sym;
+
     inline struct io_act : x3::symbols<in_out_act>
     {
         io_act()
@@ -278,7 +289,7 @@ namespace parser
 
     inline auto arena_loc_rule_def =
             lit('<')
-            > lit("player") > lit(':') > (x3::char_('c') | x3::char_('e'))
+            > lit("player") > lit(':') > p_sym
             > lit(',') > locationContent_rule
             > lit('>');
 

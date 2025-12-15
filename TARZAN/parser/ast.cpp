@@ -717,9 +717,9 @@ absl::btree_map<std::string, int> timed_automaton::ast::timedArena::getVariables
 }
 
 
-absl::flat_hash_map<int, char> timed_automaton::ast::timedArena::mapLocationsToPlayers(const std::unordered_map<std::string, int> &locToIntMap) const
+absl::flat_hash_map<int, players_sym> timed_automaton::ast::timedArena::mapLocationsToPlayers(const std::unordered_map<std::string, int> &locToIntMap) const
 {
-    absl::flat_hash_map<int, char> res{};
+    absl::flat_hash_map<int, players_sym> res{};
 
     for (const auto &[locName, locContent]: locations)
         res[locToIntMap.at(locName)] = locContent.first;

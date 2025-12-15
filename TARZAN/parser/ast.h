@@ -5,6 +5,7 @@
 #include "enums/boolean_op_enum.h"
 #include "enums/comparison_op_enum.h"
 #include "enums/input_output_action_enum.h"
+#include "enums/players_enum.h"
 #include "enums/cltloc_op_enum.h"
 
 #include <vector>
@@ -535,7 +536,7 @@ namespace timed_automaton::ast
 
 
     // Defining the map to hold Timed Arenas locations.
-    using arena_loc = std::pair<char, locationContent>;
+    using arena_loc = std::pair<players_sym, locationContent>;
     using arena_loc_pair = std::pair<std::string, arena_loc>;
     using arena_loc_map = std::unordered_map<std::string, arena_loc>;
 
@@ -686,7 +687,7 @@ namespace timed_automaton::ast
          *
          * @remark Arena-specific function!
          */
-        [[nodiscard]] absl::flat_hash_map<int, char> mapLocationsToPlayers(const std::unordered_map<std::string, int> &locToIntMap) const;
+        [[nodiscard]] absl::flat_hash_map<int, players_sym> mapLocationsToPlayers(const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
         [[nodiscard]] std::string to_string() const;
