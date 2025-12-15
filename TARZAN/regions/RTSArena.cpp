@@ -139,6 +139,10 @@ void region::RTSArena::omegaFilterSerial(const std::unordered_set<Region, Region
             if (setG.contains(reg))
                 continue;
 
+            // If a region does not belong to the intersection set, we do not insert it into filteredRegions and filteredRegionsPtr.
+            if (!intersectionSet.empty() && !intersectionSet.contains(reg))
+                continue;
+
             bool isRegionValid{};
             const std::vector<transition> &regOutTransitions = outTransitions[reg.getLocation()];
 
@@ -192,8 +196,7 @@ void region::RTSArena::omegaFilterSerial(const std::unordered_set<Region, Region
 
                 if (allTransitionsValid)
                 {
-                    // A region is valid if intersectionSet is empty (no filtering) or if the region is in intersectionSet.
-                    isRegionValid = intersectionSet.empty() || intersectionSet.contains(reg);
+                    isRegionValid = true;
                     break;
                 }
             }
@@ -241,7 +244,8 @@ void region::RTSArena::omegaFilter(const std::unordered_set<Region, RegionHash> 
     }
 
 #pragma omp parallel for if(toProcess.size() >= parallelThreshold) schedule(dynamic) default(none) \
-shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, threadLocalRegions, inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants)
+shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, threadLocalRegions), \
+shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants)
     for (int i = 0; i < static_cast<int>(toProcess.size()); i++) // NOLINT(modernize-loop-convert)
     {
         // Getting the current region to process and its incoming transitions.
@@ -252,11 +256,15 @@ shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, threadLocalRegi
         // ReSharper disable once CppTooWideScopeInitStatement
         const std::vector<Region> discPreds = currentRegion.getImmediateDiscretePredecessors(currTransitions, clocksIndices, locationsToInt, maxConstants);
 
-        // Processing each discrete predecessor to see if it can be inserted in setG and toProcess.
+        // Processing each discrete predecessor to see if it can be inserted in filteredRegions and filteredRegionsPtr.
         for (const auto &reg: discPreds)
         {
             // If skipPredecessorsInSetG is true and the predecessor is already in setG, skip it.
             if (skipPredecessorsInSetG && setG.contains(reg))
+                continue;
+
+            // If a region does not belong to the intersection set, we do not insert it into filteredRegions and filteredRegionsPtr.
+            if (!intersectionSet.empty() && !intersectionSet.contains(reg))
                 continue;
 
             bool isRegionValid{};
@@ -314,9 +322,179 @@ shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, threadLocalRegi
 
                 if (allTransitionsValid)
                 {
-                    // A region is valid if intersectionSet is empty (no filtering) or if the region is in intersectionSet.
-                    isRegionValid = intersectionSet.empty() || intersectionSet.contains(reg);
+                    isRegionValid = true;
                     break;
+                }
+            }
+
+            if (isRegionValid)
+            {
+#ifdef _OPENMP
+                threadLocalRegions[omp_get_thread_num()].push_back(reg);
+#else
+                threadLocalRegions[0].push_back(reg);
+#endif
+            }
+        }
+    }
+
+    // Sequential merge of thread-local results
+    for (const auto &localRegions: threadLocalRegions)
+    {
+        for (const auto &reg: localRegions)
+        {
+            // ReSharper disable once CppTooWideScopeInitStatement
+            auto [iter, inserted] = filteredRegions.insert(reg);
+            if (inserted)
+                filteredRegionsPtr.push_back(&*iter);
+        }
+    }
+}
+
+
+void region::RTSArena::deltaFilterSerial(const std::unordered_set<Region, RegionHash> &setG,
+                                         const std::vector<RegionPtr> &toProcess,
+                                         std::unordered_set<Region, RegionHash> &filteredRegions,
+                                         std::vector<RegionPtr> &filteredRegionsPtr,
+                                         const std::unordered_set<Region, RegionHash> &intersectionSet) const
+{
+    for (const auto &toProc: toProcess)
+    {
+        // Getting the current region to process.
+        const Region &currentRegion = *toProc;
+
+        // We collect every immediate delay predecessor that we filter later based on the delta filter requirements.
+        // ReSharper disable once CppTooWideScopeInitStatement
+        const std::vector<Region> delayPreds = currentRegion.getImmediateDelayPredecessors();
+
+        // Processing each immediate delay predecessor to see if it can be inserted in filteredRegions and filteredRegionsPtr.
+        for (const auto &reg: delayPreds)
+        {
+            if (setG.contains(reg))
+                continue;
+
+            // If a region does not belong to the intersection set, we do not insert it into filteredRegions and filteredRegionsPtr.
+            if (!intersectionSet.empty() && !intersectionSet.contains(reg))
+                continue;
+
+            bool isRegionValid = true;
+
+            // CONTROLLER regions only need to pass the intersectionSet check (already done above).
+            // ENVIRONMENT regions must additionally guarantee that all delay successors lead to setG.
+            if (locationsToPlayers.at(reg.getLocation()) != CONTROLLER)
+            {
+                Region oldDelaySucc = reg;
+                // ReSharper disable once CppTooWideScopeInitStatement
+                Region newDelaySucc = reg.getImmediateDelaySuccessor(maxConstants);
+
+                if (oldDelaySucc == newDelaySucc)
+                    isRegionValid = setG.contains(reg);
+                else
+                {
+                    // The loop continues until a region in which all clocks are unbounded is reached.
+                    while (oldDelaySucc != newDelaySucc)
+                    {
+                        if (!setG.contains(newDelaySucc))
+                        {
+                            isRegionValid = false;
+                            break;
+                        }
+                        oldDelaySucc = newDelaySucc;
+                        newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
+                    }
+                }
+            }
+
+            if (isRegionValid)
+            {
+                // ReSharper disable once CppTooWideScopeInitStatement
+                auto [iter, inserted] = filteredRegions.insert(reg);
+                // Only add to filteredRegionsPtr if it's a new region.
+                if (inserted)
+                    filteredRegionsPtr.push_back(&*iter);
+            }
+        }
+    }
+}
+
+
+void region::RTSArena::deltaFilter(const std::unordered_set<Region, RegionHash> &setG,
+                                   const std::vector<RegionPtr> &toProcess,
+                                   std::unordered_set<Region, RegionHash> &filteredRegions,
+                                   std::vector<RegionPtr> &filteredRegionsPtr,
+                                   const std::unordered_set<Region, RegionHash> &intersectionSet,
+                                   bool skipPredecessorsInSetG) const
+{
+    constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
+
+    // Thread-local storage for valid predecessors.
+#ifdef _OPENMP
+    std::vector<std::vector<Region>> threadLocalRegions(omp_get_max_threads());
+#else
+    std::vector<std::vector<Region>> threadLocalRegions(1);
+#endif
+
+    // Reserve space to reduce allocations.
+    if (toProcess.size() >= parallelThreshold)
+    {
+#ifdef _OPENMP
+        const size_t estimatedSize = toProcess.size() / omp_get_max_threads();
+#else
+        const size_t estimatedSize = toProcess.size();
+#endif
+
+        for (auto &vec: threadLocalRegions)
+            vec.reserve(estimatedSize);
+    }
+
+#pragma omp parallel for if(toProcess.size() >= parallelThreshold) schedule(dynamic) default(none) \
+shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, threadLocalRegions), \
+shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants, locationsToPlayers)
+    for (int i = 0; i < static_cast<int>(toProcess.size()); i++) // NOLINT(modernize-loop-convert)
+    {
+        // Getting the current region to process.
+        const Region &currentRegion = *toProcess[i];
+
+        // We collect every immediate delay predecessor that we filter later based on the delta filter requirements.
+        // ReSharper disable once CppTooWideScopeInitStatement
+        const std::vector<Region> delayPreds = currentRegion.getImmediateDelayPredecessors();
+
+        // Processing each immediate delay predecessor to see if it can be inserted in filteredRegions and filteredRegionsPtr.
+        for (const auto &reg: delayPreds)
+        {
+            // If skipPredecessorsInSetG is true and the predecessor is already in setG, skip it.
+            if (skipPredecessorsInSetG && setG.contains(reg))
+                continue;
+
+            // If a region does not belong to the intersection set, we do not insert it into filteredRegions and filteredRegionsPtr.
+            if (!intersectionSet.empty() && !intersectionSet.contains(reg))
+                continue;
+
+            bool isRegionValid = true;
+
+            // CONTROLLER regions only need to pass the intersectionSet check (already done above).
+            // ENVIRONMENT regions must additionally guarantee that all delay successors lead to setG.
+            if (locationsToPlayers.at(reg.getLocation()) != CONTROLLER)
+            {
+                Region oldDelaySucc = reg;
+                // ReSharper disable once CppTooWideScopeInitStatement
+                Region newDelaySucc = reg.getImmediateDelaySuccessor(maxConstants);
+
+                // Check immediate fixpoint case, only valid if reg is in setG.
+                if (oldDelaySucc == newDelaySucc)
+                    isRegionValid = setG.contains(reg);
+                else
+                {
+                    while (oldDelaySucc != newDelaySucc)
+                    {
+                        if (!setG.contains(newDelaySucc))
+                        {
+                            isRegionValid = false;
+                            break;
+                        }
+                        oldDelaySucc = newDelaySucc;
+                        newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
+                    }
                 }
             }
 

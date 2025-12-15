@@ -13,7 +13,7 @@ namespace region
 {
     class RTSArena : public RTS
     {
-        absl::flat_hash_map<int, char> locationsToPlayers{};
+        absl::flat_hash_map<int, players_sym> locationsToPlayers{};
 
 
         /**
@@ -90,6 +90,7 @@ namespace region
          * @param formula the pure CLTLoc formula containing locations and clock constraints.
          * @return an unordered set of regions satisfying the formula's location and clock constraints.
          */
+        // TODO: fare check sugli invarianti prima di restituire le regioni.
         [[nodiscard]] std::unordered_set<Region, RegionHash> getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const;
 
 
@@ -115,7 +116,17 @@ namespace region
 
 
         /// @warning Use only in comparisons with the parallel one.
+        // TODO: fare check sugli invarianti prima di restituire le regioni.
         [[deprecated]] void omegaFilterSerial(const std::unordered_set<Region, RegionHash> &setG,
+                                              const std::vector<RegionPtr> &toProcess,
+                                              std::unordered_set<Region, RegionHash> &filteredRegions,
+                                              std::vector<RegionPtr> &filteredRegionsPtr,
+                                              const std::unordered_set<Region, RegionHash> &intersectionSet) const;
+
+
+        /// @warning Use only in comparisons with the parallel one.
+        // TODO: fare check sugli invarianti prima di restituire le regioni.
+        [[deprecated]] void deltaFilterSerial(const std::unordered_set<Region, RegionHash> &setG,
                                               const std::vector<RegionPtr> &toProcess,
                                               std::unordered_set<Region, RegionHash> &filteredRegions,
                                               std::vector<RegionPtr> &filteredRegionsPtr,
@@ -138,7 +149,34 @@ namespace region
          * @warning The function updates filteredRegions and filteredRegionsPtr.
          * @warning toProcess and filteredRegionsPtr are vectors, since we may use OpenMP parallelization.
          */
+        // TODO: fare check sugli invarianti prima di restituire le regioni.
         void omegaFilter(const std::unordered_set<Region, RegionHash> &setG,
+                         const std::vector<RegionPtr> &toProcess,
+                         std::unordered_set<Region, RegionHash> &filteredRegions,
+                         std::vector<RegionPtr> &filteredRegionsPtr,
+                         const std::unordered_set<Region, RegionHash> &intersectionSet,
+                         bool skipPredecessorsInSetG) const;
+
+
+        /**
+         * @brief Applies delta filter for backward reachability in Timed Arenas.
+         *
+         * Iteratively processes regions from toProcess, computes their immediate delay predecessors, and adds valid predecessors to filteredRegions and filteredRegionsPtr.
+         * A predecessor is valid if: (1) it is a controller region, or (2) it is an environment region and all its delay successors must lead to setG (not
+         * restricted to immediate delay successors).
+         *
+         * @param setG set of goal regions.
+         * @param toProcess vector of pointers to regions in setG that must be processed.
+         * @param filteredRegions at the end of execution, will contain the filtered discrete predecessors regions ensuring the controller can reach setG.
+         * @param filteredRegionsPtr at the end of execution, will contain the filtered discrete predecessors regions pointers ensuring the controller can reach setG.
+         * @param intersectionSet for a region to be valid, it must also belong to intersectionSet.
+         * @param skipPredecessorsInSetG if true, a predecessor already contained in setG is automatically considered valid.
+         *
+         * @warning The function updates filteredRegions and filteredRegionsPtr.
+         * @warning toProcess and filteredRegionsPtr are vectors, since we may use OpenMP parallelization.
+         */
+        // TODO: fare check sugli invarianti prima di restituire le regioni.
+        void deltaFilter(const std::unordered_set<Region, RegionHash> &setG,
                          const std::vector<RegionPtr> &toProcess,
                          std::unordered_set<Region, RegionHash> &filteredRegions,
                          std::vector<RegionPtr> &filteredRegionsPtr,

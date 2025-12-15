@@ -120,6 +120,8 @@ namespace region
          *
          * @param maxConstants the maximum constants of the Timed Automaton from which the region is derived.
          * @return a Region immediate delay successor of the current region.
+         *
+         * @warning Must check if the returned region satisfies the invariants.
          */
         [[nodiscard]] Region getImmediateDelaySuccessor(const std::vector<int> &maxConstants) const;
 
@@ -129,6 +131,8 @@ namespace region
          *
          * @return a std::vector<Region> containing immediate delay predecessors of the current region.
          *         If no predecessors can be computed, returns an empty std::vector.
+         *
+         * @warning Must check if the returned regions satisfy the invariants.
          */
         [[nodiscard]] std::vector<Region> getImmediateDelayPredecessors() const;
 
@@ -142,6 +146,7 @@ namespace region
          * @return a std::vector<Region> containing immediate discrete successors of the current region.
          *         If no successors can be computed, returns an empty std::vector.
          *
+         * @warning Must check if the returned regions satisfy the invariants.
          * @warning The region must hold the current values of integer variables in order for the integer evaluation to be performed.
          *          These values can either be directly contained if using RTS or must be set if using RTSNetwork.
          * @warning The transitions parameter must contain all and only the transitions exiting from the location of the region.
@@ -218,6 +223,7 @@ namespace region
          * @return a std::vector<Region> containing immediate discrete predecessors of the current region.
          *         If no successors can be computed, returns an empty std::vector.
          *
+         * @warning Must check if the returned regions satisfy the invariants.
          * @warning Integer variables are not considered when computing discrete predecessors.
          * @warning The transitions parameter must contain all and only the transitions entering the location of the region.
          *          To provide such transitions, the getInTransitions() function of a Timed Automaton can be used.
@@ -250,6 +256,7 @@ namespace region
          *
          * @throws std::invalid_argument if the locations vector is empty.
          *
+         * @warning Must check if the returned regions satisfy the invariants.
          * @warning Empty locations vector is not yet fully implemented.
          * @warning It is assumed that clock constraints are compatible with the given parameters of the underlying Timed Automaton / Arena.
          */
