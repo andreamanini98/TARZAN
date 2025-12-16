@@ -156,7 +156,7 @@ void testOmegaFilter()
 
     const region::RTSArena rts(arena, phi);
 
-    std::cout << rts.to_string() << std::endl;
+    // std::cout << rts.to_string() << std::endl;
 
     std::vector<std::unordered_set<region::Region, region::RegionHash>> startingRegions = rts.getRegionsFromGeneralCLTLocFormula(phi);
 
@@ -272,7 +272,7 @@ void testDeltaFilter()
 
     const region::RTSArena rts(arena, phi);
 
-    std::cout << rts.to_string() << std::endl;
+    // std::cout << rts.to_string() << std::endl;
 
     // Starting the timer for measuring computation.
     const auto start0 = std::chrono::high_resolution_clock::now();
@@ -389,7 +389,7 @@ void testDeltaFilter()
 
 int main()
 {
-    // testOmegaFilter();
+    testOmegaFilter();
 
     testDeltaFilter();
 

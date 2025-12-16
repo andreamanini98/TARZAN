@@ -158,6 +158,11 @@ void region::RTSArena::omegaFilterSerial(const std::unordered_set<Region, Region
             if (!intersectionSet.empty() && !intersectionSet.contains(reg))
                 continue;
 
+            // For a discrete predecessor to be valid, it must satisfy the invariants.
+            if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
+                if (!isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices))
+                    continue;
+
             bool isRegionValid{};
             const std::vector<transition> &regOutTransitions = outTransitions[reg.getLocation()];
 
@@ -281,6 +286,11 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
             // If a region does not belong to the intersection set, we do not insert it into filteredRegions and filteredRegionsPtr.
             if (!intersectionSet.empty() && !intersectionSet.contains(reg))
                 continue;
+
+            // For a discrete predecessor to be valid, it must satisfy the invariants.
+            if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
+                if (!isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices))
+                    continue;
 
             bool isRegionValid{};
             const std::vector<transition> &regOutTransitions = outTransitions[reg.getLocation()];
