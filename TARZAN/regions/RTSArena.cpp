@@ -381,7 +381,8 @@ void region::RTSArena::deltaFilterSerial(const std::unordered_set<Region, Region
                                          const std::vector<RegionPtr> &toProcess,
                                          std::unordered_set<Region, RegionHash> &filteredRegions,
                                          std::vector<RegionPtr> &filteredRegionsPtr,
-                                         const std::unordered_set<Region, RegionHash> &intersectionSet) const
+                                         const std::unordered_set<Region, RegionHash> &intersectionSet,
+                                         const bool checkAllSuccessorsInvariants) const
 {
     for (const auto &toProc: toProcess)
     {
@@ -401,6 +402,11 @@ void region::RTSArena::deltaFilterSerial(const std::unordered_set<Region, Region
             // If a region does not belong to the intersection set, we do not insert it into filteredRegions and filteredRegionsPtr.
             if (!intersectionSet.empty() && !intersectionSet.contains(reg))
                 continue;
+
+            // For an immediate delay predecessor to be valid, it must satisfy the invariants.
+            if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
+                if (!isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices))
+                    continue;
 
             bool isRegionValid = true;
 
@@ -424,6 +430,15 @@ void region::RTSArena::deltaFilterSerial(const std::unordered_set<Region, Region
                             isRegionValid = false;
                             break;
                         }
+
+                        if (checkAllSuccessorsInvariants)
+                            if (const auto it = invariants.find(newDelaySucc.getLocation()); it != invariants.end())
+                                if (!isInvariantSatisfied(it->second, newDelaySucc.getClockValuation(), clocksIndices))
+                                {
+                                    isRegionValid = false;
+                                    break;
+                                }
+
                         oldDelaySucc = newDelaySucc;
                         newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
                     }
@@ -448,7 +463,8 @@ void region::RTSArena::deltaFilter(const std::unordered_set<Region, RegionHash> 
                                    std::unordered_set<Region, RegionHash> &filteredRegions,
                                    std::vector<RegionPtr> &filteredRegionsPtr,
                                    const std::unordered_set<Region, RegionHash> &intersectionSet,
-                                   bool skipPredecessorsInSetG) const
+                                   const bool skipPredecessorsInSetG,
+                                   const bool checkAllSuccessorsInvariants) const
 {
     constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
 
@@ -473,7 +489,7 @@ void region::RTSArena::deltaFilter(const std::unordered_set<Region, RegionHash> 
     }
 
 #pragma omp parallel for if(toProcess.size() >= parallelThreshold) schedule(dynamic) default(none) \
-shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, threadLocalRegions), \
+shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, checkAllSuccessorsInvariants, threadLocalRegions), \
 shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants, locationsToPlayers)
     for (int i = 0; i < static_cast<int>(toProcess.size()); i++) // NOLINT(modernize-loop-convert)
     {
@@ -494,6 +510,11 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
             // If a region does not belong to the intersection set, we do not insert it into filteredRegions and filteredRegionsPtr.
             if (!intersectionSet.empty() && !intersectionSet.contains(reg))
                 continue;
+
+            // For an immediate delay predecessor to be valid, it must satisfy the invariants.
+            if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
+                if (!isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices))
+                    continue;
 
             bool isRegionValid = true;
 
@@ -517,6 +538,15 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                             isRegionValid = false;
                             break;
                         }
+
+                        if (checkAllSuccessorsInvariants)
+                            if (const auto it = invariants.find(newDelaySucc.getLocation()); it != invariants.end())
+                                if (!isInvariantSatisfied(it->second, newDelaySucc.getClockValuation(), clocksIndices))
+                                {
+                                    isRegionValid = false;
+                                    break;
+                                }
+
                         oldDelaySucc = newDelaySucc;
                         newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
                     }

@@ -308,7 +308,7 @@ void testDeltaFilter()
     // Starting the timer for measuring computation.
     const auto start = std::chrono::high_resolution_clock::now();
 
-    rts.deltaFilterSerial(setG, toProcess, filteredRegions, filteredRegionsPtr, {});
+    rts.deltaFilterSerial(setG, toProcess, filteredRegions, filteredRegionsPtr, {}, false);
 
     // Ending the timer for measuring computation.
     const auto end = std::chrono::high_resolution_clock::now();
@@ -342,7 +342,7 @@ void testDeltaFilter()
     const auto start1 = std::chrono::high_resolution_clock::now();
 #endif
 
-    rts.deltaFilter(setG, toProcess, filteredRegions1, filteredRegionsPtr1, {}, true);
+    rts.deltaFilter(setG, toProcess, filteredRegions1, filteredRegionsPtr1, {}, true, false);
 
     // Ending the timer for measuring computation.
 #ifdef _OPENMP

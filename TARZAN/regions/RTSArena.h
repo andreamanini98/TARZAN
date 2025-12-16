@@ -121,7 +121,6 @@ namespace region
 
 
         /// @warning Use only in comparisons with the parallel one.
-        // TODO: fare check sugli invarianti prima di restituire le regioni.
         [[deprecated]] void omegaFilterSerial(const std::unordered_set<Region, RegionHash> &setG,
                                               const std::vector<RegionPtr> &toProcess,
                                               std::unordered_set<Region, RegionHash> &filteredRegions,
@@ -130,12 +129,12 @@ namespace region
 
 
         /// @warning Use only in comparisons with the parallel one.
-        // TODO: fare check sugli invarianti prima di restituire le regioni.
         [[deprecated]] void deltaFilterSerial(const std::unordered_set<Region, RegionHash> &setG,
                                               const std::vector<RegionPtr> &toProcess,
                                               std::unordered_set<Region, RegionHash> &filteredRegions,
                                               std::vector<RegionPtr> &filteredRegionsPtr,
-                                              const std::unordered_set<Region, RegionHash> &intersectionSet) const;
+                                              const std::unordered_set<Region, RegionHash> &intersectionSet,
+                                              bool checkAllSuccessorsInvariants) const;
 
 
         /**
@@ -154,7 +153,6 @@ namespace region
          * @warning The function updates filteredRegions and filteredRegionsPtr.
          * @warning toProcess and filteredRegionsPtr are vectors, since we may use OpenMP parallelization.
          */
-        // TODO: fare check sugli invarianti prima di restituire le regioni.
         void omegaFilter(const std::unordered_set<Region, RegionHash> &setG,
                          const std::vector<RegionPtr> &toProcess,
                          std::unordered_set<Region, RegionHash> &filteredRegions,
@@ -176,17 +174,18 @@ namespace region
          * @param filteredRegionsPtr at the end of execution, will contain the filtered discrete predecessors regions pointers ensuring the controller can reach setG.
          * @param intersectionSet for a region to be valid, it must also belong to intersectionSet.
          * @param skipPredecessorsInSetG if true, a predecessor already contained in setG is automatically considered valid.
+         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
          *
          * @warning The function updates filteredRegions and filteredRegionsPtr.
          * @warning toProcess and filteredRegionsPtr are vectors, since we may use OpenMP parallelization.
          */
-        // TODO: fare check sugli invarianti prima di restituire le regioni.
         void deltaFilter(const std::unordered_set<Region, RegionHash> &setG,
                          const std::vector<RegionPtr> &toProcess,
                          std::unordered_set<Region, RegionHash> &filteredRegions,
                          std::vector<RegionPtr> &filteredRegionsPtr,
                          const std::unordered_set<Region, RegionHash> &intersectionSet,
-                         bool skipPredecessorsInSetG) const;
+                         bool skipPredecessorsInSetG,
+                         bool checkAllSuccessorsInvariants) const;
 
 
         [[nodiscard]] std::string to_string() const;
