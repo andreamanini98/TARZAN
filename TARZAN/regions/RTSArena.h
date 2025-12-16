@@ -35,6 +35,8 @@ namespace region
          *
          * @throws NestedCLTLocFormulaException if depth >= 1 when processing unary or binary operators (nested formulae not supported).
          * @throws std::logic_error if an unhandled formula type is encountered.
+         *
+         * @warning Returned regions satisfy the invariants of the underlying Timed Arena.
          */
         [[nodiscard]] std::vector<std::unordered_set<Region, RegionHash>> getRegionsFromGeneralCLTLocFormulaWithDepth(
             const cltloc::ast::generalCLTLocFormula &formula, int depth) const;
@@ -89,8 +91,9 @@ namespace region
          *
          * @param formula the pure CLTLoc formula containing locations and clock constraints.
          * @return an unordered set of regions satisfying the formula's location and clock constraints.
+         *
+         * @warning Returned regions satisfy the invariants of the underlying Timed Arena.
          */
-        // TODO: fare check sugli invarianti prima di restituire le regioni.
         [[nodiscard]] std::unordered_set<Region, RegionHash> getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const;
 
 
@@ -110,6 +113,8 @@ namespace region
          *
          * @throws NestedCLTLocFormulaException if nested formulae with depth > 0 are encountered.
          * @throws std::logic_error if an unhandled formula type is encountered.
+         *
+         * @warning Returned regions satisfy the invariants of the underlying Timed Arena.
          */
         [[nodiscard]] std::vector<std::unordered_set<Region, RegionHash>> getRegionsFromGeneralCLTLocFormula(
             const cltloc::ast::generalCLTLocFormula &formula) const;

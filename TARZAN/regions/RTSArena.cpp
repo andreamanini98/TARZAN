@@ -24,7 +24,22 @@ std::unordered_set<region::Region, region::RegionHash> region::RTSArena::getRegi
 #endif
 
     const int numOfClocks = static_cast<int>(clocksIndices.size());
-    return Region::generateRegionsFromConstraints(formula.locations, formula.clockConstraints, clocksIndices, locationsToInt, maxConstants, numOfClocks);
+
+    std::unordered_set<Region, RegionHash> res = Region::generateRegionsFromConstraints(formula.locations,
+                                                                                        formula.clockConstraints,
+                                                                                        clocksIndices,
+                                                                                        locationsToInt,
+                                                                                        maxConstants,
+                                                                                        numOfClocks);
+
+    // Removing regions that do not satisfy the invariants of the Timed Arena.
+    std::erase_if(res, [this](const Region &reg) {
+        if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
+            return !isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices);
+        return false; // No invariant = keep the region.
+    });
+
+    return res;
 }
 
 

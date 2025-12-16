@@ -274,7 +274,15 @@ void testDeltaFilter()
 
     std::cout << rts.to_string() << std::endl;
 
+    // Starting the timer for measuring computation.
+    const auto start0 = std::chrono::high_resolution_clock::now();
+
     std::vector<std::unordered_set<region::Region, region::RegionHash>> startingRegions = rts.getRegionsFromGeneralCLTLocFormula(phi);
+
+    // Ending the timer for measuring computation.
+    const auto end0 = std::chrono::high_resolution_clock::now();
+    const auto duration0 = std::chrono::duration_cast<std::chrono::microseconds>(end0 - start0);
+    std::cout << "\n\n\nTotal getRegionsFromGeneralCLTLocFormula time       : " << duration0.count() << " microseconds." << std::endl;
 
     std::vector<RegionPtr> toProcess{};
 
@@ -381,7 +389,7 @@ void testDeltaFilter()
 
 int main()
 {
-    testOmegaFilter();
+    // testOmegaFilter();
 
     testDeltaFilter();
 
