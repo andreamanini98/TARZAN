@@ -7,6 +7,7 @@
 
 // A pointer to a region object.
 using RegionPtr = const region::Region *;
+using regionSet = std::unordered_set<region::Region, region::RegionHash>;
 
 
 namespace region
@@ -38,8 +39,8 @@ namespace region
          *
          * @warning Returned regions satisfy the invariants of the underlying Timed Arena.
          */
-        [[nodiscard]] inline std::vector<std::unordered_set<Region, RegionHash>> getRegionsFromGeneralCLTLocFormulaWithDepth(
-            const cltloc::ast::generalCLTLocFormula &formula, int depth) const;
+        [[nodiscard]] inline std::vector<regionSet> getRegionsFromGeneralCLTLocFormulaWithDepth(const cltloc::ast::generalCLTLocFormula &formula,
+                                                                                                int depth) const;
 
 
         /**
@@ -51,10 +52,7 @@ namespace region
          * @param skipPredecessorsInSetG if true, a predecessor already contained in setG is automatically considered valid.
          * @return true if the region must be ignored, false otherwise.
          */
-        [[nodiscard]] inline bool skipRegion(const Region &reg,
-                                             const std::unordered_set<Region, RegionHash> &setG,
-                                             const std::unordered_set<Region, RegionHash> &intersectionSet,
-                                             bool skipPredecessorsInSetG) const;
+        [[nodiscard]] inline bool skipRegion(const Region &reg, const regionSet &setG, const regionSet &intersectionSet, bool skipPredecessorsInSetG) const;
 
 
         /**
@@ -62,13 +60,10 @@ namespace region
          *
          * @param threadLocalRegions a vector containing the regions to be merged.
          * @param filteredRegions at the end of execution, will contain the filtered discrete predecessors regions ensuring the controller can reach setG.
-         * @param filteredRegionsPtr at the end of execution, will contain the filtered discrete predecessors regions pointers ensuring the controller can reach setG.
          *
-         * @warning The function updates filteredRegions and filteredRegionsPtr.
+         * @warning The function updates filteredRegions.
          */
-        static inline void mergeResults(const std::vector<std::vector<Region>> &threadLocalRegions,
-                                        std::unordered_set<Region, RegionHash> &filteredRegions,
-                                        std::vector<RegionPtr> &filteredRegionsPtr);
+        static inline void mergeResults(const std::vector<std::vector<Region>> &threadLocalRegions, regionSet &filteredRegions);
 
 
     public:
@@ -123,7 +118,7 @@ namespace region
          *
          * @warning Returned regions satisfy the invariants of the underlying Timed Arena.
          */
-        [[nodiscard]] std::unordered_set<Region, RegionHash> getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const;
+        [[nodiscard]] regionSet getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const;
 
 
         /**
@@ -145,76 +140,83 @@ namespace region
          *
          * @warning Returned regions satisfy the invariants of the underlying Timed Arena.
          */
-        [[nodiscard]] std::vector<std::unordered_set<Region, RegionHash>> getRegionsFromGeneralCLTLocFormula(
-            const cltloc::ast::generalCLTLocFormula &formula) const;
-
-
-        /// @warning Use only in comparisons with the parallel one.
-        [[deprecated]] void omegaFilterSerial(const std::unordered_set<Region, RegionHash> &setG,
-                                              const std::vector<RegionPtr> &toProcess,
-                                              std::unordered_set<Region, RegionHash> &filteredRegions,
-                                              std::vector<RegionPtr> &filteredRegionsPtr,
-                                              const std::unordered_set<Region, RegionHash> &intersectionSet) const;
-
-
-        /// @warning Use only in comparisons with the parallel one.
-        [[deprecated]] void deltaFilterSerial(const std::unordered_set<Region, RegionHash> &setG,
-                                              const std::vector<RegionPtr> &toProcess,
-                                              std::unordered_set<Region, RegionHash> &filteredRegions,
-                                              std::vector<RegionPtr> &filteredRegionsPtr,
-                                              const std::unordered_set<Region, RegionHash> &intersectionSet,
-                                              bool checkAllSuccessorsInvariants) const;
+        [[nodiscard]] std::vector<regionSet> getRegionsFromGeneralCLTLocFormula(const cltloc::ast::generalCLTLocFormula &formula) const;
 
 
         /**
          * @brief Applies omega filter for backward reachability in Timed Arenas.
          *
-         * Iteratively processes regions from toProcess, computes their discrete predecessors, and adds valid predecessors to filteredRegions and filteredRegionsPtr.
+         * Iteratively processes regions from toProcess, computes their discrete predecessors, and adds valid predecessors to filteredRegions.
          * A predecessor is valid if: (1) a transition with a unique action leads to setG, or (2) all transitions with a non-unique action lead to setG.
          *
          * @param setG set of goal regions.
          * @param toProcess vector of pointers to regions in setG that must be processed.
          * @param filteredRegions at the end of execution, will contain the filtered discrete predecessors regions ensuring the controller can reach setG.
-         * @param filteredRegionsPtr at the end of execution, will contain the filtered discrete predecessors regions pointers ensuring the controller can reach setG.
          * @param intersectionSet for a region to be valid, it must also belong to intersectionSet.
          * @param skipPredecessorsInSetG if true, a predecessor already contained in setG is automatically considered valid.
          *
-         * @warning The function updates filteredRegions and filteredRegionsPtr.
-         * @warning toProcess and filteredRegionsPtr are vectors, since we may use OpenMP parallelization.
+         * @warning The function updates filteredRegions.
+         * @warning toProcess is a vector, since we may use OpenMP parallelization.
          */
-        void omegaFilter(const std::unordered_set<Region, RegionHash> &setG,
+        void omegaFilter(const regionSet &setG,
                          const std::vector<RegionPtr> &toProcess,
-                         std::unordered_set<Region, RegionHash> &filteredRegions,
-                         std::vector<RegionPtr> &filteredRegionsPtr,
-                         const std::unordered_set<Region, RegionHash> &intersectionSet,
+                         regionSet &filteredRegions,
+                         const regionSet &intersectionSet,
                          bool skipPredecessorsInSetG) const;
 
 
         /**
          * @brief Applies delta filter for backward reachability in Timed Arenas.
          *
-         * Iteratively processes regions from toProcess, computes their immediate delay predecessors, and adds valid predecessors to filteredRegions and filteredRegionsPtr.
+         * Iteratively processes regions from toProcess, computes their immediate delay predecessors, and adds valid predecessors to filteredRegions.
          * A predecessor is valid if: (1) it is a controller region, or (2) it is an environment region and all its delay successors must lead to setG (not
          * restricted to immediate delay successors).
          *
          * @param setG set of goal regions.
          * @param toProcess vector of pointers to regions in setG that must be processed.
          * @param filteredRegions at the end of execution, will contain the filtered discrete predecessors regions ensuring the controller can reach setG.
-         * @param filteredRegionsPtr at the end of execution, will contain the filtered discrete predecessors regions pointers ensuring the controller can reach setG.
          * @param intersectionSet for a region to be valid, it must also belong to intersectionSet.
          * @param skipPredecessorsInSetG if true, a predecessor already contained in setG is automatically considered valid.
          * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
          *
-         * @warning The function updates filteredRegions and filteredRegionsPtr.
-         * @warning toProcess and filteredRegionsPtr are vectors, since we may use OpenMP parallelization.
+         * @warning The function updates filteredRegions.
+         * @warning toProcess is a vector, since we may use OpenMP parallelization.
          */
-        void deltaFilter(const std::unordered_set<Region, RegionHash> &setG,
+        void deltaFilter(const regionSet &setG,
                          const std::vector<RegionPtr> &toProcess,
-                         std::unordered_set<Region, RegionHash> &filteredRegions,
-                         std::vector<RegionPtr> &filteredRegionsPtr,
-                         const std::unordered_set<Region, RegionHash> &intersectionSet,
+                         regionSet &filteredRegions,
+                         const regionSet &intersectionSet,
                          bool skipPredecessorsInSetG,
                          bool checkAllSuccessorsInvariants) const;
+
+
+        /**
+         * @brief Determines whether the controller wins in a timed reachability game where the winning condition is: DIAMOND phi.
+         *
+         * @param setG set of goal regions.
+         * @param toProcess vector of pointers to regions in setG that must be processed.
+         * @param maxIter the maximum number of iterations to perform; if reached, terminate even if the fixpoint has not been reached.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @warning The function updates filteredRegions and filteredRegionsPtr.
+         */
+        // TODO: creare una funzione che chiami questa base al tipo di formula cltloc che le si dà.
+        [[nodiscard]] bool timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
+
+
+        /**
+         * @brief Determines whether the controller wins in a timed reachability game where the winning condition is: phi UNTIL psi.
+         *
+         * @param setPhi for regions to be valid, they must also be contained in this set.
+         * @param setG set of goal regions.
+         * @param toProcess vector of pointers to regions in setG that must be processed.
+         * @param maxIter the maximum number of iterations to perform; if reached, terminate even if the fixpoint has not been reached.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @warning The function updates filteredRegions and filteredRegionsPtr.
+         */
+        // TODO: creare una funzione che chiami questa base al tipo di formula cltloc che le si dà.
+        [[nodiscard]] bool timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
 
 
         [[nodiscard]] std::string to_string() const;

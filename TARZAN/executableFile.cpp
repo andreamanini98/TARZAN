@@ -6,9 +6,7 @@
 #include <omp.h>
 #endif
 
-#include "regions/networkOfTA/RTSNetwork.h"
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
-#include "TARZAN/utilities/partition_utilities.h"
 #include "TARZAN/utilities/file_utilities.h"
 #include "TARZAN/headers/library.h"
 #include "TARZAN/parser/ast.h"
@@ -145,253 +143,75 @@ void testGetRegionsFromGeneralCLTLocFormula()
 }
 
 
-void testOmegaFilter()
+void testProductionCellLose()
 {
-    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/";
-    const std::string arenaName = "arena0.txt";
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/";
+    const std::string arenaName = "production_cell.txt";
     const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
 
-    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/CLTLoc_formulae/formula1.txt";
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/reachability0.txt";
     const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
 
     const region::RTSArena rts(arena, phi);
 
+    // std::cout << phi.to_string() << std::endl;
     // std::cout << rts.to_string() << std::endl;
 
     std::vector<std::unordered_set<region::Region, region::RegionHash>> startingRegions = rts.getRegionsFromGeneralCLTLocFormula(phi);
 
+    if (startingRegions.size() > 1)
+        std::exit(EXIT_FAILURE);
+
+    auto &setG = startingRegions[0];
     std::vector<RegionPtr> toProcess{};
-
-    assert(startingRegions.size() > 1);
-
-    auto &setG = startingRegions[1];
-
-    // const auto &intersectionSet = startingRegions[0];
 
     toProcess.reserve(setG.size());
     for (const auto &region: setG)
         toProcess.push_back(&region);
 
-    std::cout << "\n\n\n\nSTARTING SERIAL EXECUTION\n\n";
-
-    std::cout << "Before omega filter: " << std::endl;
-    std::cout << "setG size: " << setG.size() << std::endl;
-    std::cout << "toProcess size: " << toProcess.size() << std::endl;
-
-    std::unordered_set<region::Region, region::RegionHash> filteredRegions{};
-    std::vector<RegionPtr> filteredRegionsPtr{};
-
-    // Starting the timer for measuring computation.
-    const auto start = std::chrono::high_resolution_clock::now();
-
-    rts.omegaFilterSerial(setG, toProcess, filteredRegions, filteredRegionsPtr, {});
-
-    // Ending the timer for measuring computation.
-    const auto end = std::chrono::high_resolution_clock::now();
-    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
-
-    std::cout << "After omega filter: " << std::endl;
-    std::cout << "setG size: " << setG.size() << std::endl;
-    std::cout << "filteredRegions size: " << filteredRegions.size() << std::endl;
-    std::cout << "toProcess size: " << toProcess.size() << std::endl;
-    std::cout << "filteredRegionsPtr size: " << filteredRegionsPtr.size() << std::endl;
-
-    //for (const auto &reg: setG)
-    //    std::cout << reg.toString() << std::endl;
-    //for (const auto &reg: filteredRegions)
-    //    std::cout << reg.toString() << std::endl;
-
-    std::cout << "\n\nSTARTING PARALLEL EXECUTION\n\n";
-
-    std::cout << "Before omega filter: " << std::endl;
-    std::cout << "setG size: " << setG.size() << std::endl;
-    std::cout << "toProcess size: " << toProcess.size() << std::endl;
-
-    std::unordered_set<region::Region, region::RegionHash> filteredRegions1{};
-    std::vector<RegionPtr> filteredRegionsPtr1{};
-
-    // Starting the timer for measuring computation.
-#ifdef _OPENMP
-    const auto start1 = omp_get_wtime();
-#else
-    const auto start1 = std::chrono::high_resolution_clock::now();
-#endif
-
-    rts.omegaFilter(setG, toProcess, filteredRegions1, filteredRegionsPtr1, {}, true);
-
-    // Ending the timer for measuring computation.
-#ifdef _OPENMP
-    const auto end1 = omp_get_wtime();
-    const auto duration1 = end1 - start1;
-    std::cout << "Total time       : " << duration1 * 1000000 << " microseconds." << std::endl;
-#else
-    const auto end1 = std::chrono::high_resolution_clock::now();
-    const auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(end1 - start1).count();
-    std::cout << "Total time       : " << duration1 << " microseconds." << std::endl;
-#endif
-
-    std::cout << "After omega filter: " << std::endl;
-    std::cout << "setG size: " << setG.size() << std::endl;
-    std::cout << "filteredRegions1 size: " << filteredRegions1.size() << std::endl;
-    std::cout << "toProcess size: " << toProcess.size() << std::endl;
-    std::cout << "filteredRegionsPtr1 size: " << filteredRegionsPtr1.size() << std::endl;
-
-    //for (const auto &reg: setG)
-    //    std::cout << reg.toString() << std::endl;
-    //for (const auto &reg: filteredRegions1)
-    //    std::cout << reg.toString() << std::endl;
-
-    std::unordered_set<region::Region, region::RegionHash> updatedSetG{};
-    for (const auto &region: setG)
-        updatedSetG.insert(region);
-    for (const auto &region: filteredRegions)
-        updatedSetG.insert(region);
-
-    std::unordered_set<region::Region, region::RegionHash> updatedSetG1{};
-    for (const auto &region: setG)
-        updatedSetG1.insert(region);
-    for (const auto &region: filteredRegions1)
-        updatedSetG1.insert(region);
-
-    if (updatedSetG == updatedSetG1)
-        std::cout << "\nSets coincide!!!" << std::endl;
-    else
-        std::cout << "\nSets differ!!!";
+    if (rts.timedReachability(setG, toProcess, 10000))
+        std::exit(EXIT_SUCCESS);
+    std::exit(EXIT_FAILURE);
 }
 
 
-void testDeltaFilter()
+void testProductionCellWin()
 {
-    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/";
-    const std::string arenaName = "arena0.txt";
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/";
+    const std::string arenaName = "production_cell.txt";
     const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
 
-    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/CLTLoc_formulae/formula2.txt";
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/reachability1.txt";
     const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
 
     const region::RTSArena rts(arena, phi);
 
+    // std::cout << phi.to_string() << std::endl;
     // std::cout << rts.to_string() << std::endl;
-
-    // Starting the timer for measuring computation.
-    const auto start0 = std::chrono::high_resolution_clock::now();
 
     std::vector<std::unordered_set<region::Region, region::RegionHash>> startingRegions = rts.getRegionsFromGeneralCLTLocFormula(phi);
 
-    // Ending the timer for measuring computation.
-    const auto end0 = std::chrono::high_resolution_clock::now();
-    const auto duration0 = std::chrono::duration_cast<std::chrono::microseconds>(end0 - start0);
-    std::cout << "\n\n\nTotal getRegionsFromGeneralCLTLocFormula time       : " << duration0.count() << " microseconds." << std::endl;
+    if (startingRegions.size() > 1)
+        std::exit(EXIT_FAILURE);
 
+    auto &setG = startingRegions[0];
     std::vector<RegionPtr> toProcess{};
-
-    assert(startingRegions.size() > 1);
-
-    auto &setG = startingRegions[1];
-
-    // const auto &intersectionSet = startingRegions[0];
 
     toProcess.reserve(setG.size());
     for (const auto &region: setG)
         toProcess.push_back(&region);
 
-    std::cout << "\n\n\n\nSTARTING SERIAL EXECUTION\n\n";
-
-    std::cout << "Before delta filter: " << std::endl;
-    std::cout << "setG size: " << setG.size() << std::endl;
-    std::cout << "toProcess size: " << toProcess.size() << std::endl;
-
-    std::unordered_set<region::Region, region::RegionHash> filteredRegions{};
-    std::vector<RegionPtr> filteredRegionsPtr{};
-
-    // Starting the timer for measuring computation.
-    const auto start = std::chrono::high_resolution_clock::now();
-
-    rts.deltaFilterSerial(setG, toProcess, filteredRegions, filteredRegionsPtr, {}, false);
-
-    // Ending the timer for measuring computation.
-    const auto end = std::chrono::high_resolution_clock::now();
-    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
-
-    std::cout << "After delta filter: " << std::endl;
-    std::cout << "setG size: " << setG.size() << std::endl;
-    std::cout << "filteredRegions size: " << filteredRegions.size() << std::endl;
-    std::cout << "toProcess size: " << toProcess.size() << std::endl;
-    std::cout << "filteredRegionsPtr size: " << filteredRegionsPtr.size() << std::endl;
-
-    //for (const auto &reg: setG)
-    //    std::cout << reg.toString() << std::endl;
-    //for (const auto &reg: filteredRegions)
-    //    std::cout << reg.toString() << std::endl;
-
-    std::cout << "\n\nSTARTING PARALLEL EXECUTION\n\n";
-
-    std::cout << "Before delta filter: " << std::endl;
-    std::cout << "setG size: " << setG.size() << std::endl;
-    std::cout << "toProcess size: " << toProcess.size() << std::endl;
-
-    std::unordered_set<region::Region, region::RegionHash> filteredRegions1{};
-    std::vector<RegionPtr> filteredRegionsPtr1{};
-
-    // Starting the timer for measuring computation.
-#ifdef _OPENMP
-    const auto start1 = omp_get_wtime();
-#else
-    const auto start1 = std::chrono::high_resolution_clock::now();
-#endif
-
-    rts.deltaFilter(setG, toProcess, filteredRegions1, filteredRegionsPtr1, {}, true, false);
-
-    // Ending the timer for measuring computation.
-#ifdef _OPENMP
-    const auto end1 = omp_get_wtime();
-    const auto duration1 = end1 - start1;
-    std::cout << "Total time       : " << duration1 * 1000000 << " microseconds." << std::endl;
-#else
-    const auto end1 = std::chrono::high_resolution_clock::now();
-    const auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(end1 - start1).count();
-    std::cout << "Total time       : " << duration1 << " microseconds." << std::endl;
-#endif
-
-    std::cout << "After delta filter: " << std::endl;
-    std::cout << "setG size: " << setG.size() << std::endl;
-    std::cout << "filteredRegions1 size: " << filteredRegions1.size() << std::endl;
-    std::cout << "toProcess size: " << toProcess.size() << std::endl;
-    std::cout << "filteredRegionsPtr1 size: " << filteredRegionsPtr1.size() << std::endl;
-
-    //for (const auto &reg: setG)
-    //    std::cout << reg.toString() << std::endl;
-    //for (const auto &reg: filteredRegions1)
-    //    std::cout << reg.toString() << std::endl;
-
-    std::unordered_set<region::Region, region::RegionHash> updatedSetG{};
-    for (const auto &region: setG)
-        updatedSetG.insert(region);
-    for (const auto &region: filteredRegions)
-        updatedSetG.insert(region);
-
-    std::unordered_set<region::Region, region::RegionHash> updatedSetG1{};
-    for (const auto &region: setG)
-        updatedSetG1.insert(region);
-    for (const auto &region: filteredRegions1)
-        updatedSetG1.insert(region);
-
-    std::cout << "UpdatedSetG1 size: " << updatedSetG1.size() << std::endl;
-
-    if (updatedSetG == updatedSetG1)
-        std::cout << "\nSets coincide!!!" << std::endl;
-    else
-        std::cout << "\nSets differ!!!";
+    if (rts.timedReachability(setG, toProcess, 10000))
+        std::exit(EXIT_SUCCESS);
+    std::exit(EXIT_FAILURE);
 }
 
 
 int main()
 {
-    testOmegaFilter();
+    // testProductionCellLose();
 
-    testDeltaFilter();
+    testProductionCellWin();
 
     return 0;
 }

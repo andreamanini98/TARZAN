@@ -23,14 +23,9 @@ std::unordered_set<region::Region, region::RegionHash> region::RTSArena::getRegi
 
 #endif
 
-    const int numOfClocks = static_cast<int>(clocksIndices.size());
+    const int nClocks = static_cast<int>(clocksIndices.size());
 
-    std::unordered_set<Region, RegionHash> res = Region::generateRegionsFromConstraints(formula.locations,
-                                                                                        formula.clockConstraints,
-                                                                                        clocksIndices,
-                                                                                        locationsToInt,
-                                                                                        maxConstants,
-                                                                                        numOfClocks);
+    regionSet res = Region::generateRegionsFromConstraints(formula.locations, formula.clockConstraints, clocksIndices, locationsToInt, maxConstants, nClocks);
 
     // Removing regions that do not satisfy the invariants of the Timed Arena.
     std::erase_if(res, [this](const Region &reg) {
@@ -50,10 +45,10 @@ std::unordered_set<region::Region, region::RegionHash> region::RTSArena::getRegi
 
 // TODO: per ora l'implementazione corrente va bene perchè non hai annidamenti e quindi hai al più due vettori nel vettore esterno risultante.
 //       vedere di trovare il modo di rendere il tutto più generale qualora vengano resi disponibili livelli di annidamento nelle formule.
-inline std::vector<std::unordered_set<region::Region, region::RegionHash>> region::RTSArena::getRegionsFromGeneralCLTLocFormulaWithDepth(
-    const cltloc::ast::generalCLTLocFormula &formula, int depth) const // NOLINT
+inline std::vector<regionSet> region::RTSArena::getRegionsFromGeneralCLTLocFormulaWithDepth(const cltloc::ast::generalCLTLocFormula &formula,
+                                                                                            int depth) const // NOLINT
 {
-    std::vector<std::unordered_set<Region, RegionHash>> res{};
+    std::vector<regionSet> res{};
 
     std::visit([this, &res, depth]<typename T0>(T0 const &val) {
         using T = std::decay_t<T0>;
@@ -88,7 +83,7 @@ inline std::vector<std::unordered_set<region::Region, region::RegionHash>> regio
             // Recursive case - unary formula.
             const auto &unaryFormula = val.get();
 
-            std::vector<std::unordered_set<Region, RegionHash>> tmp = getRegionsFromGeneralCLTLocFormulaWithDepth(unaryFormula.rightFormula, depth + 1);
+            std::vector<regionSet> tmp = getRegionsFromGeneralCLTLocFormulaWithDepth(unaryFormula.rightFormula, depth + 1);
             res.reserve(res.size() + tmp.size());
             res.insert(res.end(), std::make_move_iterator(tmp.begin()), std::make_move_iterator(tmp.end()));
             // ---
@@ -110,11 +105,11 @@ inline std::vector<std::unordered_set<region::Region, region::RegionHash>> regio
             // Recursive case - binary formula.
             const auto &binaryFormula = val.get();
 
-            std::vector<std::unordered_set<Region, RegionHash>> leftTmp = getRegionsFromGeneralCLTLocFormulaWithDepth(binaryFormula.leftFormula, depth + 1);
+            std::vector<regionSet> leftTmp = getRegionsFromGeneralCLTLocFormulaWithDepth(binaryFormula.leftFormula, depth + 1);
             res.reserve(res.size() + leftTmp.size());
             res.insert(res.end(), std::make_move_iterator(leftTmp.begin()), std::make_move_iterator(leftTmp.end()));
 
-            std::vector<std::unordered_set<Region, RegionHash>> rightTmp = getRegionsFromGeneralCLTLocFormulaWithDepth(binaryFormula.rightFormula, depth + 1);
+            std::vector<regionSet> rightTmp = getRegionsFromGeneralCLTLocFormulaWithDepth(binaryFormula.rightFormula, depth + 1);
             res.reserve(res.size() + rightTmp.size());
             res.insert(res.end(), std::make_move_iterator(rightTmp.begin()), std::make_move_iterator(rightTmp.end()));
         } else
@@ -125,200 +120,13 @@ inline std::vector<std::unordered_set<region::Region, region::RegionHash>> regio
 }
 
 
-std::vector<std::unordered_set<region::Region, region::RegionHash>> region::RTSArena::getRegionsFromGeneralCLTLocFormula(
-    const cltloc::ast::generalCLTLocFormula &formula) const
+std::vector<regionSet> region::RTSArena::getRegionsFromGeneralCLTLocFormula(const cltloc::ast::generalCLTLocFormula &formula) const
 {
     return getRegionsFromGeneralCLTLocFormulaWithDepth(formula, 0);
 }
 
 
-void region::RTSArena::omegaFilterSerial(const std::unordered_set<Region, RegionHash> &setG,
-                                         const std::vector<RegionPtr> &toProcess,
-                                         std::unordered_set<Region, RegionHash> &filteredRegions,
-                                         std::vector<RegionPtr> &filteredRegionsPtr,
-                                         const std::unordered_set<Region, RegionHash> &intersectionSet) const
-{
-    for (const auto &toProc: toProcess)
-    {
-        // Getting the current region to process and its incoming transitions.
-        const Region &currentRegion = *toProc;
-        const std::vector<transition> &currTransitions = inTransitions[currentRegion.getLocation()];
-
-        // We collect every discrete predecessor that we filter later based on the omega filter requirements.
-        // ReSharper disable once CppTooWideScopeInitStatement
-        const std::vector<Region> discPreds = currentRegion.getImmediateDiscretePredecessors(currTransitions, clocksIndices, locationsToInt, maxConstants);
-
-        // Processing each discrete predecessor to see if it can be inserted in setG and toProcess.
-        for (const auto &reg: discPreds)
-        {
-            if (setG.contains(reg))
-                continue;
-
-            // If a region does not belong to the intersection set, we do not insert it into filteredRegions and filteredRegionsPtr.
-            if (!intersectionSet.empty() && !intersectionSet.contains(reg))
-                continue;
-
-            // For a discrete predecessor to be valid, it must satisfy the invariants.
-            if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
-                if (!isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices))
-                    continue;
-
-            bool isRegionValid{};
-            const std::vector<transition> &regOutTransitions = outTransitions[reg.getLocation()];
-
-            // Building a map from actions names to transitions indices to ease the check required by the omega filter.
-            absl::flat_hash_map<std::string, std::vector<int>> actionsToTransitionIndices{};
-            for (int tIdx = 0; tIdx < static_cast<int>(regOutTransitions.size()); tIdx++)
-                actionsToTransitionIndices[regOutTransitions[tIdx].action.first].push_back(tIdx);
-
-            // Track which actions have been processed to avoid redundant checks.
-            absl::flat_hash_set<std::string> processedActions{};
-
-            // Outgoing transitions must be such that (at least one transition must satisfy these requirements for a region to be valid):
-            // - If its action is unique, it must lead to a region in setG, or
-            // - If its action is not unique, all other transitions with the same action must lead to a region in setG.
-            for (const auto &transition: regOutTransitions)
-            {
-                const std::string &action = transition.action.first;
-
-                // Skip if we've already processed this action.
-                if (processedActions.contains(action))
-                    continue;
-                processedActions.insert(action);
-
-                // ReSharper disable once CppTooWideScopeInitStatement
-                const auto &transitionIndices = actionsToTransitionIndices[action];
-
-                // There exists at least another transition with the same action: all such transitions must lead to a region in setG.
-                bool allTransitionsValid = true;
-
-                for (const int tIdx: transitionIndices)
-                {
-                    // ReSharper disable once CppTooWideScopeInitStatement
-                    const std::vector<Region> discSuccs = reg.getImmediateDiscreteSuccessors({ regOutTransitions[tIdx] }, clocksIndices, locationsToInt);
-
-                    bool foundInSetG{};
-
-                    // We use a loop here, but since we are computing discrete successors over a single transition, the content of discSuccs is a single region.
-                    for (const auto &discSucc: discSuccs)
-                        if (setG.contains(discSucc))
-                        {
-                            foundInSetG = true;
-                            break;
-                        }
-
-                    if (!foundInSetG)
-                    {
-                        allTransitionsValid = false;
-                        break;
-                    }
-                }
-
-                if (allTransitionsValid)
-                {
-                    isRegionValid = true;
-                    break;
-                }
-            }
-
-            if (isRegionValid)
-            {
-                // ReSharper disable once CppTooWideScopeInitStatement
-                auto [iter, inserted] = filteredRegions.insert(reg);
-                // Only add to toProcess if it's a new region.
-                if (inserted)
-                    filteredRegionsPtr.push_back(&*iter);
-            }
-        }
-    }
-}
-
-
-void region::RTSArena::deltaFilterSerial(const std::unordered_set<Region, RegionHash> &setG,
-                                         const std::vector<RegionPtr> &toProcess,
-                                         std::unordered_set<Region, RegionHash> &filteredRegions,
-                                         std::vector<RegionPtr> &filteredRegionsPtr,
-                                         const std::unordered_set<Region, RegionHash> &intersectionSet,
-                                         const bool checkAllSuccessorsInvariants) const
-{
-    for (const auto &toProc: toProcess)
-    {
-        // Getting the current region to process.
-        const Region &currentRegion = *toProc;
-
-        // We collect every immediate delay predecessor that we filter later based on the delta filter requirements.
-        // ReSharper disable once CppTooWideScopeInitStatement
-        const std::vector<Region> delayPreds = currentRegion.getImmediateDelayPredecessors();
-
-        // Processing each immediate delay predecessor to see if it can be inserted in filteredRegions and filteredRegionsPtr.
-        for (const auto &reg: delayPreds)
-        {
-            if (setG.contains(reg))
-                continue;
-
-            // If a region does not belong to the intersection set, we do not insert it into filteredRegions and filteredRegionsPtr.
-            if (!intersectionSet.empty() && !intersectionSet.contains(reg))
-                continue;
-
-            // For an immediate delay predecessor to be valid, it must satisfy the invariants.
-            if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
-                if (!isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices))
-                    continue;
-
-            bool isRegionValid = true;
-
-            // CONTROLLER regions only need to pass the intersectionSet check (already done above).
-            // ENVIRONMENT regions must additionally guarantee that all delay successors lead to setG.
-            if (locationsToPlayers.at(reg.getLocation()) != CONTROLLER)
-            {
-                Region oldDelaySucc = reg;
-                // ReSharper disable once CppTooWideScopeInitStatement
-                Region newDelaySucc = reg.getImmediateDelaySuccessor(maxConstants);
-
-                if (oldDelaySucc == newDelaySucc)
-                    isRegionValid = setG.contains(reg);
-                else
-                {
-                    // The loop continues until a region in which all clocks are unbounded is reached.
-                    while (oldDelaySucc != newDelaySucc)
-                    {
-                        if (!setG.contains(newDelaySucc))
-                        {
-                            isRegionValid = false;
-                            break;
-                        }
-
-                        if (checkAllSuccessorsInvariants)
-                            if (const auto it = invariants.find(newDelaySucc.getLocation()); it != invariants.end())
-                                if (!isInvariantSatisfied(it->second, newDelaySucc.getClockValuation(), clocksIndices))
-                                {
-                                    isRegionValid = false;
-                                    break;
-                                }
-
-                        oldDelaySucc = newDelaySucc;
-                        newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
-                    }
-                }
-            }
-
-            if (isRegionValid)
-            {
-                // ReSharper disable once CppTooWideScopeInitStatement
-                auto [iter, inserted] = filteredRegions.insert(reg);
-                // Only add to filteredRegionsPtr if it's a new region.
-                if (inserted)
-                    filteredRegionsPtr.push_back(&*iter);
-            }
-        }
-    }
-}
-
-
-inline bool region::RTSArena::skipRegion(const Region &reg,
-                                         const std::unordered_set<Region, RegionHash> &setG,
-                                         const std::unordered_set<Region, RegionHash> &intersectionSet,
-                                         const bool skipPredecessorsInSetG) const
+inline bool region::RTSArena::skipRegion(const Region &reg, const regionSet &setG, const regionSet &intersectionSet, const bool skipPredecessorsInSetG) const
 {
     // If skipPredecessorsInSetG is true and the predecessor is already in setG, skip it.
     if (skipPredecessorsInSetG && setG.contains(reg))
@@ -337,29 +145,19 @@ inline bool region::RTSArena::skipRegion(const Region &reg,
 }
 
 
-inline void region::RTSArena::mergeResults(const std::vector<std::vector<Region>> &threadLocalRegions,
-                                           std::unordered_set<Region, RegionHash> &filteredRegions,
-                                           std::vector<RegionPtr> &filteredRegionsPtr)
+inline void region::RTSArena::mergeResults(const std::vector<std::vector<Region>> &threadLocalRegions, regionSet &filteredRegions)
 {
     // Sequential merge of thread-local results.
     for (const auto &localRegions: threadLocalRegions)
-    {
         for (const auto &reg: localRegions)
-        {
-            // ReSharper disable once CppTooWideScopeInitStatement
-            auto [iter, inserted] = filteredRegions.insert(reg);
-            if (inserted)
-                filteredRegionsPtr.push_back(&*iter);
-        }
-    }
+            filteredRegions.insert(reg);
 }
 
 
-void region::RTSArena::omegaFilter(const std::unordered_set<Region, RegionHash> &setG,
+void region::RTSArena::omegaFilter(const regionSet &setG,
                                    const std::vector<RegionPtr> &toProcess,
-                                   std::unordered_set<Region, RegionHash> &filteredRegions,
-                                   std::vector<RegionPtr> &filteredRegionsPtr,
-                                   const std::unordered_set<Region, RegionHash> &intersectionSet,
+                                   regionSet &filteredRegions,
+                                   const regionSet &intersectionSet,
                                    const bool skipPredecessorsInSetG) const
 {
     constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
@@ -386,7 +184,7 @@ void region::RTSArena::omegaFilter(const std::unordered_set<Region, RegionHash> 
 
 #pragma omp parallel for if(toProcess.size() >= parallelThreshold) schedule(dynamic) default(none) \
 shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, threadLocalRegions), \
-shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants)
+shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants, invariants)
     for (int i = 0; i < static_cast<int>(toProcess.size()); i++) // NOLINT(modernize-loop-convert)
     {
         // Getting the current region to process and its incoming transitions.
@@ -436,6 +234,10 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
 
                 for (const int tIdx: transitionIndices)
                 {
+                    // A transition must be enabled (its guard must be satisfied), otherwise we ignore it.
+                    if (!regOutTransitions[tIdx].isTransitionSatisfied(reg.getClockValuation(), clocksIndices, {}))
+                        continue;
+
                     bool foundInSetG{};
 
                     // ReSharper disable once CppTooWideScopeInitStatement
@@ -474,15 +276,14 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
         }
     }
 
-    mergeResults(threadLocalRegions, filteredRegions, filteredRegionsPtr);
+    mergeResults(threadLocalRegions, filteredRegions);
 }
 
 
-void region::RTSArena::deltaFilter(const std::unordered_set<Region, RegionHash> &setG,
+void region::RTSArena::deltaFilter(const regionSet &setG,
                                    const std::vector<RegionPtr> &toProcess,
-                                   std::unordered_set<Region, RegionHash> &filteredRegions,
-                                   std::vector<RegionPtr> &filteredRegionsPtr,
-                                   const std::unordered_set<Region, RegionHash> &intersectionSet,
+                                   regionSet &filteredRegions,
+                                   const regionSet &intersectionSet,
                                    const bool skipPredecessorsInSetG,
                                    const bool checkAllSuccessorsInvariants) const
 {
@@ -510,7 +311,7 @@ void region::RTSArena::deltaFilter(const std::unordered_set<Region, RegionHash> 
 
 #pragma omp parallel for if(toProcess.size() >= parallelThreshold) schedule(dynamic) default(none) \
 shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, checkAllSuccessorsInvariants, threadLocalRegions), \
-shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants, locationsToPlayers)
+shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants, invariants, locationsToPlayers)
     for (int i = 0; i < static_cast<int>(toProcess.size()); i++) // NOLINT(modernize-loop-convert)
     {
         // Getting the current region to process.
@@ -574,7 +375,71 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
         }
     }
 
-    mergeResults(threadLocalRegions, filteredRegions, filteredRegionsPtr);
+    mergeResults(threadLocalRegions, filteredRegions);
+}
+
+
+bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter) const
+{
+    // Starting the timer for measuring computation.
+#ifdef _OPENMP
+    const auto start = omp_get_wtime();
+#else
+    const auto start = std::chrono::high_resolution_clock::now();
+#endif
+
+    int currentIteration = 0;
+
+    regionSet filteredRegionsOmega{};
+    regionSet filteredRegionsDelta{};
+
+    while (currentIteration < maxIter)
+    {
+        omegaFilter(setG, toProcess, filteredRegionsOmega, setPhi, true);
+        deltaFilter(setG, toProcess, filteredRegionsDelta, setPhi, true, false);
+
+        if (filteredRegionsOmega.empty() && filteredRegionsDelta.empty())
+            break;
+
+        setG.merge(filteredRegionsOmega);
+        setG.merge(filteredRegionsDelta);
+
+        toProcess.clear();
+        for (const auto &region: setG)
+            toProcess.push_back(&region);
+
+        filteredRegionsOmega.clear();
+        filteredRegionsDelta.clear();
+
+        currentIteration++;
+    }
+
+    // Ending the timer for measuring computation.
+#ifdef _OPENMP
+    const auto end = omp_get_wtime();
+    const auto duration = end - start;
+    std::cout << "Total time:           " << duration * 1000000 << " microseconds" << std::endl;
+#else
+    const auto end = std::chrono::high_resolution_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    std::cout << "Total time:           " << duration << " microseconds" << std::endl;
+#endif
+
+    const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) {
+        return setG.contains(region);
+    });
+
+    std::cout << "Total iterations:     " << currentIteration << std::endl;
+    std::cout << "Total stored regions: " << setG.size() << std::endl;
+    std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
+
+    return reachable;
+}
+
+
+bool region::RTSArena::timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter) const
+{
+    return timedReachability({}, setG, toProcess, maxIter);
 }
 
 

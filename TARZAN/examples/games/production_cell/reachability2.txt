@@ -1,0 +1,1 @@
+(([feed, table, robot_p, fall_p, press, robot_d, fall_d],[(y, >, 0)]) UNTIL ([depot],[(y, >=, 25),(y, <=, 30)]))
