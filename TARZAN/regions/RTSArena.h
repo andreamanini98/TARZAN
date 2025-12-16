@@ -38,8 +38,37 @@ namespace region
          *
          * @warning Returned regions satisfy the invariants of the underlying Timed Arena.
          */
-        [[nodiscard]] std::vector<std::unordered_set<Region, RegionHash>> getRegionsFromGeneralCLTLocFormulaWithDepth(
+        [[nodiscard]] inline std::vector<std::unordered_set<Region, RegionHash>> getRegionsFromGeneralCLTLocFormulaWithDepth(
             const cltloc::ast::generalCLTLocFormula &formula, int depth) const;
+
+
+        /**
+         * @brief Used to determine whether a region must be ignored by omega and delta filters.
+         *
+         * @param reg the region to check.
+         * @param setG set of goal regions.
+         * @param intersectionSet for a region to be valid, it must also belong to intersectionSet.
+         * @param skipPredecessorsInSetG if true, a predecessor already contained in setG is automatically considered valid.
+         * @return true if the region must be ignored, false otherwise.
+         */
+        [[nodiscard]] inline bool skipRegion(const Region &reg,
+                                             const std::unordered_set<Region, RegionHash> &setG,
+                                             const std::unordered_set<Region, RegionHash> &intersectionSet,
+                                             bool skipPredecessorsInSetG) const;
+
+
+        /**
+         * @brief Used to merge results before returning regions in omega and delta filters.
+         *
+         * @param threadLocalRegions a vector containing the regions to be merged.
+         * @param filteredRegions at the end of execution, will contain the filtered discrete predecessors regions ensuring the controller can reach setG.
+         * @param filteredRegionsPtr at the end of execution, will contain the filtered discrete predecessors regions pointers ensuring the controller can reach setG.
+         *
+         * @warning The function updates filteredRegions and filteredRegionsPtr.
+         */
+        static inline void mergeResults(const std::vector<std::vector<Region>> &threadLocalRegions,
+                                        std::unordered_set<Region, RegionHash> &filteredRegions,
+                                        std::vector<RegionPtr> &filteredRegionsPtr);
 
 
     public:
