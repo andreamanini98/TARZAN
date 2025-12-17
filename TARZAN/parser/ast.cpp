@@ -762,7 +762,11 @@ std::string cltloc::ast::pureCLTLocFormula::to_string() const
     // Print locations.
     if (!locations.empty())
     {
+        if (!clockConstraints.empty() && locations.size() > 1)
+            oss << "(";
         oss << join_elements(locations, " || ");
+        if (!clockConstraints.empty() && locations.size() > 1)
+            oss << ")";
         if (!clockConstraints.empty())
             oss << " && ";
     } else

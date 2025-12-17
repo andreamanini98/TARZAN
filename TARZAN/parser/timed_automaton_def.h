@@ -144,7 +144,8 @@ namespace parser
         {
             auto &self = add
                     ("BOX", BOX)
-                    ("DIAMOND", DIAMOND);
+                    ("DIAMOND", DIAMOND)
+                    ("NEXT", NEXT);
             (void) self;
         }
     } un_cltloc_op;
