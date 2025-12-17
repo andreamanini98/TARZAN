@@ -198,7 +198,7 @@ namespace region
          * @param maxIter the maximum number of iterations to perform; if reached, terminate even if the fixpoint has not been reached.
          * @return true if the controller wins, false otherwise.
          *
-         * @warning The function updates filteredRegions and filteredRegionsPtr.
+         * @warning The function updates setG and toProcess.
          */
         // TODO: creare una funzione che chiami questa base al tipo di formula cltloc che le si dà.
         [[nodiscard]] bool timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
@@ -213,10 +213,24 @@ namespace region
          * @param maxIter the maximum number of iterations to perform; if reached, terminate even if the fixpoint has not been reached.
          * @return true if the controller wins, false otherwise.
          *
-         * @warning The function updates filteredRegions and filteredRegionsPtr.
+         * @warning The function updates setG and toProcess.
          */
         // TODO: creare una funzione che chiami questa base al tipo di formula cltloc che le si dà.
         [[nodiscard]] bool timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
+
+
+        /**
+         * @brief Determines whether the controller wins in a timed reachability game where the winning condition is: BOX phi.
+         *
+         * @param setG set of goal regions.
+         * @param toProcess vector of pointers to regions in setG that must be processed.
+         * @param maxIter the maximum number of iterations to perform; if reached, terminate even if the fixpoint has not been reached.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @warning The function updates setG and toProcess.
+         */
+        // TODO: creare una funzione che chiami questa base al tipo di formula cltloc che le si dà.
+        [[nodiscard]] bool timedSafety(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
 
 
         [[nodiscard]] std::string to_string() const;

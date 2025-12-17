@@ -1,0 +1,1 @@
+(BOX ([feed, robot_p, press, robot_d, depot],[]))

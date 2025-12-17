@@ -389,6 +389,7 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 #endif
 
     int currentIteration = 0;
+    const int totalStartingRegions = static_cast<int>(setG.size());
 
     regionSet filteredRegionsOmega{};
     regionSet filteredRegionsDelta{};
@@ -418,19 +419,20 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 #ifdef _OPENMP
     const auto end = omp_get_wtime();
     const auto duration = end - start;
-    std::cout << "Total time:           " << duration * 1000000 << " microseconds" << std::endl;
+    std::cout << "Total time:             " << duration * 1000000 << " microseconds" << std::endl;
 #else
     const auto end = std::chrono::high_resolution_clock::now();
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-    std::cout << "Total time:           " << duration << " microseconds" << std::endl;
+    std::cout << "Total time:             " << duration << " microseconds" << std::endl;
 #endif
 
     const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) {
         return setG.contains(region);
     });
 
-    std::cout << "Total iterations:     " << currentIteration << std::endl;
-    std::cout << "Total stored regions: " << setG.size() << std::endl;
+    std::cout << "Total iterations:       " << currentIteration << std::endl;
+    std::cout << "Total starting regions: " << totalStartingRegions << std::endl;
+    std::cout << "Total stored regions:   " << setG.size() << std::endl;
     std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
 
     return reachable;
@@ -440,6 +442,72 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 bool region::RTSArena::timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter) const
 {
     return timedReachability({}, setG, toProcess, maxIter);
+}
+
+
+bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter) const
+{
+    // Starting the timer for measuring computation.
+#ifdef _OPENMP
+    const auto start = omp_get_wtime();
+#else
+    const auto start = std::chrono::high_resolution_clock::now();
+#endif
+
+    int currentIteration = 0;
+    const int totalStartingRegions = static_cast<int>(setG.size());
+
+    regionSet filteredRegionsOmega{};
+    regionSet filteredRegionsDelta{};
+
+    while (currentIteration < maxIter)
+    {
+        const size_t oldSetGSize = setG.size();
+
+        omegaFilter(setG, toProcess, filteredRegionsOmega, {}, false);
+        deltaFilter(setG, toProcess, filteredRegionsDelta, {}, false, true);
+
+        // Computing the intersection between regions returned by omega and delta filters and setG.
+        filteredRegionsOmega.merge(filteredRegionsDelta);
+        std::erase_if(setG, [&filteredRegionsOmega](const auto &region) { return !filteredRegionsOmega.contains(region); });
+
+        // ReSharper disable once CppTooWideScopeInitStatement
+        const size_t newSetGSize = setG.size();
+
+        if (oldSetGSize == newSetGSize)
+            break;
+
+        toProcess.clear();
+        for (const auto &region: setG)
+            toProcess.push_back(&region);
+
+        filteredRegionsOmega.clear();
+        filteredRegionsDelta.clear();
+
+        currentIteration++;
+    }
+
+    // Ending the timer for measuring computation.
+#ifdef _OPENMP
+    const auto end = omp_get_wtime();
+    const auto duration = end - start;
+    std::cout << "Total time:             " << duration * 1000000 << " microseconds" << std::endl;
+#else
+    const auto end = std::chrono::high_resolution_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    std::cout << "Total time:             " << duration << " microseconds" << std::endl;
+#endif
+
+    const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) {
+        return setG.contains(region);
+    });
+
+    std::cout << "Total iterations:       " << currentIteration << std::endl;
+    std::cout << "Total starting regions: " << totalStartingRegions << std::endl;
+    std::cout << "Total stored regions:   " << setG.size() << std::endl;
+    std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
+
+    return reachable;
 }
 
 

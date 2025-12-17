@@ -143,40 +143,10 @@ void testGetRegionsFromGeneralCLTLocFormula()
 }
 
 
-void testProductionCellLose()
-{
-    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/";
-    const std::string arenaName = "production_cell.txt";
-    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
-
-    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/reachability0.txt";
-    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
-
-    const region::RTSArena rts(arena, phi);
-
-    // std::cout << phi.to_string() << std::endl;
-    // std::cout << rts.to_string() << std::endl;
-
-    std::vector<std::unordered_set<region::Region, region::RegionHash>> startingRegions = rts.getRegionsFromGeneralCLTLocFormula(phi);
-
-    if (startingRegions.size() > 1)
-        std::exit(EXIT_FAILURE);
-
-    auto &setG = startingRegions[0];
-    std::vector<RegionPtr> toProcess{};
-
-    toProcess.reserve(setG.size());
-    for (const auto &region: setG)
-        toProcess.push_back(&region);
-
-    if (rts.timedReachability(setG, toProcess, 10000))
-        std::exit(EXIT_SUCCESS);
-    std::exit(EXIT_FAILURE);
-}
-
-
 void testProductionCellWin()
 {
+    std::cout << "\nWinning reachability since we require that the production cell reaches depot in at most 11 time units." << std::endl;
+
     const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/";
     const std::string arenaName = "production_cell.txt";
     const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
@@ -186,7 +156,7 @@ void testProductionCellWin()
 
     const region::RTSArena rts(arena, phi);
 
-    // std::cout << phi.to_string() << std::endl;
+    std::cout << phi.to_string() << std::endl;
     // std::cout << rts.to_string() << std::endl;
 
     std::vector<std::unordered_set<region::Region, region::RegionHash>> startingRegions = rts.getRegionsFromGeneralCLTLocFormula(phi);
@@ -202,16 +172,131 @@ void testProductionCellWin()
         toProcess.push_back(&region);
 
     if (rts.timedReachability(setG, toProcess, 10000))
-        std::exit(EXIT_SUCCESS);
-    std::exit(EXIT_FAILURE);
+        std::cout << "-----" << std::endl;
+    else
+        std::cout << "----- " << std::endl;
+}
+
+
+void testProductionCellLose()
+{
+    std::cout << "\nLosing reachability since we require that the production cell reaches depot in at most 6 time units (it requires at least 11)." <<
+            std::endl;
+
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/";
+    const std::string arenaName = "production_cell.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
+
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/reachability0.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+
+    const region::RTSArena rts(arena, phi);
+
+    std::cout << phi.to_string() << std::endl;
+    // std::cout << rts.to_string() << std::endl;
+
+    std::vector<std::unordered_set<region::Region, region::RegionHash>> startingRegions = rts.getRegionsFromGeneralCLTLocFormula(phi);
+
+    if (startingRegions.size() > 1)
+        std::exit(EXIT_FAILURE);
+
+    auto &setG = startingRegions[0];
+    std::vector<RegionPtr> toProcess{};
+
+    toProcess.reserve(setG.size());
+    for (const auto &region: setG)
+        toProcess.push_back(&region);
+
+    if (rts.timedReachability(setG, toProcess, 10000))
+        std::cout << "-----" << std::endl;
+    else
+        std::cout << "----- " << std::endl;
+}
+
+
+void testProductionCellSafetyWin()
+{
+    std::cout << "\nWinning safety since we require that the production cell never drops a plate." << std::endl;
+
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/";
+    const std::string arenaName = "production_cell.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
+
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/safety0.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+
+    const region::RTSArena rts(arena, phi);
+
+    std::cout << phi.to_string() << std::endl;
+    // std::cout << rts.to_string() << std::endl;
+
+    std::vector<std::unordered_set<region::Region, region::RegionHash>> startingRegions = rts.getRegionsFromGeneralCLTLocFormula(phi);
+
+    // std::exit(EXIT_SUCCESS);
+
+    if (startingRegions.size() > 1)
+        std::exit(EXIT_FAILURE);
+
+    auto &setG = startingRegions[0];
+    std::vector<RegionPtr> toProcess{};
+
+    toProcess.reserve(setG.size());
+    for (const auto &region: setG)
+        toProcess.push_back(&region);
+
+    if (rts.timedSafety(setG, toProcess, 10000))
+        std::cout << "-----" << std::endl;
+    else
+        std::cout << "----- " << std::endl;
+}
+
+
+void testProductionCellSafetyLose()
+{
+    std::cout << "\nLosing safety since we require that the production cell never drops a plate and never visits the table location." << std::endl;
+
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/";
+    const std::string arenaName = "production_cell.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
+
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/safety1.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+
+    const region::RTSArena rts(arena, phi);
+
+    std::cout << phi.to_string() << std::endl;
+    // std::cout << rts.to_string() << std::endl;
+
+    std::vector<std::unordered_set<region::Region, region::RegionHash>> startingRegions = rts.getRegionsFromGeneralCLTLocFormula(phi);
+
+    // std::exit(EXIT_SUCCESS);
+
+    if (startingRegions.size() > 1)
+        std::exit(EXIT_FAILURE);
+
+    auto &setG = startingRegions[0];
+    std::vector<RegionPtr> toProcess{};
+
+    toProcess.reserve(setG.size());
+    for (const auto &region: setG)
+        toProcess.push_back(&region);
+
+    if (rts.timedSafety(setG, toProcess, 10000))
+        std::cout << "-----" << std::endl;
+    else
+        std::cout << "----- " << std::endl;
 }
 
 
 int main()
 {
-    // testProductionCellLose();
-
     testProductionCellWin();
+
+    testProductionCellLose();
+
+    testProductionCellSafetyWin();
+
+    testProductionCellSafetyLose();
 
     return 0;
 }
