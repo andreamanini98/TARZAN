@@ -14,6 +14,9 @@
 // Threshold for enabling parallel execution (derived from manual experiments).
 #define PARALLEL_THRESHOLD 400
 
+// Total number of iterations performed by fixed point algorithms.
+#define MAX_ITERATIONS 10000
+
 
 std::unordered_set<region::Region, region::RegionHash> region::RTSArena::getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const
 {
@@ -419,20 +422,21 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 #ifdef _OPENMP
     const auto end = omp_get_wtime();
     const auto duration = end - start;
-    std::cout << "Total time:             " << duration * 1000000 << " microseconds" << std::endl;
+    std::cout << "Total time:              " << duration * 1000000 << " microseconds" << std::endl;
 #else
     const auto end = std::chrono::high_resolution_clock::now();
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-    std::cout << "Total time:             " << duration << " microseconds" << std::endl;
+    std::cout << "Total time:              " << duration << " microseconds" << std::endl;
 #endif
 
     const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) {
         return setG.contains(region);
     });
 
-    std::cout << "Total iterations:       " << currentIteration << std::endl;
-    std::cout << "Total starting regions: " << totalStartingRegions << std::endl;
-    std::cout << "Total stored regions:   " << setG.size() << std::endl;
+    std::cout << "Total iterations:        " << currentIteration << std::endl;
+    std::cout << "Total starting regions:  " << totalStartingRegions << std::endl;
+    std::cout << "Total regions in setPhi: " << setPhi.size() << std::endl;
+    std::cout << "Total stored regions:    " << setG.size() << std::endl;
     std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
 
     return reachable;
@@ -508,6 +512,99 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
     std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
 
     return reachable;
+}
+
+
+bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula) const
+{
+    // Starting the timer for measuring computation.
+#ifdef _OPENMP
+    const auto start = omp_get_wtime();
+#else
+    const auto start = std::chrono::high_resolution_clock::now();
+#endif
+
+    const bool result = std::visit([this]<typename T0>(T0 const &val) -> bool {
+        using T = std::decay_t<T0>;
+
+        if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
+        {
+            // Pure formula: currently unhandled.
+            throw std::logic_error("Pure formulae are not currently supported when solving Timed CLTLoc Games.");
+            // ---
+        } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>)
+        {
+            // Unary formula.
+            const auto &unaryFormula = val.get();
+
+            std::vector<regionSet> startingRegions = getRegionsFromGeneralCLTLocFormula(unaryFormula.rightFormula);
+
+            if (startingRegions.size() != 1)
+                throw std::logic_error("Wrong size of unary formula.");
+
+            regionSet &setG = startingRegions[0];
+
+            std::vector<RegionPtr> toProcess{};
+            toProcess.reserve(setG.size());
+            for (const auto &region: setG)
+                toProcess.push_back(&region);
+
+            switch (unaryFormula.op)
+            {
+                case BOX:
+                    return timedSafety(setG, toProcess, MAX_ITERATIONS);
+
+                case DIAMOND:
+                    return timedReachability(setG, toProcess, MAX_ITERATIONS);
+
+                default:
+                    throw std::logic_error("Invalid unary CLTLoc operator.");
+            }
+            // ---
+        } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
+        {
+            // Binary formula.
+            const auto &binaryFormula = val.get();
+
+            const std::vector<regionSet> leftRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.leftFormula);
+            std::vector<regionSet> rightRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.rightFormula);
+
+            if (leftRegions.size() != 1 || rightRegions.size() != 1)
+                throw std::logic_error("Wrong size of binary formula.");
+
+            const regionSet &setPhi = leftRegions[0];
+            regionSet &setG = rightRegions[0];
+
+            std::vector<RegionPtr> toProcess{};
+            toProcess.reserve(setG.size());
+            for (const auto &region: setG)
+                toProcess.push_back(&region);
+
+            switch (binaryFormula.op)
+            {
+                case UNTIL:
+                    return timedReachability(setPhi, setG, toProcess, MAX_ITERATIONS);
+
+                default:
+                    throw std::logic_error("Invalid binary CLTLoc operator.");
+            }
+            // ---
+        } else
+            throw std::logic_error("Unhandled formula type in solveTimedCLTLocGame.");
+    }, formula.value);
+
+    // Ending the timer for measuring computation.
+#ifdef _OPENMP
+    const auto end = omp_get_wtime();
+    const auto duration = end - start;
+    std::cout << "Total time including region generation: " << duration * 1000000 << " microseconds" << std::endl;
+#else
+    const auto end = std::chrono::high_resolution_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    std::cout << "Total time including region generation: " << duration << " microseconds" << std::endl;
+#endif
+
+    return result;
 }
 
 

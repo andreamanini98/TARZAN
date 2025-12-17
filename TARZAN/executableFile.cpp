@@ -288,15 +288,34 @@ void testProductionCellSafetyLose()
 }
 
 
+void testSolveTimedCLTLocGames()
+{
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/";
+    const std::string arenaName = "production_cell.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
+
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/reachability1.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+
+    const region::RTSArena rts(arena, phi);
+
+    std::cout << phi.to_string() << std::endl;
+
+    if (rts.solveTimedCLTLocGame(phi))
+        std::cout << "-----" << std::endl;
+    else
+        std::cout << "----- " << std::endl;
+}
+
+
 int main()
 {
     testProductionCellWin();
+    // testProductionCellLose();
+    // testProductionCellSafetyWin();
+    // testProductionCellSafetyLose();
 
-    testProductionCellLose();
-
-    testProductionCellSafetyWin();
-
-    testProductionCellSafetyLose();
+    testSolveTimedCLTLocGames();
 
     return 0;
 }

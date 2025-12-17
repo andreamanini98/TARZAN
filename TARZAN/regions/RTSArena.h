@@ -200,7 +200,6 @@ namespace region
          *
          * @warning The function updates setG and toProcess.
          */
-        // TODO: creare una funzione che chiami questa base al tipo di formula cltloc che le si dà.
         [[nodiscard]] bool timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
 
 
@@ -215,7 +214,6 @@ namespace region
          *
          * @warning The function updates setG and toProcess.
          */
-        // TODO: creare una funzione che chiami questa base al tipo di formula cltloc che le si dà.
         [[nodiscard]] bool timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
 
 
@@ -229,8 +227,22 @@ namespace region
          *
          * @warning The function updates setG and toProcess.
          */
-        // TODO: creare una funzione che chiami questa base al tipo di formula cltloc che le si dà.
         [[nodiscard]] bool timedSafety(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
+
+
+        /**
+         * @brief Determines whether the controller wins a Timed CLTLoc Game given the general CLTLoc formula.
+         *
+         * Currently, it only detects the nature of the given formula without recursion.
+         * The only allowed recursion is of formulae like NEXT (phi UNTIL psi).
+         * Supported formulae are: BOX phi, DIAMOND phi, phi UNTIL psi, NEXT (phi UNTIL psi).
+         *
+         * @param formula the general CLTLoc formula to process.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @throws std::logic_error if an unhandled formula type is encountered or a pure formula is given as the parameter value.
+         */
+        [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula) const;
 
 
         [[nodiscard]] std::string to_string() const;
