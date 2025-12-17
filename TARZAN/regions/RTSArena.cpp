@@ -41,13 +41,8 @@ std::unordered_set<region::Region, region::RegionHash> region::RTSArena::getRegi
 }
 
 
-// TODO: in seguito ti servirà potere determinare il tipo di operatore per decidere che algoritmo usare (es. differenza tra box e diamond) per determinare il
-//       tipo di algoritmo di games da applicare (safety o reachability). Questa funzione ti conviene farla direttamente in ast.h.
-//       Dato che restituisci un vettore di vettori, nel caso di BOX e DIAMOND avrai un solo vettore al suo interno,
-//       con UNTIL ne avrai due, attenzione a quale si riferisce alla formula sx e dx.
-
 // TODO: per ora l'implementazione corrente va bene perchè non hai annidamenti e quindi hai al più due vettori nel vettore esterno risultante.
-//       vedere di trovare il modo di rendere il tutto più generale qualora vengano resi disponibili livelli di annidamento nelle formule.
+//       Vedere di trovare il modo di rendere il tutto più generale qualora vengano resi disponibili livelli di annidamento nelle formule.
 inline std::vector<regionSet> region::RTSArena::getRegionsFromGeneralCLTLocFormulaWithDepth(const cltloc::ast::generalCLTLocFormula &formula,
                                                                                             int depth) const // NOLINT
 {
@@ -515,6 +510,62 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
 }
 
 
+inline bool region::RTSArena::solveGameWithBoxFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula) const
+{
+    std::vector<regionSet> startingRegions = getRegionsFromGeneralCLTLocFormula(unaryFormula.rightFormula);
+
+    if (startingRegions.size() != 1)
+        throw std::logic_error("Wrong size of unary formula.");
+
+    regionSet &setG = startingRegions[0];
+
+    std::vector<RegionPtr> toProcess{};
+    toProcess.reserve(setG.size());
+    for (const auto &region: setG)
+        toProcess.push_back(&region);
+
+    return timedSafety(setG, toProcess, MAX_ITERATIONS);
+}
+
+
+inline bool region::RTSArena::solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula) const
+{
+    std::vector<regionSet> startingRegions = getRegionsFromGeneralCLTLocFormula(unaryFormula.rightFormula);
+
+    if (startingRegions.size() != 1)
+        throw std::logic_error("Wrong size of unary formula.");
+
+    regionSet &setG = startingRegions[0];
+
+    std::vector<RegionPtr> toProcess{};
+    toProcess.reserve(setG.size());
+    for (const auto &region: setG)
+        toProcess.push_back(&region);
+
+    return timedReachability(setG, toProcess, MAX_ITERATIONS);
+}
+
+
+inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula) const
+{
+    const std::vector<regionSet> leftRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.leftFormula);
+    std::vector<regionSet> rightRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.rightFormula);
+
+    if (leftRegions.size() != 1 || rightRegions.size() != 1)
+        throw std::logic_error("Wrong size of binary formula.");
+
+    const regionSet &setPhi = leftRegions[0];
+    regionSet &setG = rightRegions[0];
+
+    std::vector<RegionPtr> toProcess{};
+    toProcess.reserve(setG.size());
+    for (const auto &region: setG)
+        toProcess.push_back(&region);
+
+    return timedReachability(setPhi, setG, toProcess, MAX_ITERATIONS);
+}
+
+
 bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula) const
 {
     // Starting the timer for measuring computation.
@@ -535,27 +586,13 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
         } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>)
         {
             // Unary formula.
-            const auto &unaryFormula = val.get();
-
-            std::vector<regionSet> startingRegions = getRegionsFromGeneralCLTLocFormula(unaryFormula.rightFormula);
-
-            if (startingRegions.size() != 1)
-                throw std::logic_error("Wrong size of unary formula.");
-
-            regionSet &setG = startingRegions[0];
-
-            std::vector<RegionPtr> toProcess{};
-            toProcess.reserve(setG.size());
-            for (const auto &region: setG)
-                toProcess.push_back(&region);
-
-            switch (unaryFormula.op)
+            switch (const auto &unaryFormula = val.get(); unaryFormula.op)
             {
                 case BOX:
-                    return timedSafety(setG, toProcess, MAX_ITERATIONS);
+                    return solveGameWithBoxFormula(unaryFormula);
 
                 case DIAMOND:
-                    return timedReachability(setG, toProcess, MAX_ITERATIONS);
+                    return solveGameWithDiamondFormula(unaryFormula);
 
                 default:
                     throw std::logic_error("Invalid unary CLTLoc operator.");
@@ -564,26 +601,10 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
         } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
         {
             // Binary formula.
-            const auto &binaryFormula = val.get();
-
-            const std::vector<regionSet> leftRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.leftFormula);
-            std::vector<regionSet> rightRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.rightFormula);
-
-            if (leftRegions.size() != 1 || rightRegions.size() != 1)
-                throw std::logic_error("Wrong size of binary formula.");
-
-            const regionSet &setPhi = leftRegions[0];
-            regionSet &setG = rightRegions[0];
-
-            std::vector<RegionPtr> toProcess{};
-            toProcess.reserve(setG.size());
-            for (const auto &region: setG)
-                toProcess.push_back(&region);
-
-            switch (binaryFormula.op)
+            switch (const auto &binaryFormula = val.get(); binaryFormula.op)
             {
                 case UNTIL:
-                    return timedReachability(setPhi, setG, toProcess, MAX_ITERATIONS);
+                    return solveGameWithUntilFormula(binaryFormula);
 
                 default:
                     throw std::logic_error("Invalid binary CLTLoc operator.");

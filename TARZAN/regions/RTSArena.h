@@ -66,6 +66,39 @@ namespace region
         static inline void mergeResults(const std::vector<std::vector<Region>> &threadLocalRegions, regionSet &filteredRegions);
 
 
+        /**
+         * @brief Solves a game where the formula is: BOX phi.
+         *
+         * @param unaryFormula the formula to solve.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @throws std::logic_error if the formula has the wrong size.
+         */
+        [[nodiscard]] inline bool solveGameWithBoxFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula) const;
+
+
+        /**
+         * @brief Solves a game where the formula is: DIAMOND phi.
+         *
+         * @param unaryFormula the formula to solve.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @throws std::logic_error if the formula has the wrong size.
+         */
+        [[nodiscard]] inline bool solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula) const;
+
+
+        /**
+         * @brief Solves a game where the formula is: phi UNTIL psi.
+         *
+         * @param binaryFormula the formula to solve.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @throws std::logic_error if the formula has the wrong size.
+         */
+        [[nodiscard]] inline bool solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula) const;
+
+
     public:
         explicit RTSArena(const timed_automaton::ast::timedArena &arena)
         {
