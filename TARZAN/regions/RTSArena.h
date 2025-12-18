@@ -12,6 +12,7 @@ using regionSet = std::unordered_set<region::Region, region::RegionHash>;
 
 namespace region
 {
+    /// @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
     class RTSArena : public RTS
     {
         absl::flat_hash_map<int, players_sym> locationsToPlayers{};
@@ -73,6 +74,7 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @throws std::logic_error if the formula has the wrong size.
+         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] inline bool solveGameWithBoxFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula) const;
 
@@ -84,6 +86,7 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @throws std::logic_error if the formula has the wrong size.
+         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] inline bool solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula) const;
 
@@ -95,8 +98,21 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @throws std::logic_error if the formula has the wrong size.
+         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] inline bool solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula) const;
+
+
+        /**
+         * @brief Solves a game where the formula is: NEXT (phi UNTIL psi).
+         *
+         * @param formula the formula to solve.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @throws std::logic_error if the formula is not of the form: NEXT (phi UNTIL psi).
+         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
+         */
+        [[nodiscard]] inline bool solveGameWithNextFormula(const cltloc::ast::generalCLTLocFormula &formula) const;
 
 
     public:
@@ -232,6 +248,7 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @warning The function updates setG and toProcess.
+         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] bool timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
 
@@ -246,8 +263,24 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @warning The function updates setG and toProcess.
+         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] bool timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
+
+
+        /**
+         * @brief Determines whether the controller wins in a timed reachability game where the winning condition is: NEXT (phi UNTIL psi).
+         *
+         * @param setPhi for regions to be valid, they must also be contained in this set.
+         * @param setG set of goal regions.
+         * @param toProcess vector of pointers to regions in setG that must be processed.
+         * @param maxIter the maximum number of iterations to perform; if reached, terminate even if the fixpoint has not been reached.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @warning The function updates setG and toProcess.
+         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
+         */
+        [[nodiscard]] bool timedNextReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
 
 
         /**
@@ -259,6 +292,7 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @warning The function updates setG and toProcess.
+         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] bool timedSafety(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
 
@@ -274,6 +308,8 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @throws std::logic_error if an unhandled formula type is encountered or a pure formula is given as the parameter value.
+         *
+         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula) const;
 

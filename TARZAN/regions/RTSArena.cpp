@@ -130,7 +130,7 @@ inline bool region::RTSArena::skipRegion(const Region &reg, const regionSet &set
     if (skipPredecessorsInSetG && setG.contains(reg))
         return true;
 
-    // If a region does not belong to the intersection set, we do not insert it into filteredRegions and filteredRegionsPtr.
+    // If a region does not belong to the intersection set, we do not insert it into filteredRegions.
     if (!intersectionSet.empty() && !intersectionSet.contains(reg))
         return true;
 
@@ -193,7 +193,7 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
         // ReSharper disable once CppTooWideScopeInitStatement
         const std::vector<Region> discPreds = currentRegion.getImmediateDiscretePredecessors(currTransitions, clocksIndices, locationsToInt, maxConstants);
 
-        // Processing each discrete predecessor to see if it can be inserted in filteredRegions and filteredRegionsPtr.
+        // Processing each discrete predecessor to see if it can be inserted in filteredRegions.
         for (const auto &reg: discPreds)
         {
             if (skipRegion(reg, setG, intersectionSet, skipPredecessorsInSetG))
@@ -229,23 +229,30 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
 
                 // All transitions must lead to a region in setG.
                 bool allTransitionsValid = true;
+                // Used to keep track of the disabled transitions with action 'action'. If all transitions are disabled, set allTransitionsValid to false.
+                size_t disabledTransitions = 0;
 
                 for (const int tIdx: transitionIndices)
                 {
                     // A transition must be enabled (its guard must be satisfied), otherwise we ignore it.
                     if (!regOutTransitions[tIdx].isTransitionSatisfied(reg.getClockValuation(), clocksIndices, {}))
+                    {
+                        disabledTransitions++;
                         continue;
+                    }
 
-                    bool foundInSetG{};
+                    // When set to false, a discrete successor does not belong to setG.
+                    bool foundInSetG = true;
 
+                    // We compute discrete successors one transition at a time.
                     // ReSharper disable once CppTooWideScopeInitStatement
                     const std::vector<Region> discSuccs = reg.getImmediateDiscreteSuccessors({ regOutTransitions[tIdx] }, clocksIndices, locationsToInt);
 
                     // We use a loop here, but since we are computing discrete successors over a single transition, the content of discSuccs is a single region.
                     for (const auto &discSucc: discSuccs)
-                        if (setG.contains(discSucc))
+                        if (!setG.contains(discSucc))
                         {
-                            foundInSetG = true;
+                            foundInSetG = false;
                             break;
                         }
 
@@ -255,6 +262,9 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                         break;
                     }
                 }
+
+                if (disabledTransitions == transitionIndices.size())
+                    allTransitionsValid = false;
 
                 if (allTransitionsValid)
                 {
@@ -319,7 +329,7 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
         // ReSharper disable once CppTooWideScopeInitStatement
         const std::vector<Region> delayPreds = currentRegion.getImmediateDelayPredecessors();
 
-        // Processing each immediate delay predecessor to see if it can be inserted in filteredRegions and filteredRegionsPtr.
+        // Processing each immediate delay predecessor to see if it can be inserted in filteredRegions.
         for (const auto &reg: delayPreds)
         {
             if (skipRegion(reg, setG, intersectionSet, skipPredecessorsInSetG))
@@ -327,13 +337,13 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
 
             bool isRegionValid = true;
 
-            // CONTROLLER regions only need to pass the intersectionSet check (already done above).
+            // CONTROLLER regions only need to pass the skipRegion check.
             // ENVIRONMENT regions must additionally guarantee that all delay successors lead to setG.
             if (locationsToPlayers.at(reg.getLocation()) != CONTROLLER)
             {
                 Region oldDelaySucc = reg;
                 // ReSharper disable once CppTooWideScopeInitStatement
-                Region newDelaySucc = reg.getImmediateDelaySuccessor(maxConstants);
+                Region newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
 
                 // Check immediate fixpoint case, only valid if reg is in setG.
                 if (oldDelaySucc == newDelaySucc)
@@ -342,22 +352,42 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                 {
                     while (oldDelaySucc != newDelaySucc)
                     {
-                        if (!setG.contains(newDelaySucc))
+                        // The environment cannot bring the game into a deadlock state by waiting an arbitrary amount of time.
+                        // Boolean to track whether all outgoing transitions of an immediate delay successor are disabled.
+                        // Here we want at least one such transition to be enabled for reg to be valid.
+                        bool allDisabled = true;
+                        // ReSharper disable once CppTooWideScopeInitStatement
+                        const std::vector<transition> &newDelaySuccTransitions = outTransitions[newDelaySucc.getLocation()];
+                        for (const auto &transition: newDelaySuccTransitions)
+                            if (transition.isTransitionSatisfied(newDelaySucc.getClockValuation(), clocksIndices, {}))
+                                allDisabled = false;
+
+                        // If all transitions are disabled, simply continue by checking the next immediate delay successor.
+                        if (allDisabled)
                         {
-                            isRegionValid = false;
-                            break;
+                            oldDelaySucc = newDelaySucc;
+                            newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
+                        } else
+                        {
+                            // If the delay successor is not in setG, the region is invalid.
+                            if (!setG.contains(newDelaySucc))
+                            {
+                                isRegionValid = false;
+                                break;
+                            }
+
+                            // In safety formulae, it may be necessary to satisfy the invariants for immediate delay successors.
+                            if (checkAllSuccessorsInvariants)
+                                if (const auto it = invariants.find(newDelaySucc.getLocation()); it != invariants.end())
+                                    if (!isInvariantSatisfied(it->second, newDelaySucc.getClockValuation(), clocksIndices))
+                                    {
+                                        isRegionValid = false;
+                                        break;
+                                    }
+
+                            oldDelaySucc = newDelaySucc;
+                            newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
                         }
-
-                        if (checkAllSuccessorsInvariants)
-                            if (const auto it = invariants.find(newDelaySucc.getLocation()); it != invariants.end())
-                                if (!isInvariantSatisfied(it->second, newDelaySucc.getClockValuation(), clocksIndices))
-                                {
-                                    isRegionValid = false;
-                                    break;
-                                }
-
-                        oldDelaySucc = newDelaySucc;
-                        newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
                     }
                 }
             }
@@ -424,9 +454,7 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
     std::cout << "Total time:              " << duration << " microseconds" << std::endl;
 #endif
 
-    const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) {
-        return setG.contains(region);
-    });
+    const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
 
     std::cout << "Total iterations:        " << currentIteration << std::endl;
     std::cout << "Total starting regions:  " << totalStartingRegions << std::endl;
@@ -441,6 +469,109 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 bool region::RTSArena::timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter) const
 {
     return timedReachability({}, setG, toProcess, maxIter);
+}
+
+
+bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter) const
+{
+    // Starting the timer for measuring computation.
+#ifdef _OPENMP
+    const auto start = omp_get_wtime();
+#else
+    const auto start = std::chrono::high_resolution_clock::now();
+#endif
+
+    // Step 1: we must compute the fixpoint over (phi UNTIL psi) without checking for an initial region to be reached.
+    int currentIteration = 0;
+    const int totalStartingRegions = static_cast<int>(setG.size());
+
+    regionSet filteredRegionsOmega{};
+    regionSet filteredRegionsDelta{};
+
+    while (currentIteration < maxIter)
+    {
+        omegaFilter(setG, toProcess, filteredRegionsOmega, setPhi, true);
+        deltaFilter(setG, toProcess, filteredRegionsDelta, setPhi, true, false);
+
+        if (filteredRegionsOmega.empty() && filteredRegionsDelta.empty())
+            break;
+
+        setG.merge(filteredRegionsOmega);
+        setG.merge(filteredRegionsDelta);
+
+        toProcess.clear();
+        for (const auto &region: setG)
+            toProcess.push_back(&region);
+
+        filteredRegionsOmega.clear();
+        filteredRegionsDelta.clear();
+
+        currentIteration++;
+    }
+
+    // Step 2: we perform one additional iteration of omega and delta filters.
+    toProcess.clear();
+    for (const auto &region: setG)
+        toProcess.push_back(&region);
+
+    filteredRegionsOmega.clear();
+    filteredRegionsDelta.clear();
+
+    // In this case, we remove the constraints over the intersection set setPhi and put skipPredecessorsInSetG to false.
+    omegaFilter(setG, toProcess, filteredRegionsOmega, {}, false);
+    deltaFilter(setG, toProcess, filteredRegionsDelta, {}, false, false);
+
+    // Step 3: we must reach a delay fixpoint over the previously computed regions, since we operate with immediate delay predecessors only.
+    // Note: NOT including setG itself here, since it is unnecessary.
+    regionSet &newSetG = filteredRegionsOmega;
+    newSetG.merge(filteredRegionsDelta);
+
+    // Since we are reaching a fixpoint over delays, we can remove from newSetG the regions whose location does not coincide with that of an initial region.
+    absl::flat_hash_set<int> initialRegionsLocations{};
+    for (const auto &region: initialRegions)
+        initialRegionsLocations.insert(region.getLocation());
+    std::erase_if(newSetG, [&initialRegionsLocations](const auto &region) { return !initialRegionsLocations.contains(region.getLocation()); });
+
+    while (currentIteration < maxIter)
+    {
+        filteredRegionsDelta.clear();
+        toProcess.clear();
+        for (const auto &region: newSetG)
+            toProcess.push_back(&region);
+
+        deltaFilter(newSetG, toProcess, filteredRegionsDelta, {}, true, false);
+
+        // Removing predecessors that could be contained in setG.
+        std::erase_if(filteredRegionsDelta, [&setG](const auto &region) { return setG.contains(region); });
+
+        if (filteredRegionsDelta.empty())
+            break;
+
+        newSetG.merge(filteredRegionsDelta);
+
+        currentIteration++;
+    }
+
+    // Ending the timer for measuring computation.
+#ifdef _OPENMP
+    const auto end = omp_get_wtime();
+    const auto duration = end - start;
+    std::cout << "Total time:              " << duration * 1000000 << " microseconds" << std::endl;
+#else
+    const auto end = std::chrono::high_resolution_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    std::cout << "Total time:              " << duration << " microseconds" << std::endl;
+#endif
+
+    const bool reachable = std::ranges::any_of(initialRegions, [&newSetG](const auto &region) { return newSetG.contains(region); });
+
+    std::cout << "Total iterations:        " << currentIteration << std::endl;
+    std::cout << "Total starting regions:  " << totalStartingRegions << std::endl;
+    std::cout << "Total regions in setPhi: " << setPhi.size() << std::endl;
+    std::cout << "Total stored regions:    " << setG.size() + newSetG.size() << std::endl;
+    std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
+
+    return reachable;
 }
 
 
@@ -497,9 +628,7 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
     std::cout << "Total time:             " << duration << " microseconds" << std::endl;
 #endif
 
-    const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) {
-        return setG.contains(region);
-    });
+    const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
 
     std::cout << "Total iterations:       " << currentIteration << std::endl;
     std::cout << "Total starting regions: " << totalStartingRegions << std::endl;
@@ -566,6 +695,39 @@ inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binar
 }
 
 
+inline bool region::RTSArena::solveGameWithNextFormula(const cltloc::ast::generalCLTLocFormula &formula) const
+{
+    // The formula must be of the form: phi UNTIL psi.
+    const bool result = std::visit([this]<typename T0>(T0 const &val) -> bool {
+        using T = std::decay_t<T0>;
+
+        if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
+        {
+            const auto &binaryFormula = val.get();
+
+            const std::vector<regionSet> leftRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.leftFormula);
+            std::vector<regionSet> rightRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.rightFormula);
+
+            if (leftRegions.size() != 1 || rightRegions.size() != 1)
+                throw std::logic_error("Wrong size of binary formula.");
+
+            const regionSet &setPhi = leftRegions[0];
+            regionSet &setG = rightRegions[0];
+
+            std::vector<RegionPtr> toProcess{};
+            toProcess.reserve(setG.size());
+            for (const auto &region: setG)
+                toProcess.push_back(&region);
+
+            return timedNextReachability(setPhi, setG, toProcess, MAX_ITERATIONS);
+        } else
+            throw std::logic_error("When solving a NEXT formula it must be of the form: NEXT (phi UNTIL psi).");
+    }, formula.value);
+
+    return result;
+}
+
+
 bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula) const
 {
     // Starting the timer for measuring computation.
@@ -593,6 +755,9 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
 
                 case DIAMOND:
                     return solveGameWithDiamondFormula(unaryFormula);
+
+                case NEXT:
+                    return solveGameWithNextFormula(unaryFormula.rightFormula);
 
                 default:
                     throw std::logic_error("Invalid unary CLTLoc operator.");
