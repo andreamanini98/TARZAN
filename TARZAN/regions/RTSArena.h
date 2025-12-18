@@ -12,7 +12,7 @@ using regionSet = std::unordered_set<region::Region, region::RegionHash>;
 
 namespace region
 {
-    /// @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
+    /// @warning TIME IN ARENAS MUST INCREASE STRICTLY MONOTONICALLY FOR THE ALGORITHM TO WORK!
     class RTSArena : public RTS
     {
         absl::flat_hash_map<int, players_sym> locationsToPlayers{};
@@ -74,7 +74,7 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @throws std::logic_error if the formula has the wrong size.
-         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
+         * @warning TIME IN ARENAS MUST INCREASE STRICTLY MONOTONICALLY FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] inline bool solveGameWithBoxFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula) const;
 
@@ -86,7 +86,7 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @throws std::logic_error if the formula has the wrong size.
-         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
+         * @warning TIME IN ARENAS MUST INCREASE STRICTLY MONOTONICALLY FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] inline bool solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula) const;
 
@@ -98,7 +98,7 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @throws std::logic_error if the formula has the wrong size.
-         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
+         * @warning TIME IN ARENAS MUST INCREASE STRICTLY MONOTONICALLY FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] inline bool solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula) const;
 
@@ -110,7 +110,7 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @throws std::logic_error if the formula is not of the form: NEXT (phi UNTIL psi).
-         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
+         * @warning TIME IN ARENAS MUST INCREASE STRICTLY MONOTONICALLY FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] inline bool solveGameWithNextFormula(const cltloc::ast::generalCLTLocFormula &formula) const;
 
@@ -248,7 +248,7 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @warning The function updates setG and toProcess.
-         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
+         * @warning TIME IN ARENAS MUST INCREASE STRICTLY MONOTONICALLY FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] bool timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
 
@@ -263,7 +263,7 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @warning The function updates setG and toProcess.
-         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
+         * @warning TIME IN ARENAS MUST INCREASE STRICTLY MONOTONICALLY FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] bool timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
 
@@ -278,7 +278,7 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @warning The function updates setG and toProcess.
-         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
+         * @warning TIME IN ARENAS MUST INCREASE STRICTLY MONOTONICALLY FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] bool timedNextReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
 
@@ -292,7 +292,7 @@ namespace region
          * @return true if the controller wins, false otherwise.
          *
          * @warning The function updates setG and toProcess.
-         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
+         * @warning TIME IN ARENAS MUST INCREASE STRICTLY MONOTONICALLY FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] bool timedSafety(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
 
@@ -309,7 +309,7 @@ namespace region
          *
          * @throws std::logic_error if an unhandled formula type is encountered or a pure formula is given as the parameter value.
          *
-         * @warning ARENAS MUST BE NON-ZENO FOR THE ALGORITHM TO WORK!
+         * @warning TIME IN ARENAS MUST INCREASE STRICTLY MONOTONICALLY FOR THE ALGORITHM TO WORK!
          */
         [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula) const;
 
