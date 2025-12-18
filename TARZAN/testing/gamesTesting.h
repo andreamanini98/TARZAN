@@ -311,4 +311,147 @@ inline void testSolveTimedCLTLocGames()
         std::cout << "----- " << std::endl;
 }
 
+
+inline void formula2()
+{
+    std::cout << "\nSolving the formula number 2 of section 6 of our paper. Should be winning for the controller." << std::endl;
+
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/correctness_tests/";
+    const std::string arenaName = "production_cell_0.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
+
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/correctness_tests/until_0.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+
+    std::cout << phi.to_string() << std::endl;
+    // std::cout << rts.to_string() << std::endl;
+
+    if (const region::RTSArena rts(arena, phi); rts.solveTimedCLTLocGame(phi))
+        std::cout << "-----" << std::endl;
+    else
+        std::cout << "----- " << std::endl;
+}
+
+
+inline void formula2_controllerCannotCycle()
+{
+    std::cout << "\nSolving the formula number 2 of section 6 of our paper." << std::endl;
+    std::cout << "Here, we changed (fall_p, restore_p, [(zeno, >, 0), (x, >, 1), (x, <, 2)], [zeno], feed) to: " << std::endl;
+    std::cout << "(fall_p, restore_p, [(zeno, >, 0), (x, >, 1), (x, <, 3)], [zeno], feed). The environment can choose a delay such that the" << std::endl;
+    std::cout << "controller cannot then move from feed. It cannot cycle anymore to make time advance. Should be losing for the controller." << std::endl;
+
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/correctness_tests/";
+    const std::string arenaName = "production_cell_1.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
+
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/correctness_tests/until_1.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+
+    std::cout << phi.to_string() << std::endl;
+    // std::cout << rts.to_string() << std::endl;
+
+    if (const region::RTSArena rts(arena, phi); rts.solveTimedCLTLocGame(phi))
+        std::cout << "-----" << std::endl;
+    else
+        std::cout << "----- " << std::endl;
+}
+
+
+inline void formula3_lose()
+{
+    std::cout << "\nSolving the formula number 3 of section 6 of our paper." << std::endl;
+    std::cout << "The formula wrongly requires that x must be such that 1 <= x <= 3 until depot, but this cannot be, since x gets reset." << std::endl;
+    std::cout << "Should be losing for the controller." << std::endl;
+
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/correctness_tests/";
+    const std::string arenaName = "production_cell_2.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
+
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/correctness_tests/until_2.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+
+    std::cout << phi.to_string() << std::endl;
+    // std::cout << rts.to_string() << std::endl;
+
+    if (const region::RTSArena rts(arena, phi); rts.solveTimedCLTLocGame(phi))
+        std::cout << "-----" << std::endl;
+    else
+        std::cout << "----- " << std::endl;
+}
+
+
+inline void formula3_win()
+{
+    std::cout << "\nSolving the formula number 3 of section 6 of our paper." << std::endl;
+    std::cout << "This is a corrected version requiring that 0 <= x <= 3 holds until depot. Should be winning for the controller." << std::endl;
+
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/correctness_tests/";
+    const std::string arenaName = "production_cell_3.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
+
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/correctness_tests/until_3.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+
+    std::cout << phi.to_string() << std::endl;
+    // std::cout << rts.to_string() << std::endl;
+
+    if (const region::RTSArena rts(arena, phi); rts.solveTimedCLTLocGame(phi))
+        std::cout << "-----" << std::endl;
+    else
+        std::cout << "----- " << std::endl;
+}
+
+
+inline void formula2_controllerCanCycleOnlyInFall_d()
+{
+    std::cout << "\nSolving the formula number 2 of section 6 of our paper." << std::endl;
+    std::cout << "Here, we changed (fall_p, restore_p, [(zeno, >, 0), (x, >, 1), (x, <, 2)], [zeno], feed) to: " << std::endl;
+    std::cout << "(fall_p, restore_p, [(zeno, >, 0), (x, >, 1), (x, <, 3)], [zeno], feed), and" << std::endl;
+    std::cout << "(fall_d, restore_d, [(zeno, >, 0), (x, >, 1), (x, <=, 5)], [zeno], feed) to: " << std::endl;
+    std::cout << "(fall_d, restore_d, [(zeno, >, 0), (x, >, 1), (x, <, 2)], [zeno], feed). The controller is now unable to cycle in fall_p," << std::endl;
+    std::cout << "but can do it fall_p. Should be winning for the controller." << std::endl;
+
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/correctness_tests/";
+    const std::string arenaName = "production_cell_4.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
+
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/correctness_tests/until_4.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+
+    std::cout << phi.to_string() << std::endl;
+    // std::cout << rts.to_string() << std::endl;
+
+    if (const region::RTSArena rts(arena, phi); rts.solveTimedCLTLocGame(phi))
+        std::cout << "-----" << std::endl;
+    else
+        std::cout << "----- " << std::endl;
+}
+
+
+inline void formula2_controllerCanCycleOnlyInFall_d_lose()
+{
+    std::cout << "\nSolving the formula number 2 of section 6 of our paper." << std::endl;
+    std::cout << "Here, we changed (fall_p, restore_p, [(zeno, >, 0), (x, >, 1), (x, <, 2)], [zeno], feed) to: " << std::endl;
+    std::cout << "(fall_p, restore_p, [(zeno, >, 0), (x, >, 1), (x, <, 3)], [zeno], feed), and" << std::endl;
+    std::cout << "(fall_d, restore_d, [(zeno, >, 0), (x, >, 1), (x, <=, 5)], [zeno], feed) to: " << std::endl;
+    std::cout << "(fall_d, restore_d, [(zeno, >, 0), (x, >, 1), (x, <=, 2)], [zeno], feed). The controller is now unable to cycle in fall_p," << std::endl;
+    std::cout << "but it can't cycle in fall_d either due to the constraint (x, <=, 2): recall that time must increase strictly monotonically" << std::endl;
+    std::cout << "and the environment can block the game in feed if it chooses x == 2 in fall_d. Should be losing for the controller." << std::endl;
+
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/correctness_tests/";
+    const std::string arenaName = "production_cell_5.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath + arenaName);
+
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/correctness_tests/until_5.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+
+    std::cout << phi.to_string() << std::endl;
+    // std::cout << rts.to_string() << std::endl;
+
+    if (const region::RTSArena rts(arena, phi); rts.solveTimedCLTLocGame(phi))
+        std::cout << "-----" << std::endl;
+    else
+        std::cout << "----- " << std::endl;
+}
+
 #endif //TARZAN_GAMESTESTING_H
