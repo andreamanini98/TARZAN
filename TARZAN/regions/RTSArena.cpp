@@ -152,6 +152,67 @@ inline void region::RTSArena::mergeResults(const std::vector<std::vector<Region>
 }
 
 
+inline bool region::RTSArena::delaySuccessorsCheck(const Region &reg, const regionSet &setG, const bool checkAllSuccessorsInvariants) const
+{
+    bool isRegionValid = true;
+
+    Region oldDelaySucc = reg;
+    // ReSharper disable once CppTooWideScopeInitStatement
+    Region newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
+
+    // Check immediate fixpoint case, only valid if reg is in setG.
+    if (oldDelaySucc == newDelaySucc)
+        isRegionValid = setG.contains(reg);
+    else
+    {
+        while (oldDelaySucc != newDelaySucc)
+        {
+            // The environment cannot bring the game into a deadlock state by waiting an arbitrary amount of time.
+            // Boolean to track whether all outgoing transitions of an immediate delay successor are disabled.
+            // Here we want at least one such transition to be enabled for reg to be valid.
+            bool allDisabled = true;
+            // ReSharper disable once CppTooWideScopeInitStatement
+            const std::vector<transition> &newDelaySuccTransitions = outTransitions[newDelaySucc.getLocation()];
+            for (const auto &transition: newDelaySuccTransitions)
+                if (transition.isTransitionSatisfied(newDelaySucc.getClockValuation(), clocksIndices, {}))
+                {
+                    allDisabled = false;
+                    break;
+                }
+
+            // If all transitions are disabled, simply continue by checking the next immediate delay successor.
+            if (allDisabled)
+            {
+                oldDelaySucc = newDelaySucc;
+                newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
+            } else
+            {
+                // If the delay successor is not in setG, the region is invalid.
+                if (!setG.contains(newDelaySucc))
+                {
+                    isRegionValid = false;
+                    break;
+                }
+
+                // In safety formulae, it may be necessary to satisfy the invariants for immediate delay successors.
+                if (checkAllSuccessorsInvariants)
+                    if (const auto it = invariants.find(newDelaySucc.getLocation()); it != invariants.end())
+                        if (!isInvariantSatisfied(it->second, newDelaySucc.getClockValuation(), clocksIndices))
+                        {
+                            isRegionValid = false;
+                            break;
+                        }
+
+                oldDelaySucc = newDelaySucc;
+                newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
+            }
+        }
+    }
+
+    return isRegionValid;
+}
+
+
 void region::RTSArena::omegaFilter(const regionSet &setG,
                                    const std::vector<RegionPtr> &toProcess,
                                    regionSet &filteredRegions,
@@ -277,53 +338,7 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
             // Checking whether the controller is guaranteed to win when the chosen delay is equal to zero (same check as in deltaFilter).
             // Indeed, a discrete predecessor can also be seen as a delay predecessor in which the delay is exactly equal to zero.
             if (isRegionValid && locationsToPlayers.at(reg.getLocation()) != CONTROLLER)
-            {
-                Region oldDelaySucc = reg;
-                // ReSharper disable once CppTooWideScopeInitStatement
-                Region newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
-
-                if (oldDelaySucc == newDelaySucc)
-                    isRegionValid = setG.contains(reg);
-                else
-                {
-                    while (oldDelaySucc != newDelaySucc)
-                    {
-                        bool allDisabled = true;
-                        // ReSharper disable once CppTooWideScopeInitStatement
-                        const std::vector<transition> &newDelaySuccTransitions = outTransitions[newDelaySucc.getLocation()];
-                        for (const auto &transition: newDelaySuccTransitions)
-                            if (transition.isTransitionSatisfied(newDelaySucc.getClockValuation(), clocksIndices, {}))
-                            {
-                                allDisabled = false;
-                                break;
-                            }
-
-                        if (allDisabled)
-                        {
-                            oldDelaySucc = newDelaySucc;
-                            newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
-                        } else
-                        {
-                            if (!setG.contains(newDelaySucc))
-                            {
-                                isRegionValid = false;
-                                break;
-                            }
-
-                            if (checkAllSuccessorsInvariants)
-                                if (const auto it = invariants.find(newDelaySucc.getLocation()); it != invariants.end())
-                                    if (!isInvariantSatisfied(it->second, newDelaySucc.getClockValuation(), clocksIndices))
-                                    {
-                                        isRegionValid = false;
-                                        break;
-                                    }
-
-                            oldDelaySucc = newDelaySucc;
-                            newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
-                        }
-                    }
-                }
-            }
+                isRegionValid = delaySuccessorsCheck(reg, setG, checkAllSuccessorsInvariants);
 
             if (isRegionValid)
             {
@@ -389,63 +404,10 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
 
             bool isRegionValid = true;
 
-            // CONTROLLER regions only need to pass the skipRegion check.
-            // ENVIRONMENT regions must additionally guarantee that all delay successors lead to setG.
+            // Controller regions only need to pass the skipRegion check.
+            // Environment regions must additionally guarantee that all delay successors lead to setG.
             if (locationsToPlayers.at(reg.getLocation()) != CONTROLLER)
-            {
-                Region oldDelaySucc = reg;
-                // ReSharper disable once CppTooWideScopeInitStatement
-                Region newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
-
-                // Check immediate fixpoint case, only valid if reg is in setG.
-                if (oldDelaySucc == newDelaySucc)
-                    isRegionValid = setG.contains(reg);
-                else
-                {
-                    while (oldDelaySucc != newDelaySucc)
-                    {
-                        // The environment cannot bring the game into a deadlock state by waiting an arbitrary amount of time.
-                        // Boolean to track whether all outgoing transitions of an immediate delay successor are disabled.
-                        // Here we want at least one such transition to be enabled for reg to be valid.
-                        bool allDisabled = true;
-                        // ReSharper disable once CppTooWideScopeInitStatement
-                        const std::vector<transition> &newDelaySuccTransitions = outTransitions[newDelaySucc.getLocation()];
-                        for (const auto &transition: newDelaySuccTransitions)
-                            if (transition.isTransitionSatisfied(newDelaySucc.getClockValuation(), clocksIndices, {}))
-                            {
-                                allDisabled = false;
-                                break;
-                            }
-
-                        // If all transitions are disabled, simply continue by checking the next immediate delay successor.
-                        if (allDisabled)
-                        {
-                            oldDelaySucc = newDelaySucc;
-                            newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
-                        } else
-                        {
-                            // If the delay successor is not in setG, the region is invalid.
-                            if (!setG.contains(newDelaySucc))
-                            {
-                                isRegionValid = false;
-                                break;
-                            }
-
-                            // In safety formulae, it may be necessary to satisfy the invariants for immediate delay successors.
-                            if (checkAllSuccessorsInvariants)
-                                if (const auto it = invariants.find(newDelaySucc.getLocation()); it != invariants.end())
-                                    if (!isInvariantSatisfied(it->second, newDelaySucc.getClockValuation(), clocksIndices))
-                                    {
-                                        isRegionValid = false;
-                                        break;
-                                    }
-
-                            oldDelaySucc = newDelaySucc;
-                            newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
-                        }
-                    }
-                }
-            }
+                isRegionValid = delaySuccessorsCheck(reg, setG, checkAllSuccessorsInvariants);
 
             if (isRegionValid)
             {

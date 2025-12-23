@@ -67,6 +67,17 @@ namespace region
 
 
         /**
+         * @brief Checks whether all delay successors of a given region are contained in setG.
+         *
+         * @param reg the region from which delay successors are computed.
+         * @param setG set of goal regions.
+         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
+         * @return true if all delay successors reg are contained in setG, false otherwise.
+         */
+        [[nodiscard]] inline bool delaySuccessorsCheck(const Region &reg, const regionSet &setG, bool checkAllSuccessorsInvariants) const;
+
+
+        /**
          * @brief Solves a game where the formula is: BOX phi.
          *
          * @param unaryFormula the formula to solve.
