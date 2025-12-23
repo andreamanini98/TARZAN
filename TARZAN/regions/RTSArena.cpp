@@ -612,8 +612,7 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
         const size_t oldSetGSize = setG.size();
 
         omegaFilter(setG, toProcess, filteredRegionsOmega, {}, false, true);
-        // We pass filteredRegionsOmega to deltaFilter, since we want to keep the alternating semantics.
-        deltaFilter(filteredRegionsOmega, toProcess, filteredRegionsDelta, {}, false, true);
+        deltaFilter(setG, toProcess, filteredRegionsDelta, {}, false, true);
 
         // Computing the intersection between regions returned by omega and delta filters and setG.
         filteredRegionsOmega.merge(filteredRegionsDelta);
