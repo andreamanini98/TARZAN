@@ -435,8 +435,7 @@ inline void formula2_controllerCanCycleOnlyInFall_d_lose()
     std::cout << "(fall_p, restore_p, [(zeno, >, 0), (x, >, 1), (x, <, 3)], [zeno], feed), and" << std::endl;
     std::cout << "(fall_d, restore_d, [(zeno, >, 0), (x, >, 1), (x, <=, 5)], [zeno], feed) to: " << std::endl;
     std::cout << "(fall_d, restore_d, [(zeno, >, 0), (x, >, 1), (x, <=, 2)], [zeno], feed). The controller is now unable to cycle in fall_p," << std::endl;
-    std::cout << "but it can't cycle in fall_d either due to the constraint (x, <=, 2): recall that time must increase strictly monotonically" << std::endl;
-    std::cout << "and the environment can block the game in feed if it chooses x == 2 in fall_d. Should be losing for the controller." << std::endl;
+    std::cout << "but it can. Should be winning for the controller." << std::endl;
 
     const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/production_cell/correctness_tests/";
     const std::string arenaName = "production_cell_5.txt";

@@ -156,7 +156,8 @@ void region::RTSArena::omegaFilter(const regionSet &setG,
                                    const std::vector<RegionPtr> &toProcess,
                                    regionSet &filteredRegions,
                                    const regionSet &intersectionSet,
-                                   const bool skipPredecessorsInSetG) const
+                                   const bool skipPredecessorsInSetG,
+                                   const bool checkAllSuccessorsInvariants) const
 {
     constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
 
@@ -181,7 +182,7 @@ void region::RTSArena::omegaFilter(const regionSet &setG,
     }
 
 #pragma omp parallel for if(toProcess.size() >= parallelThreshold) schedule(dynamic) default(none) \
-shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, threadLocalRegions), \
+shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, checkAllSuccessorsInvariants, threadLocalRegions), \
 shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants, invariants)
     for (int i = 0; i < static_cast<int>(toProcess.size()); i++) // NOLINT(modernize-loop-convert)
     {
@@ -273,6 +274,57 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                 }
             }
 
+            // Checking whether the controller is guaranteed to win when the chosen delay is equal to zero (same check as in deltaFilter).
+            // Indeed, a discrete predecessor can also be seen as a delay predecessor in which the delay is exactly equal to zero.
+            if (isRegionValid && locationsToPlayers.at(reg.getLocation()) != CONTROLLER)
+            {
+                Region oldDelaySucc = reg;
+                // ReSharper disable once CppTooWideScopeInitStatement
+                Region newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
+
+                if (oldDelaySucc == newDelaySucc)
+                    isRegionValid = setG.contains(reg);
+                else
+                {
+                    while (oldDelaySucc != newDelaySucc)
+                    {
+                        bool allDisabled = true;
+                        // ReSharper disable once CppTooWideScopeInitStatement
+                        const std::vector<transition> &newDelaySuccTransitions = outTransitions[newDelaySucc.getLocation()];
+                        for (const auto &transition: newDelaySuccTransitions)
+                            if (transition.isTransitionSatisfied(newDelaySucc.getClockValuation(), clocksIndices, {}))
+                            {
+                                allDisabled = false;
+                                break;
+                            }
+
+                        if (allDisabled)
+                        {
+                            oldDelaySucc = newDelaySucc;
+                            newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
+                        } else
+                        {
+                            if (!setG.contains(newDelaySucc))
+                            {
+                                isRegionValid = false;
+                                break;
+                            }
+
+                            if (checkAllSuccessorsInvariants)
+                                if (const auto it = invariants.find(newDelaySucc.getLocation()); it != invariants.end())
+                                    if (!isInvariantSatisfied(it->second, newDelaySucc.getClockValuation(), clocksIndices))
+                                    {
+                                        isRegionValid = false;
+                                        break;
+                                    }
+
+                            oldDelaySucc = newDelaySucc;
+                            newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
+                        }
+                    }
+                }
+            }
+
             if (isRegionValid)
             {
 #ifdef _OPENMP
@@ -360,7 +412,10 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                         const std::vector<transition> &newDelaySuccTransitions = outTransitions[newDelaySucc.getLocation()];
                         for (const auto &transition: newDelaySuccTransitions)
                             if (transition.isTransitionSatisfied(newDelaySucc.getClockValuation(), clocksIndices, {}))
+                            {
                                 allDisabled = false;
+                                break;
+                            }
 
                         // If all transitions are disabled, simply continue by checking the next immediate delay successor.
                         if (allDisabled)
@@ -424,7 +479,7 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 
     while (currentIteration < maxIter)
     {
-        omegaFilter(setG, toProcess, filteredRegionsOmega, setPhi, true);
+        omegaFilter(setG, toProcess, filteredRegionsOmega, setPhi, true, false);
         deltaFilter(setG, toProcess, filteredRegionsDelta, setPhi, true, false);
 
         if (filteredRegionsOmega.empty() && filteredRegionsDelta.empty())
@@ -490,7 +545,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
 
     while (currentIteration < maxIter)
     {
-        omegaFilter(setG, toProcess, filteredRegionsOmega, setPhi, true);
+        omegaFilter(setG, toProcess, filteredRegionsOmega, setPhi, true, false);
         deltaFilter(setG, toProcess, filteredRegionsDelta, setPhi, true, false);
 
         if (filteredRegionsOmega.empty() && filteredRegionsDelta.empty())
@@ -518,7 +573,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
     filteredRegionsDelta.clear();
 
     // In this case, we remove the constraints over the intersection set setPhi and put skipPredecessorsInSetG to false.
-    omegaFilter(setG, toProcess, filteredRegionsOmega, {}, false);
+    omegaFilter(setG, toProcess, filteredRegionsOmega, {}, false, false);
     deltaFilter(setG, toProcess, filteredRegionsDelta, {}, false, false);
 
     // Step 3: we must reach a delay fixpoint over the previously computed regions, since we operate with immediate delay predecessors only.
@@ -594,7 +649,7 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
     {
         const size_t oldSetGSize = setG.size();
 
-        omegaFilter(setG, toProcess, filteredRegionsOmega, {}, false);
+        omegaFilter(setG, toProcess, filteredRegionsOmega, {}, false, true);
         deltaFilter(setG, toProcess, filteredRegionsDelta, {}, false, true);
 
         // Computing the intersection between regions returned by omega and delta filters and setG.
