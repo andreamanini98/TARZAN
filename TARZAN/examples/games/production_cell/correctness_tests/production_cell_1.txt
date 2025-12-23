@@ -2,7 +2,7 @@ create arena production_cell
 {
     clocks
     {
-        x, y, zeno;
+        x, y;
     }
 
     actions
@@ -24,17 +24,17 @@ create arena production_cell
 
     transitions
     {
-        (feed,    toTable,     [(zeno, >, 0), (x, ==, 2)],             [zeno, x], table),
-        (table,   takePlate_p, [(zeno, >, 0), (x, >=, 1), (x, <=, 3)], [zeno, x], robot_p),
-        (robot_p, toPress,     [(zeno, >, 0), (x, <, 2)],              [zeno, x], fall_p),
-        (robot_p, toPress,     [(zeno, >, 0), (x, >, 4)],              [zeno, x], fall_p),
-        (fall_p,  restore_p,   [(zeno, >, 0), (x, >, 1), (x, <, 3)],   [zeno],  feed),
-        (robot_p, toPress,     [(zeno, >, 0), (x, >=, 2), (x, <=, 4)], [zeno, x], press),
-        (press,   takePlate_d, [(zeno, >, 0), (x, >=, 3), (x, <=, 5)], [zeno, x], robot_d),
-        (robot_d, toDepot,     [(zeno, >, 0), (x, <, 3)],              [zeno, x], fall_d),
-        (robot_d, toDepot,     [(zeno, >, 0), (x, >=, 4)],             [zeno, x], fall_d),
-        (fall_d,  restore_d,   [(zeno, >, 0), (x, >, 1), (x, <=, 5)],  [zeno],  feed),
-        (robot_d, toDepot,     [(zeno, >, 0), (x, >=, 3), (x, <=, 6)], [zeno, x], depot),
-        (depot,   newPlate,    [(zeno, >, 0) ],                        [zeno, x], feed);
+        (feed,    toTable,     [(x, ==, 2)],             [x], table),
+        (table,   takePlate_p, [(x, >=, 1), (x, <=, 3)], [x], robot_p),
+        (robot_p, toPress,     [(x, <, 2)],              [x], fall_p),
+        (robot_p, toPress,     [(x, >, 4)],              [x], fall_p),
+        (fall_p,  restore_p,   [(x, >, 1), (x, <, 3)],   [],  feed),
+        (robot_p, toPress,     [(x, >=, 2), (x, <=, 4)], [x], press),
+        (press,   takePlate_d, [(x, >=, 3), (x, <=, 5)], [x], robot_d),
+        (robot_d, toDepot,     [(x, <, 3)],              [x], fall_d),
+        (robot_d, toDepot,     [(x, >=, 4)],             [x], fall_d),
+        (fall_d,  restore_d,   [(x, >, 1), (x, <=, 5)],  [],  feed),
+        (robot_d, toDepot,     [(x, >=, 3), (x, <=, 6)], [x], depot),
+        (depot,   newPlate,    [],                       [x], feed);
     }
 }
