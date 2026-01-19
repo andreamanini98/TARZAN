@@ -15,7 +15,8 @@
 
 inline void testFlowerBackward2()
 {
-    std::cout << "Test Flower Backward 2: showing that from the region reached forward it is possible to go back to an initial region.\n\n";
+    std::cout << "Flower K = 2" << std::endl;
+    std::cout << "------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_02/";
 
@@ -44,7 +45,8 @@ inline void testFlowerBackward2()
 
 inline void testFlowerBackward4()
 {
-    std::cout << "Test Flower Backward 4: showing that from the region reached forward it is possible to go back to an initial region.\n\n";
+    std::cout << "Flower K = 4" << std::endl;
+    std::cout << "------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_04/";
 
@@ -73,7 +75,8 @@ inline void testFlowerBackward4()
 
 inline void testFlowerBackward6()
 {
-    std::cout << "Test Flower Backward 6: showing that from the region reached forward it is possible to go back to an initial region.\n\n";
+    std::cout << "Flower K = 6" << std::endl;
+    std::cout << "------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_06/";
 
@@ -102,7 +105,8 @@ inline void testFlowerBackward6()
 
 inline void testFlowerBackward8()
 {
-    std::cout << "Test Flower Backward 8: showing that from the region reached forward it is possible to go back to an initial region.\n\n";
+    std::cout << "Flower K = 8" << std::endl;
+    std::cout << "------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_08/";
 
@@ -131,7 +135,8 @@ inline void testFlowerBackward8()
 
 inline void testFlowerBackward10()
 {
-    std::cout << "Test Flower Backward 10: showing that from the region reached forward it is possible to go back to an initial region.\n\n";
+    std::cout << "Flower K = 10" << std::endl;
+    std::cout << "-------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_10/";
 
@@ -160,7 +165,8 @@ inline void testFlowerBackward10()
 
 inline void testFlowerBackward12()
 {
-    std::cout << "Test Flower Backward 12: showing that from the region reached forward it is possible to go back to an initial region.\n\n";
+    std::cout << "Flower K = 12" << std::endl;
+    std::cout << "-------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_12/";
 
@@ -189,7 +195,8 @@ inline void testFlowerBackward12()
 
 inline void testFlowerBackward14()
 {
-    std::cout << "Test Flower Backward 14: showing that from the region reached forward it is possible to go back to an initial region.\n\n";
+    std::cout << "Flower K = 14" << std::endl;
+    std::cout << "-------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_14/";
 
@@ -218,7 +225,8 @@ inline void testFlowerBackward14()
 
 inline void testFlowerBackward16()
 {
-    std::cout << "Test Flower Backward 16: showing that from the region reached forward it is possible to go back to an initial region.\n\n";
+    std::cout << "Flower K = 16" << std::endl;
+    std::cout << "------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_16/";
 

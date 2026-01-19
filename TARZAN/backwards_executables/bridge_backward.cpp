@@ -3,9 +3,11 @@
 
 int main()
 {
-    testVikingsFlat2();
+    std::cout << "Used only for testing during development, now disabled." << std::endl;
 
-    testVikingsFlat3();
+    // testVikingsFlat2();
+
+    // testVikingsFlat3();
 
     return 0;
 }

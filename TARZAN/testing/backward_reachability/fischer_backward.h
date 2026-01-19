@@ -15,7 +15,8 @@
 
 inline void testFischerFlat2()
 {
-    std::cout << "\n\nFischer Flat 2" << std::endl;
+    std::cout << "Fischer Flat K = 2" << std::endl;
+    std::cout << "------------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_02/";
     constexpr std::string automatonFileName = "ff.txt";
@@ -34,6 +35,7 @@ inline void testFischerFlat2()
     intVarOrClockConstr.emplace_back("x1", GT, 2);
     intVarOrClockConstr.emplace_back("x2", GT, 2);
 
+    std::cout << "Forward computation output:" << std::endl;
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
 
     // intero che rappresenta cs1_cs2_id2: 0
@@ -77,7 +79,7 @@ inline void testFischerFlat2()
     // for (const auto &reg: startingRegions)
     //     std::cout << reg.toString() << std::endl;
 
-    std::cout << "Backward computation output:" << std::endl;
+    std::cout << "\nBackward computation output:" << std::endl;
 
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
 }
@@ -85,7 +87,8 @@ inline void testFischerFlat2()
 
 inline void testFischerFlat3()
 {
-    std::cout << "\n\nFischer Flat 3" << std::endl;
+    std::cout << "Fischer Flat K = 3" << std::endl;
+    std::cout << "------------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_03/";
     constexpr std::string automatonFileName = "ff.txt";
@@ -106,6 +109,7 @@ inline void testFischerFlat3()
     intVarOrClockConstr.emplace_back("x2", GT, 2);
     intVarOrClockConstr.emplace_back("x3", GT, 2);
 
+    std::cout << "Forward computation output:" << std::endl;
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
 
     // intero che rappresenta req1_cs2_cs3_id3: 85
@@ -153,7 +157,7 @@ inline void testFischerFlat3()
     // for (const auto &reg: startingRegions)
     //     std::cout << reg.toString() << std::endl;
 
-    std::cout << "Backward computation output:" << std::endl;
+    std::cout << "\nBackward computation output:" << std::endl;
 
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
 }
@@ -161,7 +165,8 @@ inline void testFischerFlat3()
 
 inline void testFischerFlat4()
 {
-    std::cout << "\n\nFischer Flat 4" << std::endl;
+    std::cout << "Fischer Flat K = 4" << std::endl;
+    std::cout << "------------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_04/";
     constexpr std::string automatonFileName = "ff.txt";
@@ -184,6 +189,7 @@ inline void testFischerFlat4()
     intVarOrClockConstr.emplace_back("x3", GT, 2);
     intVarOrClockConstr.emplace_back("x4", GT, 2);
 
+    std::cout << "Forward computation output:" << std::endl;
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
 
     // intero che rappresenta req1_req2_cs3_cs4_id4: 571
@@ -253,7 +259,7 @@ inline void testFischerFlat4()
     // for (const auto &reg: startingRegions)
     //     std::cout << reg.toString() << std::endl;
 
-    std::cout << "Backward computation output:" << std::endl;
+    std::cout << "\nBackward computation output:" << std::endl;
 
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
 }
@@ -261,7 +267,8 @@ inline void testFischerFlat4()
 
 inline void testFischerFlat5()
 {
-    std::cout << "\n\nFischer Flat 5" << std::endl;
+    std::cout << "Fischer Flat K = 5" << std::endl;
+    std::cout << "------------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_05/";
     constexpr std::string automatonFileName = "ff.txt";
@@ -294,6 +301,7 @@ inline void testFischerFlat5()
     intVarOrClockConstr.emplace_back("x4", GT, 2);
     intVarOrClockConstr.emplace_back("x5", GT, 2);
 
+    std::cout << "Forward computation output:" << std::endl;
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
 
     // intero che rappresenta req1_req2_req3_cs4_cs5_id5: 2868
@@ -543,7 +551,7 @@ inline void testFischerFlat5()
     // for (const auto &reg: startingRegions)
     //     std::cout << reg.toString() << std::endl;
 
-    std::cout << "Backward computation output:" << std::endl;
+    std::cout << "\nBackward computation output:" << std::endl;
 
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
 }
@@ -551,7 +559,8 @@ inline void testFischerFlat5()
 
 inline void testFischerFlat6()
 {
-    std::cout << "\n\nFischer Flat 6" << std::endl;
+    std::cout << "Fischer Flat K = 6" << std::endl;
+    std::cout << "------------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_06/";
     constexpr std::string automatonFileName = "ff.txt";
@@ -588,6 +597,8 @@ inline void testFischerFlat6()
 
     // It goes out of memory with forward exploration.
     // std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
+    std::cout << "Forward computation output:" << std::endl;
+    std::cout << "Forward exploration not executed since it goes out of memory." << std::endl;
 
     // intero che rappresenta req1_req2_req3_req4_cs5_cs6_id6: 27734
 
@@ -2020,7 +2031,7 @@ inline void testFischerFlat6()
     // for (const auto &reg: startingRegions)
     //     std::cout << reg.toString() << std::endl;
 
-    std::cout << "Backward computation output:" << std::endl;
+    std::cout << "\nBackward computation output:" << std::endl;
 
     const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(startingRegions, DFS);
 }

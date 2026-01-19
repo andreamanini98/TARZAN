@@ -5,9 +5,15 @@ int main()
 {
     testTrainAHV93Flat2Efficient();
 
+    std::cout << "\n---\n\n";
+
     testTrainAHV93Flat3Efficient();
 
-    testTrainAHV93Flat3Reachable();
+    std::cout << "\n---\n\n";
+
+    testTrainAHV93Flat2Reachable();
+
+    std::cout << "\n---\n\n";
 
     testTrainAHV93Flat3Reachable();
 
