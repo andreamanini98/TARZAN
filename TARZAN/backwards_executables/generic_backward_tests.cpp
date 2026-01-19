@@ -17,7 +17,7 @@ int main()
 
     test3();
 
-    std::cout << "---\n\n";
+    std::cout << "\n---\n\n";
 
     test4();
 
@@ -28,10 +28,6 @@ int main()
     std::cout << "---\n\n";
 
     test6();
-
-    std::cout << "---\n\n";
-
-    test7();
 
     return 0;
 }

@@ -45,8 +45,17 @@ for executable in *; do
 
         # Execute and append output to file.
         ./"$executable" >> "$output_file" 2>&1
+        exit_code=$?
 
-        echo "  -> Exit code: $?"
+        # Check if process was killed by SIGKILL (signal 9), which typically indicates OOM.
+        # Exit code 137 = 128 + 9 (SIGKILL).
+        if [ $exit_code -eq 137 ]; then
+            echo ""
+            echo "!!! Stopping current backward test due to memory exhaustion." >> "$output_file"
+            echo "  -> Exit code: $exit_code (OOM - SIGKILL)"
+        else
+            echo "  -> Exit code: $exit_code"
+        fi
         echo ""
     fi
 done

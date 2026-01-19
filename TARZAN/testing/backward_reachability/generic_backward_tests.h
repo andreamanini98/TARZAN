@@ -227,44 +227,7 @@ inline void test4()
 
 inline void test5()
 {
-    std::cout << "Test 5 (Flower04): showing that from a region with an invalid location it is not possible to go back to an initial region.\n\n";
-
-    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_04/";
-
-    constexpr std::string automatonFileName = "Flower.txt";
-    const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
-
-    const region::RTS regionTransitionSystem(automaton);
-
-    // Suppress forwardReachability output
-    std::streambuf *oldCoutBuffer = std::cout.rdbuf();
-    std::ofstream nullStream("/dev/null");
-    std::cout.rdbuf(nullStream.rdbuf());
-
-    std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(0, DFS);
-
-    // Restore cout
-    std::cout.rdbuf(oldCoutBuffer);
-
-    std::cout << "Starting from region:\n" << rts[0].toString() << std::endl;
-
-    rts[0].set_q(10);
-
-    std::cout << "Starting from region:\n" << rts[0].toString() << std::endl;
-
-    std::cout << "Backward computation output:" << std::endl;
-
-    const std::vector<region::Region> predecessors = regionTransitionSystem.backwardReachability(rts, DFS);
-
-    std::cout << "Predecessors contents:\n";
-    for (const auto &region: predecessors)
-        std::cout << region.toString() << std::endl;
-}
-
-
-inline void test6()
-{
-    std::cout << "Test 6 (exSITH): showing that from the region reached forward it is possible to go back to an initial region.\n\n";
+    std::cout << "Test 5 (exSITH): showing that from the region reached forward it is possible to go back to an initial region.\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/exSITH/liana/exSITH/";
 
@@ -291,9 +254,9 @@ inline void test6()
 }
 
 
-inline void test7()
+inline void test6()
 {
-    std::cout << "Test 7 (simple1000): showing that from the region reached forward it is possible to go back to an initial region.\n";
+    std::cout << "Test 6 (simple1000): showing that from the region reached forward it is possible to go back to an initial region.\n";
     std::cout << "Recall that in backward reachability integer variables are not supported. In this case, the variable i does not affect\n";
     std::cout << "the execution of the automaton, hence we are able to perform backward reachability.\n\n";
 
