@@ -17,8 +17,8 @@ inline void testTrainAHV93Flat2Explodes()
 {
     std::cout << "\n\nTrainAHV93 Flat 2 explodes" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
-    const std::string automatonFileName = "Flatten.txt";
+    const std::string path = "../../TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
+    constexpr std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -75,8 +75,8 @@ inline void testTrainAHV93Flat2Efficient()
 {
     std::cout << "\n\nTrainAHV93 Flat 2 efficient" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
-    const std::string automatonFileName = "Flatten.txt";
+    const std::string path = "../../TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
+    constexpr std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -87,7 +87,7 @@ inline void testTrainAHV93Flat2Efficient()
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
     const int goal = locToIntMap.at("gate0_controller0_train0_train3_cnt0");
-    std::cout << "Goal: " << goal << std::endl;
+    // std::cout << "Goal: " << goal << std::endl;
 
     std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
     intVarOrClockConstr.emplace_back("x1", GT, 2);
@@ -101,7 +101,7 @@ inline void testTrainAHV93Flat2Efficient()
 
     //std::exit(1);
 
-    std::cout << "\n\n";
+    std::cout << "\n";
 
     constexpr int q = 572;
     const std::vector h = { 2, 4, 1, 1 };
@@ -155,8 +155,8 @@ inline void testTrainAHV93Flat3Explodes()
 {
     std::cout << "\n\nTrainAHV93 Flat 3 explodes" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
-    const std::string automatonFileName = "Flatten.txt";
+    const std::string path = "../../TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
+    constexpr std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -189,7 +189,7 @@ inline void testTrainAHV93Flat3Explodes()
 
     //std::exit(1);
 
-    std::cout << "\n\n";
+    std::cout << "\n";
 
     constexpr int q = 972;
     const std::vector h = { 4, 4, 4, 0, 1 };
@@ -222,8 +222,8 @@ inline void testTrainAHV93Flat3Efficient()
 {
     std::cout << "\n\nTrainAHV93 Flat 3 efficient" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
-    const std::string automatonFileName = "Flatten.txt";
+    const std::string path = "../../TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
+    constexpr std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -234,7 +234,7 @@ inline void testTrainAHV93Flat3Efficient()
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
     const int goal = locToIntMap.at("gate0_controller0_train0_train0_train3_cnt0");
-    std::cout << "Goal: " << goal << std::endl;
+    // std::cout << "Goal: " << goal << std::endl;
 
     std::vector<timed_automaton::ast::clockConstraint> intVarOrClockConstr{};
     intVarOrClockConstr.emplace_back("x1", GT, 2);
@@ -250,7 +250,7 @@ inline void testTrainAHV93Flat3Efficient()
 
     //std::exit(1);
 
-    std::cout << "\n\n";
+    std::cout << "\n";
 
     constexpr int q = 3705;
     const std::vector h = { 2, 2, 4, 1, 1 };
@@ -459,8 +459,8 @@ inline void testTrainAHV93Flat2Reachable()
 {
     std::cout << "\n\nTrainAHV93 Flat 2 reachable" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
-    const std::string automatonFileName = "Flatten.txt";
+    const std::string path = "../../TARZAN/benchmarksFlat/trainAHV93Flat/tf_02/";
+    constexpr std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -476,11 +476,11 @@ inline void testTrainAHV93Flat2Reachable()
 
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, BFS, false);
 
-    std::cout << rts[0].toString() << std::endl;
+    // std::cout << rts[0].toString() << std::endl;
 
     // intero che rappresenta gate2_controller2_train3_train3_cnt2: 714
 
-    std::cout << "\n\n";
+    std::cout << "\n";
 
     constexpr int q = 714;
     const std::vector h = { 3, 2, 2, 1 };
@@ -522,8 +522,8 @@ inline void testTrainAHV93Flat3Reachable()
 {
     std::cout << "\n\nTrainAHV93 Flat 3 reachable" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
-    const std::string automatonFileName = "Flatten.txt";
+    const std::string path = "../../TARZAN/benchmarksFlat/trainAHV93Flat/tf_03/";
+    constexpr std::string automatonFileName = "Flatten.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -547,13 +547,13 @@ inline void testTrainAHV93Flat3Reachable()
 
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, BFS, false);
 
-    std::cout << rts[0].toString() << std::endl;
+    // std::cout << rts[0].toString() << std::endl;
 
     //std::exit(1);
 
     // intero che rappresenta gate2_controller2_train3_train3_train3_cnt3: 775
 
-    std::cout << "\n\n";
+    std::cout << "\n";
 
     constexpr int q = 775;
     const std::vector h = { 4, 3, 2, 2, 1 };
@@ -585,9 +585,9 @@ inline void testTrainAHV93Flat3Reachable()
 
     std::vector startingRegions = { reg0 };
 
-    std::cout << "Starting from regions:" << std::endl;
-    for (const auto &reg: startingRegions)
-        std::cout << reg.toString() << std::endl;
+    // std::cout << "Starting from regions:" << std::endl;
+    // for (const auto &reg: startingRegions)
+    //     std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
 

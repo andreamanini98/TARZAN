@@ -17,8 +17,8 @@ inline void testFischerFlat2()
 {
     std::cout << "\n\nFischer Flat 2" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/fischerFlat/ff_02/";
-    const std::string automatonFileName = "ff.txt";
+    const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_02/";
+    constexpr std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -38,7 +38,7 @@ inline void testFischerFlat2()
 
     // intero che rappresenta cs1_cs2_id2: 0
 
-    std::cout << "\n\n";
+    // std::cout << "\n\n";
 
     constexpr int q = 0;
     const std::vector h = { 2, 2 };
@@ -87,8 +87,8 @@ inline void testFischerFlat3()
 {
     std::cout << "\n\nFischer Flat 3" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/fischerFlat/ff_03/";
-    const std::string automatonFileName = "ff.txt";
+    const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_03/";
+    constexpr std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -110,7 +110,7 @@ inline void testFischerFlat3()
 
     // intero che rappresenta req1_cs2_cs3_id3: 85
 
-    std::cout << "\n\n";
+    // std::cout << "\n\n";
 
     constexpr int q = 85;
     const std::vector h = { 1, 2, 2 };
@@ -163,8 +163,8 @@ inline void testFischerFlat4()
 {
     std::cout << "\n\nFischer Flat 4" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/fischerFlat/ff_04/";
-    const std::string automatonFileName = "ff.txt";
+    const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_04/";
+    constexpr std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -188,7 +188,7 @@ inline void testFischerFlat4()
 
     // intero che rappresenta req1_req2_cs3_cs4_id4: 571
 
-    std::cout << "\n\n";
+    // std::cout << "\n\n";
 
     constexpr int q = 571;
     const std::vector h = { 1, 1, 2, 2 };
@@ -263,22 +263,22 @@ inline void testFischerFlat5()
 {
     std::cout << "\n\nFischer Flat 5" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/fischerFlat/ff_05/";
-    const std::string automatonFileName = "ff.txt";
+    const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_05/";
+    constexpr std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
 
     // Redirect cout to file
-    std::ofstream outFile(path + "rts_output.txt");
-    std::streambuf *coutBuffer = std::cout.rdbuf();
-    std::cout.rdbuf(outFile.rdbuf());
+    // std::ofstream outFile(path + "rts_output.txt");
+    // std::streambuf *coutBuffer = std::cout.rdbuf();
+    // std::cout.rdbuf(outFile.rdbuf());
 
-    std::cout << "\n\n\n";
-    std::cout << regionTransitionSystem.to_string() << std::endl;
+    // std::cout << "\n\n\n";
+    // std::cout << regionTransitionSystem.to_string() << std::endl;
 
     // Restore cout to terminal
-    std::cout.rdbuf(coutBuffer);
+    // std::cout.rdbuf(coutBuffer);
 
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
@@ -298,7 +298,7 @@ inline void testFischerFlat5()
 
     // intero che rappresenta req1_req2_req3_cs4_cs5_id5: 2868
 
-    std::cout << "\n\n";
+    // std::cout << "\n\n";
 
     constexpr int q = 2868;
     const std::vector h = { 1, 1, 1, 2, 2 };
@@ -553,22 +553,22 @@ inline void testFischerFlat6()
 {
     std::cout << "\n\nFischer Flat 6" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/fischerFlat/ff_06/";
-    const std::string automatonFileName = "ff.txt";
+    const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_06/";
+    constexpr std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
 
     // Redirect cout to file
-    std::ofstream outFile(path + "rts_output.txt");
-    std::streambuf *coutBuffer = std::cout.rdbuf();
-    std::cout.rdbuf(outFile.rdbuf());
+    // std::ofstream outFile(path + "rts_output.txt");
+    // std::streambuf *coutBuffer = std::cout.rdbuf();
+    // std::cout.rdbuf(outFile.rdbuf());
 
     // std::cout << "\n\n\n";
     // std::cout << regionTransitionSystem.to_string() << std::endl;
 
     // Restore cout to terminal
-    std::cout.rdbuf(coutBuffer);
+    // std::cout.rdbuf(coutBuffer);
 
     // const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
@@ -591,7 +591,7 @@ inline void testFischerFlat6()
 
     // intero che rappresenta req1_req2_req3_req4_cs5_cs6_id6: 27734
 
-    std::cout << "\n\n";
+    // std::cout << "\n\n";
 
     constexpr int q = 27734;
     const std::vector h = { 1, 1, 1, 1, 2, 2 };

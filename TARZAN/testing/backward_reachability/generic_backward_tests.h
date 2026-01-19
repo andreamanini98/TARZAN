@@ -21,9 +21,9 @@ inline void test0()
             "Notice that when going backwards, the total number of regions may be greater than forward exploration, since when going backwards we use the\n";
     std::cout << "additional information about the ordering in which clock became unbounded, thus producing a finer partitioning of the state space.\n\n";
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_04/";
+    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_04/";
 
-    const std::string automatonFileName = "Flower.txt";
+    constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -40,9 +40,9 @@ inline void test1()
 {
     std::cout << "Test 1 (Flower04): showing that from the region reached forward it is possible to go back to an initial region.\n\n";
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_04/";
+    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_04/";
 
-    const std::string automatonFileName = "Flower.txt";
+    constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -69,9 +69,9 @@ inline void test2()
 {
     std::cout << "Test 2 (Flower04): showing that from a reachable region it is possible to reach an initial region.\n\n";
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_04/";
+    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_04/";
 
-    const std::string automatonFileName = "Flower.txt";
+    constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -123,9 +123,9 @@ inline void test3()
     std::cout << "Test 3 (Flower04): showing that from an unreachable region it is not possible to reach an initial region.\n";
     std::cout << "In this case, the region is unreachable since it assumes that clock y goes unbounded simultaneously with clock x2.\n\n";
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_04/";
+    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_04/";
 
-    const std::string automatonFileName = "Flower.txt";
+    constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -175,9 +175,9 @@ inline void test4()
     std::cout << "Test 4 (Flower04): showing that from a reachable region it is possible to reach an initial region.\n";
     std::cout << "In this case, the region is reachable since clock y goes unbounded before clock x2.\n\n";
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_04/";
+    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_04/";
 
-    const std::string automatonFileName = "Flower.txt";
+    constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -229,9 +229,9 @@ inline void test5()
 {
     std::cout << "Test 5 (Flower04): showing that from a region with an invalid location it is not possible to go back to an initial region.\n\n";
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/flower/liana/flower_04/";
+    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_04/";
 
-    const std::string automatonFileName = "Flower.txt";
+    constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -266,9 +266,9 @@ inline void test6()
 {
     std::cout << "Test 6 (exSITH): showing that from the region reached forward it is possible to go back to an initial region.\n\n";
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/exSITH/liana/exSITH/";
+    const std::string path = "../../TARZAN/benchmarks/exSITH/liana/exSITH/";
 
-    const std::string automatonFileName = "exSITH.txt";
+    constexpr std::string automatonFileName = "exSITH.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -297,9 +297,9 @@ inline void test7()
     std::cout << "Recall that in backward reachability integer variables are not supported. In this case, the variable i does not affect\n";
     std::cout << "the execution of the automaton, hence we are able to perform backward reachability.\n\n";
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks/simple/liana/simple_1000/";
+    const std::string path = "../../TARZAN/benchmarks/simple/liana/simple_1000/";
 
-    const std::string automatonFileName = "Template.txt";
+    constexpr std::string automatonFileName = "Template.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);

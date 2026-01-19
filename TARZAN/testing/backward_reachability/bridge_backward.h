@@ -17,14 +17,14 @@ inline void testVikingsFlat2()
 {
     std::cout << "\n\nVikings Flat 2" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/vikingsFlat/vf2/";
-    const std::string automatonFileName = "vf.txt";
+    const std::string path = "../../TARZAN/benchmarksFlat/vikingsFlat/vf2/";
+    constexpr std::string automatonFileName = "vf.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
 
-    std::cout << "\n\n\n";
-    std::cout << regionTransitionSystem.to_string() << std::endl;
+    // std::cout << "\n\n\n";
+    // std::cout << regionTransitionSystem.to_string() << std::endl;
 
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
@@ -37,11 +37,11 @@ inline void testVikingsFlat2()
 
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
 
-    std::cout << rts[0].toString();
+    // std::cout << rts[0].toString();
 
     // intero che rappresenta free_safe_safe_L1: 38
 
-    std::cout << "\n\n";
+    // std::cout << "\n\n";
 
     constexpr int q = 38;
     const std::vector h = { 20, 20, 0 };
@@ -62,9 +62,9 @@ inline void testVikingsFlat2()
 
     std::vector startingRegions = { reg0 };
 
-    std::cout << "Starting from regions:" << std::endl;
-    for (const auto &reg: startingRegions)
-        std::cout << reg.toString() << std::endl;
+    // std::cout << "Starting from regions:" << std::endl;
+    // for (const auto &reg: startingRegions)
+    //     std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
 
@@ -76,14 +76,14 @@ inline void testVikingsFlat3()
 {
     std::cout << "\n\nVikings Flat 3" << std::endl;
 
-    const std::string path = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarksFlat/vikingsFlat/vf3/";
-    const std::string automatonFileName = "vf.txt";
+    const std::string path = "../../TARZAN/benchmarksFlat/vikingsFlat/vf3/";
+    constexpr std::string automatonFileName = "vf.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
 
-    std::cout << "\n\n\n";
-    std::cout << regionTransitionSystem.to_string() << std::endl;
+    // std::cout << "\n\n\n";
+    // std::cout << regionTransitionSystem.to_string() << std::endl;
 
     const auto &locToIntMap = regionTransitionSystem.getLocationsToInt();
 
@@ -97,11 +97,11 @@ inline void testVikingsFlat3()
 
     std::vector<region::Region> rts = regionTransitionSystem.forwardReachability(intVarOrClockConstr, goal, DFS, false);
 
-    std::cout << rts[0].toString();
+    // std::cout << rts[0].toString();
 
     // intero che rappresenta free_safe_safe_L1: 144
 
-    std::cout << "\n\n";
+    // std::cout << "\n\n";
 
     constexpr int q = 144;
     const std::vector h = { 20, 20, 20, 0 };
@@ -126,9 +126,9 @@ inline void testVikingsFlat3()
 
     std::vector startingRegions = { reg0 };
 
-    std::cout << "Starting from regions:" << std::endl;
-    for (const auto &reg: startingRegions)
-        std::cout << reg.toString() << std::endl;
+    // std::cout << "Starting from regions:" << std::endl;
+    // for (const auto &reg: startingRegions)
+    //     std::cout << reg.toString() << std::endl;
 
     std::cout << "Backward computation output:" << std::endl;
 

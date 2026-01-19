@@ -41,7 +41,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-# Creating directories to better retrieve the library.
+# Creating directories to better retrieve the library and for storing output files.
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/benchmark_tarzan_results)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/benchmark_tchecker_results)
@@ -49,6 +49,7 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/benchmark_uppaal_results)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/include)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/lib)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/backwards_tarzan_results)
 
 
 # The library archive is now written inside this directory.
@@ -194,7 +195,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables)
 
 
 # Define the library executable files.
-set(LIBRARY_EXECUTABLES TARZAN/executableFile.cpp TARZAN/backwardReachabilityTester.cpp)
+set(LIBRARY_EXECUTABLES TARZAN/executableFile.cpp)
 
 
 # Create executables.
@@ -207,10 +208,10 @@ foreach (source IN LISTS LIBRARY_EXECUTABLES)
 endforeach ()
 
 
-# Collect all .cpp files from benchmarkExecutables directory.
+# Collect all .cpp files from benchmark_executables directory.
 file(GLOB BENCHMARK_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmark_executables/*.cpp)
 
-# Create benchmark executables in executables/benchmarkExecutables subdirectory.
+# Create benchmark executables in executables/benchmark_executables subdirectory.
 if (BENCHMARK_EXECUTABLES)
     foreach (source IN LISTS BENCHMARK_EXECUTABLES)
         get_filename_component(executable_name ${source} NAME_WE)
@@ -224,6 +225,43 @@ if (BENCHMARK_EXECUTABLES)
                 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/benchmark_executables)
     endforeach ()
 endif ()
+
+
+# Collect all .cpp files from backwards_executables directory.
+file(GLOB BACKWARDS_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/backwards_executables/*.cpp)
+
+# Create backwards executables in executables/backwards_executables subdirectory.
+if (BACKWARDS_EXECUTABLES)
+    foreach (source IN LISTS BACKWARDS_EXECUTABLES)
+        get_filename_component(executable_name ${source} NAME_WE)
+        add_executable(${executable_name} ${source})
+
+        # Targeting the source with libraries.
+        target_link_libraries(${executable_name} PRIVATE TARZAN)
+
+        # Set output directory to executables/backwards_executables.
+        set_target_properties(${executable_name} PROPERTIES
+                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/backwards_executables)
+    endforeach ()
+endif ()
+
+
+# Add permissions to the install_library.sh script.
+execute_process(COMMAND chmod 777 ${CMAKE_CURRENT_SOURCE_DIR}/install_library.sh)
+
+
+# Add executable permissions to all shell scripts in TARZAN/benchmark_scripts.
+file(GLOB BENCHMARK_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmark_scripts/*.sh)
+foreach(script ${BENCHMARK_SCRIPTS})
+    execute_process(COMMAND chmod +x ${script})
+endforeach()
+
+
+# Add executable permissions to all shell scripts in TARZAN/backwards_scripts.
+file(GLOB BACKWARDS_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/backwards_scripts/*.sh)
+foreach(script ${BACKWARDS_SCRIPTS})
+    execute_process(COMMAND chmod +x ${script})
+endforeach()
 
 
 #########################################################################
@@ -286,14 +324,3 @@ install(FILES
         ${CMAKE_CURRENT_BINARY_DIR}/TARZANConfig.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/TARZANConfigVersion.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/TARZAN)
-
-
-# Add permissions to the install_library.sh script.
-execute_process(COMMAND chmod 777 ${CMAKE_CURRENT_SOURCE_DIR}/install_library.sh)
-
-
-# Add executable permissions to all shell scripts in TARZAN/benchmark_scripts.
-file(GLOB BENCHMARK_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmark_scripts/*.sh)
-foreach(script ${BENCHMARK_SCRIPTS})
-    execute_process(COMMAND chmod +x ${script})
-endforeach()
