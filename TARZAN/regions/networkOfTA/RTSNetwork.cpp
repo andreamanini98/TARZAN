@@ -1,7 +1,7 @@
 #include "RTSNetwork.h"
 
 // #define RTSNETWORK_DEBUG
-#define EARLY_EXIT
+// #define EARLY_EXIT   // Controlled via CMake.
 
 
 // A pointer to a network region object.

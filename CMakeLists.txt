@@ -125,8 +125,15 @@ set(LIBRARY_SOURCES
         TARZAN/regions/networkOfTA/NetworkRegion.cpp)
 
 
-# Add library
-add_library(TARZAN STATIC ${LIBRARY_SOURCES})
+# Add library as OBJECT library to allow recompilation with different flags.
+add_library(TARZAN_OBJECTS OBJECT ${LIBRARY_SOURCES})
+
+# Add static library that uses the object files.
+add_library(TARZAN STATIC $<TARGET_OBJECTS:TARZAN_OBJECTS>)
+
+# Define EARLY_EXIT by default for the object library.
+# Individual targets can override this.
+target_compile_definitions(TARZAN_OBJECTS PUBLIC EARLY_EXIT)
 
 
 # Configure library dependencies.
@@ -147,11 +154,20 @@ if (ENABLE_OPENMP)
 endif ()
 
 
-# Single target_link_libraries call.
+# Link libraries to both object library and static library.
+target_link_libraries(TARZAN_OBJECTS PUBLIC ${TARZAN_LIBRARIES})
 target_link_libraries(TARZAN PUBLIC ${TARZAN_LIBRARIES})
 
 
-# Setup include directories for the library.
+# Setup include directories for both object library and static library.
+target_include_directories(TARZAN_OBJECTS
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:include>
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/src)
+
+
 target_include_directories(TARZAN
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
@@ -231,13 +247,24 @@ endif ()
 file(GLOB BACKWARDS_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/backwards_executables/*.cpp)
 
 # Create backwards executables in executables/backwards_executables subdirectory.
+# These executables are built WITHOUT EARLY_EXIT defined.
 if (BACKWARDS_EXECUTABLES)
     foreach (source IN LISTS BACKWARDS_EXECUTABLES)
         get_filename_component(executable_name ${source} NAME_WE)
-        add_executable(${executable_name} ${source})
 
-        # Targeting the source with libraries.
-        target_link_libraries(${executable_name} PRIVATE TARZAN)
+        # Add executable with library sources directly to recompile without EARLY_EXIT.
+        add_executable(${executable_name} ${source} ${LIBRARY_SOURCES})
+
+        # Link with the same libraries as TARZAN.
+        target_link_libraries(${executable_name} PRIVATE ${TARZAN_LIBRARIES})
+
+        # Use same include directories as TARZAN.
+        target_include_directories(${executable_name} PRIVATE
+                ${CMAKE_CURRENT_SOURCE_DIR}
+                ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/src)
+
+        # NOTE: EARLY_EXIT is intentionally NOT defined for backwards executables.
+        # The LIBRARY_SOURCES are compiled directly into this executable without EARLY_EXIT.
 
         # Set output directory to executables/backwards_executables.
         set_target_properties(${executable_name} PROPERTIES
