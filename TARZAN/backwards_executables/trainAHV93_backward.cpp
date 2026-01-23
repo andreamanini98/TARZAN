@@ -7,11 +7,11 @@ int main()
 
     std::cout << "\n---\n\n";
 
-    testTrainAHV93Flat3Efficient();
+    testTrainAHV93Flat2Reachable();
 
     std::cout << "\n---\n\n";
 
-    testTrainAHV93Flat2Reachable();
+    testTrainAHV93Flat3Efficient();
 
     std::cout << "\n---\n\n";
 

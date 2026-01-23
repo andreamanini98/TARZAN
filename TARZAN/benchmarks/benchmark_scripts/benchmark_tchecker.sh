@@ -4,6 +4,25 @@
 export LC_ALL=C
 export LANG=C
 
+# Detect OS and set appropriate commands
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    DATE_CMD="gdate"
+else
+    # Linux
+    DATE_CMD="date"
+fi
+
+# Verify date command supports milliseconds
+if ! $DATE_CMD +%s%3N > /dev/null 2>&1; then
+    echo "Error: $DATE_CMD command does not support millisecond precision"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "On macOS, install coreutils: brew install coreutils"
+    else
+        echo "On Linux, ensure you have GNU coreutils installed"
+    fi
+    exit 1
+fi
 
 # Benchmarks that should use bfs instead of dfs.
 SEARCH_ORDER_0_BENCHMARKS=("trainAHV93")
@@ -135,14 +154,14 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                         # Execute TChecker verification with timeout and capture output.
                         # Capture total execution time with millisecond precision inside redirected context
                         {
-                            start=$(gdate +%s%3N)
+                            start=$($DATE_CMD +%s%3N)
                             if [[ -n "$labels_content" ]]; then
                                 timeout "$TIMEOUT" "$TCHECKER_PATH" -a covreach -s "$search_algorithm" -l "$labels_content" "$tck_file"
                             else
                                 timeout "$TIMEOUT" "$TCHECKER_PATH" -a covreach -s "$search_algorithm" "$tck_file"
                             fi
                             exit_code=${PIPESTATUS[0]}
-                            end=$(gdate +%s%3N)
+                            end=$($DATE_CMD +%s%3N)
                             exec_time_ms=$((end - start))
                             echo "$exec_time_ms" > "$temp_timing_file"
                             echo "$exit_code" >> "$temp_timing_file"

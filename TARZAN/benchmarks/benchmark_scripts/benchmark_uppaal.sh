@@ -4,6 +4,25 @@
 export LC_ALL=C
 export LANG=C
 
+# Detect OS and set appropriate commands
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    DATE_CMD="gdate"
+else
+    # Linux
+    DATE_CMD="date"
+fi
+
+# Verify date command supports milliseconds
+if ! $DATE_CMD +%s%3N > /dev/null 2>&1; then
+    echo "Error: $DATE_CMD command does not support millisecond precision"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "On macOS, install coreutils: brew install coreutils"
+    else
+        echo "On Linux, ensure you have GNU coreutils installed"
+    fi
+    exit 1
+fi
 
 # Benchmarks that should use --search-order 0 instead of 1.
 SEARCH_ORDER_0_BENCHMARKS=("trainAHV93")
@@ -121,10 +140,10 @@ for benchmark in "$BENCHMARK_DIR"/*; do
                         # Strip ANSI escape codes from the output using sed.
                         # Capture total execution time with millisecond precision inside redirected context
                         {
-                            start=$(gdate +%s%3N)
+                            start=$($DATE_CMD +%s%3N)
                             timeout "$TIMEOUT" "$UPPAAL_PATH" --state-representation 0 --search-order $search_order -u "$xta_file" "$q_file" # 2>&1 | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g'
                             exit_code=${PIPESTATUS[0]}
-                            end=$(gdate +%s%3N)
+                            end=$($DATE_CMD +%s%3N)
                             exec_time_ms=$((end - start))
                             echo "$exec_time_ms" > "$temp_timing_file"
                             echo "$exit_code" >> "$temp_timing_file"

@@ -227,7 +227,7 @@ endforeach ()
 
 
 # Collect all .cpp files from benchmark_executables directory.
-file(GLOB BENCHMARK_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmark_executables/*.cpp)
+file(GLOB BENCHMARK_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks/benchmark_executables/*.cpp)
 
 # Create benchmark executables in executables/benchmark_executables subdirectory.
 if (BENCHMARK_EXECUTABLES)

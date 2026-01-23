@@ -16,6 +16,48 @@ OUTPUT_DIR="$4"
 OUTPUT_FILENAME="$5"
 TIMEOUT="$6"
 
+# Detect OS and set appropriate commands
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    DATE_CMD="gdate"
+    TIME_CMD="/usr/bin/time"
+    TIME_FLAG="-l"
+    MEMORY_GREP_PATTERN="maximum resident set size"
+    MEMORY_MULTIPLIER=1
+else
+    # Linux
+    DATE_CMD="date"
+    TIME_CMD="/usr/bin/time"
+    TIME_FLAG="-v"
+    MEMORY_GREP_PATTERN="Maximum resident set size"
+    MEMORY_MULTIPLIER=1024
+fi
+
+# Verify date command supports milliseconds
+if ! $DATE_CMD +%s%3N > /dev/null 2>&1; then
+    echo "Error: $DATE_CMD command does not support millisecond precision"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "On macOS, install coreutils: brew install coreutils"
+    else
+        echo "On Linux, ensure you have GNU coreutils installed"
+    fi
+    exit 1
+fi
+
+# Verify time command exists
+if ! command -v $TIME_CMD > /dev/null 2>&1; then
+    echo "Error: $TIME_CMD not found"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "On macOS, /usr/bin/time should be available by default"
+    else
+        echo "On Linux, install the time package:"
+        echo "  Ubuntu/Debian: sudo apt-get install time"
+        echo "  RHEL/CentOS: sudo yum install time"
+        echo "  Alpine: sudo apk add time"
+    fi
+    exit 1
+fi
+
 # Validate NUM_RUNS is a positive integer.
 if ! [[ "$NUM_RUNS" =~ ^[0-9]+$ ]] || [[ "$NUM_RUNS" -lt 1 ]]; then
     echo "Error: num_runs must be a positive integer"
@@ -145,10 +187,10 @@ for dir in "$ROOT_DIR"*/; do
                 # Wrap timeout with /usr/bin/time so we can capture memory even on timeout.
                 # Capture total execution time with millisecond precision inside redirected context
                 {
-                    start=$(gdate +%s%3N)
-                    /usr/bin/time -l timeout "$TIMEOUT" "$EXECUTABLE" "$dir"
+                    start=$($DATE_CMD +%s%3N)
+                    $TIME_CMD $TIME_FLAG timeout "$TIMEOUT" "$EXECUTABLE" "$dir"
                     exit_code=$?
-                    end=$(gdate +%s%3N)
+                    end=$($DATE_CMD +%s%3N)
                     exec_time_ms=$((end - start))
                     echo "$exec_time_ms" > "$TEMP_TIMING_FILE"
                     echo "$exit_code" >> "$TEMP_TIMING_FILE"
@@ -166,10 +208,10 @@ for dir in "$ROOT_DIR"*/; do
             else
                 # No timeout - run normally.
                 {
-                    start=$(gdate +%s%3N)
-                    /usr/bin/time -l "$EXECUTABLE" "$dir"
+                    start=$($DATE_CMD +%s%3N)
+                    $TIME_CMD $TIME_FLAG "$EXECUTABLE" "$dir"
                     exit_code=$?
-                    end=$(gdate +%s%3N)
+                    end=$($DATE_CMD +%s%3N)
                     exec_time_ms=$((end - start))
                     echo "$exec_time_ms" > "$TEMP_TIMING_FILE"
                     echo "$exit_code" >> "$TEMP_TIMING_FILE"
@@ -216,9 +258,17 @@ for dir in "$ROOT_DIR"*/; do
 
             # Parse memory usage for all runs (successful, timed-out, and failed).
             if [[ -f "$TEMP_TIME_FILE" ]]; then
-                max_rss=$(grep "maximum resident set size" "$TEMP_TIME_FILE" | awk '{print $1}')
+                if [[ "$OSTYPE" == "darwin"* ]]; then
+                    # macOS: "  1234567  maximum resident set size"
+                    max_rss=$(grep -i "$MEMORY_GREP_PATTERN" "$TEMP_TIME_FILE" | awk '{print $1}')
+                else
+                    # Linux: "	Maximum resident set size (kbytes): 1234567"
+                    max_rss=$(grep -i "$MEMORY_GREP_PATTERN" "$TEMP_TIME_FILE" | awk -F': ' '{print $2}')
+                fi
                 if [[ -n "$max_rss" ]] && [[ "$max_rss" -gt 0 ]]; then
-                    total_memory=$((total_memory + max_rss))
+                    # Convert to bytes (Linux reports in KB, macOS in bytes)
+                    max_rss_bytes=$((max_rss * MEMORY_MULTIPLIER))
+                    total_memory=$((total_memory + max_rss_bytes))
                     memory_data_count=$((memory_data_count + 1))
                 fi
             fi
