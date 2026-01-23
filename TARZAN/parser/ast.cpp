@@ -293,7 +293,8 @@ std::string timed_automaton::ast::locationContent::to_string() const
 
 bool timed_automaton::ast::transition::isTransitionSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
                                                              const std::unordered_map<std::string, int> &clocksIndices,
-                                                             const absl::btree_map<std::string, int> &variables) const
+                                                             const absl::btree_map<std::string, int> &variables,
+                                                             const bool skipResetClocks) const
 {
     bool isSatisfied = true;
 
@@ -306,6 +307,8 @@ bool timed_automaton::ast::transition::isTransitionSatisfied(const std::vector<s
             const int clockIntVal = clockValuation[clockIdx].first;
             const int clockHasFracPart = clockValuation[clockIdx].second;
 
+            if (skipResetClocks)
+                return std::ranges::find(clocksToReset, cc.getClockName()) != clocksToReset.end() || cc.isSatisfied(clockIntVal, clockHasFracPart);
             return cc.isSatisfied(clockIntVal, clockHasFracPart);
         });
     }
@@ -314,6 +317,14 @@ bool timed_automaton::ast::transition::isTransitionSatisfied(const std::vector<s
         isSatisfied = integerGuard.value().evaluate(variables);
 
     return isSatisfied;
+}
+
+
+bool timed_automaton::ast::transition::isTransitionSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
+                                                             const std::unordered_map<std::string, int> &clocksIndices,
+                                                             const absl::btree_map<std::string, int> &variables) const
+{
+    return isTransitionSatisfied(clockValuation, clocksIndices, variables, false);
 }
 
 

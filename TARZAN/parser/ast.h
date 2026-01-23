@@ -393,7 +393,24 @@ namespace timed_automaton::ast
          *
          * @param clockValuation the current clock valuation (integer values and a boolean denoting whether the fractional part is greater than zero).
          * @param clocksIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
-         * @param variables a map from variables to their integer values (is updated in the function).
+         * @param variables a map from variables to their integer values.
+         * @param skipResetClocks if true, the satisfaction check does not consider all reset clocks in the transition.
+         * @return true if the guard is satisfied, false otherwise.
+         *
+         * @attention Works only if the guard is a conjunction of clock constraints, where a clock constraint is (x ~ c), with ~ in {<, <=, =, >=, >}.
+         */
+        [[nodiscard]] bool isTransitionSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
+                                                 const std::unordered_map<std::string, int> &clocksIndices,
+                                                 const absl::btree_map<std::string, int> &variables,
+                                                 bool skipResetClocks) const;
+
+
+        /**
+         * @brief Computes the satisfiability of a transition's guard.
+         *
+         * @param clockValuation the current clock valuation (integer values and a boolean denoting whether the fractional part is greater than zero).
+         * @param clocksIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
+         * @param variables a map from variables to their integer values.
          * @return true if the guard is satisfied, false otherwise.
          *
          * @attention Works only if the guard is a conjunction of clock constraints, where a clock constraint is (x ~ c), with ~ in {<, <=, =, >=, >}.
