@@ -447,8 +447,8 @@ def main():
     """Main function to generate all LaTeX tables."""
 
     # Paths
-    summary_file = "../../output/benchmark_summary.txt"
-    output_dir = Path("../../output/latex_results")
+    summary_file = "../../../output/benchmark_summary.txt"
+    output_dir = Path("../../../output/latex_results")
     tables_file = output_dir / "benchmark_tables.tex"
     complete_doc_file = output_dir / "benchmark_results.tex"
 

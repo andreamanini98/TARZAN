@@ -17,6 +17,10 @@ using transition = timed_automaton::ast::transition;
 
 namespace region
 {
+    // Forward declaration of this struct as it is required in the Region class.
+    struct RegionHash;
+
+
     class Region
     {
         /// The location of the region.
@@ -116,6 +120,8 @@ namespace region
          *
          * @param maxConstants the maximum constants of the Timed Automaton from which the region is derived.
          * @return a Region immediate delay successor of the current region.
+         *
+         * @warning Must check if the returned region satisfies the invariants.
          */
         [[nodiscard]] Region getImmediateDelaySuccessor(const std::vector<int> &maxConstants) const;
 
@@ -125,6 +131,8 @@ namespace region
          *
          * @return a std::vector<Region> containing immediate delay predecessors of the current region.
          *         If no predecessors can be computed, returns an empty std::vector.
+         *
+         * @warning Must check if the returned regions satisfy the invariants.
          */
         [[nodiscard]] std::vector<Region> getImmediateDelayPredecessors() const;
 
@@ -138,6 +146,7 @@ namespace region
          * @return a std::vector<Region> containing immediate discrete successors of the current region.
          *         If no successors can be computed, returns an empty std::vector.
          *
+         * @warning Must check if the returned regions satisfy the invariants.
          * @warning The region must hold the current values of integer variables in order for the integer evaluation to be performed.
          *          These values can either be directly contained if using RTS or must be set if using RTSNetwork.
          * @warning The transitions parameter must contain all and only the transitions exiting from the location of the region.
@@ -214,6 +223,7 @@ namespace region
          * @return a std::vector<Region> containing immediate discrete predecessors of the current region.
          *         If no successors can be computed, returns an empty std::vector.
          *
+         * @warning Must check if the returned regions satisfy the invariants.
          * @warning Integer variables are not considered when computing discrete predecessors.
          * @warning The transitions parameter must contain all and only the transitions entering the location of the region.
          *          To provide such transitions, the getInTransitions() function of a Timed Automaton can be used.
@@ -224,6 +234,50 @@ namespace region
                                                                            const std::unordered_map<std::string, int> &clockIndices,
                                                                            const std::unordered_map<std::string, int> &locationsAsIntMap,
                                                                            const std::vector<int> &maxConstants) const;
+
+
+        /**
+         * @brief Determines whether a discrete predecessor exists for the current region.
+         *
+         * @param transitions the input transitions to the current region over which the check is performed.
+         * @param clockIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
+         * @return true if at least one discrete predecessor exists, false otherwise.
+         */
+        [[nodiscard]] bool hasAtLeastOneDiscretePredecessor(const std::vector<transition> &transitions,
+                                                            const std::unordered_map<std::string, int> &clockIndices) const;
+
+
+        /**
+         * @brief Generates all regions that satisfy the given location and clock constraint predicates.
+         *
+         * This function directly constructs regions from a pure CLTLoc formula specification, without requiring transitions or an existing region.
+         * It handles:
+         * - Location disjunction (regions for each specified location).
+         * - Clock constraint conjunction (all constraints must be satisfied).
+         * - Both bounded and unbounded clock values.
+         * - Proper fractional part handling (x0 placement).
+         *
+         * @param locations vector of location names (this represents a disjunction: generates regions for each location).
+         * @param clockConstraints vector of clock constraints (this represents a conjunction: all must be satisfied).
+         * @param clockIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
+         * @param locationsAsIntMap a std::unordered_map associating an integer with each string name.
+         * @param maxConstants the maximum constants appearing in a Timed Automaton.
+         * @param numOfClocks total number of clocks.
+         * @return unordered_set of all regions satisfying the constraints.
+         *
+         * @throws std::invalid_argument if the locations vector is empty.
+         *
+         * @warning Must check if the returned regions satisfy the invariants.
+         * @warning Empty locations vector is not yet fully implemented.
+         * @warning It is assumed that clock constraints are compatible with the given parameters of the underlying Timed Automaton / Arena.
+         */
+        [[nodiscard]] static std::unordered_set<Region, RegionHash> generateRegionsFromConstraints(
+            const std::vector<std::string> &locations,
+            const std::vector<timed_automaton::ast::clockConstraint> &clockConstraints,
+            const std::unordered_map<std::string, int> &clockIndices,
+            const std::unordered_map<std::string, int> &locationsAsIntMap,
+            const std::vector<int> &maxConstants,
+            int numOfClocks);
 
 
         /**

@@ -73,4 +73,31 @@ namespace parser
     booleanExpr_type booleanExpr();
 }
 
+
+namespace parser
+{
+    namespace x3 = boost::spirit::x3;
+
+    struct pureCLTLocFormula_class;
+    struct unaryCLTLocFormula_class;
+    struct binaryCLTLocFormula_class;
+    struct generalCLTLocFormula_class;
+
+    using pureCLTLocFormula_type = x3::rule<pureCLTLocFormula_class, cltloc::ast::pureCLTLocFormula>;
+    using unaryCLTLocFormula_type = x3::rule<unaryCLTLocFormula_class, cltloc::ast::unaryCLTLocFormula>;
+    using binaryCLTLocFormula_type = x3::rule<binaryCLTLocFormula_class, cltloc::ast::binaryCLTLocFormula>;
+    using generalCLTLocFormula_type = x3::rule<generalCLTLocFormula_class, cltloc::ast::generalCLTLocFormula>;
+
+    BOOST_SPIRIT_DECLARE(pureCLTLocFormula_type, unaryCLTLocFormula_type, binaryCLTLocFormula_type, generalCLTLocFormula_type);
+
+
+    pureCLTLocFormula_type pureCLTLocFormula();
+
+    unaryCLTLocFormula_type unaryCLTLocFormula();
+
+    binaryCLTLocFormula_type binaryCLTLocFormula();
+
+    generalCLTLocFormula_type generalCLTLocFormula();
+}
+
 #endif //TIMED_AUTOMATON_H

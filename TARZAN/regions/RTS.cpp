@@ -6,7 +6,6 @@
 #include <sstream>
 #include <utility>
 #include "absl/container/flat_hash_set.h"
-#include "TARZAN/utilities/file_utilities.h"
 
 // #define RTS_DEBUG
 // #define EARLY_EXIT   // Controlled via CMake.
@@ -415,12 +414,21 @@ std::string region::RTS::to_string() const
     oss << "Initial Regions (" << initialRegions.size() << "):\n";
     for (size_t i = 0; i < initialRegions.size(); ++i)
         oss << "  Region " << i << ":\n" << initialRegions[i].toString() << "\n";
-    oss << "\n";
 
     // Invariants.
     oss << "Invariants (" << invariants.size() << " locations with invariants):\n";
     for (const auto &[loc, constraints]: invariants)
         oss << "  Location " << loc << " (" << constraints.size() << " constraints)\n";
+    oss << "\n";
+
+    // Urgent locations.
+    oss << "Urgent Locations (" << urgentLocations.size() << "):\n";
+    if (urgentLocations.empty())
+        oss << "  (none)\n";
+    else
+        for (const int loc: urgentLocations)
+            oss << "  " << loc << "\n";
+    oss << "\n";
 
     return oss.str();
 }

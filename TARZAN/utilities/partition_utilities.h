@@ -17,13 +17,21 @@ using permutationsCache = absl::flat_hash_map<int, std::vector<std::vector<boost
 
 
 /**
- * @brief Used to retrieve a singleton acting as a cache for permutations.
+ * @brief Used to retrieve a thread-local cache for permutations.
  *
- * @return an absl::flat_hash_map acting as a cache for stored partitions.
+ * Each thread gets its own cache to prevent race conditions in parallel execution.
+ * Cache is cleared after each use to maintain correctness.
+ *
+ * @return a thread-local absl::flat_hash_map acting as a cache for stored partitions.
  */
 inline permutationsCache &get_p_cache()
 {
+#ifdef _OPENMP
+    thread_local permutationsCache cache;
+#else
     static permutationsCache cache;
+#endif
+
     return cache;
 }
 

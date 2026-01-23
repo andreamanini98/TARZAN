@@ -10,8 +10,7 @@ namespace region
 {
     class RTS
     {
-        timed_automaton::ast::timedAutomaton automaton;
-
+    protected:
         // The size of this map corresponds to the number of 'automaton' clocks.
         std::unordered_map<std::string, int> clocksIndices{};
 
@@ -33,7 +32,7 @@ namespace region
 
 
     public:
-        explicit RTS(const timed_automaton::ast::timedAutomaton &automaton) : automaton(automaton)
+        explicit RTS(const timed_automaton::ast::timedAutomaton &automaton)
         {
             clocksIndices = automaton.getClocksIndices();
             locationsToInt = automaton.mapLocationsToInt();
@@ -50,6 +49,9 @@ namespace region
             for (const int loc: initialLocations)
                 initialRegions.emplace_back(numOfClocks, loc, variables);
         }
+
+
+        RTS() = default;
 
 
         /**
@@ -110,7 +112,14 @@ namespace region
 
         // Getters.
         [[nodiscard]] std::vector<Region> getInitialRegions() const { return initialRegions; }
+        [[nodiscard]] const std::unordered_map<std::string, int> &getClocksIndices() const { return clocksIndices; }
         [[nodiscard]] const std::unordered_map<std::string, int> &getLocationsToInt() const { return locationsToInt; }
+        [[nodiscard]] const std::vector<int> &getMaxConstants() const { return maxConstants; }
+        [[nodiscard]] const std::vector<int> &getInitialLocations() const { return initialLocations; }
+        [[nodiscard]] const std::vector<std::vector<transition>> &getOutTransitions() const { return outTransitions; }
+        [[nodiscard]] const std::vector<std::vector<transition>> &getInTransitions() const { return inTransitions; }
+        [[nodiscard]] const absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> &getInvariants() const { return invariants; }
+        [[nodiscard]] const absl::flat_hash_set<int> &getUrgentLocations() const { return urgentLocations; }
 
 
         [[nodiscard]] std::string to_string() const;

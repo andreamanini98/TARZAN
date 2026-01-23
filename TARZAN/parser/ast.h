@@ -5,6 +5,8 @@
 #include "enums/boolean_op_enum.h"
 #include "enums/comparison_op_enum.h"
 #include "enums/input_output_action_enum.h"
+#include "enums/players_enum.h"
+#include "enums/cltloc_op_enum.h"
 
 #include <vector>
 #include <map>
@@ -22,7 +24,12 @@
 // The following is the grammar for the Liana DSL used to create Timed Automata.
 // Whether the actions are input or output actions must be specified only in the transitions.
 // T and F are syntax sugar for true and false.
-// Integer variables in Timed Automata are automatically initialized to 0. To overcome this, a transition can be added to initialize them in the Timed Automaton itself.
+// Integer variables in Timed Automata are automatically initialized to 0.
+// To overcome this, a transition can be added to initialize them in the Timed Automaton itself.
+// Up to now, we do not deal with parentheses precedence in cltloc formulae.
+//
+//
+// The following is the grammar of timed automata and timed arenas:
 //
 //  <automaton> -> 'create' 'automaton' <literal> (eps | <symm_rule>)
 //                 '{'
@@ -33,11 +40,28 @@
 //                 'transitions'     '{' <transition_rule> (, <transition_rule>)* ';' '}'
 //                 '}'
 //
+//  <arena> -> 'create' 'arena' <literal> (eps | <symm_rule>)
+//             '{'
+//             'clocks'          '{' (eps | <literal> (, <literal>)* ';') '}'
+//             'actions'         '{' <literal> (, <literal>)* ';' '}'
+//             (eps | 'integers' '{' <literal> (, <literal>)* ';' '}')
+//             'locations'       '{' <arena_locations_rule> '}'
+//             'transitions'     '{' <transition_rule> (, <transition_rule>)* ';' '}'
+//             '}'
+//
 //  <symm_rule> -> '::' 'symm' '<' <int> '>'
 //
 //  <locations_rule> -> <loc_rule> (, <loc_rule>)* ';'
 //
 //  <loc_rule> -> <literal> <loc_content_rule>
+//
+//  <arena_locations_rule> -> <arena_loc_rule> (, <arena_loc_rule>)* ';'
+//
+//  <arena_loc_rule> -> <literal> <arena_loc_content_rule>
+//
+//  <arena_loc_content_rule> '<' 'player' ':' <player> ',' <loc_content_rule> '>'
+//
+//  <player> -> 'c' | 'e'
 //
 //  <loc_content_rule> -> '<' (eps | <ini> | <urg> | <inv> | <ini> ',' <urg> | <ini> ',' <inv> | <urg> ',' <inv> | <ini> ',' <urg> ',' <inv>) '>'
 //
@@ -74,7 +98,7 @@
 //  <literal> -> ('a..z' | 'A..Z' | '0..9' | '_' )+
 //
 //
-// The following is the grammar of expressions.
+// The following is the grammar of expressions:
 //
 //  <assignment_expr> -> <variable> '=' <arithmetic_expr>
 //
@@ -105,6 +129,23 @@
 //  <or_op> -> '||'
 //
 //  <and_op> -> '&&'
+//
+//
+// The following is the grammar of CLTLoc formulae:
+//
+//  <general_cltloc_formula> -> '(' (<unary_cltloc_formula> | <binary_cltloc_formula> | <pure_cltloc_formula>) ')'
+//
+//  <unary_cltloc_formula> -> <unary_cltloc_op> <general_cltloc_formula>
+//
+//  <binary_cltloc_formula> -> <general_cltloc_formula> <binary_cltloc_op> <general_cltloc_formula>
+//
+//  <pure_cltloc_formula> -> '[' (eps | <literal> (, <literal>)*) ']' ',' '[' (eps | <clock_constraint_rule> (, <clock_constraint_rule>)*) ']'
+//
+//  <unary_cltloc_op> -> 'BOX' | 'DIAMOND'
+//
+//  <binary_cltloc_op> -> 'UNTIL'
+
+// TODO: aggiornare grammatica su Doxygen quando farai il merge del branch games nel branch main.
 
 
 // Reference examples for expression parser:
@@ -154,6 +195,7 @@ namespace expr::ast
          *
          * @param variables a map from variables to their integer values.
          * @return the integer result of the evaluation.
+         *
          * @throws std::runtime_error if a variable is not found or division by zero occurs.
          */
         [[nodiscard]] int evaluate(const absl::btree_map<std::string, int> &variables) const;
@@ -192,6 +234,7 @@ namespace expr::ast
          * @brief Evaluates an assignment expression and updates the variable context.
          *
          * @param variables a map from variables to their integer values (is updated in the function).
+         *
          * @throws std::runtime_error if evaluation fails.
          */
         void evaluate(absl::btree_map<std::string, int> &variables) const;
@@ -214,6 +257,7 @@ namespace expr::ast
          *
          * @param variables a map from variables to their integer values.
          * @return the result of the comparison.
+         *
          * @throws std::runtime_error if evaluation fails.
          */
         [[nodiscard]] bool evaluate(const absl::btree_map<std::string, int> &variables) const;
@@ -257,6 +301,7 @@ namespace expr::ast
          *
          * @param variables a map from variables to their integer values.
          * @return the boolean value of the expression.
+         *
          * @throws std::runtime_error if evaluation fails.
          */
         [[nodiscard]] bool evaluate(const absl::btree_map<std::string, int> &variables) const;
@@ -281,6 +326,13 @@ namespace expr::ast
     // Needed to break circular dependencies at compile time, as it happens, for example, when declaring a constructor of booleanExpr passing a booleanBinaryExpr.
     inline booleanExpr::booleanExpr(booleanBinaryExpr const &v) : value(boost::spirit::x3::forward_ast(v)) {}
     inline booleanExpr::booleanExpr(booleanBinaryExpr &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
+}
+
+
+// Forward declaring this namespace, as it is required in the timed_automaton namespace below.
+namespace cltloc::ast
+{
+    struct generalCLTLocFormula;
 }
 
 
@@ -341,7 +393,24 @@ namespace timed_automaton::ast
          *
          * @param clockValuation the current clock valuation (integer values and a boolean denoting whether the fractional part is greater than zero).
          * @param clocksIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
-         * @param variables a map from variables to their integer values (is updated in the function).
+         * @param variables a map from variables to their integer values.
+         * @param skipResetClocks if true, the satisfaction check does not consider all reset clocks in the transition.
+         * @return true if the guard is satisfied, false otherwise.
+         *
+         * @attention Works only if the guard is a conjunction of clock constraints, where a clock constraint is (x ~ c), with ~ in {<, <=, =, >=, >}.
+         */
+        [[nodiscard]] bool isTransitionSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
+                                                 const std::unordered_map<std::string, int> &clocksIndices,
+                                                 const absl::btree_map<std::string, int> &variables,
+                                                 bool skipResetClocks) const;
+
+
+        /**
+         * @brief Computes the satisfiability of a transition's guard.
+         *
+         * @param clockValuation the current clock valuation (integer values and a boolean denoting whether the fractional part is greater than zero).
+         * @param clocksIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
+         * @param variables a map from variables to their integer values.
          * @return true if the guard is satisfied, false otherwise.
          *
          * @attention Works only if the guard is a conjunction of clock constraints, where a clock constraint is (x ~ c), with ~ in {<, <=, =, >=, >}.
@@ -382,6 +451,10 @@ namespace timed_automaton::ast
          *
          * @param clocksIndices a map from clock names to their index in the clocks vector.
          * @return a vector containing in position i the maximum constant of the i-th clock, where the index i of the clock is given by clockIndices.
+         *
+         * @warning Clocks that are not used in guards nor in invariants are assigned 0 as their maximum constant.
+         *          If a global timer must be declared, please add an artificial constraint in the automaton such that the clock can assume that maximum constant.
+         *          This can be done, for example, by inserting a clock constraint in which the constant is the one used in the reachability query.
          */
         [[nodiscard]] std::vector<int> getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices) const;
 
@@ -480,7 +553,7 @@ namespace timed_automaton::ast
 
 
     // Defining the map to hold Timed Arenas locations.
-    using arena_loc = std::pair<char, locationContent>;
+    using arena_loc = std::pair<players_sym, locationContent>;
     using arena_loc_pair = std::pair<std::string, arena_loc>;
     using arena_loc_map = std::unordered_map<std::string, arena_loc>;
 
@@ -507,8 +580,28 @@ namespace timed_automaton::ast
          *
          * @param clocksIndices a map from clock names to their index in the clocks vector.
          * @return a vector containing in position i the maximum constant of the i-th clock, where the index i of the clock is given by clockIndices.
+         *
+         * @warning Clocks that are not used in guards nor in invariants are assigned 0 as their maximum constant.
+         *          If a global timer must be declared, please add an artificial constraint in the arena such that the clock can assume that maximum constant.
+         *          This can be done, for example, by inserting a clock constraint in which the constant is the one used in the reachability query.
          */
         [[nodiscard]] std::vector<int> getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices) const;
+
+
+        /**
+         * @brief Computes the maximum constant appearing in a Timed Arena for each clock, also considering a general CLTLoc formula.
+         *
+         * @param clocksIndices a map from clock names to their index in the clocks vector.
+         * @param formula a general CLTLoc formula.
+         * @return a vector containing in position i the maximum constant of the i-th clock, where the index i of the clock is given by clockIndices.
+         *
+         * @warning Clocks that are not used in guards nor in invariants are assigned 0 as their maximum constant.
+         *          If a global timer must be declared, please add an artificial constraint in the arena such that the clock can assume that maximum constant.
+         *          This can be done, for example, by inserting a clock constraint in which the constant is the one used in the reachability query.
+         *          In this case, the maximum constant of these clocks may not be 0 due to the general CLTLoc formula.
+         */
+        [[nodiscard]] std::vector<int> getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices,
+                                                       const cltloc::ast::generalCLTLocFormula &formula) const;
 
 
         /**
@@ -600,8 +693,127 @@ namespace timed_automaton::ast
         [[nodiscard]] absl::btree_map<std::string, int> getVariables() const;
 
 
+        /**
+         * @brief Maps locations to players in a given arena.
+         *
+         * Since locations are represented by integer values, this function is best suited to be used in algorithms directly working with regions,
+         * as regions directly encode their location with an integer q.
+         *
+         * @param locToIntMap a mapping from locations (represented by std::string) to int.
+         * @return a map from locations (represented by integers) to players (represented by char).
+         *
+         * @remark Arena-specific function!
+         */
+        [[nodiscard]] absl::flat_hash_map<int, players_sym> mapLocationsToPlayers(const std::unordered_map<std::string, int> &locToIntMap) const;
+
+
         [[nodiscard]] std::string to_string() const;
     };
+}
+
+
+/**
+ * It is assumed that CLTLoc formulae only predicate over clocks of a given Timed Arena.
+ * That is, despite in the paper we say that the clock sets of arenas and CLTLoc formulae may overlap, here we assume they are identical.
+ * CLTLoc formulae are not required to predicate over every such clock but cannot predicate on clocks not declared in an arena.
+ * In this case, the arena may contain clocks not appearing in guards nor resets, since they are used only in the formula's predicates.
+ */
+namespace cltloc::ast
+{
+    /// A pure CLTLoc formula is (up to now) a conjunction of location names and clock constraints.
+    struct pureCLTLocFormula
+    {
+        /// This represents a disjunction of predicates on locations (it makes no sense to define a conjunction of predicates on locations).
+        std::vector<std::string> locations;
+        /// This represents a conjunction of clock constraints (disjunctions can be simulated by defining multiple formulae).
+        std::vector<timed_automaton::ast::clockConstraint> clockConstraints;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    // Forward declaring this struct so that it can be used in the structs below.
+    struct unaryCLTLocFormula;
+
+
+    // Forward declaring this struct so that it can be used in the structs below.
+    struct binaryCLTLocFormula;
+
+
+    /// Up to now, a general CLTLoc formula is a nesting of until and box formulae (though for our current needs the nesting is not needed).
+    struct generalCLTLocFormula
+    {
+        std::variant<
+            boost::spirit::x3::forward_ast<pureCLTLocFormula>,
+            boost::spirit::x3::forward_ast<unaryCLTLocFormula>,
+            boost::spirit::x3::forward_ast<binaryCLTLocFormula>> value;
+
+
+        // Implicit constructors.
+        generalCLTLocFormula() = default;
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(boost::spirit::x3::forward_ast<pureCLTLocFormula> v) : value(std::move(v)) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(boost::spirit::x3::forward_ast<unaryCLTLocFormula> v) : value(std::move(v)) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(boost::spirit::x3::forward_ast<binaryCLTLocFormula> v) : value(std::move(v)) {}
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(pureCLTLocFormula const &v);
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(pureCLTLocFormula &&v);
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(unaryCLTLocFormula const &v);
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(unaryCLTLocFormula &&v);
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(binaryCLTLocFormula const &v);
+
+        // NOLINTNEXTLINE(google-explicit-constructor)
+        generalCLTLocFormula(binaryCLTLocFormula &&v);
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    struct unaryCLTLocFormula
+    {
+        unary_cltloc_op op;
+        generalCLTLocFormula rightFormula;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    struct binaryCLTLocFormula
+    {
+        generalCLTLocFormula leftFormula;
+        binary_cltloc_op op;
+        generalCLTLocFormula rightFormula;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    // Implementing the deferred constructors after unaryCLTLocFormula and binaryCLTLocFormula are complete.
+    // Needed to break circular dependencies at compile time, as it happens, for example, when declaring a constructor of generalCLTLocFormula passing a unaryCLTLocFormula.
+    inline generalCLTLocFormula::generalCLTLocFormula(pureCLTLocFormula const &v) : value(boost::spirit::x3::forward_ast(v)) {}
+    inline generalCLTLocFormula::generalCLTLocFormula(pureCLTLocFormula &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
+    inline generalCLTLocFormula::generalCLTLocFormula(unaryCLTLocFormula const &v) : value(boost::spirit::x3::forward_ast(v)) {}
+    inline generalCLTLocFormula::generalCLTLocFormula(unaryCLTLocFormula &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
+    inline generalCLTLocFormula::generalCLTLocFormula(binaryCLTLocFormula const &v) : value(boost::spirit::x3::forward_ast(v)) {}
+    inline generalCLTLocFormula::generalCLTLocFormula(binaryCLTLocFormula &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
 }
 
 
@@ -668,6 +880,30 @@ inline std::ostream &operator<<(std::ostream &os, const timed_automaton::ast::ti
 inline std::ostream &operator<<(std::ostream &os, const timed_automaton::ast::timedArena &t)
 {
     return os << t.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::pureCLTLocFormula &p)
+{
+    return os << p.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::unaryCLTLocFormula &u)
+{
+    return os << u.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::binaryCLTLocFormula &b)
+{
+    return os << b.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::generalCLTLocFormula &g)
+{
+    return os << g.to_string();
 }
 
 #endif //AST_H

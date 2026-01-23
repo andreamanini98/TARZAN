@@ -278,9 +278,8 @@ std::string timed_automaton::ast::locationContent::to_string() const
 {
     std::ostringstream oss;
     oss << "<";
-    oss << "initial: " << (isInitial ? "true" : "false");
-    oss << "urgent: " << (isUrgent ? "true" : "false");
-    oss << ", ";
+    oss << "initial: " << (isInitial ? "true, " : "false, ");
+    oss << "urgent: " << (isUrgent ? "true, " : "false, ");
     oss << "invariant: [" << join_elements(invariant, " and ") << "]";
     oss << ">";
     return oss.str();
@@ -294,7 +293,8 @@ std::string timed_automaton::ast::locationContent::to_string() const
 
 bool timed_automaton::ast::transition::isTransitionSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
                                                              const std::unordered_map<std::string, int> &clocksIndices,
-                                                             const absl::btree_map<std::string, int> &variables) const
+                                                             const absl::btree_map<std::string, int> &variables,
+                                                             const bool skipResetClocks) const
 {
     bool isSatisfied = true;
 
@@ -307,6 +307,8 @@ bool timed_automaton::ast::transition::isTransitionSatisfied(const std::vector<s
             const int clockIntVal = clockValuation[clockIdx].first;
             const int clockHasFracPart = clockValuation[clockIdx].second;
 
+            if (skipResetClocks)
+                return std::ranges::find(clocksToReset, cc.getClockName()) != clocksToReset.end() || cc.isSatisfied(clockIntVal, clockHasFracPart);
             return cc.isSatisfied(clockIntVal, clockHasFracPart);
         });
     }
@@ -315,6 +317,14 @@ bool timed_automaton::ast::transition::isTransitionSatisfied(const std::vector<s
         isSatisfied = integerGuard.value().evaluate(variables);
 
     return isSatisfied;
+}
+
+
+bool timed_automaton::ast::transition::isTransitionSatisfied(const std::vector<std::pair<int, bool>> &clockValuation,
+                                                             const std::unordered_map<std::string, int> &clocksIndices,
+                                                             const absl::btree_map<std::string, int> &variables) const
+{
+    return isTransitionSatisfied(clockValuation, clocksIndices, variables, false);
 }
 
 
@@ -526,7 +536,7 @@ int timed_automaton::ast::timedArena::getMaxConstant() const
                 maxConstant = cc.comparingConstant;
 
     // Checking for maximum constant in invariants.
-    for (const auto &[isInitial, locContent]: locations | std::views::values)
+    for (const auto &[player, locContent]: locations | std::views::values)
         for (const clockConstraint &cc: locContent.invariant)
             if (maxConstant < cc.comparingConstant)
                 maxConstant = cc.comparingConstant;
@@ -550,12 +560,60 @@ std::vector<int> timed_automaton::ast::timedArena::getMaxConstants(const std::un
                     maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
 
         // Checking for maximum constants in invariants.
-        for (const auto &[fst, snd]: locations | std::views::values)
-            for (const clockConstraint &cc: snd.invariant)
+        for (const auto &[player, locContent]: locations | std::views::values)
+            for (const clockConstraint &cc: locContent.invariant)
                 if (maxConstants[clocksIndices.at(cc.clock)] < cc.comparingConstant)
                     maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
     }
 
+    return maxConstants;
+}
+
+
+/**
+ * @brief Updates the maximum constants of the arena's clocks considering clock constraints appearing in a general CLTLoc formula.
+ *
+ * @param clocksIndices a map from clock names to their index in the clocks vector.
+ * @param formula a general CLTLoc formula used to update the maximum constants of clocks.
+ * @param maxConstants the maximum constants of clocks to be updated.
+ * @return an updated version of maxConstants in which clock values may be constrained by the general CLTLoc formula.
+ */
+std::vector<int> getMaxConstantsRecursive(const std::unordered_map<std::string, int> &clocksIndices,
+                                          const cltloc::ast::generalCLTLocFormula &formula,
+                                          std::vector<int> &maxConstants)
+{
+    std::visit([&maxConstants, &clocksIndices]<typename T0>(T0 const &val) -> void {
+        using T = std::decay_t<T0>;
+
+        if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
+        {
+            // ReSharper disable once CppTooWideScopeInitStatement
+            const auto &pureFormula = val.get();
+
+            for (const auto &cc: pureFormula.clockConstraints)
+                if (maxConstants[clocksIndices.at(cc.clock)] < cc.comparingConstant)
+                    maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
+        } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>)
+        {
+            const auto &unaryFormula = val.get();
+            getMaxConstantsRecursive(clocksIndices, unaryFormula.rightFormula, maxConstants);
+        } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
+        {
+            const auto &binaryFormula = val.get();
+            getMaxConstantsRecursive(clocksIndices, binaryFormula.leftFormula, maxConstants);
+            getMaxConstantsRecursive(clocksIndices, binaryFormula.rightFormula, maxConstants);
+        }
+    }, formula.value);
+
+    return maxConstants;
+}
+
+
+std::vector<int> timed_automaton::ast::timedArena::getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices,
+                                                                   const cltloc::ast::generalCLTLocFormula &formula) const
+{
+    std::vector<int> maxConstants = getMaxConstants(clocksIndices);
+    getMaxConstantsRecursive(clocksIndices, formula, maxConstants);
     return maxConstants;
 }
 
@@ -670,21 +728,111 @@ absl::btree_map<std::string, int> timed_automaton::ast::timedArena::getVariables
 }
 
 
+absl::flat_hash_map<int, players_sym> timed_automaton::ast::timedArena::mapLocationsToPlayers(const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    absl::flat_hash_map<int, players_sym> res{};
+
+    for (const auto &[locName, locContent]: locations)
+        res[locToIntMap.at(locName)] = locContent.first;
+
+    return res;
+}
+
+
 std::string timed_automaton::ast::timedArena::to_string() const
 {
     std::ostringstream oss;
     oss << "Timed Arena " << name << std::endl;
     oss << "Clocks:\n" << join_elements(clocks, ", ") << std::endl;
     oss << "Actions:\n" << join_elements(actions, ", ") << std::endl;
-    oss << "Integer variables:\n" << join_elements(integerVariables, ", ") << std::endl;
+    oss << "Integer variables:\n" << (integerVariables.empty() ? "[]" : join_elements(integerVariables, ", ")) << std::endl;
     oss << "Locations:\n";
     for (const auto &[location_name, location_info]: locations)
     {
         const auto &[player, locContent] = location_info;
         oss << location_name << ", <" << player << ", ";
         oss << locContent << std::endl;
-        oss << ">\n";
     }
     oss << "Transitions:\n" << join_elements(transitions, "\n") << std::endl;
+    return oss.str();
+}
+
+
+// ---
+
+
+// Pure CLTLoc Formula class.
+
+std::string cltloc::ast::pureCLTLocFormula::to_string() const
+{
+    std::ostringstream oss;
+
+    if (locations.empty() && clockConstraints.empty())
+        return "empty_pure_CLTLoc_formula";
+
+    // Print locations.
+    if (!locations.empty())
+    {
+        if (!clockConstraints.empty() && locations.size() > 1)
+            oss << "(";
+        oss << join_elements(locations, " || ");
+        if (!clockConstraints.empty() && locations.size() > 1)
+            oss << ")";
+        if (!clockConstraints.empty())
+            oss << " && ";
+    } else
+        oss << "";
+
+    // Print clock constraints.
+    if (!clockConstraints.empty())
+        oss << join_elements(clockConstraints, " && ");
+    else
+        oss << "";
+
+    return oss.str();
+}
+
+
+// ---
+
+
+// Unary CLTLoc Formula class.
+
+std::string cltloc::ast::unaryCLTLocFormula::to_string() const
+{
+    std::ostringstream oss;
+    oss << op << " " << rightFormula.to_string();
+    return oss.str();
+}
+
+
+// ---
+
+
+// Binary CLTLoc Formula class.
+
+std::string cltloc::ast::binaryCLTLocFormula::to_string() const
+{
+    std::ostringstream oss;
+    oss << leftFormula.to_string() << " " << op << " " << rightFormula.to_string();
+    return oss.str();
+}
+
+
+// ---
+
+
+// General CLTLoc Formula class.
+
+std::string cltloc::ast::generalCLTLocFormula::to_string() const
+{
+    std::ostringstream oss;
+
+    // Keeping the visit pattern for future extensions (currently, it is unnecessary).
+    oss << std::visit([]<typename T0>(T0 const &val) -> std::string {
+        // Recursive case: pure, unary, or binary formula.
+        return "(" + val.get().to_string() + ")";
+    }, value);
+
     return oss.str();
 }
