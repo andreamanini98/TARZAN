@@ -152,73 +152,145 @@ inline void region::RTSArena::mergeResults(const std::vector<std::vector<Region>
 }
 
 
-inline bool region::RTSArena::delaySuccessorsCheck(const Region &reg, const regionSet &setG, const bool checkAllSuccessorsInvariants) const
+inline absl::flat_hash_map<std::string, bool> region::RTSArena::computeValidActions(const Region &reg, const regionSet &setG) const
 {
-    bool isRegionValid = true;
+    // Map between action names and a Boolean.
+    // The Boolean is set to true if every transition with action in validActions generates a discrete successor in setG; the Boolean is false otherwise.
+    absl::flat_hash_map<std::string, bool> validActions{};
 
-    Region oldDelaySucc = reg;
-    // ReSharper disable once CppTooWideScopeInitStatement
-    Region newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
-
-    // Check immediate fixpoint case, only valid if reg is in setG.
-    if (oldDelaySucc == newDelaySucc)
-        isRegionValid = setG.contains(reg);
-    else
+    for (const auto &outTrans: outTransitions[reg.getLocation()])
     {
-        while (oldDelaySucc != newDelaySucc)
+        const std::vector<Region> discreteSuccessors = reg.getImmediateDiscreteSuccessors({ outTrans }, clocksIndices, locationsToInt);
+
+        // Skip transitions that don't produce valid successors.
+        if (discreteSuccessors.empty())
+            continue;
+
+        // We consider only the first element of discreteSuccessors since we are computing it over a single transition.
+        const Region &discSucc = discreteSuccessors[0];
+        const bool isDiscreteSuccessorInSetG = setG.contains(discSucc);
+
+        // ReSharper disable once CppTooWideScopeInitStatement
+        const std::string &actionName = outTrans.action.first;
+
+        // If an action is already present, we update its value only if it is true: if it is false, it must stay false.
+        if (validActions.contains(actionName))
         {
-            // The environment cannot bring the game into a deadlock state by waiting an arbitrary amount of time.
-            // Boolean to track whether all outgoing transitions of an immediate delay successor are disabled.
-            // Here we want at least one such transition to be enabled for reg to be valid.
-            bool allDisabled = true;
-            // ReSharper disable once CppTooWideScopeInitStatement
-            const std::vector<transition> &newDelaySuccTransitions = outTransitions[newDelaySucc.getLocation()];
-            for (const auto &transition: newDelaySuccTransitions)
-                if (transition.isTransitionSatisfied(newDelaySucc.getClockValuation(), clocksIndices, {}))
-                {
-                    allDisabled = false;
-                    break;
-                }
+            if (validActions[actionName])
+                validActions[actionName] = isDiscreteSuccessorInSetG;
+        } else
+            validActions[actionName] = isDiscreteSuccessorInSetG;
+    }
 
-            // If all transitions are disabled, simply continue by checking the next immediate delay successor.
-            if (allDisabled)
-            {
-                oldDelaySucc = newDelaySucc;
-                newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
-            } else
-            {
-                // If the delay successor is not in setG, the region is invalid.
-                if (!setG.contains(newDelaySucc))
-                {
-                    isRegionValid = false;
-                    break;
-                }
+    return validActions;
+}
 
-                // In safety formulae, it may be necessary to satisfy the invariants for immediate delay successors.
-                if (checkAllSuccessorsInvariants)
-                    if (const auto it = invariants.find(newDelaySucc.getLocation()); it != invariants.end())
-                        if (!isInvariantSatisfied(it->second, newDelaySucc.getClockValuation(), clocksIndices))
-                        {
-                            isRegionValid = false;
-                            break;
-                        }
+
+inline void region::RTSArena::everyOutTransitionIsInSetG(const Region &reg,
+                                                         const regionSet &setG,
+                                                         const std::string &action,
+                                                         bool &isRegionValid,
+                                                         bool &atLeastOneDiscreteSuccessor) const
+{
+    for (const auto &outTrans: outTransitions[reg.getLocation()])
+    {
+        // We only consider transitions with action 'action'.
+        if (outTrans.action.first != action)
+            continue;
+
+        // ReSharper disable once CppTooWideScopeInitStatement
+        const std::vector<Region> discreteSuccessors = reg.getImmediateDiscreteSuccessors({ outTrans }, clocksIndices, locationsToInt);
+
+        // We modify atLeastOneDiscreteSuccessor only if false; if true, it must not be modified again.
+        if (!atLeastOneDiscreteSuccessor)
+            atLeastOneDiscreteSuccessor = !discreteSuccessors.empty();
+
+        // If at least one discrete successor is not in setG, the region is invalid.
+        if (!discreteSuccessors.empty() && !setG.contains(discreteSuccessors[0]))
+            isRegionValid = false;
+    }
+}
+
+
+inline bool region::RTSArena::piEnvironment(const Region &reg, const regionSet &setG, const absl::flat_hash_map<std::string, bool> &validActions) const
+{
+    // For every action, we check whether the sequence of delay successors satisfies the condition over the same action.
+    for (const auto &[actionName, isValid]: validActions)
+    {
+        // The action must be valid, otherwise we skip it.
+        if (!isValid)
+            continue;
+
+        // Needed to ensure that at least one discrete successor is computed, otherwise the game blocks.
+        bool atLeastOneDiscreteSuccessor = false;
+        bool isRegionValid = true;
+
+        Region oldDelaySucc = reg;
+        // ReSharper disable once CppTooWideScopeInitStatement
+        Region newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
+
+        // Check immediate fixpoint case.
+        if (oldDelaySucc == newDelaySucc)
+            everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
+        else
+        {
+            while (oldDelaySucc != newDelaySucc)
+            {
+                everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
+
+                // If the region is not valid, by the pi_e condition we can stop checking the sequence of delay successors and try the next action.
+                if (!isRegionValid)
+                    break;
 
                 oldDelaySucc = newDelaySucc;
                 newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
             }
+
+            // The if is needed to skip the computation of everyOutTransitionIsInSetG is isRegionValid is already false.
+            if (isRegionValid)
+                everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
         }
+
+        if (atLeastOneDiscreteSuccessor && isRegionValid)
+            return true;
     }
 
-    return isRegionValid;
+    return false;
 }
 
 
-void region::RTSArena::omegaFilter(const regionSet &setG,
-                                   const std::vector<RegionPtr> &toProcess,
-                                   regionSet &filteredRegions,
-                                   const regionSet &intersectionSet,
-                                   const bool skipPredecessorsInSetG,
-                                   const bool checkAllSuccessorsInvariants) const
+inline bool region::RTSArena::piController(const absl::flat_hash_map<std::string, bool> &validActions)
+{
+    // If the controller has at least one valid action from the discrete predecessor computed in piFilter, we can return true.
+    return std::ranges::any_of(validActions | std::views::values, std::identity{});
+}
+
+
+inline void region::RTSArena::collectLegalRegionByPi(const Region &reg,
+                                                     const regionSet &setG,
+                                                     std::vector<std::vector<Region>> &threadLocalRegions,
+                                                     const absl::flat_hash_map<std::string, bool> &validActions) const
+{
+    // ReSharper disable once CppTooWideScopeInitStatement
+    const bool isCurrentPlayerController = locationsToPlayers.at(reg.getLocation()) == CONTROLLER;
+
+    if (isCurrentPlayerController ? piController(validActions) : piEnvironment(reg, setG, validActions))
+    {
+#ifdef _OPENMP
+        threadLocalRegions[omp_get_thread_num()].push_back(reg);
+#else
+        threadLocalRegions[0].push_back(reg);
+#endif
+    }
+}
+
+
+void region::RTSArena::piFilter(const regionSet &setG,
+                                const std::vector<RegionPtr> &toProcess,
+                                regionSet &filteredRegions,
+                                const regionSet &intersectionSet,
+                                bool skipPredecessorsInSetG,
+                                bool checkAllSuccessorsInvariants) const
 {
     constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
 
@@ -244,178 +316,65 @@ void region::RTSArena::omegaFilter(const regionSet &setG,
 
 #pragma omp parallel for if(toProcess.size() >= parallelThreshold) schedule(dynamic) default(none) \
 shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, checkAllSuccessorsInvariants, threadLocalRegions), \
-shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants, invariants)
+shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants, invariants, initialRegions, locationsToPlayers)
     for (int i = 0; i < static_cast<int>(toProcess.size()); i++) // NOLINT(modernize-loop-convert)
     {
         // Getting the current region to process and its incoming transitions.
         const Region &currentRegion = *toProcess[i];
         const std::vector<transition> &currTransitions = inTransitions[currentRegion.getLocation()];
 
-        // We collect every discrete predecessor that we filter later based on the omega filter requirements.
+        // We collect every discrete predecessor that we filter later based on the pi conditions.
         // ReSharper disable once CppTooWideScopeInitStatement
         const std::vector<Region> discPreds = currentRegion.getImmediateDiscretePredecessors(currTransitions, clocksIndices, locationsToInt, maxConstants);
 
         // Processing each discrete predecessor to see if it can be inserted in filteredRegions.
         for (const auto &reg: discPreds)
         {
-            if (skipRegion(reg, setG, intersectionSet, skipPredecessorsInSetG))
-                continue;
+            const absl::flat_hash_map<std::string, bool> &validActions = computeValidActions(reg, setG);
 
-            bool isRegionValid{};
-            const std::vector<transition> &regOutTransitions = outTransitions[reg.getLocation()];
+            // Since a region may have multiple delay predecessors, we create a deque to process each delay predecessor.
+            // Since reg itself must be processed as well, we already add it to delayPredecessorsToProcess.
+            std::queue<Region> delayPredecessorsToProcess{};
+            delayPredecessorsToProcess.push(reg);
 
-            // Building a map from actions names to transitions indices to ease the check required by the omega filter.
-            absl::flat_hash_map<std::string, std::vector<int>> actionsToTransitionIndices{};
-            for (int tIdx = 0; tIdx < static_cast<int>(regOutTransitions.size()); tIdx++)
-                actionsToTransitionIndices[regOutTransitions[tIdx].action.first].push_back(tIdx);
+            // Furthermore, we need to later reconsider the regions from which a delay predecessor does not exist.
+            regionSet regionsStillToProcess{};
 
-            // Track which actions have been processed to avoid redundant checks.
-            absl::flat_hash_set<std::string> processedActions{};
-
-            // Outgoing transitions must be such that (at least one transition must satisfy these requirements for a region to be valid):
-            // - If its action is unique, it must lead to a region in setG, or
-            // - If its action is not unique, all other transitions with the same action must lead to a region in setG.
-            // TODO: we can stop at the first action satisfying the above requirements, since we are computing regions and not transitions for now.
-            for (const auto &transition: regOutTransitions)
+            // We now process each delay predecessor according to the definition of pi as given in our paper.
+            while (!delayPredecessorsToProcess.empty())
             {
-                const std::string &action = transition.action.first;
+                const Region regUnderAnalysis = delayPredecessorsToProcess.front();
+                delayPredecessorsToProcess.pop();
 
-                // Skip if we've already processed this action.
-                if (processedActions.contains(action))
+                // Check whether a region that is the source of a move must be skipped.
+                if (skipRegion(regUnderAnalysis, setG, intersectionSet, skipPredecessorsInSetG))
                     continue;
-                processedActions.insert(action);
 
-                // Getting the indices of the transitions corresponding to 'action'.
+                const std::vector<Region> delayPreds = regUnderAnalysis.getImmediateDelayPredecessors();
+
+                // If a region does not have a delay predecessor, we put 'continue' here, since it will be checked later due to regionsStillToProcess.
+                if (delayPreds.empty())
+                {
+                    regionsStillToProcess.insert(regUnderAnalysis);
+                    continue;
+                }
+
+                for (const auto &delayPred: delayPreds)
+                    delayPredecessorsToProcess.push(delayPred);
+
+                if (regUnderAnalysis.hasAtLeastOneDiscretePredecessor(inTransitions[regUnderAnalysis.getLocation()], clocksIndices))
+                    collectLegalRegionByPi(regUnderAnalysis, setG, threadLocalRegions, validActions);
+            }
+
+            // Checking the case in which a region with no delay predecessors is either initial or has an incoming discrete transition (has a discrete predecessor).
+            for (const auto &regStillToProcess: regionsStillToProcess)
+            {
+                const bool isRegionInitial = std::ranges::find(initialRegions, regStillToProcess) != initialRegions.end();
                 // ReSharper disable once CppTooWideScopeInitStatement
-                const std::vector<int> &transitionIndices = actionsToTransitionIndices[action];
+                const bool hasDiscPreds = regStillToProcess.hasAtLeastOneDiscretePredecessor(inTransitions[regStillToProcess.getLocation()], clocksIndices);
 
-                // All transitions must lead to a region in setG.
-                bool allTransitionsValid = true;
-                // Used to keep track of the disabled transitions with action 'action'. If all transitions are disabled, set allTransitionsValid to false.
-                size_t disabledTransitions = 0;
-
-                for (const int tIdx: transitionIndices)
-                {
-                    // A transition must be enabled (its guard must be satisfied), otherwise we ignore it.
-                    if (!regOutTransitions[tIdx].isTransitionSatisfied(reg.getClockValuation(), clocksIndices, {}))
-                    {
-                        disabledTransitions++;
-                        continue;
-                    }
-
-                    // When set to false, a discrete successor does not belong to setG.
-                    bool foundInSetG = true;
-
-                    // We compute discrete successors one transition at a time.
-                    // ReSharper disable once CppTooWideScopeInitStatement
-                    const std::vector<Region> discSuccs = reg.getImmediateDiscreteSuccessors({ regOutTransitions[tIdx] }, clocksIndices, locationsToInt);
-
-                    // We use a loop here, but since we are computing discrete successors over a single transition, the content of discSuccs is a single region.
-                    for (const auto &discSucc: discSuccs)
-                        if (!setG.contains(discSucc))
-                        {
-                            foundInSetG = false;
-                            break;
-                        }
-
-                    if (!foundInSetG)
-                    {
-                        allTransitionsValid = false;
-                        break;
-                    }
-                }
-
-                if (disabledTransitions == transitionIndices.size())
-                    allTransitionsValid = false;
-
-                if (allTransitionsValid)
-                {
-                    isRegionValid = true;
-                    break;
-                }
-            }
-
-            // Checking whether the controller is guaranteed to win when the chosen delay is equal to zero (same check as in deltaFilter).
-            // Indeed, a discrete predecessor can also be seen as a delay predecessor in which the delay is exactly equal to zero.
-            if (isRegionValid && locationsToPlayers.at(reg.getLocation()) != CONTROLLER)
-                isRegionValid = delaySuccessorsCheck(reg, setG, checkAllSuccessorsInvariants);
-
-            if (isRegionValid)
-            {
-#ifdef _OPENMP
-                threadLocalRegions[omp_get_thread_num()].push_back(reg);
-#else
-                threadLocalRegions[0].push_back(reg);
-#endif
-            }
-        }
-    }
-
-    mergeResults(threadLocalRegions, filteredRegions);
-}
-
-
-void region::RTSArena::deltaFilter(const regionSet &setG,
-                                   const std::vector<RegionPtr> &toProcess,
-                                   regionSet &filteredRegions,
-                                   const regionSet &intersectionSet,
-                                   const bool skipPredecessorsInSetG,
-                                   const bool checkAllSuccessorsInvariants) const
-{
-    constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
-
-    // Thread-local storage for valid predecessors.
-#ifdef _OPENMP
-    std::vector<std::vector<Region>> threadLocalRegions(omp_get_max_threads());
-#else
-    std::vector<std::vector<Region>> threadLocalRegions(1);
-#endif
-
-    // Reserve space to reduce allocations.
-    if (toProcess.size() >= parallelThreshold)
-    {
-#ifdef _OPENMP
-        const size_t estimatedSize = toProcess.size() / omp_get_max_threads();
-#else
-        const size_t estimatedSize = toProcess.size();
-#endif
-
-        for (auto &vec: threadLocalRegions)
-            vec.reserve(estimatedSize);
-    }
-
-#pragma omp parallel for if(toProcess.size() >= parallelThreshold) schedule(dynamic) default(none) \
-shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, checkAllSuccessorsInvariants, threadLocalRegions), \
-shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants, invariants, locationsToPlayers)
-    for (int i = 0; i < static_cast<int>(toProcess.size()); i++) // NOLINT(modernize-loop-convert)
-    {
-        // Getting the current region to process.
-        const Region &currentRegion = *toProcess[i];
-
-        // We collect every immediate delay predecessor that we filter later based on the delta filter requirements.
-        // ReSharper disable once CppTooWideScopeInitStatement
-        const std::vector<Region> delayPreds = currentRegion.getImmediateDelayPredecessors();
-
-        // Processing each immediate delay predecessor to see if it can be inserted in filteredRegions.
-        for (const auto &reg: delayPreds)
-        {
-            if (skipRegion(reg, setG, intersectionSet, skipPredecessorsInSetG))
-                continue;
-
-            bool isRegionValid = true;
-
-            // Controller regions only need to pass the skipRegion check.
-            // Environment regions must additionally guarantee that all delay successors lead to setG.
-            if (locationsToPlayers.at(reg.getLocation()) != CONTROLLER)
-                isRegionValid = delaySuccessorsCheck(reg, setG, checkAllSuccessorsInvariants);
-
-            if (isRegionValid)
-            {
-#ifdef _OPENMP
-                threadLocalRegions[omp_get_thread_num()].push_back(reg);
-#else
-                threadLocalRegions[0].push_back(reg);
-#endif
+                if (isRegionInitial || hasDiscPreds)
+                    collectLegalRegionByPi(regStillToProcess, setG, threadLocalRegions, validActions);
             }
         }
     }
@@ -436,26 +395,22 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
     int currentIteration = 0;
     const int totalStartingRegions = static_cast<int>(setG.size());
 
-    regionSet filteredRegionsOmega{};
-    regionSet filteredRegionsDelta{};
+    regionSet filteredRegions{};
 
     while (currentIteration < maxIter)
     {
-        omegaFilter(setG, toProcess, filteredRegionsOmega, setPhi, true, false);
-        deltaFilter(setG, toProcess, filteredRegionsDelta, setPhi, true, false);
+        piFilter(setG, toProcess, filteredRegions, setPhi, true, false);
 
-        if (filteredRegionsOmega.empty() && filteredRegionsDelta.empty())
+        if (filteredRegions.empty())
             break;
 
-        setG.merge(filteredRegionsOmega);
-        setG.merge(filteredRegionsDelta);
+        setG.merge(filteredRegions);
 
         toProcess.clear();
         for (const auto &region: setG)
             toProcess.push_back(&region);
 
-        filteredRegionsOmega.clear();
-        filteredRegionsDelta.clear();
+        filteredRegions.clear();
 
         currentIteration++;
     }
@@ -502,26 +457,22 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
     int currentIteration = 0;
     const int totalStartingRegions = static_cast<int>(setG.size());
 
-    regionSet filteredRegionsOmega{};
-    regionSet filteredRegionsDelta{};
+    regionSet filteredRegions{};
 
     while (currentIteration < maxIter)
     {
-        omegaFilter(setG, toProcess, filteredRegionsOmega, setPhi, true, false);
-        deltaFilter(setG, toProcess, filteredRegionsDelta, setPhi, true, false);
+        piFilter(setG, toProcess, filteredRegions, setPhi, true, false);
 
-        if (filteredRegionsOmega.empty() && filteredRegionsDelta.empty())
+        if (filteredRegions.empty())
             break;
 
-        setG.merge(filteredRegionsOmega);
-        setG.merge(filteredRegionsDelta);
+        setG.merge(filteredRegions);
 
         toProcess.clear();
         for (const auto &region: setG)
             toProcess.push_back(&region);
 
-        filteredRegionsOmega.clear();
-        filteredRegionsDelta.clear();
+        filteredRegions.clear();
 
         currentIteration++;
     }
@@ -531,43 +482,11 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
     for (const auto &region: setG)
         toProcess.push_back(&region);
 
-    filteredRegionsOmega.clear();
-    filteredRegionsDelta.clear();
+    filteredRegions.clear();
 
     // In this case, we remove the constraints over the intersection set setPhi and put skipPredecessorsInSetG to false.
-    omegaFilter(setG, toProcess, filteredRegionsOmega, {}, false, false);
-    deltaFilter(setG, toProcess, filteredRegionsDelta, {}, false, false);
-
-    // Step 3: we must reach a delay fixpoint over the previously computed regions, since we operate with immediate delay predecessors only.
-    // Note: NOT including setG itself here, since it is unnecessary.
-    regionSet &newSetG = filteredRegionsOmega;
-    newSetG.merge(filteredRegionsDelta);
-
-    // Since we are reaching a fixpoint over delays, we can remove from newSetG the regions whose location does not coincide with that of an initial region.
-    absl::flat_hash_set<int> initialRegionsLocations{};
-    for (const auto &region: initialRegions)
-        initialRegionsLocations.insert(region.getLocation());
-    std::erase_if(newSetG, [&initialRegionsLocations](const auto &region) { return !initialRegionsLocations.contains(region.getLocation()); });
-
-    while (currentIteration < maxIter)
-    {
-        filteredRegionsDelta.clear();
-        toProcess.clear();
-        for (const auto &region: newSetG)
-            toProcess.push_back(&region);
-
-        deltaFilter(newSetG, toProcess, filteredRegionsDelta, {}, true, false);
-
-        // Removing predecessors that could be contained in setG.
-        std::erase_if(filteredRegionsDelta, [&setG](const auto &region) { return setG.contains(region); });
-
-        if (filteredRegionsDelta.empty())
-            break;
-
-        newSetG.merge(filteredRegionsDelta);
-
-        currentIteration++;
-    }
+    piFilter(setG, toProcess, filteredRegions, {}, false, false);
+    setG.merge(filteredRegions);
 
     // Ending the timer for measuring computation.
 #ifdef _OPENMP
@@ -580,12 +499,12 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
     std::cout << "Total time:              " << duration << " microseconds" << std::endl;
 #endif
 
-    const bool reachable = std::ranges::any_of(initialRegions, [&newSetG](const auto &region) { return newSetG.contains(region); });
+    const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
 
     std::cout << "Total iterations:        " << currentIteration << std::endl;
     std::cout << "Total starting regions:  " << totalStartingRegions << std::endl;
     std::cout << "Total regions in setPhi: " << setPhi.size() << std::endl;
-    std::cout << "Total stored regions:    " << setG.size() + newSetG.size() << std::endl;
+    std::cout << "Total stored regions:    " << setG.size() << std::endl;
     std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
 
     return reachable;
@@ -604,32 +523,25 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
     int currentIteration = 0;
     const int totalStartingRegions = static_cast<int>(setG.size());
 
-    regionSet filteredRegionsOmega{};
-    regionSet filteredRegionsDelta{};
+    regionSet filteredRegions{};
 
     while (currentIteration < maxIter)
     {
         const size_t oldSetGSize = setG.size();
 
-        omegaFilter(setG, toProcess, filteredRegionsOmega, {}, false, true);
-        deltaFilter(setG, toProcess, filteredRegionsDelta, {}, false, true);
+        piFilter(setG, toProcess, filteredRegions, {}, false, true);
 
         // Computing the intersection between regions returned by omega and delta filters and setG.
-        filteredRegionsOmega.merge(filteredRegionsDelta);
-        std::erase_if(setG, [&filteredRegionsOmega](const auto &region) { return !filteredRegionsOmega.contains(region); });
+        std::erase_if(setG, [&filteredRegions](const auto &region) { return !filteredRegions.contains(region); });
 
-        // ReSharper disable once CppTooWideScopeInitStatement
-        const size_t newSetGSize = setG.size();
-
-        if (oldSetGSize == newSetGSize)
+        if (oldSetGSize == setG.size())
             break;
 
         toProcess.clear();
         for (const auto &region: setG)
             toProcess.push_back(&region);
 
-        filteredRegionsOmega.clear();
-        filteredRegionsDelta.clear();
+        filteredRegions.clear();
 
         currentIteration++;
     }

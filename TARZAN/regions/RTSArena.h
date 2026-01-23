@@ -44,7 +44,7 @@ namespace region
 
 
         /**
-         * @brief Used to determine whether a region must be ignored by omega and delta filters.
+         * @brief Used to determine whether piFilter must ignore a region.
          *
          * @param reg the region to check.
          * @param setG set of goal regions.
@@ -56,7 +56,7 @@ namespace region
 
 
         /**
-         * @brief Used to merge results before returning regions in omega and delta filters.
+         * @brief Used to merge results before returning regions in piFilter.
          *
          * @param threadLocalRegions a vector containing the regions to be merged.
          * @param filteredRegions at the end of execution, will contain the filtered discrete predecessors regions ensuring the controller can reach setG.
@@ -67,14 +67,69 @@ namespace region
 
 
         /**
-         * @brief Checks whether all delay successors of a given region are contained in setG.
+         * @brief Computes a map in which keys are action names and values are Booleans set to true if all outgoing transitions
+         *        from reg with such action end in a region in setG; the Boolean values are set to false otherwise.
          *
-         * @param reg the region from which delay successors are computed.
+         * @param reg the region from which all outgoing transitions must end in setG for their action to be inserted with value true.
          * @param setG set of goal regions.
-         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
-         * @return true if all delay successors reg are contained in setG, false otherwise.
+         * @return a map between actions and Booleans.
          */
-        [[nodiscard]] inline bool delaySuccessorsCheck(const Region &reg, const regionSet &setG, bool checkAllSuccessorsInvariants) const;
+        [[nodiscard]] inline absl::flat_hash_map<std::string, bool> computeValidActions(const Region &reg, const regionSet &setG) const;
+
+
+        /**
+         * @brief Determines whether all output transitions from reg over action 'action' lead to a discrete successor in setG.
+         *
+         * @param reg the region from which all outgoing transitions must end in setG for action 'action'.
+         * @param setG set of goal regions.
+         * @param action the action used to determine which transitions are considered.
+         * @param isRegionValid at the end of execution, true if all output transitions from reg over action 'action' lead to a discrete successor in setG; false otherwise.
+         * @param atLeastOneDiscreteSuccessor at the end of execution it must be true: at least one discrete successor must be computed for the game to be
+         *                                    non-blocking (which is our assumption when creating arenas and games).
+         *
+         * @warning The function updates isRegionValid.
+         * @warning The function updates atLeastOneDiscreteSuccessor.
+         */
+        inline void everyOutTransitionIsInSetG(const Region &reg,
+                                               const regionSet &setG,
+                                               const std::string &action,
+                                               bool &isRegionValid,
+                                               bool &atLeastOneDiscreteSuccessor) const;
+
+
+        /**
+         * @brief Determines whether an environment region satisfies the pi_e condition as detailed in our paper.
+         *
+         * @param reg the region over which the pi_e condition must be evaluated.
+         * @param setG set of goal regions.
+         * @param validActions actions that the controller can potentially choose to declare a move guaranteeing it to reach a region in setG.
+         * @return true if reg satisfies the pi_e condition, false otherwise.
+         */
+        [[nodiscard]] inline bool piEnvironment(const Region &reg, const regionSet &setG, const absl::flat_hash_map<std::string, bool> &validActions) const;
+
+
+        /**
+         * @brief Determines whether a controller region satisfies the pi_c condition as detailed in our paper.
+         *
+         * @param validActions actions that the controller can potentially choose to declare a move guaranteeing it to reach a region in setG.
+         * @return true if reg satisfies the pi_c condition, false otherwise.
+         */
+        [[nodiscard]] static inline bool piController(const absl::flat_hash_map<std::string, bool> &validActions);
+
+
+        /**
+         * @brief Auxiliary function used to execute piEnvironment or piController based on whether the region is of the environment or the controller, respectively.
+         *
+         * @param reg the region over which the pi_e or pi_c condition must be evaluated.
+         * @param setG set of goal regions.
+         * @param threadLocalRegions vector of vectors collecting the resulting region if valid.
+         *                           Each external vector corresponds to a thread in OpenMP (only one inner vector is present if OpenMP is not enabled).
+         * @param validActions actions that the controller can potentially choose to declare a move guaranteeing it to reach a region in setG.
+         */
+        inline void collectLegalRegionByPi(const Region &reg,
+                                           const regionSet &setG,
+                                           std::vector<std::vector<Region>> &threadLocalRegions,
+                                           const absl::flat_hash_map<std::string, bool> &validActions) const;
 
 
         /**
@@ -199,10 +254,7 @@ namespace region
 
 
         /**
-         * @brief Applies omega filter for backward reachability in Timed Arenas.
-         *
-         * Iteratively processes regions from toProcess, computes their discrete predecessors, and adds valid predecessors to filteredRegions.
-         * A predecessor is valid if: (1) a transition with a unique action leads to setG, or (2) all transitions with a non-unique action lead to setG.
+         * @brief Computes the regions from which there exists a move that guarantees the controller to reach a region in setG.
          *
          * @param setG set of goal regions.
          * @param toProcess vector of pointers to regions in setG that must be processed.
@@ -214,37 +266,12 @@ namespace region
          * @warning The function updates filteredRegions.
          * @warning toProcess is a vector, since we may use OpenMP parallelization.
          */
-        void omegaFilter(const regionSet &setG,
-                         const std::vector<RegionPtr> &toProcess,
-                         regionSet &filteredRegions,
-                         const regionSet &intersectionSet,
-                         bool skipPredecessorsInSetG,
-                         bool checkAllSuccessorsInvariants) const;
-
-
-        /**
-         * @brief Applies delta filter for backward reachability in Timed Arenas.
-         *
-         * Iteratively processes regions from toProcess, computes their immediate delay predecessors, and adds valid predecessors to filteredRegions.
-         * A predecessor is valid if: (1) it is a controller region, or (2) it is an environment region and all its delay successors must lead to setG (not
-         * restricted to immediate delay successors).
-         *
-         * @param setG set of goal regions.
-         * @param toProcess vector of pointers to regions in setG that must be processed.
-         * @param filteredRegions at the end of execution, will contain the filtered discrete predecessors regions ensuring the controller can reach setG.
-         * @param intersectionSet for a region to be valid, it must also belong to intersectionSet.
-         * @param skipPredecessorsInSetG if true, a predecessor already contained in setG is automatically considered valid.
-         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
-         *
-         * @warning The function updates filteredRegions.
-         * @warning toProcess is a vector, since we may use OpenMP parallelization.
-         */
-        void deltaFilter(const regionSet &setG,
-                         const std::vector<RegionPtr> &toProcess,
-                         regionSet &filteredRegions,
-                         const regionSet &intersectionSet,
-                         bool skipPredecessorsInSetG,
-                         bool checkAllSuccessorsInvariants) const;
+        void piFilter(const regionSet &setG,
+                      const std::vector<RegionPtr> &toProcess,
+                      regionSet &filteredRegions,
+                      const regionSet &intersectionSet,
+                      bool skipPredecessorsInSetG,
+                      bool checkAllSuccessorsInvariants) const;
 
 
         /**
@@ -311,7 +338,7 @@ namespace region
          * @param formula the general CLTLoc formula to process.
          * @return true if the controller wins, false otherwise.
          *
-         * @throws std::logic_error if an unhandled formula type is encountered or a pure formula is given as the parameter value.
+         * @throws std::logic_error if an unhandled formula type is encountered, or a pure formula is given as the parameter value.
          */
         [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula) const;
 
