@@ -237,6 +237,17 @@ namespace region
 
 
         /**
+         * @brief Determines whether a discrete predecessor exists for the current region.
+         *
+         * @param transitions the input transitions to the current region over which the check is performed.
+         * @param clockIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
+         * @return true if at least one discrete predecessor exists, false otherwise.
+         */
+        [[nodiscard]] bool hasAtLeastOneDiscretePredecessor(const std::vector<transition> &transitions,
+                                                            const std::unordered_map<std::string, int> &clockIndices) const;
+
+
+        /**
          * @brief Generates all regions that satisfy the given location and clock constraint predicates.
          *
          * This function directly constructs regions from a pure CLTLoc formula specification, without requiring transitions or an existing region.

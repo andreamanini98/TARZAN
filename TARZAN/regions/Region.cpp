@@ -893,6 +893,49 @@ std::vector<region::Region> region::Region::getImmediateDiscretePredecessors(con
 }
 
 
+bool region::Region::hasAtLeastOneDiscretePredecessor(const std::vector<transition> &transitions,
+                                                      const std::unordered_map<std::string, int> &clockIndices) const
+{
+    const std::vector<std::pair<int, bool>> clockValuation = getClockValuation();
+
+    for (const auto &transition: transitions)
+    {
+        // Handling the case in which no clocks are reset.
+        // If no clocks must be reset, the clock valuation is the same, hence it suffices to check whether the transition is satisfied.
+        if (transition.clocksToReset.empty())
+        {
+            if (transition.isTransitionSatisfied(clockValuation, clockIndices, {}, false))
+                return true;
+
+            continue;
+        }
+
+        // Otherwise, at least one clock is reset.
+        // First, we have to check if the current region is legal (every reset clock must be exactly zero with no fractional part).
+        bool canProducePredecessors = true;
+        for (const auto &resetClock: transition.clocksToReset)
+        {
+            // ReSharper disable once CppTooWideScopeInitStatement
+            auto [intVal, hasFracPart] = clockValuation[clockIndices.at(resetClock)];
+
+            // If the clock does not satisfy these conditions, no discrete predecessors can be computed from the current region.
+            if (intVal != 0 || hasFracPart == true)
+                canProducePredecessors = false;
+        }
+
+        // If the current region is not legal, a discrete predecessor cannot exist.
+        if (!canProducePredecessors)
+            continue;
+
+        // Otherwise, for a discrete predecessor to exist, it suffices to satisfy the transition's guard without considering reset clocks.
+        if (transition.isTransitionSatisfied(clockValuation, clockIndices, {}, true))
+            return true;
+    }
+
+    return false;
+}
+
+
 /**
  * @brief Auxiliary function to verify that a region satisfies all given clock constraints.
  *
