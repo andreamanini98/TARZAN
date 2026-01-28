@@ -22,16 +22,18 @@ Consequently, integrating TARZAN into existing zone-based state-of-the-art tools
 
 **Warning:** TARZAN have been developed and tested on macOS Sequoia 15.6.1, but should work on Linux (this may require adjusting the CMakeLists.txt file).
 A complete test on Linux is deferred to future work.
+A working CMakeLists.txt file for Linux is under development and will be soon updated.
 
 
 ## Prerequisites
 
 TARZAN needs the following dependencies to be installed:
-- <a href="https://www.boost.org" target="_blank" rel="noopener noreferrer">Boost libraries</a> v. 1.89.0 (on macOS, suggested installation via Homebrew).
+- <a href="https://www.boost.org" target="_blank" rel="noopener noreferrer">Boost libraries</a> v. 1.89.0 (previous versions should work as well, though they have not been tested; on macOS, suggested installation via Homebrew).
 - <a href="https://abseil.io" target="_blank" rel="noopener noreferrer">Abseil libraries</a> v. 20250814.1 (previous versions should work as well, though they have not been tested; on macOS, suggested installation via Homebrew).
 - <a href="https://cmake.org" target="_blank" rel="noopener noreferrer">CMake</a> v. 3.31 (minimum required version).
-- A C++20 compatible compiler.
+- A C++20 compatible compiler (should also support OpenMP, e.g., Clang).
 - Python v. 3.10 (required for benchmark summary generation).
+- A proper LaTeX distributon (required for benchmark summary generation).
   
 If you want to run the benchmarks against Uppaal and TChecker, you also need to install those tools:
 - <a href="https://uppaal.org" target="_blank" rel="noopener noreferrer">Uppaal</a> v. 5.0 (other versions should work as well).
