@@ -18,7 +18,7 @@ inline void testFlowerBackward2()
     std::cout << "Flower K = 2" << std::endl;
     std::cout << "------------\n\n";
 
-    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_02/";
+    const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_02/";
 
     constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
@@ -48,7 +48,7 @@ inline void testFlowerBackward4()
     std::cout << "Flower K = 4" << std::endl;
     std::cout << "------------\n\n";
 
-    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_04/";
+    const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_04/";
 
     constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
@@ -78,7 +78,7 @@ inline void testFlowerBackward6()
     std::cout << "Flower K = 6" << std::endl;
     std::cout << "------------\n\n";
 
-    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_06/";
+    const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_06/";
 
     constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
@@ -108,7 +108,7 @@ inline void testFlowerBackward8()
     std::cout << "Flower K = 8" << std::endl;
     std::cout << "------------\n\n";
 
-    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_08/";
+    const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_08/";
 
     constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
@@ -138,7 +138,7 @@ inline void testFlowerBackward10()
     std::cout << "Flower K = 10" << std::endl;
     std::cout << "-------------\n\n";
 
-    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_10/";
+    const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_10/";
 
     constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
@@ -168,7 +168,7 @@ inline void testFlowerBackward12()
     std::cout << "Flower K = 12" << std::endl;
     std::cout << "-------------\n\n";
 
-    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_12/";
+    const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_12/";
 
     constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
@@ -198,7 +198,7 @@ inline void testFlowerBackward14()
     std::cout << "Flower K = 14" << std::endl;
     std::cout << "-------------\n\n";
 
-    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_14/";
+    const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_14/";
 
     constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
@@ -228,7 +228,7 @@ inline void testFlowerBackward16()
     std::cout << "Flower K = 16" << std::endl;
     std::cout << "------------\n\n";
 
-    const std::string path = "../../TARZAN/benchmarks/flower/liana/flower_16/";
+    const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_16/";
 
     constexpr std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);

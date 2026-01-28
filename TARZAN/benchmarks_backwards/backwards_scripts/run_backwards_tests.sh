@@ -2,9 +2,10 @@
 
 # Shell script to run all backwards executables and capture their output.
 
-# Define directories.
-EXECUTABLES_DIR="../../executables/backwards_executables"
-OUTPUT_DIR="../../output/backwards_tarzan_results"
+# Define directories (resolve to absolute paths before any cd).
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+EXECUTABLES_DIR="${SCRIPT_DIR}/../../../executables/backwards_executables"
+OUTPUT_DIR="${SCRIPT_DIR}/../../../output/backwards_tarzan_results"
 
 # Clear the output directory before execution.
 echo "Clearing output directory: $OUTPUT_DIR"

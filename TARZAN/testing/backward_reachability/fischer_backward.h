@@ -18,7 +18,7 @@ inline void testFischerFlat2()
     std::cout << "Fischer Flat K = 2" << std::endl;
     std::cout << "------------------\n\n";
 
-    const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_02/";
+    const std::string path = "../../TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_02/";
     constexpr std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -90,7 +90,7 @@ inline void testFischerFlat3()
     std::cout << "Fischer Flat K = 3" << std::endl;
     std::cout << "------------------\n\n";
 
-    const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_03/";
+    const std::string path = "../../TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_03/";
     constexpr std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -168,7 +168,7 @@ inline void testFischerFlat4()
     std::cout << "Fischer Flat K = 4" << std::endl;
     std::cout << "------------------\n\n";
 
-    const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_04/";
+    const std::string path = "../../TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_04/";
     constexpr std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -270,7 +270,7 @@ inline void testFischerFlat5()
     std::cout << "Fischer Flat K = 5" << std::endl;
     std::cout << "------------------\n\n";
 
-    const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_05/";
+    const std::string path = "../../TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_05/";
     constexpr std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
@@ -562,7 +562,7 @@ inline void testFischerFlat6()
     std::cout << "Fischer Flat K = 6" << std::endl;
     std::cout << "------------------\n\n";
 
-    const std::string path = "../../TARZAN/benchmarksFlat/fischerFlat/ff_06/";
+    const std::string path = "../../TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_06/";
     constexpr std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 

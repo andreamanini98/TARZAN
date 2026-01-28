@@ -1,25 +1,5 @@
-####################################################
-###   How to use the library in other projects   ###
-####################################################
-
-# (1) Add these lines to the CMakeLists.txt file in the new project if the library has been installed in the default path:
-# find_package(TARZAN REQUIRED)
-# target_link_libraries(new_project_name PRIVATE TARZAN::TARZAN)
-
-# (2) Include the library in your files as follows:
-# #include "TARZAN/folder/file_to_include.h"
-
-
 # Setting the minimum required version for cmake.
 cmake_minimum_required(VERSION 3.31)
-
-
-# These were put for problems with threads, but everything seems fine now.
-# set(CMAKE_THREAD_LIBS_INIT "-lpthread")
-# set(CMAKE_HAVE_THREADS_LIBRARY 1)
-# set(CMAKE_USE_WIN32_THREADS_INIT 0)
-# set(CMAKE_USE_PTHREADS_INIT 1)
-# set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 
 # Getting the project name as the current directory name.
@@ -87,7 +67,6 @@ endif ()
 
 
 # Find Boost libraries.
-# set(BOOST_ROOT "/path/to/boost/dir")
 find_package(Boost 1.89.0 REQUIRED filesystem)
 
 
@@ -246,7 +225,7 @@ endif ()
 
 
 # Collect all .cpp files from backwards_executables directory.
-file(GLOB BACKWARDS_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/backwards_executables/*.cpp)
+file(GLOB BACKWARDS_EXECUTABLES TARZAN/benchmarks_backwards/backwards_executables/*.cpp)
 
 # Create backwards executables in executables/backwards_executables subdirectory.
 # These executables are built WITHOUT EARLY_EXIT defined.
@@ -286,8 +265,8 @@ foreach(script ${BENCHMARK_SCRIPTS})
 endforeach()
 
 
-# Add executable permissions to all shell scripts in TARZAN/backwards_scripts.
-file(GLOB BACKWARDS_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/backwards_scripts/*.sh)
+# Add executable permissions to all shell scripts in TARZAN/benchmarks_backwards/backwards_scripts.
+file(GLOB BACKWARDS_SCRIPTS TARZAN/benchmarks_backwards/backwards_scripts/*.sh)
 foreach(script ${BACKWARDS_SCRIPTS})
     execute_process(COMMAND chmod +x ${script})
 endforeach()
