@@ -30,6 +30,7 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/include)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/lib)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/backwards_tarzan_results)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/games_tarzan_results)
 
 
 # The library archive is now written inside this directory.
@@ -217,7 +218,7 @@ if (BENCHMARK_EXECUTABLES)
         # Targeting the source with libraries.
         target_link_libraries(${executable_name} PRIVATE TARZAN)
 
-        # Set output directory to executables/benchmarkExecutables.
+        # Set output directory to executables/benchmark_executables.
         set_target_properties(${executable_name} PROPERTIES
                 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/benchmark_executables)
     endforeach ()
@@ -254,12 +255,31 @@ if (BACKWARDS_EXECUTABLES)
 endif ()
 
 
+# Collect all .cpp files from games_executables directory.
+file(GLOB GAMES_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks_games/games_executables/*.cpp)
+
+# Create games executables in executables/games_executables subdirectory.
+if (GAMES_EXECUTABLES)
+    foreach (source IN LISTS GAMES_EXECUTABLES)
+        get_filename_component(executable_name ${source} NAME_WE)
+        add_executable(${executable_name} ${source})
+
+        # Targeting the source with libraries.
+        target_link_libraries(${executable_name} PRIVATE TARZAN)
+
+        # Set output directory to executables/games_executable.
+        set_target_properties(${executable_name} PROPERTIES
+                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/games_executables)
+    endforeach ()
+endif ()
+
+
 # Add permissions to the install_library.sh script.
 execute_process(COMMAND chmod 777 ${CMAKE_CURRENT_SOURCE_DIR}/install_library.sh)
 
 
-# Add executable permissions to all shell scripts in TARZAN/benchmark_scripts.
-file(GLOB BENCHMARK_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmark_scripts/*.sh)
+# Add executable permissions to all shell scripts in TARZAN/benchmarks/benchmark_scripts.
+file(GLOB BENCHMARK_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks/benchmark_scripts/*.sh)
 foreach(script ${BENCHMARK_SCRIPTS})
     execute_process(COMMAND chmod +x ${script})
 endforeach()
@@ -268,6 +288,13 @@ endforeach()
 # Add executable permissions to all shell scripts in TARZAN/benchmarks_backwards/backwards_scripts.
 file(GLOB BACKWARDS_SCRIPTS TARZAN/benchmarks_backwards/backwards_scripts/*.sh)
 foreach(script ${BACKWARDS_SCRIPTS})
+    execute_process(COMMAND chmod +x ${script})
+endforeach()
+
+
+# Add executable permissions to all shell scripts in TARZAN/benchmarks_games/games_scripts.
+file(GLOB GAMES_SCRIPTS TARZAN/benchmarks_games/games_scripts/*.sh)
+foreach(script ${GAMES_SCRIPTS})
     execute_process(COMMAND chmod +x ${script})
 endforeach()
 
