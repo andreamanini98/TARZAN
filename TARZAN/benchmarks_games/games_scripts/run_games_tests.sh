@@ -69,8 +69,25 @@ for executable in *; do
     if [ -f "$executable" ] && [ -x "$executable" ]; then
         output_file="$OUTPUT_DIR/${executable}.txt"
 
-        echo "Executing: $executable ($NUM_RUNS run(s))"
+        echo "Executing: $executable ($NUM_RUNS run(s) + 1 warm-up)"
         echo "Output file: $output_file"
+
+        # Warm-up run (not averaged).
+        echo "  Warm-up run..."
+        TEMP_TIME_FILE=$(mktemp)
+        TEMP_OUTPUT_FILE=$(mktemp)
+        /usr/bin/time $TIME_FLAG ./"$executable" > "$TEMP_OUTPUT_FILE" 2> "$TEMP_TIME_FILE"
+        warmup_exit_code=$?
+        rm -f "$TEMP_TIME_FILE" "$TEMP_OUTPUT_FILE"
+        if [ $warmup_exit_code -eq 137 ]; then
+            echo "  !!! Warm-up run killed by OOM (SIGKILL), skipping executable"
+            echo "!!! Warm-up run killed by OOM (SIGKILL)" >> "$output_file"
+            echo ""
+            continue
+        fi
+        if [ $warmup_exit_code -ne 0 ]; then
+            echo "  Warning: Warm-up run failed with exit code $warmup_exit_code, proceeding anyway"
+        fi
 
         # Accumulators.
         sum_time=0
