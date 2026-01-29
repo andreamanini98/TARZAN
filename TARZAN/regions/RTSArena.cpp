@@ -18,7 +18,7 @@
 #define MAX_ITERATIONS 10000
 
 
-std::unordered_set<region::Region, region::RegionHash> region::RTSArena::getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const
+regionSet region::RTSArena::getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const
 {
 #ifdef RTSARENA_DEBUG
 
@@ -26,16 +26,22 @@ std::unordered_set<region::Region, region::RegionHash> region::RTSArena::getRegi
 
 #endif
 
+    regionSet res{};
+
     const int nClocks = static_cast<int>(clocksIndices.size());
 
-    regionSet res = Region::generateRegionsFromConstraints(formula.locations, formula.clockConstraints, clocksIndices, locationsToInt, maxConstants, nClocks);
+    for (const auto &[locations, clockConstraints]: formula.disjuncts)
+        res.merge(Region::generateRegionsFromConstraints(locations, clockConstraints, clocksIndices, locationsToInt, maxConstants, nClocks));
 
-    // Removing regions that do not satisfy the invariants of the Timed Arena.
-    std::erase_if(res, [this](const Region &reg) {
-        if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
-            return !isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices);
-        return false; // No invariant = keep the region.
-    });
+    if (!invariants.empty())
+    {
+        // Removing regions that do not satisfy the invariants of the Timed Arena.
+        std::erase_if(res, [this](const Region &reg) {
+            if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
+                return !isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices);
+            return false; // No invariant = keep the region.
+        });
+    }
 
     return res;
 }

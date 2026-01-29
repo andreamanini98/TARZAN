@@ -23,6 +23,8 @@ namespace parser
 
     BOOST_SPIRIT_INSTANTIATE(timedArena_type, iterator_type, context_type);
 
+    BOOST_SPIRIT_INSTANTIATE(pureDisjunct_type, iterator_type, context_type);
+
     BOOST_SPIRIT_INSTANTIATE(pureCLTLocFormula_type, iterator_type, context_type);
 
     BOOST_SPIRIT_INSTANTIATE(unaryCLTLocFormula_type, iterator_type, context_type);

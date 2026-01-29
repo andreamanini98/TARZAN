@@ -720,13 +720,28 @@ namespace timed_automaton::ast
  */
 namespace cltloc::ast
 {
-    /// A pure CLTLoc formula is (up to now) a conjunction of location names and clock constraints.
+    // Defining the data structure used to specify pure CLTLoc formulae, i.e., a Disjunctive Normal Form of locations and clock constraints.
+    struct pureDisjunct
+    {
+        /// This represents a disjunction of predicates on locations (it makes no sense to define a conjunction of predicates on locations on a single arena).
+        std::vector<std::string> locations;
+
+        /// This represents a conjunction of clock constraints.
+        std::vector<timed_automaton::ast::clockConstraint> clockConstraints;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
+
+
+    /**
+     * A pure CLTLoc formula is (up to now) a Disjunctive Normal Form of locations and clock constraints.
+     *
+     * @warning At least one disjunct must be specified.
+     */
     struct pureCLTLocFormula
     {
-        /// This represents a disjunction of predicates on locations (it makes no sense to define a conjunction of predicates on locations).
-        std::vector<std::string> locations;
-        /// This represents a conjunction of clock constraints (disjunctions can be simulated by defining multiple formulae).
-        std::vector<timed_automaton::ast::clockConstraint> clockConstraints;
+        std::vector<pureDisjunct> disjuncts;
 
 
         [[nodiscard]] std::string to_string() const;

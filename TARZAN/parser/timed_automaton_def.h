@@ -191,6 +191,7 @@ namespace parser
     constexpr x3::rule<timedAutomaton_class, timed_automaton::ast::timedAutomaton> timedAutomaton_rule = "timedAutomaton_rule";
     constexpr x3::rule<timedArena_class, timed_automaton::ast::timedArena> timedArena_rule = "timedArena_rule";
 
+    constexpr x3::rule<pureDisjunct_class, cltloc::ast::pureDisjunct> pureDisjunct_rule = "pureDisjunct_rule";
     constexpr x3::rule<pureCLTLocFormula_class, cltloc::ast::pureCLTLocFormula> pureCLTLocFormula_rule = "pureCLTLocFormula_rule";
     constexpr x3::rule<unaryCLTLocFormula_class, cltloc::ast::unaryCLTLocFormula> unaryCLTLocFormula_rule = "unaryCLTLocFormula_rule";
     constexpr x3::rule<binaryCLTLocFormula_class, cltloc::ast::binaryCLTLocFormula> binaryCLTLocFormula_rule = "binaryCLTLocFormula_rule";
@@ -424,9 +425,12 @@ namespace parser
 
     // --- CLTLOC RULES --- //
 
-    inline auto pureCLTLocFormula_rule_def =
+    inline auto pureDisjunct_rule_def =
             lit('[') > -(literal % ',') > lit(']') > lit(',')
             > lit('[') > -(clockConstraint_rule % ',') > lit(']');
+
+    inline auto pureCLTLocFormula_rule_def =
+            pureDisjunct_rule % or_op;
 
     inline auto unaryCLTLocFormula_rule_def =
             un_cltloc_op
@@ -466,6 +470,7 @@ namespace parser
                         transition_rule,
                         timedAutomaton_rule,
                         timedArena_rule,
+                        pureDisjunct_rule,
                         pureCLTLocFormula_rule,
                         unaryCLTLocFormula_rule,
                         binaryCLTLocFormula_rule,
@@ -538,6 +543,9 @@ namespace parser
     {};
 
     struct timedArena_class : error_handler_base, success_handler
+    {};
+
+    struct pureDisjunct_class : success_handler
     {};
 
     struct pureCLTLocFormula_class : error_handler_base, success_handler
@@ -618,6 +626,13 @@ namespace expr
 
 namespace cltloc
 {
+    // NOLINTNEXTLINE
+    inline parser::pureDisjunct_type pureDisjunct()
+    {
+        return parser::pureDisjunct_rule;
+    }
+
+
     // NOLINTNEXTLINE
     inline parser::pureCLTLocFormula_type pureCLTLocFormula()
     {

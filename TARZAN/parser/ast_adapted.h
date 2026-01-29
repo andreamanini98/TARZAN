@@ -24,7 +24,9 @@ BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::timedAutomaton, name, symmetryGr
 
 BOOST_FUSION_ADAPT_STRUCT(timed_automaton::ast::timedArena, name, symmetryGroup, clocks, actions, integerVariables, locations, transitions)
 
-BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::pureCLTLocFormula, locations, clockConstraints)
+BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::pureDisjunct, locations, clockConstraints)
+
+BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::pureCLTLocFormula, disjuncts)
 
 BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::unaryCLTLocFormula, op, rightFormula)
 

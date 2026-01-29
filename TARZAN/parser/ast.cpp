@@ -590,9 +590,10 @@ std::vector<int> getMaxConstantsRecursive(const std::unordered_map<std::string, 
             // ReSharper disable once CppTooWideScopeInitStatement
             const auto &pureFormula = val.get();
 
-            for (const auto &cc: pureFormula.clockConstraints)
-                if (maxConstants[clocksIndices.at(cc.clock)] < cc.comparingConstant)
-                    maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
+            for (const auto &disjunct: pureFormula.disjuncts)
+                for (const auto &cc: disjunct.clockConstraints)
+                    if (maxConstants[clocksIndices.at(cc.clock)] < cc.comparingConstant)
+                        maxConstants[clocksIndices.at(cc.clock)] = cc.comparingConstant;
         } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>)
         {
             const auto &unaryFormula = val.get();
@@ -761,9 +762,9 @@ std::string timed_automaton::ast::timedArena::to_string() const
 // ---
 
 
-// Pure CLTLoc Formula class.
+// Pure Disjunct class.
 
-std::string cltloc::ast::pureCLTLocFormula::to_string() const
+std::string cltloc::ast::pureDisjunct::to_string() const
 {
     std::ostringstream oss;
 
@@ -788,6 +789,28 @@ std::string cltloc::ast::pureCLTLocFormula::to_string() const
         oss << join_elements(clockConstraints, " && ");
     else
         oss << "";
+
+    return oss.str();
+}
+
+
+// ---
+
+
+// Pure CLTLoc Formula class.
+
+std::string cltloc::ast::pureCLTLocFormula::to_string() const
+{
+    std::ostringstream oss;
+
+    bool first = true;
+    for (const auto &disjunct: disjuncts)
+    {
+        if (!first)
+            oss << " || ";
+        oss << disjunct.to_string();
+        first = false;
+    }
 
     return oss.str();
 }
