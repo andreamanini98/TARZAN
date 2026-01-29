@@ -1,0 +1,1 @@
+(NEXT (([feed, table, robot_p, fall_p, press, robot_d, fall_d],[(y, >, 0), (y, <, 15)] || [feed, table, robot_p, fall_p, press, robot_d, fall_d],[(y, >, 0), (x, >=, 0), (x, <=, 3)]) UNTIL ([depot],[(y, >=, 25), (y, <=, 30)])))
