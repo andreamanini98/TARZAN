@@ -103,9 +103,13 @@ namespace region
          * @param reg the region over which the pi_e condition must be evaluated.
          * @param setG set of goal regions.
          * @param validActions actions that the controller can potentially choose to declare a move guaranteeing it to reach a region in setG.
+         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
          * @return true if reg satisfies the pi_e condition, false otherwise.
          */
-        [[nodiscard]] inline bool piEnvironment(const Region &reg, const regionSet &setG, const absl::flat_hash_map<std::string, bool> &validActions) const;
+        [[nodiscard]] inline bool piEnvironment(const Region &reg,
+                                                const regionSet &setG,
+                                                const absl::flat_hash_map<std::string, bool> &validActions,
+                                                bool checkAllSuccessorsInvariants) const;
 
 
         /**
@@ -125,11 +129,13 @@ namespace region
          * @param threadLocalRegions vector of vectors collecting the resulting region if valid.
          *                           Each external vector corresponds to a thread in OpenMP (only one inner vector is present if OpenMP is not enabled).
          * @param validActions actions that the controller can potentially choose to declare a move guaranteeing it to reach a region in setG.
+         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
          */
         inline void collectLegalRegionByPi(const Region &reg,
                                            const regionSet &setG,
                                            std::vector<std::vector<Region>> &threadLocalRegions,
-                                           const absl::flat_hash_map<std::string, bool> &validActions) const;
+                                           const absl::flat_hash_map<std::string, bool> &validActions,
+                                           bool checkAllSuccessorsInvariants) const;
 
 
         /**

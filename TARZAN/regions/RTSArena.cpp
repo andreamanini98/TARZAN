@@ -141,9 +141,12 @@ inline bool region::RTSArena::skipRegion(const Region &reg, const regionSet &set
         return true;
 
     // For a predecessor to be valid, it must satisfy the invariants.
-    if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
-        if (!isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices))
-            return true;
+    if (!invariants.empty())
+    {
+        if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
+            if (!isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices))
+                return true;
+    }
 
     return false;
 }
@@ -218,7 +221,10 @@ inline void region::RTSArena::everyOutTransitionIsInSetG(const Region &reg,
 }
 
 
-inline bool region::RTSArena::piEnvironment(const Region &reg, const regionSet &setG, const absl::flat_hash_map<std::string, bool> &validActions) const
+inline bool region::RTSArena::piEnvironment(const Region &reg,
+                                            const regionSet &setG,
+                                            const absl::flat_hash_map<std::string, bool> &validActions,
+                                            const bool checkAllSuccessorsInvariants) const
 {
     // For every action, we check whether the sequence of delay successors satisfies the condition over the same action.
     for (const auto &[actionName, isValid]: validActions)
@@ -237,24 +243,48 @@ inline bool region::RTSArena::piEnvironment(const Region &reg, const regionSet &
 
         // Check immediate fixpoint case.
         if (oldDelaySucc == newDelaySucc)
-            everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
-        else
+        {
+            bool checkOutTransitions = true;
+
+            if (checkAllSuccessorsInvariants)
+                checkOutTransitions = !skipRegion(oldDelaySucc, {}, {}, false);
+
+            if (checkOutTransitions)
+                everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
+        } else
         {
             while (oldDelaySucc != newDelaySucc)
             {
-                everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
+                bool checkOutTransitions = true;
 
-                // If the region is not valid, by the pi_e condition we can stop checking the sequence of delay successors and try the next action.
-                if (!isRegionValid)
-                    break;
+                // If the invariants are not satisfied, we simply go on with the next delay successor.
+                if (checkAllSuccessorsInvariants)
+                    checkOutTransitions = !skipRegion(oldDelaySucc, {}, {}, false);
+
+                if (checkOutTransitions)
+                {
+                    everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
+
+                    // If the region is not valid, by the pi_e condition we can stop checking the sequence of delay successors and try the next action.
+                    if (!isRegionValid)
+                        break;
+                }
 
                 oldDelaySucc = newDelaySucc;
                 newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
             }
 
-            // The if is needed to skip the computation of everyOutTransitionIsInSetG is isRegionValid is already false.
+            // The if is needed to skip the computation of everyOutTransitionIsInSetG if isRegionValid is already false.
             if (isRegionValid)
-                everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
+            {
+                bool checkOutTransitions = true;
+
+                if (checkAllSuccessorsInvariants)
+                    checkOutTransitions = !skipRegion(oldDelaySucc, {}, {}, false);
+
+                if (checkOutTransitions)
+                    everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
+            }
         }
 
         if (atLeastOneDiscreteSuccessor && isRegionValid)
@@ -275,12 +305,13 @@ inline bool region::RTSArena::piController(const absl::flat_hash_map<std::string
 inline void region::RTSArena::collectLegalRegionByPi(const Region &reg,
                                                      const regionSet &setG,
                                                      std::vector<std::vector<Region>> &threadLocalRegions,
-                                                     const absl::flat_hash_map<std::string, bool> &validActions) const
+                                                     const absl::flat_hash_map<std::string, bool> &validActions,
+                                                     const bool checkAllSuccessorsInvariants) const
 {
     // ReSharper disable once CppTooWideScopeInitStatement
     const bool isCurrentPlayerController = locationsToPlayers.at(reg.getLocation()) == CONTROLLER;
 
-    if (isCurrentPlayerController ? piController(validActions) : piEnvironment(reg, setG, validActions))
+    if (isCurrentPlayerController ? piController(validActions) : piEnvironment(reg, setG, validActions, checkAllSuccessorsInvariants))
     {
 #ifdef _OPENMP
         threadLocalRegions[omp_get_thread_num()].push_back(reg);
@@ -369,7 +400,7 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                     delayPredecessorsToProcess.push(delayPred);
 
                 if (regUnderAnalysis.hasAtLeastOneDiscretePredecessor(inTransitions[regUnderAnalysis.getLocation()], clocksIndices))
-                    collectLegalRegionByPi(regUnderAnalysis, setG, threadLocalRegions, validActions);
+                    collectLegalRegionByPi(regUnderAnalysis, setG, threadLocalRegions, validActions, checkAllSuccessorsInvariants);
             }
 
             // Checking the case in which a region with no delay predecessors is either initial or has an incoming discrete transition (has a discrete predecessor).
@@ -380,7 +411,7 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                 const bool hasDiscPreds = regStillToProcess.hasAtLeastOneDiscretePredecessor(inTransitions[regStillToProcess.getLocation()], clocksIndices);
 
                 if (isRegionInitial || hasDiscPreds)
-                    collectLegalRegionByPi(regStillToProcess, setG, threadLocalRegions, validActions);
+                    collectLegalRegionByPi(regStillToProcess, setG, threadLocalRegions, validActions, checkAllSuccessorsInvariants);
             }
         }
     }
