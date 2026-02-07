@@ -61,7 +61,7 @@ def make_model(n: int) -> str:
 def main():
     OUT_DIR.mkdir(exist_ok=True)
     for n in range(MIN_VIKINGS, MAX_VIKINGS + 1):
-        fname = OUT_DIR / f"vikings_{n:02d}.xta"
+        fname = OUT_DIR / f"bridge_{n:02d}.xta"
         content = make_model(n)
         fname.write_text(content, encoding="utf-8")
         print(f"✓ Wrote {fname.name}")
