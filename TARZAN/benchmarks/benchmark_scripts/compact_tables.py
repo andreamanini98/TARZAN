@@ -140,9 +140,9 @@ def process_value(value, is_time=False):
     if value == 'KO' or value == 'OOM':
         return value
 
-    # Handle < 0.001 - use left superscript downarrow
+    # Handle < 0.001 - use epsilon
     if value.startswith('$<$') or value.startswith('<'):
-        return '$^{\\downarrow}0.001$'
+        return '$\\epsilon$'
 
     return value
 
@@ -164,16 +164,16 @@ def format_tool_data(tool_data, tool_name):
             # TARZAN: OOM in Mem, -- elsewhere
             return '-- & -- & OOM & --'
         else:
-            # TChecker/UPPAAL: left superscript uparrow with 600 in VT/ET, -- elsewhere
-            return '$^{\\uparrow}600$ & $^{\\uparrow}600$ & -- & --'
+            # TChecker/UPPAAL: TO in VT/ET, -- elsewhere
+            return 'TO & TO & -- & --'
 
     if is_ko or is_oom:
         if tool_name == 'TARZAN':
             # TARZAN: OOM in Mem, -- elsewhere
             return '-- & -- & OOM & --'
         else:
-            # TChecker/UPPAAL: left superscript uparrow with 600 in VT/ET, -- elsewhere
-            return '$^{\\uparrow}600$ & $^{\\uparrow}600$ & -- & --'
+            # TChecker/UPPAAL: TO in VT/ET, -- elsewhere
+            return 'TO & TO & -- & --'
 
     return f'{vt} & {et} & {mem} & {count}'
 

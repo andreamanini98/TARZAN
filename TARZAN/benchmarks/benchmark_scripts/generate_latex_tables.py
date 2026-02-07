@@ -100,7 +100,7 @@ def parse_benchmark_summary(file_path: str) -> List[Experiment]:
                         current_result = current_sub_experiment.uppaal
 
             # Check for timeout
-            elif "TIMEOUT:" in line and current_result:
+            elif "TIMEOUT" in line and current_result:
                 current_result.timeout = True
 
             # Check for failed status (OOM or other errors)
@@ -189,7 +189,7 @@ def format_value(value: Optional[str], default: str = "KO") -> str:
 
 
 def format_time_value(value: Optional[str], default: str = "KO") -> str:
-    """Format a time value for LaTeX, showing '< 0.001' for very small values and truncating to 3 decimal places."""
+    """Format a time value for LaTeX, showing epsilon for very small values and truncating to 3 decimal places."""
     if value is None or value == "N/A":
         return default
 
@@ -201,13 +201,30 @@ def format_time_value(value: Optional[str], default: str = "KO") -> str:
         import math
         truncated = math.floor(time_val * 1000) / 1000
 
-        # If truncated value is 0.000 (or original was less than 0.001), show < 0.001
+        # If truncated value is 0.000 (or original was less than 0.001), show epsilon
         if truncated == 0.000:
-            return r"$<$ 0.001"
+            return r"$\epsilon$"
 
         return f"{truncated:.3f}"
     except ValueError:
         return default
+
+
+def extract_n_from_instance(instance_name: str) -> str:
+    """Extract N value from instance name (e.g., 'flower_02' -> '2')."""
+    # Handle formats like "flower_02", "fischer_02", "latch", etc.
+    instance_match = re.search(r'_0*(\d+)$', instance_name)
+    if instance_match:
+        return instance_match.group(1)
+    else:
+        # For single instances without number (like "latch"), use "1"
+        # or extract any trailing number
+        num_match = re.search(r'\d+$', instance_name)
+        if num_match:
+            return num_match.group(0)
+        else:
+            # Use instance name itself if no number found
+            return instance_name.split('_')[-1] if '_' in instance_name else instance_name
 
 
 def generate_latex_table(experiment: Experiment) -> str:
@@ -215,135 +232,124 @@ def generate_latex_table(experiment: Experiment) -> str:
 
     # Start building the LaTeX code
     latex = []
-    latex.append(f"% Experiment: {experiment.name}")
-    latex.append(r"\begin{table}[htbp]")
+    latex.append(r"\definecolor{lightgray}{gray}{0.95}")
+    latex.append(r"\setlength{\aboverulesep}{1pt}")
+    latex.append(r"\setlength{\belowrulesep}{1pt}")
+    latex.append(r"{\renewcommand{\arraystretch}{0.95}")
+    latex.append(r"{\setlength{\tabcolsep}{3.25pt}")
+    latex.append(r"\begin{table}[t]")
     latex.append(r"\centering")
-    latex.append(r"\caption{Benchmark results for " + experiment.name.replace("_", r"\_") + r"}")
+    latex.append(r"\caption{Benchmark results for \texttt{" + experiment.name.replace("_", r"\_") + r"}}")
     latex.append(r"\label{tab:" + experiment.name + r"}")
-    latex.append(r"\resizebox{\textwidth}{!}{%")
-    latex.append(r"\begin{tabular}{|l|rrrr|rrrr|rrrr|ccc|}")
-    latex.append(r"\hline")
+    latex.append(r"\resizebox{\textwidth}{!}{")
+    latex.append(r"\begin{tabular}{%")
+    latex.append(r"    c|rrrr|rrrr|rrrr")
+    latex.append(r"}")
+    latex.append(r"\toprule")
 
     # Header row 1: Tool names
-    latex.append(r"\multirow{2}{*}{\textbf{Instance}} & " + \
-                r"\multicolumn{4}{c|}{\textbf{TARZAN}} & " + \
-                r"\multicolumn{4}{c|}{\textbf{TChecker}} & " + \
-                r"\multicolumn{4}{c|}{\textbf{UPPAAL}} & " + \
-                r"\multicolumn{3}{c|}{\textbf{Verification}} \\")
+    latex.append(r"\multirow{2}{*}{\textbf{K}}")
+    latex.append(r"  & \multicolumn{4}{c|}{\textbf{TARZAN}}")
+    latex.append(r"  & \multicolumn{4}{c|}{\textbf{TChecker}}")
+    latex.append(r"  & \multicolumn{4}{c}{\textbf{UPPAAL}} \\")
+    latex.append(r"%")
 
     # Header row 2: Column names
-    latex.append(r"& \textbf{Time (s)} & \textbf{Exec (s)} & \textbf{Mem (MB)} & \textbf{Regions} & " + \
-                r"\textbf{Time (s)} & \textbf{Exec (s)} & \textbf{Mem (MB)} & \textbf{States} & " + \
-                r"\textbf{Time (s)} & \textbf{Exec (s)} & \textbf{Mem (MB)} & \textbf{States} & " + \
-                r"\textbf{TARZAN} & \textbf{TChecker} & \textbf{UPPAAL} \\")
-    latex.append(r"\hline\hline")
+    latex.append(r"  & \multicolumn{1}{c}{\textbf{VT}}")
+    latex.append(r"  & \multicolumn{1}{c}{\textbf{ET}}")
+    latex.append(r"  & \multicolumn{1}{c}{\textbf{Mem}}")
+    latex.append(r"  & \multicolumn{1}{c|}{\textbf{Regions}}")
+    latex.append(r"  & \multicolumn{1}{c}{\textbf{VT}}")
+    latex.append(r"  & \multicolumn{1}{c}{\textbf{ET}}")
+    latex.append(r"  & \multicolumn{1}{c}{\textbf{Mem}}")
+    latex.append(r"  & \multicolumn{1}{c|}{\textbf{States}}")
+    latex.append(r"  & \multicolumn{1}{c}{\textbf{VT}}")
+    latex.append(r"  & \multicolumn{1}{c}{\textbf{ET}}")
+    latex.append(r"  & \multicolumn{1}{c}{\textbf{Mem}}")
+    latex.append(r"  & \multicolumn{1}{c}{\textbf{States}} \\")
+    latex.append(r"\midrule")
 
     # Data rows
-    for sub_exp in experiment.sub_experiments:
-        row_parts = []
+    for row_idx, sub_exp in enumerate(experiment.sub_experiments):
+        # Alternate row colors
+        color = 'white' if row_idx % 2 == 0 else 'lightgray'
+        latex.append(r"\rowcolor{" + color + r"}")
 
-        # Instance name
-        row_parts.append(sub_exp.name.replace("_", r"\_"))
+        # Extract N from instance name
+        n = extract_n_from_instance(sub_exp.name)
+
+        # Build row data
+        tarzan_data = []
+        tchecker_data = []
+        uppaal_data = []
 
         # TARZAN columns
         if sub_exp.tarzan.timeout:
-            row_parts.extend([r"\multicolumn{4}{c|}{KO}"])
+            # TARZAN timeout: TO in VT/ET, --- elsewhere
+            tarzan_data = ["TO", "TO", "---", "---"]
         elif sub_exp.tarzan.failed:
-            row_parts.extend([r"\multicolumn{4}{c|}{OOM}"])
+            # TARZAN failure (OOM): --- in VT/ET, OOM in Mem, --- in Regions
+            tarzan_data = ["---", "---", "OOM", "---"]
         else:
-            row_parts.append(format_time_value(sub_exp.tarzan.total_time, "KO"))
+            tarzan_data.append(format_time_value(sub_exp.tarzan.total_time, "---"))
             # Convert exec time from ms to seconds if available
-            exec_time_s = "KO"
+            exec_time_s = "---"
             if sub_exp.tarzan.exec_time:
                 try:
                     # Convert from ms to seconds, then format
-                    exec_time_s = format_time_value(str(float(sub_exp.tarzan.exec_time) / 1000), "KO")
+                    exec_time_s = format_time_value(str(float(sub_exp.tarzan.exec_time) / 1000), "---")
                 except:
-                    exec_time_s = "KO"
-            row_parts.append(exec_time_s)
-            row_parts.append(format_value(sub_exp.tarzan.peak_memory, "KO"))
-            row_parts.append(format_value(sub_exp.tarzan.num_regions, "KO"))
+                    exec_time_s = "---"
+            tarzan_data.append(exec_time_s)
+            tarzan_data.append(format_value(sub_exp.tarzan.peak_memory, "---"))
+            tarzan_data.append(format_value(sub_exp.tarzan.num_regions, "---"))
 
         # TChecker columns
         if sub_exp.tchecker.timeout:
-            row_parts.extend([r"\multicolumn{4}{c|}{KO}"])
+            # TChecker timeout: TO in VT/ET, --- elsewhere
+            tchecker_data = ["TO", "TO", "---", "---"]
         elif sub_exp.tchecker.failed:
-            row_parts.extend([r"\multicolumn{4}{c|}{OOM}"])
+            # TChecker failure (OOM): --- in VT/ET, OOM in Mem, --- in States
+            tchecker_data = ["---", "---", "OOM", "---"]
         else:
-            row_parts.append(format_time_value(sub_exp.tchecker.running_time, "KO"))
-            row_parts.append(format_time_value(sub_exp.tchecker.exec_time_sec, "KO"))
-            row_parts.append(format_value(sub_exp.tchecker.memory_mb, "KO"))
-            row_parts.append(format_value(sub_exp.tchecker.stored_states, "KO"))
+            tchecker_data.append(format_time_value(sub_exp.tchecker.running_time, "---"))
+            tchecker_data.append(format_time_value(sub_exp.tchecker.exec_time_sec, "---"))
+            tchecker_data.append(format_value(sub_exp.tchecker.memory_mb, "---"))
+            tchecker_data.append(format_value(sub_exp.tchecker.stored_states, "---"))
 
         # UPPAAL columns
         if sub_exp.uppaal.timeout:
-            row_parts.extend([r"\multicolumn{4}{c|}{KO}"])
+            # UPPAAL timeout: TO in VT/ET, --- elsewhere
+            uppaal_data = ["TO", "TO", "---", "---"]
         elif sub_exp.uppaal.failed:
-            row_parts.extend([r"\multicolumn{4}{c|}{OOM}"])
+            # UPPAAL failure (OOM): --- in VT/ET, OOM in Mem, --- in States
+            uppaal_data = ["---", "---", "OOM", "---"]
         else:
-            row_parts.append(format_time_value(sub_exp.uppaal.cpu_time_s, "KO"))
+            uppaal_data.append(format_time_value(sub_exp.uppaal.cpu_time_s, "---"))
             # Convert exec time from ms to seconds if available
-            exec_time_s = "KO"
+            exec_time_s = "---"
             if sub_exp.uppaal.uppaal_exec_time:
                 try:
                     # Convert from ms to seconds, then format
-                    exec_time_s = format_time_value(str(float(sub_exp.uppaal.uppaal_exec_time) / 1000), "KO")
+                    exec_time_s = format_time_value(str(float(sub_exp.uppaal.uppaal_exec_time) / 1000), "---")
                 except:
-                    exec_time_s = "KO"
-            row_parts.append(exec_time_s)
-            row_parts.append(format_value(sub_exp.uppaal.resident_memory, "KO"))
-            row_parts.append(format_value(sub_exp.uppaal.states_explored, "KO"))
+                    exec_time_s = "---"
+            uppaal_data.append(exec_time_s)
+            uppaal_data.append(format_value(sub_exp.uppaal.resident_memory, "---"))
+            uppaal_data.append(format_value(sub_exp.uppaal.states_explored, "---"))
 
-        # Verification results
-        # TARZAN
-        if sub_exp.tarzan.timeout:
-            row_parts.append("KO")
-        elif sub_exp.tarzan.failed:
-            row_parts.append("OOM")
-        else:
-            goal = sub_exp.tarzan.goal_status
-            if goal == "REACHABLE":
-                row_parts.append("R")
-            elif goal == "UNREACHABLE":
-                row_parts.append("U")
-            else:
-                row_parts.append(format_value(goal, "KO"))
-
-        # TChecker
-        if sub_exp.tchecker.timeout:
-            row_parts.append("KO")
-        elif sub_exp.tchecker.failed:
-            row_parts.append("OOM")
-        else:
-            reach = sub_exp.tchecker.reachable
-            if reach == "true":
-                row_parts.append("R")
-            elif reach == "false":
-                row_parts.append("U")
-            else:
-                row_parts.append(format_value(reach, "KO"))
-
-        # UPPAAL
-        if sub_exp.uppaal.timeout:
-            row_parts.append("KO")
-        elif sub_exp.uppaal.failed:
-            row_parts.append("OOM")
-        else:
-            formula = sub_exp.uppaal.formula_result
-            if formula == "SAT":
-                row_parts.append("R")
-            elif formula == "UNSAT":
-                row_parts.append("U")
-            else:
-                row_parts.append(format_value(formula, "KO"))
-
-        latex.append(" & ".join(row_parts) + r" \\")
+        # Format the row
+        latex.append(f"{n}  & {' & '.join(tarzan_data)}")
+        latex.append(f"   & {' & '.join(tchecker_data)}")
+        latex.append(f"   & {' & '.join(uppaal_data)} \\\\")
 
     # Table footer
-    latex.append(r"\hline")
-    latex.append(r"\end{tabular}%")
+    latex.append(r"\bottomrule")
+    latex.append(r"\end{tabular}")
     latex.append(r"}")
     latex.append(r"\end{table}")
+    latex.append(r"}")
+    latex.append(r"}")
     latex.append("")
 
     return "\n".join(latex)
@@ -358,6 +364,8 @@ def generate_complete_latex_document(tables_content: str) -> str:
     document.append(r"\usepackage{graphicx}")
     document.append(r"\usepackage{multirow}")
     document.append(r"\usepackage{booktabs}")
+    document.append(r"\usepackage{xcolor}")
+    document.append(r"\usepackage{colortbl}")
     document.append(r"\usepackage{geometry}")
     document.append(r"\geometry{margin=1in}")
     document.append(r"\usepackage{longtable}")
@@ -372,10 +380,13 @@ def generate_complete_latex_document(tables_content: str) -> str:
     document.append(r"")
     document.append(r"\section*{Legend}")
     document.append(r"\begin{itemize}")
-    document.append(r"  \item \textbf{R} = Reachable")
-    document.append(r"  \item \textbf{U} = Unreachable")
-    document.append(r"  \item \textbf{KO} = Timeout or no data available")
-    document.append(r"  \item \textbf{OOM} = Out of memory or execution failed")
+    document.append(r"  \item \textbf{VT} = Verification Time (seconds)")
+    document.append(r"  \item \textbf{ET} = Execution Time (seconds)")
+    document.append(r"  \item \textbf{Mem} = Memory usage (MB)")
+    document.append(r"  \item \textbf{---} = Not available")
+    document.append(r"  \item \textbf{OOM} = Out of memory")
+    document.append(r"  \item \textbf{TO} = Timeout")
+    document.append(r"  \item $\epsilon$ = Value less than 0.001")
     document.append(r"\end{itemize}")
     document.append(r"")
     document.append(r"\clearpage")
@@ -471,7 +482,13 @@ def main():
     latex_tables.append("% Generated by generate_latex_tables.py")
     latex_tables.append("")
     latex_tables.append("% Legend:")
-    latex_tables.append("% R = Reachable, U = Unreachable, KO = Timeout or no data available, OOM = Out of memory or execution failed")
+    latex_tables.append("% VT = Verification Time (seconds)")
+    latex_tables.append("% ET = Execution Time (seconds)")
+    latex_tables.append("% Mem = Memory usage MaxRSS (MB)")
+    latex_tables.append("% --- = Not available")
+    latex_tables.append("% OOM = Out of memory")
+    latex_tables.append("% TO = Timeout")
+    latex_tables.append("% \\epsilon = Value less than 0.001")
     latex_tables.append("")
 
     for experiment in experiments:
