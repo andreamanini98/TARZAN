@@ -34,7 +34,7 @@ class BenchmarkResult:
 
         # UPPAAL fields
         self.formula_result: Optional[str] = None
-        self.states_explored: Optional[str] = None
+        self.states_explored: Optional[str] = None # Refers to the stored states by Uppaal.
         self.cpu_time_s: Optional[str] = None
         self.resident_memory: Optional[str] = None
         self.uppaal_exec_time: Optional[str] = None
@@ -139,8 +139,8 @@ def parse_benchmark_summary(file_path: str) -> List[Experiment]:
                         current_result.peak_memory = match.group(1)
 
                 # TChecker fields
-                elif "Visited states:" in line:
-                    current_result.stored_states = line.split("Visited states:")[1].strip()
+                elif "Stored states:" in line:
+                    current_result.stored_states = line.split("Stored states:")[1].strip()
                 elif "Memory (MB):" in line:
                     current_result.memory_mb = line.split("Memory (MB):")[1].strip()
                 elif "Reachable:" in line:
@@ -160,8 +160,8 @@ def parse_benchmark_summary(file_path: str) -> List[Experiment]:
                         current_result.formula_result = "UNSAT"
                     else:
                         current_result.formula_result = result
-                elif "States explored:" in line:
-                    current_result.states_explored = line.split("States explored:")[1].strip()
+                elif "States stored:" in line:
+                    current_result.states_explored = line.split("States stored:")[1].strip()
                 elif "CPU time (s):" in line:
                     current_result.cpu_time_s = line.split("CPU time (s):")[1].strip()
                 elif "Total exec time:" in line and current_tool == "UPPAAL":
