@@ -260,7 +260,7 @@ inline void test6()
     std::cout << "Recall that in backward reachability integer variables are not supported. In this case, the variable i does not affect\n";
     std::cout << "the execution of the automaton, hence we are able to perform backward reachability.\n\n";
 
-    const std::string path = "../../TARZAN/benchmarks/models/simple/liana/simple_1000/";
+    const std::string path = "../../TARZAN/benchmarks/models/simple/liana/simple_1000_01/";
 
     constexpr std::string automatonFileName = "Template.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
