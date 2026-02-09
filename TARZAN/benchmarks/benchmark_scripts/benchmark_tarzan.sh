@@ -14,11 +14,11 @@ TOTAL_RUNS="$1"
 TIMEOUT="$2"
 
 
-# and_or_original
+# andOrOriginal
 
-num_dirs=$(find "${BENCHMARKS_PATH}/and_or_original/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+num_dirs=$(find "${BENCHMARKS_PATH}/andOrOriginal/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
 for ((key=0; key<num_dirs; key++)); do
-  ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/and_or_original" "${BENCHMARKS_PATH}/and_or_original/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/and_or_original" "and_or_original" "${TIMEOUT}" "${key}"
+  ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/andOrOriginal" "${BENCHMARKS_PATH}/andOrOriginal/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/andOrOriginal" "andOrOriginal" "${TIMEOUT}" "${key}"
 done
 
 
@@ -182,12 +182,12 @@ done
 # ---
 
 
-# medical_workflow
+# medicalWorkflow
 
 subdirs=()
 while IFS= read -r dir; do
     subdirs+=("$dir")
-done < <(find "${BENCHMARKS_PATH}/medical_workflow/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+done < <(find "${BENCHMARKS_PATH}/medicalWorkflow/liana" -mindepth 1 -maxdepth 1 -type d | sort)
 
 num_dirs=${#subdirs[@]}
 
@@ -195,7 +195,7 @@ for ((key=0; key<num_dirs; key++)); do
     current_dir="${subdirs[$key]}"
     folder_name=$(basename "$current_dir")
 
-    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/medical_workflow" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/medical_workflow" "${folder_name}" "${TIMEOUT}" "${key}"
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/medicalWorkflow" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/medicalWorkflow" "${folder_name}" "${TIMEOUT}" "${key}"
 done
 
 
@@ -291,11 +291,11 @@ done
 # ---
 
 
-# SRlatch
+# srLatch
 
-num_dirs=$(find "${BENCHMARKS_PATH}/SRlatch/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
+num_dirs=$(find "${BENCHMARKS_PATH}/srLatch/liana" -mindepth 1 -maxdepth 1 -type d | wc -l)
 for ((key=0; key<num_dirs; key++)); do
-  ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/SRlatch" "${BENCHMARKS_PATH}/SRlatch/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/SRlatch" "SRlatch" "${TIMEOUT}" "${key}"
+  ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/srLatch" "${BENCHMARKS_PATH}/srLatch/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/srLatch" "srLatch" "${TIMEOUT}" "${key}"
 done
 
 

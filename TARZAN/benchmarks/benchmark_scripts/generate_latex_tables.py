@@ -211,20 +211,32 @@ def format_time_value(value: Optional[str], default: str = "KO") -> str:
 
 
 def extract_n_from_instance(instance_name: str) -> str:
-    """Extract N value from instance name (e.g., 'flower_02' -> '2')."""
+    """Extract N value from instance name (e.g., 'flower_02' -> '2') and adjust with k_adj.txt."""
     # Handle formats like "flower_02", "fischer_02", "latch", etc.
     instance_match = re.search(r'_0*(\d+)$', instance_name)
     if instance_match:
-        return instance_match.group(1)
+        n = int(instance_match.group(1))
     else:
         # For single instances without number (like "latch"), use "1"
         # or extract any trailing number
         num_match = re.search(r'\d+$', instance_name)
         if num_match:
-            return num_match.group(0)
+            n = int(num_match.group(0))
         else:
-            # Use instance name itself if no number found
-            return instance_name.split('_')[-1] if '_' in instance_name else instance_name
+            # Default to 1 if no number found
+            n = 1
+
+    # Read k_adj.txt from the instance directory (using relative path)
+    k_adj_path = Path(__file__).parent / "../models" / instance_name / "k_adj.txt"
+    try:
+        with open(k_adj_path, 'r') as f:
+            k_adj = int(f.read().strip())
+        n += k_adj
+    except (FileNotFoundError, ValueError):
+        # If k_adj.txt doesn't exist or is invalid, just use n as is
+        pass
+
+    return str(n)
 
 
 def generate_latex_table(experiment: Experiment) -> str:
