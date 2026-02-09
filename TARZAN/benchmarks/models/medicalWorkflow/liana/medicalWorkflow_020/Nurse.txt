@@ -1,0 +1,37 @@
+create automaton Nurse
+{
+    clocks { x; }
+    actions { a, checkID, patientArrivalNurse001, patientArrivalNurse002, patientArrivalNurse003, patientArrivalNurse004, patientArrivalNurse005, patientArrivalNurse006, patientArrivalNurse007, patientArrivalNurse008, patientArrivalNurse009, patientArrivalNurse010, patientArrivalNurse011, patientArrivalNurse012, patientArrivalNurse013, patientArrivalNurse014, patientArrivalNurse015, patientArrivalNurse016, patientArrivalNurse017, patientArrivalNurse018, patientArrivalNurse019, patientArrivalNurse020; }
+    integers { docReady, nurseReady; }
+    locations {
+        atPatient   <ini: F, inv: [(x, <=, 5)]>,
+        GoToPatient <ini: F                   >,
+        Idle        <ini: F                   >,
+        L0          <ini: T, urg: T           >;
+    }
+    transitions {
+        (L0, a, [], [], [nurseReady = 1], Idle),
+        (atPatient, a, [], [], [nurseReady = 1], Idle),
+        (GoToPatient, checkID!, [(x, >=, 2)], [x], atPatient),
+        (Idle, patientArrivalNurse001?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse002?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse003?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse004?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse005?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse006?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse007?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse008?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse009?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse010?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse011?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse012?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse013?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse014?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse015?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse016?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse017?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse018?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse019?, [], [x], [nurseReady = 0], GoToPatient),
+        (Idle, patientArrivalNurse020?, [], [x], [nurseReady = 0], GoToPatient);
+    }
+}
