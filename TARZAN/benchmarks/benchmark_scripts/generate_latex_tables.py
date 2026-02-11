@@ -216,18 +216,24 @@ def extract_n_from_instance(instance_name: str) -> str:
     instance_match = re.search(r'_0*(\d+)$', instance_name)
     if instance_match:
         n = int(instance_match.group(1))
+        # Extract base model name without the number suffix
+        base_model_name = re.sub(r'_0*\d+$', '', instance_name)
     else:
         # For single instances without number (like "latch"), use "1"
         # or extract any trailing number
         num_match = re.search(r'\d+$', instance_name)
         if num_match:
             n = int(num_match.group(0))
+            base_model_name = re.sub(r'\d+$', '', instance_name)
         else:
             # Default to 1 if no number found
             n = 1
+            base_model_name = instance_name
 
-    # Read k_adj.txt from the instance directory (using relative path)
-    k_adj_path = Path(__file__).parent / "../models" / instance_name / "k_adj.txt"
+    # Read k_adj.txt from the base model directory
+    # Use absolute path based on script location to work from any working directory
+    script_dir = Path(__file__).resolve().parent
+    k_adj_path = script_dir.parent / "models" / base_model_name / "k_adj.txt"
     try:
         with open(k_adj_path, 'r') as f:
             k_adj = int(f.read().strip())
