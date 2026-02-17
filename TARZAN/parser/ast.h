@@ -805,6 +805,8 @@ namespace cltloc::ast
     struct unaryCLTLocFormula
     {
         unary_cltloc_op op;
+        /// Tells how many times op must be applied. If not specified, it is assumed to be 1.
+        std::optional<int> applicationCount;
         generalCLTLocFormula rightFormula;
 
 

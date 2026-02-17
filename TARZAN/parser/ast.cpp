@@ -824,7 +824,7 @@ std::string cltloc::ast::pureCLTLocFormula::to_string() const
 std::string cltloc::ast::unaryCLTLocFormula::to_string() const
 {
     std::ostringstream oss;
-    oss << op << " " << rightFormula.to_string();
+    oss << op << (applicationCount.has_value() ? "^" + std::to_string(applicationCount.value()) + " " : " ") << rightFormula.to_string();
     return oss.str();
 }
 

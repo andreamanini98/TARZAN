@@ -434,6 +434,7 @@ namespace parser
 
     inline auto unaryCLTLocFormula_rule_def =
             un_cltloc_op
+            > -(lit('^') > int_)
             > generalCLTLocFormula_rule;
 
     inline auto binaryCLTLocFormula_rule_def =
