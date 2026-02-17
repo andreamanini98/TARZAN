@@ -223,11 +223,11 @@ namespace region
         }
 
 
-        RTSArena(const timed_automaton::ast::timedArena &arena, const cltloc::ast::conjunctionOfFormulae &formulae)
+        RTSArena(const timed_automaton::ast::timedArena &arena, const cltloc::ast::conjunctionOfFormulae &conjunction)
         {
             clocksIndices = arena.getClocksIndices();
             locationsToInt = arena.mapLocationsToInt();
-            maxConstants = arena.getMaxConstants(clocksIndices, formulae);
+            maxConstants = arena.getMaxConstants(clocksIndices, conjunction);
             initialLocations = arena.getInitialLocations(locationsToInt);
             outTransitions = arena.getOutTransitions(locationsToInt);
             inTransitions = arena.getInTransitions(locationsToInt);

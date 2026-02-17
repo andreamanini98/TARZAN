@@ -612,7 +612,7 @@ namespace timed_automaton::ast
          * @brief Computes the maximum constant appearing in a Timed Arena for each clock, also considering a conjunction of general CLTLoc formulae.
          *
          * @param clocksIndices a map from clock names to their index in the clocks vector.
-         * @param formulae a conjunction of general CLTLoc formulae.
+         * @param conjunction a conjunction of general CLTLoc formulae.
          * @return a vector containing in position i the maximum constant of the i-th clock, where the index i of the clock is given by clockIndices.
          *
          * @warning Clocks that are not used in guards nor in invariants are assigned 0 as their maximum constant.
@@ -620,10 +620,10 @@ namespace timed_automaton::ast
          *          This can be done, for example, by inserting a clock constraint in which the constant is the one used in the reachability query.
          *          In this case, the maximum constant of these clocks may not be 0 due to the general CLTLoc formula.
          *
-         * @throws EmptyConjunctionOfFormulaeException if 'formulae' has an empty formulae vector.
+         * @throws EmptyConjunctionOfFormulaeException if 'conjunction' has an empty formulae vector.
          */
         [[nodiscard]] std::vector<int> getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices,
-                                                       const cltloc::ast::conjunctionOfFormulae &formulae) const;
+                                                       const cltloc::ast::conjunctionOfFormulae &conjunction) const;
 
 
         /**

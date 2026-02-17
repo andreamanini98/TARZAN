@@ -622,13 +622,13 @@ std::vector<int> timed_automaton::ast::timedArena::getMaxConstants(const std::un
 
 
 std::vector<int> timed_automaton::ast::timedArena::getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices,
-                                                                   const cltloc::ast::conjunctionOfFormulae &formulae) const
+                                                                   const cltloc::ast::conjunctionOfFormulae &conjunction) const
 {
-    if (formulae.formulae.empty())
+    if (conjunction.formulae.empty())
         throw region::EmptyConjunctionOfFormulaeException("The conjunction is empty!");
 
     std::vector<int> maxConstants = getMaxConstants(clocksIndices);
-    for (const auto &formula: formulae.formulae)
+    for (const auto &formula: conjunction.formulae)
         getMaxConstantsRecursive(clocksIndices, formula, maxConstants);
     return maxConstants;
 }
