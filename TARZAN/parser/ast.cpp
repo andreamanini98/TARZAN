@@ -859,3 +859,28 @@ std::string cltloc::ast::generalCLTLocFormula::to_string() const
 
     return oss.str();
 }
+
+
+// ---
+
+
+std::string cltloc::ast::conjunctionOfFormulae::to_string() const
+{
+    std::ostringstream oss;
+
+    oss << "Conjunction type: " << type << std::endl;
+
+    oss << "Formulae: ";
+    bool first = true;
+    for (const auto &generalCLTLocFormula: formulae)
+    {
+        if (first)
+        {
+            oss << generalCLTLocFormula;
+            first = false;
+        } else
+            oss << " && " << generalCLTLocFormula;
+    }
+
+    return oss.str();
+}

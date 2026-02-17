@@ -32,4 +32,6 @@ BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::unaryCLTLocFormula, op, applicationCount,
 
 BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::binaryCLTLocFormula, leftFormula, op, rightFormula)
 
+BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::conjunctionOfFormulae, type, formulae)
+
 #endif //AST_ADAPTED_H

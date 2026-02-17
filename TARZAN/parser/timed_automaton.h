@@ -83,14 +83,21 @@ namespace parser
     struct unaryCLTLocFormula_class;
     struct binaryCLTLocFormula_class;
     struct generalCLTLocFormula_class;
+    struct conjunctionOfFormulae_class;
 
     using pureDisjunct_type = x3::rule<pureDisjunct_class, cltloc::ast::pureDisjunct>;
     using pureCLTLocFormula_type = x3::rule<pureCLTLocFormula_class, cltloc::ast::pureCLTLocFormula>;
     using unaryCLTLocFormula_type = x3::rule<unaryCLTLocFormula_class, cltloc::ast::unaryCLTLocFormula>;
     using binaryCLTLocFormula_type = x3::rule<binaryCLTLocFormula_class, cltloc::ast::binaryCLTLocFormula>;
     using generalCLTLocFormula_type = x3::rule<generalCLTLocFormula_class, cltloc::ast::generalCLTLocFormula>;
+    using conjunctionOfFormulae_type = x3::rule<conjunctionOfFormulae_class, cltloc::ast::conjunctionOfFormulae>;
 
-    BOOST_SPIRIT_DECLARE(pureDisjunct_type, pureCLTLocFormula_type, unaryCLTLocFormula_type, binaryCLTLocFormula_type, generalCLTLocFormula_type);
+    BOOST_SPIRIT_DECLARE(pureDisjunct_type,
+                         pureCLTLocFormula_type,
+                         unaryCLTLocFormula_type,
+                         binaryCLTLocFormula_type,
+                         generalCLTLocFormula_type,
+                         conjunctionOfFormulae_type);
 
 
     pureDisjunct_type pureDisjunct();
@@ -102,6 +109,8 @@ namespace parser
     binaryCLTLocFormula_type binaryCLTLocFormula();
 
     generalCLTLocFormula_type generalCLTLocFormula();
+
+    conjunctionOfFormulae_type conjunctionOfFormulae();
 }
 
 #endif //TIMED_AUTOMATON_H

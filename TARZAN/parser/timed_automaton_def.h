@@ -150,6 +150,17 @@ namespace parser
         }
     } un_cltloc_op;
 
+    inline struct cltloc_conjunction_type : x3::symbols<conjunction_type>
+    {
+        cltloc_conjunction_type()
+        {
+            auto &self = add
+                    ("AND_GENERAL", AND_GENERAL)
+                    ("AND_NEXT", AND_NEXT);
+            (void) self;
+        }
+    } cltloc_conjunction_type;
+
 
     namespace x3 = boost::spirit::x3;
     namespace ascii = x3::ascii;
@@ -196,6 +207,7 @@ namespace parser
     constexpr x3::rule<unaryCLTLocFormula_class, cltloc::ast::unaryCLTLocFormula> unaryCLTLocFormula_rule = "unaryCLTLocFormula_rule";
     constexpr x3::rule<binaryCLTLocFormula_class, cltloc::ast::binaryCLTLocFormula> binaryCLTLocFormula_rule = "binaryCLTLocFormula_rule";
     constexpr x3::rule<generalCLTLocFormula_class, cltloc::ast::generalCLTLocFormula> generalCLTLocFormula_rule = "generalCLTLocFormula_rule";
+    constexpr x3::rule<conjunctionOfFormulae_class, cltloc::ast::conjunctionOfFormulae> conjunctionOfFormulae_rule = "conjunctionOfFormulae_rule";
 
 
     inline auto literal =
@@ -449,6 +461,10 @@ namespace parser
                | pureCLTLocFormula_rule[([](auto &ctx) { _val(ctx) = cltloc::ast::generalCLTLocFormula{ _attr(ctx) }; })])
             > lit(')');
 
+    inline auto conjunctionOfFormulae_rule_def =
+            cltloc_conjunction_type
+            > generalCLTLocFormula_rule % and_op;
+
     BOOST_SPIRIT_DEFINE(primary_rule,
                         multiplicative_rule,
                         additive_rule,
@@ -475,7 +491,8 @@ namespace parser
                         pureCLTLocFormula_rule,
                         unaryCLTLocFormula_rule,
                         binaryCLTLocFormula_rule,
-                        generalCLTLocFormula_rule);
+                        generalCLTLocFormula_rule,
+                        conjunctionOfFormulae_rule);
 
     struct primary_class : success_handler
     {};
@@ -559,6 +576,9 @@ namespace parser
     {};
 
     struct generalCLTLocFormula_class : error_handler_base, success_handler
+    {};
+
+    struct conjunctionOfFormulae_class : error_handler_base, success_handler
     {};
 }
 
@@ -659,6 +679,13 @@ namespace cltloc
     inline parser::generalCLTLocFormula_type generalCLTLocFormula()
     {
         return parser::generalCLTLocFormula_rule;
+    }
+
+
+    // NOLINTNEXTLINE
+    inline parser::conjunctionOfFormulae_type conjunctionOfFormulae()
+    {
+        return parser::conjunctionOfFormulae_rule;
     }
 }
 

@@ -7,6 +7,7 @@
 #include "enums/input_output_action_enum.h"
 #include "enums/players_enum.h"
 #include "enums/cltloc_op_enum.h"
+#include "enums/conjunction_type_enum.h"
 
 #include <vector>
 #include <map>
@@ -135,7 +136,7 @@
 //
 //  <general_cltloc_formula> -> '(' (<unary_cltloc_formula> | <binary_cltloc_formula> | <pure_cltloc_formula>) ')'
 //
-//  <unary_cltloc_formula> -> <unary_cltloc_op> <general_cltloc_formula>
+//  <unary_cltloc_formula> -> <unary_cltloc_op> (eps | '^' <int>) <general_cltloc_formula>
 //
 //  <binary_cltloc_formula> -> <general_cltloc_formula> <binary_cltloc_op> <general_cltloc_formula>
 //
@@ -833,6 +834,17 @@ namespace cltloc::ast
     inline generalCLTLocFormula::generalCLTLocFormula(unaryCLTLocFormula &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
     inline generalCLTLocFormula::generalCLTLocFormula(binaryCLTLocFormula const &v) : value(boost::spirit::x3::forward_ast(v)) {}
     inline generalCLTLocFormula::generalCLTLocFormula(binaryCLTLocFormula &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
+
+
+    struct conjunctionOfFormulae
+    {
+        conjunction_type type;
+        /// This vector contains formulae to be considered in conjunction.
+        std::vector<generalCLTLocFormula> formulae;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
 }
 
 
@@ -923,6 +935,12 @@ inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::binaryCLTLo
 inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::generalCLTLocFormula &g)
 {
     return os << g.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::conjunctionOfFormulae &c)
+{
+    return os << c.to_string();
 }
 
 #endif //AST_H

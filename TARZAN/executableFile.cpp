@@ -11,7 +11,7 @@ int main()
     // const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath);
 
     const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/CLTLoc_formulae/and_next.txt";
-    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+    const cltloc::ast::conjunctionOfFormulae phi = TARZAN::parseConjunctionOfFormulae(formulaPath);
 
     std::cout << phi << std::endl;
 
