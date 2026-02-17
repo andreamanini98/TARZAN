@@ -203,11 +203,31 @@ namespace region
         }
 
 
-        explicit RTSArena(const timed_automaton::ast::timedArena &arena, const cltloc::ast::generalCLTLocFormula &formula)
+        RTSArena(const timed_automaton::ast::timedArena &arena, const cltloc::ast::generalCLTLocFormula &formula)
         {
             clocksIndices = arena.getClocksIndices();
             locationsToInt = arena.mapLocationsToInt();
             maxConstants = arena.getMaxConstants(clocksIndices, formula);
+            initialLocations = arena.getInitialLocations(locationsToInt);
+            outTransitions = arena.getOutTransitions(locationsToInt);
+            inTransitions = arena.getInTransitions(locationsToInt);
+            invariants = arena.getInvariants(locationsToInt);
+            urgentLocations = arena.getUrgentLocations(locationsToInt);
+            locationsToPlayers = arena.mapLocationsToPlayers(locationsToInt);
+
+            const int numOfClocks = static_cast<int>(clocksIndices.size());
+            const auto &variables = arena.getVariables();
+
+            for (const int loc: initialLocations)
+                initialRegions.emplace_back(numOfClocks, loc, variables);
+        }
+
+
+        RTSArena(const timed_automaton::ast::timedArena &arena, const cltloc::ast::conjunctionOfFormulae &formulae)
+        {
+            clocksIndices = arena.getClocksIndices();
+            locationsToInt = arena.mapLocationsToInt();
+            maxConstants = arena.getMaxConstants(clocksIndices, formulae);
             initialLocations = arena.getInitialLocations(locationsToInt);
             outTransitions = arena.getOutTransitions(locationsToInt);
             inTransitions = arena.getInTransitions(locationsToInt);
