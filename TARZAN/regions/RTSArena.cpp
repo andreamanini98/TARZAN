@@ -798,11 +798,7 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
         toProcess.push_back(&region);
 
     int currentIteration = 0;
-    // The total number of starting regions here corresponds to the total number of precomputed regions considering all formulae.
-    int totalStartingRegions = 0;
-
-    for (const auto &regSet: formulaRegionSets)
-        totalStartingRegions += static_cast<int>(regSet.size());
+    const int totalStartingRegions = static_cast<int>(setG.size());
 
     // The computation proceeds backwards from the last (i.e., from the back) formula in the formulaRegionSets vector.
     // Depending on its applicationCount, we apply piFilter until another formula is met (going backwards).
