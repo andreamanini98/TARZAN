@@ -182,6 +182,17 @@ namespace region
         [[nodiscard]] inline bool solveGameWithNextFormula(const cltloc::ast::generalCLTLocFormula &formula) const;
 
 
+        /**
+         * @brief Solves a game where the formula is: NEXT^{n_0} phi_0 && NEXT^{n_1} phi_1 && ... && NEXT^{n_k} phi_k, where n_i < n_{i+1}.
+         *
+         * @param formulae the conjunction of formulae to solve.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @warning Remember to specify the NEXT operator with applicationCount equal to 0 if you need a formula to be true at the current position in time.
+         */
+        [[nodiscard]] inline bool solveGameWithAndNextConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) const;
+
+
     public:
         explicit RTSArena(const timed_automaton::ast::timedArena &arena)
         {
@@ -367,6 +378,22 @@ namespace region
          * @throws std::logic_error if an unhandled formula type is encountered, or a pure formula is given as the parameter value.
          */
         [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula) const;
+
+
+        /**
+         * @brief Determines whether the controller wins a Timed CLTLoc Game given a conjunction of general CLTLoc formulae.
+         *
+         * Supported formulae are:
+         * AND_NEXT NEXT^{n_0} phi_0 && NEXT^{n_1} phi_1 && ... && NEXT^{n_k} phi_k, where n_i < n_{i+1}.
+         *
+         * @param conjunction the conjunction of general CLTLoc formulae to process.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @throws std::logic_error if an unhandled conjunction type is encountered.
+         *
+         * @warning Remember to specify the NEXT operator with applicationCount equal to 0 if you need a formula to be true at the current position in time.
+         */
+        [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::conjunctionOfFormulae &conjunction) const;
 
 
         [[nodiscard]] std::string to_string() const;

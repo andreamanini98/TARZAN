@@ -16,7 +16,12 @@ int main()
     const region::RTSArena rts(arena, phi);
 
     std::cout << phi << std::endl;
-    std::cout << rts.to_string() << std::endl;
+    // std::cout << rts.to_string() << std::endl;
+
+    if (rts.solveTimedCLTLocGame(phi))
+        std::cout << "-----" << std::endl;
+    else
+        std::cout << "----- " << std::endl;
 
     return 0;
 }
