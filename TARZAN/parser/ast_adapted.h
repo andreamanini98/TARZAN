@@ -28,8 +28,10 @@ BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::pureDisjunct, locations, clockConstraints
 
 BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::pureCLTLocFormula, disjuncts)
 
-BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::unaryCLTLocFormula, op, rightFormula)
+BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::unaryCLTLocFormula, op, applicationCount, rightFormula)
 
 BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::binaryCLTLocFormula, leftFormula, op, rightFormula)
+
+BOOST_FUSION_ADAPT_STRUCT(cltloc::ast::conjunctionOfFormulae, type, formulae)
 
 #endif //AST_ADAPTED_H

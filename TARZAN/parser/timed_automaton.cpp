@@ -32,4 +32,6 @@ namespace parser
     BOOST_SPIRIT_INSTANTIATE(binaryCLTLocFormula_type, iterator_type, context_type);
 
     BOOST_SPIRIT_INSTANTIATE(generalCLTLocFormula_type, iterator_type, context_type);
+
+    BOOST_SPIRIT_INSTANTIATE(conjunctionOfFormulae_type, iterator_type, context_type);
 }

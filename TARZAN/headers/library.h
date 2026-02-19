@@ -61,6 +61,15 @@ namespace TARZAN
      * @return a cltloc::ast::generalCLTLocFormula representation of the general CLTLoc formula.
      */
     cltloc::ast::generalCLTLocFormula parseGeneralCLTLocFormula(const std::string &path);
+
+
+    /**
+     * @brief Parses a conjunction of general CLTLoc formulae from a .txt file.
+     *
+     * @param path the path in which the file to parse is located.
+     * @return a cltloc::ast::conjunctionOfFormulae representation of the conjunction of general CLTLoc formulae.
+     */
+    cltloc::ast::conjunctionOfFormulae parseConjunctionOfFormulae(const std::string &path);
 }
 
 #endif //TARZAN_LIBRARY_H

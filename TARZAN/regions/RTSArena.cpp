@@ -568,7 +568,7 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
 
         piFilter(setG, toProcess, filteredRegions, {}, false, true);
 
-        // Computing the intersection between regions returned by omega and delta filters and setG.
+        // Computing the intersection between regions returned by piFilter and setG.
         std::erase_if(setG, [&filteredRegions](const auto &region) { return !filteredRegions.contains(region); });
 
         if (oldSetGSize == setG.size())
@@ -744,6 +744,174 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
         } else
             throw std::logic_error("Unhandled formula type in solveTimedCLTLocGame.");
     }, formula.value);
+
+    // Ending the timer for measuring computation.
+#ifdef _OPENMP
+    const auto end = omp_get_wtime();
+    const auto duration = end - start;
+    std::cout << "Total time including region generation: " << duration * 1000000 << " microseconds" << std::endl;
+#else
+    const auto end = std::chrono::high_resolution_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    std::cout << "Total time including region generation: " << duration << " microseconds" << std::endl;
+#endif
+
+    return result;
+}
+
+
+inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) const
+{
+    if (formulae.empty())
+        throw std::logic_error("Formulae vector is empty!");
+
+    const int formulaeSize = static_cast<int>(formulae.size());
+
+    // Storage for valid region sets. At position i, the vector will contain the regions specified by formulae[i].
+#ifdef _OPENMP
+    std::vector<regionSet> formulaRegionSets(formulaeSize);
+#else
+    std::vector<regionSet> formulaRegionSets{};
+#endif
+
+#pragma omp parallel for schedule(dynamic) default(none) shared(formulaRegionSets, formulaeSize, formulae)
+    for (int i = 0; i < formulaeSize; i++)
+    {
+        const std::vector<regionSet> formulaRegions = getRegionsFromGeneralCLTLocFormula(formulae[i]);
+
+        if (formulaRegions.size() != 1)
+            throw std::logic_error("Wrong size of unary formula!");
+
+#ifdef _OPENMP
+        formulaRegionSets[i] = formulaRegions.at(0);
+#else
+        formulaRegionSets.push_back(formulaRegions.at(0));
+#endif
+    }
+
+    // Defining the starting set of states used during computation (it corresponds to the set in the back of formulaRegionSets).
+    regionSet setG = std::move(formulaRegionSets.back());
+    std::vector<RegionPtr> toProcess{};
+    regionSet filteredRegions{};
+
+    for (const auto &region: setG)
+        toProcess.push_back(&region);
+
+    int currentIteration = 0;
+    // The total number of starting regions here corresponds to the total number of precomputed regions considering all formulae.
+    int totalStartingRegions = 0;
+
+    for (const auto &regSet: formulaRegionSets)
+        totalStartingRegions += static_cast<int>(regSet.size());
+
+    // The computation proceeds backwards from the last (i.e., from the back) formula in the formulaRegionSets vector.
+    // Depending on its applicationCount, we apply piFilter until another formula is met (going backwards).
+    // When this happens, we intersect its states with the ones collected up to the current iteration.
+    for (int i = formulaeSize - 1; i > 0; i--)
+    {
+        // Getting the current applicationCount value.
+        const auto currCount = std::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[i].value).get().applicationCount;
+
+        // Getting the applicationCount value of the formula that is met going backwards.
+        const auto backCount = std::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[i - 1].value).get().applicationCount;
+
+        if (!currCount.has_value() || !backCount.has_value())
+            throw std::logic_error("No currCount or backCount value!");
+
+        if (currCount.value() <= backCount.value())
+            throw std::logic_error("Invalid applicationCount values: currCount <= backCount!");
+
+        const int totalCurrentIterations = currCount.value() - backCount.value();
+
+        // We now apply piFilter for a total of totalCurrentIterations times.
+        for (int j = 0; j < totalCurrentIterations; j++)
+        {
+            piFilter(setG, toProcess, filteredRegions, {}, false, false);
+
+            setG.merge(filteredRegions);
+            filteredRegions.clear();
+
+            // We can skip this during the last iteration since toProcess will be computed again after the intersection (see below).
+            if (j < totalCurrentIterations - 1)
+            {
+                toProcess.clear();
+                for (const auto &region: setG)
+                    toProcess.push_back(&region);
+            }
+
+            currentIteration++;
+        }
+
+        // Computing the intersection between setG and the regions specified by formulaRegionSets[i - 1].
+        const regionSet &target = formulaRegionSets[i - 1];
+        std::erase_if(setG, [&target](const auto &region) { return !target.contains(region); });
+
+        toProcess.clear();
+        for (const auto &region: setG)
+            toProcess.push_back(&region);
+    }
+
+    // Now only the last formula (the one in the first position of formulaRegionSets) must be checked.
+    const auto count = std::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[0].value).get().applicationCount;
+
+    if (!count.has_value())
+        throw std::logic_error("No applicationCount value!");
+
+    const int totalCurrentIterations = count.value();
+
+    for (int i = 0; i < totalCurrentIterations; i++)
+    {
+        piFilter(setG, toProcess, filteredRegions, {}, false, false);
+
+        setG.merge(filteredRegions);
+        filteredRegions.clear();
+
+        // We can skip this during the last iteration.
+        if (i < totalCurrentIterations - 1)
+        {
+            toProcess.clear();
+            for (const auto &region: setG)
+                toProcess.push_back(&region);
+        }
+
+        currentIteration++;
+    }
+
+    const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
+
+    std::cout << "Total iterations:       " << currentIteration << std::endl;
+    std::cout << "Total starting regions: " << totalStartingRegions << std::endl;
+    std::cout << "Total stored regions:   " << setG.size() << std::endl;
+    std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
+
+    return reachable;
+}
+
+
+bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::conjunctionOfFormulae &conjunction) const
+{
+    // Starting the timer for measuring computation.
+#ifdef _OPENMP
+    const auto start = omp_get_wtime();
+#else
+    const auto start = std::chrono::high_resolution_clock::now();
+#endif
+
+    bool result{};
+
+    switch (conjunction.type)
+    {
+        case AND_GENERAL:
+            std::cout << "Support for general conjunction still have to be implemented." << std::endl;
+            throw std::logic_error("Invalid conjunction type.");
+
+        case AND_NEXT:
+            result = solveGameWithAndNextConjunction(conjunction.formulae);
+            break;
+
+        default:
+            throw std::logic_error("Invalid conjunction type.");
+    }
 
     // Ending the timer for measuring computation.
 #ifdef _OPENMP

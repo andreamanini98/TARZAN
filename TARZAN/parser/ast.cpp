@@ -1,7 +1,9 @@
-#include "TARZAN/parser/ast.h"
-
 #include <iostream>
+
+#include "TARZAN/parser/ast.h"
 #include "TARZAN/utilities/printing_utilities.h"
+#include "TARZAN/exceptions/nestedCLTLocFormula_exception.h"
+#include "TARZAN/exceptions/emptyConjunctionOfFormulae_exception.h"
 
 using transition = timed_automaton::ast::transition;
 
@@ -576,11 +578,12 @@ std::vector<int> timed_automaton::ast::timedArena::getMaxConstants(const std::un
  * @param clocksIndices a map from clock names to their index in the clocks vector.
  * @param formula a general CLTLoc formula used to update the maximum constants of clocks.
  * @param maxConstants the maximum constants of clocks to be updated.
- * @return an updated version of maxConstants in which clock values may be constrained by the general CLTLoc formula.
+ *
+ * @throws NestedCLTLocFormulaException if an invalid CLTLoc formula is passed.
  */
-std::vector<int> getMaxConstantsRecursive(const std::unordered_map<std::string, int> &clocksIndices,
-                                          const cltloc::ast::generalCLTLocFormula &formula,
-                                          std::vector<int> &maxConstants)
+void getMaxConstantsRecursive(const std::unordered_map<std::string, int> &clocksIndices,
+                              const cltloc::ast::generalCLTLocFormula &formula,
+                              std::vector<int> &maxConstants)
 {
     std::visit([&maxConstants, &clocksIndices]<typename T0>(T0 const &val) -> void {
         using T = std::decay_t<T0>;
@@ -603,10 +606,9 @@ std::vector<int> getMaxConstantsRecursive(const std::unordered_map<std::string, 
             const auto &binaryFormula = val.get();
             getMaxConstantsRecursive(clocksIndices, binaryFormula.leftFormula, maxConstants);
             getMaxConstantsRecursive(clocksIndices, binaryFormula.rightFormula, maxConstants);
-        }
+        } else
+            throw region::NestedCLTLocFormulaException("Invalid CLTLoc formula passed!");
     }, formula.value);
-
-    return maxConstants;
 }
 
 
@@ -615,6 +617,19 @@ std::vector<int> timed_automaton::ast::timedArena::getMaxConstants(const std::un
 {
     std::vector<int> maxConstants = getMaxConstants(clocksIndices);
     getMaxConstantsRecursive(clocksIndices, formula, maxConstants);
+    return maxConstants;
+}
+
+
+std::vector<int> timed_automaton::ast::timedArena::getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices,
+                                                                   const cltloc::ast::conjunctionOfFormulae &conjunction) const
+{
+    if (conjunction.formulae.empty())
+        throw region::EmptyConjunctionOfFormulaeException("The conjunction is empty!");
+
+    std::vector<int> maxConstants = getMaxConstants(clocksIndices);
+    for (const auto &formula: conjunction.formulae)
+        getMaxConstantsRecursive(clocksIndices, formula, maxConstants);
     return maxConstants;
 }
 
@@ -824,7 +839,7 @@ std::string cltloc::ast::pureCLTLocFormula::to_string() const
 std::string cltloc::ast::unaryCLTLocFormula::to_string() const
 {
     std::ostringstream oss;
-    oss << op << " " << rightFormula.to_string();
+    oss << op << (applicationCount.has_value() ? "^" + std::to_string(applicationCount.value()) + " " : " ") << rightFormula.to_string();
     return oss.str();
 }
 
@@ -856,6 +871,31 @@ std::string cltloc::ast::generalCLTLocFormula::to_string() const
         // Recursive case: pure, unary, or binary formula.
         return "(" + val.get().to_string() + ")";
     }, value);
+
+    return oss.str();
+}
+
+
+// ---
+
+
+std::string cltloc::ast::conjunctionOfFormulae::to_string() const
+{
+    std::ostringstream oss;
+
+    oss << "Conjunction type: " << type << std::endl;
+
+    oss << "Formulae: ";
+    bool first = true;
+    for (const auto &generalCLTLocFormula: formulae)
+    {
+        if (first)
+        {
+            oss << generalCLTLocFormula;
+            first = false;
+        } else
+            oss << " && " << generalCLTLocFormula;
+    }
 
     return oss.str();
 }
