@@ -1,6 +1,7 @@
 #ifndef TARZAN_RTS_H
 #define TARZAN_RTS_H
 
+#include <queue>
 #include "Region.h"
 #include "TARZAN/parser/ast.h"
 #include "TARZAN/regions/enums/state_space_exploration_enum.h"

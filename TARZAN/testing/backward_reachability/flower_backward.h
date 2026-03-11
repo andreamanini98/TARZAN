@@ -20,7 +20,7 @@ inline void testFlowerBackward2()
 
     const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_02/";
 
-    constexpr std::string automatonFileName = "Flower.txt";
+    const std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -50,7 +50,7 @@ inline void testFlowerBackward4()
 
     const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_04/";
 
-    constexpr std::string automatonFileName = "Flower.txt";
+    const std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -80,7 +80,7 @@ inline void testFlowerBackward6()
 
     const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_06/";
 
-    constexpr std::string automatonFileName = "Flower.txt";
+    const std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -110,7 +110,7 @@ inline void testFlowerBackward8()
 
     const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_08/";
 
-    constexpr std::string automatonFileName = "Flower.txt";
+    const std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -140,7 +140,7 @@ inline void testFlowerBackward10()
 
     const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_10/";
 
-    constexpr std::string automatonFileName = "Flower.txt";
+    const std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -170,7 +170,7 @@ inline void testFlowerBackward12()
 
     const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_12/";
 
-    constexpr std::string automatonFileName = "Flower.txt";
+    const std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -200,7 +200,7 @@ inline void testFlowerBackward14()
 
     const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_14/";
 
-    constexpr std::string automatonFileName = "Flower.txt";
+    const std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -230,7 +230,7 @@ inline void testFlowerBackward16()
 
     const std::string path = "../../TARZAN/benchmarks/models/flower/liana/flower_16/";
 
-    constexpr std::string automatonFileName = "Flower.txt";
+    const std::string automatonFileName = "Flower.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);

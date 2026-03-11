@@ -1,5 +1,5 @@
 # Setting the minimum required version for cmake.
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.31)
 
 
 # Getting the project name as the current directory name.
@@ -30,6 +30,7 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/include)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/lib)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/backwards_tarzan_results)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/games_tarzan_results)
 
 
 # The library archive is now written inside this directory.
@@ -39,7 +40,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/lib
 # When changing the value of the options, remember to:
 # (1) click on the cmake icon at the bottom left corner -> (2) three dots -> (3) reset cache and reload project.
 option(ENABLE_OPTIMIZATION "Enable O3 optimization level." ON)
-option(ENABLE_OPENMP "Enable OpenMP parallelization." OFF)
+option(ENABLE_OPENMP "Enable OpenMP parallelization." ON)
 
 
 # Handle O3 optimization.
@@ -67,22 +68,21 @@ endif ()
 
 
 # Find Boost libraries.
-# set(BOOST_ROOT "/path/to/boost/dir")
-find_package(Boost 1.90.0 REQUIRED filesystem)
+find_package(Boost 1.89.0 REQUIRED filesystem)
 
 
-include(FetchContent)
+# Force CMake to not use Anaconda's abseil.
+# This prevents version conflicts between abseil installations.
+# Users can specify a custom path via: cmake -DANACONDA_PATH=/custom/path ..
+set(ANACONDA_PATH "/opt/anaconda3" CACHE PATH "Path to Anaconda installation to ignore")
+if(ANACONDA_PATH)
+    set(CMAKE_IGNORE_PATH "${ANACONDA_PATH}")
+    message(STATUS "Ignoring Anaconda path: ${ANACONDA_PATH}")
+endif()
 
-FetchContent_Declare(
-    abseil-cpp
-    GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
-    GIT_TAG        20240722.0
-)
 
-# Ensure Abseil uses the same C++ standard as the project.
-set(ABSL_PROPAGATE_CXX_STD ON)
-
-FetchContent_MakeAvailable(abseil-cpp)
+# Find Abseil libraries.
+find_package(absl CONFIG REQUIRED)
 
 
 # Add compiler warnings.
@@ -297,3 +297,65 @@ file(GLOB GAMES_SCRIPTS TARZAN/benchmarks_games/games_scripts/*.sh)
 foreach(script ${GAMES_SCRIPTS})
     execute_process(COMMAND chmod +x ${script})
 endforeach()
+
+
+#########################################################################
+###   The following code deals with the installation of the library   ###
+#########################################################################
+
+# Define GNU standard installation directories.
+include(GNUInstallDirs)
+
+
+# Helper functions for creating config files that can be included by other projects to find and use a package.
+include(CMakePackageConfigHelpers)
+
+
+# Install library.
+install(TARGETS TARZAN       # Install target, the one created with add_library().
+        EXPORT TARZANTargets # Generates and installs a CMake file to import targets into another project.
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}       # For shared libraries.
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}       # For .a files.
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}       # For executables.
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}) # Specifies where to look for include files.
+
+
+# Install headers with directory structure preserved.
+foreach(header ${LIBRARY_HEADERS})
+    # Get the relative path from TARZAN/ directory.
+    file(RELATIVE_PATH rel_path "${CMAKE_CURRENT_SOURCE_DIR}/TARZAN" "${CMAKE_CURRENT_SOURCE_DIR}/${header}")
+    get_filename_component(header_dir ${rel_path} DIRECTORY)
+
+    # Install to the appropriate subdirectory.
+    install(FILES ${header}
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/TARZAN/${header_dir})
+endforeach()
+
+
+# Export targets to make the library discoverable by other CMake projects.
+install(EXPORT TARZANTargets
+        FILE TARZANTargets.cmake
+        NAMESPACE TARZAN:: # Avoid name clashes.
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/TARZAN)
+
+
+# Configure and install package configuration file.
+configure_package_config_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/TARZANConfig.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/TARZANConfig.cmake
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/TARZAN)
+
+
+# Generate version file
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/TARZANConfigVersion.cmake
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion)
+
+
+# Install config files
+install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/TARZANConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/TARZANConfigVersion.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/TARZAN)
