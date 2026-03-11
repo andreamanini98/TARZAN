@@ -69,8 +69,7 @@ inline std::vector<regionSet> region::RTSArena::getRegionsFromGeneralCLTLocFormu
 {
     std::vector<regionSet> res{};
 
-    std::visit([this, &res, depth]<typename T0>(T0 const &val)
-    {
+    boost::apply_visitor([this, &res, depth]<typename T0>(T0 const &val) {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
@@ -791,8 +790,7 @@ inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binar
 inline bool region::RTSArena::solveGameWithNextFormula(const cltloc::ast::generalCLTLocFormula &formula)
 {
     // The formula must be of the form: phi UNTIL psi.
-    const bool result = std::visit([this]<typename T0>(T0 const &val) -> bool
-    {
+    const bool result = boost::apply_visitor([this]<typename T0>(T0 const &val) -> bool {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
@@ -831,8 +829,7 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
     const auto start = std::chrono::high_resolution_clock::now();
 #endif
 
-    const bool result = std::visit([this]<typename T0>(T0 const &val) -> bool
-    {
+    const bool result = boost::apply_visitor([this]<typename T0>(T0 const &val) -> bool {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)

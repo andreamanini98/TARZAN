@@ -19,7 +19,7 @@ inline void testFischerFlat2()
     std::cout << "------------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_02/";
-    constexpr std::string automatonFileName = "ff.txt";
+    const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -91,7 +91,7 @@ inline void testFischerFlat3()
     std::cout << "------------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_03/";
-    constexpr std::string automatonFileName = "ff.txt";
+    const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -169,7 +169,7 @@ inline void testFischerFlat4()
     std::cout << "------------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_04/";
-    constexpr std::string automatonFileName = "ff.txt";
+    const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -271,7 +271,7 @@ inline void testFischerFlat5()
     std::cout << "------------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_05/";
-    constexpr std::string automatonFileName = "ff.txt";
+    const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);
@@ -563,7 +563,7 @@ inline void testFischerFlat6()
     std::cout << "------------------\n\n";
 
     const std::string path = "../../TARZAN/benchmarks/benchmarksFlat/fischerFlat/ff_06/";
-    constexpr std::string automatonFileName = "ff.txt";
+    const std::string automatonFileName = "ff.txt";
     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 
     const region::RTS regionTransitionSystem(automaton);

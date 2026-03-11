@@ -15,6 +15,8 @@
 #include <variant>
 #include <absl/container/flat_hash_set.h>
 
+
+#include <boost/variant.hpp>
 #include "absl/container/flat_hash_map.h"
 #include "absl/container/btree_map.h"
 #include <boost/spirit/home/x3/support/ast/variant.hpp>
@@ -175,7 +177,7 @@ namespace expr::ast
     struct arithmeticExpr
     {
         // The forward_ast enables the recursive definition of this ast.
-        std::variant<int, variable, boost::spirit::x3::forward_ast<binaryExpr>> value;
+        boost::variant<int, variable, boost::spirit::x3::forward_ast<binaryExpr>> value;
 
 
         // Implicit conversions, needed since we directly synthesize variables in the grammar.
@@ -281,7 +283,7 @@ namespace expr::ast
     /// A boolean expression which can contain booleans and comparison expressions.
     struct booleanExpr
     {
-        std::variant<bool, comparisonExpr, boost::spirit::x3::forward_ast<booleanBinaryExpr>> value;
+        boost::variant<bool, comparisonExpr, boost::spirit::x3::forward_ast<booleanBinaryExpr>> value;
 
 
         // Implicit constructors
@@ -869,7 +871,7 @@ namespace cltloc::ast
     /// Up to now, a general CLTLoc formula is a nesting of until and box formulae (though for our current needs the nesting is not needed).
     struct generalCLTLocFormula
     {
-        std::variant<
+        boost::variant<
             boost::spirit::x3::forward_ast<pureCLTLocFormula>,
             boost::spirit::x3::forward_ast<unaryCLTLocFormula>,
             boost::spirit::x3::forward_ast<binaryCLTLocFormula>> value;
