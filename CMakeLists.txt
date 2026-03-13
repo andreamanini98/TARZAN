@@ -81,6 +81,7 @@ FetchContent_Declare(
 
 # Ensure Abseil uses the same C++ standard as the project.
 set(ABSL_PROPAGATE_CXX_STD ON)
+set(ABSL_ENABLE_INSTALL ON)
 
 FetchContent_MakeAvailable(abseil-cpp)
 
@@ -138,8 +139,25 @@ endif ()
 
 
 # Link libraries to both object library and static library.
-target_link_libraries(TARZAN_OBJECTS PUBLIC ${TARZAN_LIBRARIES})
-target_link_libraries(TARZAN PUBLIC ${TARZAN_LIBRARIES})
+target_link_libraries(TARZAN_OBJECTS PUBLIC 
+    Boost::headers 
+    Boost::filesystem
+)
+target_link_libraries(TARZAN_OBJECTS PRIVATE 
+    absl::base 
+    absl::strings 
+    absl::flat_hash_map
+)
+
+target_link_libraries(TARZAN PUBLIC 
+    Boost::headers 
+    Boost::filesystem
+)
+target_link_libraries(TARZAN PRIVATE 
+    absl::base 
+    absl::strings 
+    absl::flat_hash_map
+)
 
 
 # Setup include directories for both object library and static library.
@@ -161,31 +179,25 @@ target_include_directories(TARZAN
 
 # Define the headers to expose.
 set(LIBRARY_HEADERS
-        TARZAN/headers/library.h
-        TARZAN/parser/ast.h
-        TARZAN/parser/enums/arithmetic_enum.h
-        TARZAN/parser/enums/boolean_op_enum.h
-        TARZAN/parser/enums/cltloc_op_enum.h
-        TARZAN/parser/enums/comparison_op_enum.h
-        TARZAN/parser/enums/conjunction_type_enum.h
-        TARZAN/parser/enums/input_output_action_enum.h
-        TARZAN/parser/enums/players_enum.h
-        TARZAN/regions/Region.h
-        TARZAN/regions/RTS.h
-        TARZAN/regions/RTSArena.h
-        TARZAN/regions/StrategyGraph.h
-        TARZAN/regions/StrategyGraphForConjunction.h
-        TARZAN/regions/enums/state_space_exploration_enum.h
-        TARZAN/regions/networkOfTA/NetworkRegion.h
-        TARZAN/regions/networkOfTA/RTSNetwork.h
-        TARZAN/utilities/hash_utilities.h
-        TARZAN/utilities/function_utilities.h
-        TARZAN/utilities/file_utilities.h
-        TARZAN/utilities/partition_utilities.h
-        TARZAN/utilities/printing_utilities.h
-        TARZAN/exceptions/emptyConjunctionOfFormulae_exception.h
-        TARZAN/exceptions/nestedCLTLocFormula_exception.h
-        TARZAN/exceptions/cannotSynthesizeStrategies_exception.h)
+    TARZAN/headers/library.h
+    TARZAN/parser/ast.h
+    TARZAN/parser/enums/arithmetic_enum.h
+    TARZAN/parser/enums/boolean_op_enum.h
+    TARZAN/parser/enums/comparison_op_enum.h
+    TARZAN/parser/enums/input_output_action_enum.h
+    TARZAN/parser/enums/players_enum.h
+    TARZAN/parser/enums/cltloc_op_enum.h
+    TARZAN/regions/Region.h
+    TARZAN/regions/RTS.h
+    TARZAN/regions/RTSArena.h
+    TARZAN/regions/enums/state_space_exploration_enum.h
+    TARZAN/regions/networkOfTA/NetworkRegion.h
+    TARZAN/regions/networkOfTA/RTSNetwork.h
+    TARZAN/utilities/hash_utilities.h
+    TARZAN/utilities/function_utilities.h
+    TARZAN/utilities/file_utilities.h
+    TARZAN/utilities/partition_utilities.h
+    TARZAN/utilities/printing_utilities.h)
 
 
 # Copying the headers to expose for better retrieve the library.
@@ -307,3 +319,64 @@ file(GLOB GAMES_SCRIPTS TARZAN/benchmarks_games/games_scripts/*.sh)
 foreach (script ${GAMES_SCRIPTS})
     execute_process(COMMAND chmod +x ${script})
 endforeach()
+
+#########################################################################
+###   The following code deals with the installation of the library   ###
+#########################################################################
+
+# Define GNU standard installation directories.
+include(GNUInstallDirs)
+
+
+# Helper functions for creating config files that can be included by other projects to find and use a package.
+include(CMakePackageConfigHelpers)
+
+
+# Install library.
+install(TARGETS TARZAN       # Install target, the one created with add_library().
+        EXPORT TARZANTargets # Generates and installs a CMake file to import targets into another project.
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}       # For shared libraries.
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}       # For .a files.
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}       # For executables.
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}) # Specifies where to look for include files.
+
+
+# Install headers with directory structure preserved.
+foreach(header ${LIBRARY_HEADERS})
+    # Get the relative path from TARZAN/ directory.
+    file(RELATIVE_PATH rel_path "${CMAKE_CURRENT_SOURCE_DIR}/TARZAN" "${CMAKE_CURRENT_SOURCE_DIR}/${header}")
+    get_filename_component(header_dir ${rel_path} DIRECTORY)
+
+    # Install to the appropriate subdirectory.
+    install(FILES ${header}
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/TARZAN/${header_dir})
+endforeach()
+
+
+# Export targets to make the library discoverable by other CMake projects.
+install(EXPORT TARZANTargets
+        FILE TARZANTargets.cmake
+        NAMESPACE TARZAN:: # Avoid name clashes.
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/TARZAN)
+
+
+# Configure and install package configuration file.
+configure_package_config_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/TARZANConfig.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/TARZANConfig.cmake
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/TARZAN)
+
+
+# Generate version file
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/TARZANConfigVersion.cmake
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion)
+
+
+# Install config files
+install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/TARZANConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/TARZANConfigVersion.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/TARZAN)
