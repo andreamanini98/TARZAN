@@ -229,3 +229,47 @@ cltloc::ast::generalCLTLocFormula TARZAN::parseGeneralCLTLocFormula(const std::s
 
     return phi;
 }
+
+
+cltloc::ast::conjunctionOfFormulae TARZAN::parseConjunctionOfFormulae(const std::string &path)
+{
+    std::stringstream out;
+    const std::string source = readFromFile(path);
+
+    using parser::iterator_type;
+    iterator_type iter(source.begin());
+    iterator_type const end(source.end());
+
+    cltloc::ast::conjunctionOfFormulae phi;
+
+    // Our error handler.
+    using boost::spirit::x3::with;
+    using parser::error_handler_type;
+    using parser::error_handler_tag;
+    error_handler_type error_handler(iter, end, out, path);
+
+    // Our parser.
+    // We pass our error handler to the parser so we can access it later on in our on_error and on_success handlers.
+    auto const parser = with<error_handler_tag>(std::ref(error_handler))[cltloc::conjunctionOfFormulae()];
+
+    // Now we parse.
+    using boost::spirit::x3::ascii::space;
+    // ReSharper disable once CppTooWideScope
+    bool success = phrase_parse(iter, end, parser, space, phi);
+
+    if (success)
+    {
+        if (iter != end)
+            error_handler(iter, "Error! Expecting end of input here: ");
+        else
+        {
+#ifdef PARSER_LOG
+
+            std::cout << "SUCCESSFUL parsing" << std::endl;
+#endif
+        }
+    } else
+        std::cerr << "Wrong parsing" << std::endl;
+
+    return phi;
+}

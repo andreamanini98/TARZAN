@@ -7,6 +7,7 @@
 #include "enums/input_output_action_enum.h"
 #include "enums/players_enum.h"
 #include "enums/cltloc_op_enum.h"
+#include "enums/conjunction_type_enum.h"
 
 #include <vector>
 #include <map>
@@ -137,7 +138,7 @@
 //
 //  <general_cltloc_formula> -> '(' (<unary_cltloc_formula> | <binary_cltloc_formula> | <pure_cltloc_formula>) ')'
 //
-//  <unary_cltloc_formula> -> <unary_cltloc_op> <general_cltloc_formula>
+//  <unary_cltloc_formula> -> <unary_cltloc_op> (eps | '^' <int>) <general_cltloc_formula>
 //
 //  <binary_cltloc_formula> -> <general_cltloc_formula> <binary_cltloc_op> <general_cltloc_formula>
 //
@@ -337,6 +338,7 @@ namespace expr::ast
 namespace cltloc::ast
 {
     struct generalCLTLocFormula;
+    struct conjunctionOfFormulae;
 }
 
 
@@ -609,6 +611,24 @@ namespace timed_automaton::ast
 
 
         /**
+         * @brief Computes the maximum constant appearing in a Timed Arena for each clock, also considering a conjunction of general CLTLoc formulae.
+         *
+         * @param clocksIndices a map from clock names to their index in the clocks vector.
+         * @param conjunction a conjunction of general CLTLoc formulae.
+         * @return a vector containing in position i the maximum constant of the i-th clock, where the index i of the clock is given by clockIndices.
+         *
+         * @warning Clocks that are not used in guards nor in invariants are assigned 0 as their maximum constant.
+         *          If a global timer must be declared, please add an artificial constraint in the arena such that the clock can assume that maximum constant.
+         *          This can be done, for example, by inserting a clock constraint in which the constant is the one used in the reachability query.
+         *          In this case, the maximum constant of these clocks may not be 0 due to the general CLTLoc formula.
+         *
+         * @throws EmptyConjunctionOfFormulaeException if 'conjunction' has an empty formulae vector.
+         */
+        [[nodiscard]] std::vector<int> getMaxConstants(const std::unordered_map<std::string, int> &clocksIndices,
+                                                       const cltloc::ast::conjunctionOfFormulae &conjunction) const;
+
+
+        /**
          * @return true if the Timed Arena has at least one urgent location, false otherwise.
          */
         [[nodiscard]] bool hasUrgentLocations() const;
@@ -807,6 +827,8 @@ namespace cltloc::ast
     struct unaryCLTLocFormula
     {
         unary_cltloc_op op;
+        /// Tells how many times op must be applied. If not specified, it is assumed to be 1.
+        std::optional<int> applicationCount;
         generalCLTLocFormula rightFormula;
 
 
@@ -833,6 +855,17 @@ namespace cltloc::ast
     inline generalCLTLocFormula::generalCLTLocFormula(unaryCLTLocFormula &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
     inline generalCLTLocFormula::generalCLTLocFormula(binaryCLTLocFormula const &v) : value(boost::spirit::x3::forward_ast(v)) {}
     inline generalCLTLocFormula::generalCLTLocFormula(binaryCLTLocFormula &&v) : value(boost::spirit::x3::forward_ast(std::move(v))) {}
+
+
+    struct conjunctionOfFormulae
+    {
+        conjunction_type type;
+        /// This vector contains formulae to be considered in conjunction.
+        std::vector<generalCLTLocFormula> formulae;
+
+
+        [[nodiscard]] std::string to_string() const;
+    };
 }
 
 
@@ -923,6 +956,12 @@ inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::binaryCLTLo
 inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::generalCLTLocFormula &g)
 {
     return os << g.to_string();
+}
+
+
+inline std::ostream &operator<<(std::ostream &os, const cltloc::ast::conjunctionOfFormulae &c)
+{
+    return os << c.to_string();
 }
 
 #endif //AST_H

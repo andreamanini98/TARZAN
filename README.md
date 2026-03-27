@@ -82,5 +82,6 @@ Assuming TARZAN has been installed as described above, using it in a CMake proje
 For a detailed description of TARZAN, please refer to:
 - The TARZAN <a href="https://github.com/andreamanini98/TARZAN/wiki" target="_blank" rel="noopener noreferrer">wiki</a>.
 - The TARZAN <a href="https://andreamanini98.github.io/TARZAN/" target="_blank" rel="noopener noreferrer">online documentation</a>.
+- The TARZAN <a href="https://doi.org/10.5281/zenodo.18656202" target="_blank" rel="noopener noreferrer">Artifact</a>.
 
 
