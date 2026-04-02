@@ -82,6 +82,7 @@ In Timed Arenas, each location is assigned to a player: controller (`c`) or envi
 
 <span style="font-weight:bold;">⟨literal⟩</span> ――> (<span style="color:orange;">'a..z'</span> | <span style="color:orange;">'A..Z'</span> | <span style="color:orange;">'0..9'</span> | <span style="color:orange;">'_'</span>)+
 </pre>
+\endhtmlonly
 
 ---
 
@@ -91,6 +92,7 @@ The following is the grammar for the Liana DSL used to declare arithmetic expres
 Integer variables in Timed Automata are automatically initialized to zero. 
 To overcome this, a transition can be added to initialize them in the Timed Automaton itself.
 
+\htmlonly
 <pre style="font-family: monospace; font-size: 1.1em;">
 <span style="font-weight:bold;">⟨assignment_expr⟩</span> ――> <span style="font-weight:bold;">⟨variable⟩</span> <span style="color:orange;">'='</span> <span style="font-weight:bold;">⟨arithmetic_expr⟩</span>
 
@@ -122,6 +124,7 @@ To overcome this, a transition can be added to initialize them in the Timed Auto
 
 <span style="font-weight:bold;">⟨and_op⟩</span> ――> <span style="color:orange;">'&&'</span>
 </pre>
+\endhtmlonly
 
 ---
 
@@ -129,6 +132,7 @@ To overcome this, a transition can be added to initialize them in the Timed Auto
 
 The following is the grammar for CLTLoc (Constraint Linear Temporal Logic over clocks) formulae.
 
+\htmlonly
 <pre style="font-family: monospace; font-size: 1.1em;">
 <span style="font-weight:bold;">⟨general_cltloc_formula⟩</span> ――> <span style="color:orange;">'('</span> (<span style="font-weight:bold;">⟨unary_cltloc_formula⟩</span> | <span style="font-weight:bold;">⟨binary_cltloc_formula⟩</span> | <span style="font-weight:bold;">⟨pure_cltloc_formula⟩</span>) <span style="color:orange;">')'</span>
 
