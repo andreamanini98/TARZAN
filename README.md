@@ -92,4 +92,10 @@ For a detailed description of TARZAN, please refer to:
 - The TARZAN <a href="https://andreamanini98.github.io/TARZAN/" target="_blank" rel="noopener noreferrer">online documentation</a>.
 - The TARZAN <a href="https://doi.org/10.5281/zenodo.18656202" target="_blank" rel="noopener noreferrer">Artifact</a>.
 
+# Publications
 
+[1] A. Manini, M. Rossi, and P. San Pietro, "TARZAN: A Region-Based Library for Forward and Backward Reachability of Timed Automata (Extended Version)," arXiv:2602.15435 [cs.FL], 2026. Available: https://arxiv.org/abs/2602.15435
+
+[2] A. Manini, M. Rossi, and P. San Pietro, "TARZAN: A Region-Based Library for Forward and Backward Reachability of Timed Automata," to appear in Proc. 46th International Conference on Formal Techniques for Distributed Objects, Components, and Systems (FORTE 2026), 2026.
+
+[3] Manini, A., Rossi, M., & San Pietro, P. (2026). TARZAN Artifact. Zenodo. https://doi.org/10.5281/zenodo.18656203. Artifact evaluated at FORTE 2026; awarded Available and Functional badges.
