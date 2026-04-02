@@ -82,7 +82,6 @@ In Timed Arenas, each location is assigned to a player: controller (`c`) or envi
 
 <span style="font-weight:bold;">⟨literal⟩</span> ――> (<span style="color:orange;">'a..z'</span> | <span style="color:orange;">'A..Z'</span> | <span style="color:orange;">'0..9'</span> | <span style="color:orange;">'_'</span>)+
 </pre>
-\endhtmlonly
 
 ---
 
@@ -150,5 +149,6 @@ The following is the grammar for CLTLoc (Constraint Linear Temporal Logic over c
 
 <span style="font-weight:bold;">⟨conjunction_type⟩</span> ――> <span style="color:orange;">'AND_GENERAL'</span> | <span style="color:orange;">'AND_NEXT'</span>
 </pre>
+\endhtmlonly
 
 [← Back to Main Page](@ref index)
