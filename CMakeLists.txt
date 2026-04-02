@@ -163,8 +163,11 @@ set(LIBRARY_HEADERS
     TARZAN/parser/ast.h
     TARZAN/parser/enums/arithmetic_enum.h
     TARZAN/parser/enums/boolean_op_enum.h
+    TARZAN/parser/enums/cltloc_op_enum.h
     TARZAN/parser/enums/comparison_op_enum.h
+    TARZAN/parser/enums/conjunction_type_enum.h
     TARZAN/parser/enums/input_output_action_enum.h
+    TARZAN/parser/enums/players_enum.h
     TARZAN/regions/Region.h
     TARZAN/regions/RTS.h
     TARZAN/regions/RTSArena.h
@@ -175,7 +178,9 @@ set(LIBRARY_HEADERS
     TARZAN/utilities/function_utilities.h
     TARZAN/utilities/file_utilities.h
     TARZAN/utilities/partition_utilities.h
-    TARZAN/utilities/printing_utilities.h)
+    TARZAN/utilities/printing_utilities.h
+    TARZAN/exceptions/emptyConjunctionOfFormulae_exception.h
+    TARZAN/exceptions/nestedCLTLocFormula_exception.h)
 
 
 # Copying the headers to expose for better retrieve the library.
