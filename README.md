@@ -90,7 +90,6 @@ Assuming TARZAN has been installed as described above, using it in a CMake proje
 For a detailed description of TARZAN, please refer to:
 - The TARZAN <a href="https://github.com/andreamanini98/TARZAN/wiki" target="_blank" rel="noopener noreferrer">wiki</a>.
 - The TARZAN <a href="https://andreamanini98.github.io/TARZAN/" target="_blank" rel="noopener noreferrer">online documentation</a>.
-- The TARZAN <a href="https://doi.org/10.5281/zenodo.18656202" target="_blank" rel="noopener noreferrer">Artifact</a>.
 
 # Publications
 
@@ -98,4 +97,4 @@ For a detailed description of TARZAN, please refer to:
 
 [2] A. Manini, M. Rossi, and P. San Pietro, "TARZAN: A Region-Based Library for Forward and Backward Reachability of Timed Automata," to appear in Proc. 46th International Conference on Formal Techniques for Distributed Objects, Components, and Systems (FORTE 2026), 2026.
 
-[3] A. Manini, M. Rossi, and P. San Pietro, "TARZAN Artifact". Zenodo, feb. 16, 2026. doi: 10.5281/zenodo.18656203. Artifact evaluated at FORTE 2026; awarded Available and Functional badges.
+[3] A. Manini, M. Rossi, and P. San Pietro, "TARZAN Artifact". Zenodo, feb. 16, 2026. doi: <a href="https://doi.org/10.5281/zenodo.18656202" target="_blank" rel="noopener noreferrer">10.5281/zenodo.18656203</a>. Artifact evaluated at FORTE 2026; awarded Available and Functional badges.
