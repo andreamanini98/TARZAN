@@ -147,8 +147,10 @@
 //  <unary_cltloc_op> -> 'BOX' | 'DIAMOND'
 //
 //  <binary_cltloc_op> -> 'UNTIL'
-
-// TODO: aggiornare grammatica su Doxygen quando farai il merge del branch games nel branch main.
+//
+//  <conjunction_of_formulae> -> <conjunction_type> <general_cltloc_formula> (<and_op> <general_cltloc_formula>)*
+//
+//  <conjunction_type> -> 'AND_GENERAL' | 'AND_NEXT'
 
 
 // Reference examples for expression parser:
