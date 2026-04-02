@@ -143,7 +143,7 @@ The following is the grammar for CLTLoc (Constraint Linear Temporal Logic over c
 <span style="font-weight:bold;">⟨pure_cltloc_formula⟩</span> ――> <span style="font-weight:bold;">⟨pure_disjunct⟩</span> (<span style="color:orange;">'||'</span> <span style="font-weight:bold;">⟨pure_disjunct⟩</span>)*
 
 <span style="font-weight:bold;">⟨pure_disjunct⟩</span> ――> <span style="color:orange;">'['</span> (ε | <span style="font-weight:bold;">⟨literal⟩</span> (<span style="color:orange;">','</span> <span style="font-weight:bold;">⟨literal⟩</span>)*) <span style="color:orange;">']'</span> <span style="color:orange;">','</span>
-                   <span style="color:orange;">'['</span> (ε | <span style="font-weight:bold;">⟨clock_constraint_rule⟩</span> (<span style="color:orange;">','</span> <span style="font-weight:bold;">⟨clock_constraint_rule⟩</span>)*) <span style="color:orange;">']'</span>
+                    <span style="color:orange;">'['</span> (ε | <span style="font-weight:bold;">⟨clock_constraint_rule⟩</span> (<span style="color:orange;">','</span> <span style="font-weight:bold;">⟨clock_constraint_rule⟩</span>)*) <span style="color:orange;">']'</span>
 
 <span style="font-weight:bold;">⟨unary_cltloc_op⟩</span> ――> <span style="color:orange;">'BOX'</span> | <span style="color:orange;">'DIAMOND'</span>
 
