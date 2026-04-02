@@ -8,6 +8,9 @@ TARZAN (Timed Automata Region and Zone library for real-time systems ANalysis) i
 Although zones are the de facto standard in the formal verification of TA, TARZAN exhibits superior performance on TA having punctual guards (i.e., guards restricted to equality constraints) and on closed TA.
 Consequently, integrating TARZAN into existing zone-based state-of-the-art tools has the potential to significantly enhance their overall verification capabilities.
 
+TARZAN currently supports forward and backward reachability analysis of Timed Automata and Timed Games solving.
+More information about the supported Timed Games variants in the wiki.
+
 
 
 # Getting Started
@@ -34,6 +37,11 @@ TARZAN needs the following dependencies to be installed:
 - A C++20 compatible compiler (should also support OpenMP, e.g., Clang).
 - Python v. 3.10 (required for benchmark summary generation).
 - A proper LaTeX distributon (required for benchmark summary generation).
+
+When performing Timed Games analysis, OpenMP parallelization is enabled by default.
+You can change this behavior before installing or building the library by setting to OFF the relative toggle in the `CMakeLists.txt` file.
+Currently, the only tested OpenMP-compatible compiler is Clang, which requires the following dependency:
+-  <a href="https://formulae.brew.sh/formula/libomp" target="_blank" rel="noopener noreferrer">libmop</a> (every version should work).
   
 If you want to run the benchmarks against Uppaal and TChecker, you also need to install those tools:
 - <a href="https://uppaal.org" target="_blank" rel="noopener noreferrer">Uppaal</a> v. 5.0 (other versions should work as well).
