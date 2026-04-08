@@ -486,8 +486,17 @@ namespace timed_automaton::ast
          * @warning To be used at the beginning, right after parsing a Timed Automaton, since at the current time of development this is
          *          the only way we map locations to integers.
          */
-        // TODO: if needed to reverse from this, you need to obtain a new std::unordered_map having integer keys and std::string values.
         [[nodiscard]] std::unordered_map<std::string, int> mapLocationsToInt() const;
+
+
+        /**
+         *
+         * @return a std::unordered_map from integers to location names.
+         *
+         * @warning To be used at the beginning, right after parsing a Timed Automaton, since at the current time of development this is
+         *          the only way we map integers to locations.
+         */
+        [[nodiscard]] std::unordered_map<int, std::string> mapIntToLocations() const;
 
 
         /**
@@ -649,8 +658,17 @@ namespace timed_automaton::ast
          * @warning To be used at the beginning, right after parsing a Timed Arena, since at the current time of development this is
          *          the only way we map locations to integers.
          */
-        // TODO: if needed to reverse from this, you need to obtain a new std::unordered_map having integer keys and std::string values.
         [[nodiscard]] std::unordered_map<std::string, int> mapLocationsToInt() const;
+
+
+        /**
+         *
+         * @return a std::unordered_map from integers to location names.
+         *
+         * @warning To be used at the beginning, right after parsing a Timed Arena, since at the current time of development this is
+         *          the only way we map integers to locations.
+         */
+        [[nodiscard]] std::unordered_map<int, std::string> mapIntToLocations() const;
 
 
         /**

@@ -218,6 +218,7 @@ namespace region
         {
             clocksIndices = arena.getClocksIndices();
             locationsToInt = arena.mapLocationsToInt();
+            intToLocations = arena.mapIntToLocations();
             maxConstants = arena.getMaxConstants(clocksIndices, formula);
             initialLocations = arena.getInitialLocations(locationsToInt);
             outTransitions = arena.getOutTransitions(locationsToInt);
@@ -238,6 +239,7 @@ namespace region
         {
             clocksIndices = arena.getClocksIndices();
             locationsToInt = arena.mapLocationsToInt();
+            intToLocations = arena.mapIntToLocations();
             maxConstants = arena.getMaxConstants(clocksIndices, conjunction);
             initialLocations = arena.getInitialLocations(locationsToInt);
             outTransitions = arena.getOutTransitions(locationsToInt);

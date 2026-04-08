@@ -425,6 +425,21 @@ std::unordered_map<std::string, int> timed_automaton::ast::timedAutomaton::mapLo
 }
 
 
+std::unordered_map<int, std::string> timed_automaton::ast::timedAutomaton::mapIntToLocations() const
+{
+    std::unordered_map<int, std::string> map;
+    int idx{};
+
+    for (const auto &loc: locations | std::views::keys)
+    {
+        map[idx] = loc;
+        idx++;
+    }
+
+    return map;
+}
+
+
 std::vector<int> timed_automaton::ast::timedAutomaton::getInitialLocations(const std::unordered_map<std::string, int> &locToIntMap) const
 {
     std::vector<int> initialLocations{};
@@ -659,6 +674,21 @@ std::unordered_map<std::string, int> timed_automaton::ast::timedArena::mapLocati
     for (const auto &loc: locations | std::views::keys)
     {
         map[loc] = idx;
+        idx++;
+    }
+
+    return map;
+}
+
+
+std::unordered_map<int, std::string> timed_automaton::ast::timedArena::mapIntToLocations() const
+{
+    std::unordered_map<int, std::string> map;
+    int idx{};
+
+    for (const auto &loc: locations | std::views::keys)
+    {
+        map[idx] = loc;
         idx++;
     }
 
