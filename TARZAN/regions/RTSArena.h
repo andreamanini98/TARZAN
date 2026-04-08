@@ -3,6 +3,7 @@
 
 #include "TARZAN/regions/Region.h"
 #include "TARZAN/regions/RTS.h"
+#include "TARZAN/regions/StrategyGraph.h"
 
 
 // A pointer to a region object.
@@ -15,6 +16,11 @@ namespace region
     class RTSArena : public RTS
     {
         absl::flat_hash_map<int, players_sym> locationsToPlayers{};
+
+        // Whenever set to true, the function piFilter() will compute the strategy graph for a given application of pi.
+        bool computeStrategyGraph;
+
+        StrategyGraph strategyGraph{};
 
 
         /**
@@ -139,6 +145,32 @@ namespace region
 
 
         /**
+         * Determines the transitions inside the strategy graph.
+         *
+         * Whenever a region, which can be the source of a move, is collected by the backward algorithm, this function adds the respective move transition into
+         * the strategy graph, i.e., a transition in the strategy graph consists in a delay and a discrete transition together, which is exactly the definition of TCG moves.
+         *
+         * @param sourceRegion the source region of a move.
+         * @param action the action over the move transition.
+         * @param targetRegion the target region of a move.
+         * @param setG set of goal regions.
+         * @param threadLocalRegions vector of vectors collecting the resulting region if valid.
+         *                           Each external vector corresponds to a thread in OpenMP (only one inner vector is present if OpenMP is not enabled).
+         * @param validActions actions that the controller can potentially choose to declare a move guaranteeing it to reach a region in setG.
+         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
+         *
+         * @note The delay is not considered here. It may be derived from the stored regions in the strategy graph.
+         */
+        inline void collectLegalRegionByPiStrategy(const Region &sourceRegion,
+                                                   const std::string &action,
+                                                   const Region &targetRegion,
+                                                   const regionSet &setG,
+                                                   std::vector<std::vector<Region>> &threadLocalRegions,
+                                                   const absl::flat_hash_map<std::string, bool> &validActions,
+                                                   bool checkAllSuccessorsInvariants);
+
+
+        /**
          * @brief Solves a game where the formula is: BOX phi.
          *
          * @param unaryFormula the formula to solve.
@@ -146,7 +178,7 @@ namespace region
          *
          * @throws std::logic_error if the formula has the wrong size.
          */
-        [[nodiscard]] inline bool solveGameWithBoxFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula) const;
+        [[nodiscard]] inline bool solveGameWithBoxFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula);
 
 
         /**
@@ -157,7 +189,7 @@ namespace region
          *
          * @throws std::logic_error if the formula has the wrong size.
          */
-        [[nodiscard]] inline bool solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula) const;
+        [[nodiscard]] inline bool solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula);
 
 
         /**
@@ -168,7 +200,7 @@ namespace region
          *
          * @throws std::logic_error if the formula has the wrong size.
          */
-        [[nodiscard]] inline bool solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula) const;
+        [[nodiscard]] inline bool solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula);
 
 
         /**
@@ -179,7 +211,7 @@ namespace region
          *
          * @throws std::logic_error if the formula is not of the form: NEXT (phi UNTIL psi).
          */
-        [[nodiscard]] inline bool solveGameWithNextFormula(const cltloc::ast::generalCLTLocFormula &formula) const;
+        [[nodiscard]] inline bool solveGameWithNextFormula(const cltloc::ast::generalCLTLocFormula &formula);
 
 
         /**
@@ -190,14 +222,15 @@ namespace region
          *
          * @warning Remember to specify the NEXT operator with applicationCount equal to 0 if you need a formula to be true at the current position in time.
          */
-        [[nodiscard]] inline bool solveGameWithAndNextConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) const;
+        [[nodiscard]] inline bool solveGameWithAndNextConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae);
 
 
     public:
-        explicit RTSArena(const timed_automaton::ast::timedArena &arena)
+        RTSArena(const timed_automaton::ast::timedArena &arena, const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph)
         {
             clocksIndices = arena.getClocksIndices();
             locationsToInt = arena.mapLocationsToInt();
+            intToLocations = arena.mapIntToLocations();
             maxConstants = arena.getMaxConstants(clocksIndices);
             initialLocations = arena.getInitialLocations(locationsToInt);
             outTransitions = arena.getOutTransitions(locationsToInt);
@@ -214,7 +247,9 @@ namespace region
         }
 
 
-        RTSArena(const timed_automaton::ast::timedArena &arena, const cltloc::ast::generalCLTLocFormula &formula)
+        RTSArena(const timed_automaton::ast::timedArena &arena,
+                 const cltloc::ast::generalCLTLocFormula &formula,
+                 const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph)
         {
             clocksIndices = arena.getClocksIndices();
             locationsToInt = arena.mapLocationsToInt();
@@ -235,7 +270,9 @@ namespace region
         }
 
 
-        RTSArena(const timed_automaton::ast::timedArena &arena, const cltloc::ast::conjunctionOfFormulae &conjunction)
+        RTSArena(const timed_automaton::ast::timedArena &arena,
+                 const cltloc::ast::conjunctionOfFormulae &conjunction,
+                 const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph)
         {
             clocksIndices = arena.getClocksIndices();
             locationsToInt = arena.mapLocationsToInt();
@@ -310,7 +347,7 @@ namespace region
                       regionSet &filteredRegions,
                       const regionSet &intersectionSet,
                       bool skipPredecessorsInSetG,
-                      bool checkAllSuccessorsInvariants) const;
+                      bool checkAllSuccessorsInvariants);
 
 
         /**
@@ -323,7 +360,7 @@ namespace region
          *
          * @warning The function updates setG and toProcess.
          */
-        [[nodiscard]] bool timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
+        [[nodiscard]] bool timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter);
 
 
         /**
@@ -337,7 +374,7 @@ namespace region
          *
          * @warning The function updates setG and toProcess.
          */
-        [[nodiscard]] bool timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
+        [[nodiscard]] bool timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter);
 
 
         /**
@@ -351,7 +388,7 @@ namespace region
          *
          * @warning The function updates setG and toProcess.
          */
-        [[nodiscard]] bool timedNextReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
+        [[nodiscard]] bool timedNextReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter);
 
 
         /**
@@ -364,7 +401,7 @@ namespace region
          *
          * @warning The function updates setG and toProcess.
          */
-        [[nodiscard]] bool timedSafety(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter) const;
+        [[nodiscard]] bool timedSafety(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter);
 
 
         /**
@@ -379,7 +416,7 @@ namespace region
          *
          * @throws std::logic_error if an unhandled formula type is encountered, or a pure formula is given as the parameter value.
          */
-        [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula) const;
+        [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula);
 
 
         /**
@@ -395,7 +432,18 @@ namespace region
          *
          * @warning Remember to specify the NEXT operator with applicationCount equal to 0 if you need a formula to be true at the current position in time.
          */
-        [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::conjunctionOfFormulae &conjunction) const;
+        [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::conjunctionOfFormulae &conjunction);
+
+
+        // TODO: Implementare qui una funzione per esplorare o sintetizzare una strategia. Farlo magari in base al tipo di gioco considerato (winning condition).
+
+        // TODO: durante l'esplorazione o la sintesi, fare dei print fatti bene delle regioni, ossia nome della regione e valore dei clock.
+        //       vedere se è anche possibile derivare il delay che deve scegliere il controller quando si trova nelle controller regions.
+
+        [[nodiscard]] std::string strategyGraphToString() const
+        {
+            return strategyGraph.to_string(intToLocations);
+        }
 
 
         [[nodiscard]] std::string to_string() const;

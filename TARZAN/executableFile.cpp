@@ -7,13 +7,13 @@
 
 int main()
 {
-    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks_games/models/production_cell/arena/production_cell.txt";
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/strategies_test/arena.txt";
     const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath);
 
-    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/CLTLoc_formulae/and_next.txt";
-    const cltloc::ast::conjunctionOfFormulae phi = TARZAN::parseConjunctionOfFormulae(formulaPath);
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/strategies_test/winning_condition.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
 
-    const region::RTSArena rts(arena, phi);
+    region::RTSArena rts(arena, phi, true);
 
     std::cout << phi << std::endl;
     // std::cout << rts.to_string() << std::endl;
@@ -22,6 +22,8 @@ int main()
         std::cout << "-----" << std::endl;
     else
         std::cout << "----- " << std::endl;
+
+    std::cout << rts.strategyGraphToString() << std::endl;
 
     return 0;
 }
