@@ -15,7 +15,7 @@ int main()
     const std::string formulaPath = "../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/safety0.txt";
     const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
 
-    const region::RTSArena rts(arena, phi);
+    region::RTSArena rts(arena, phi, false);
 
     // std::cout << phi.to_string() << std::endl;
     // std::cout << rts.to_string() << std::endl;
