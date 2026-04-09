@@ -19,6 +19,8 @@
 #include "absl/container/btree_map.h"
 #include <boost/spirit/home/x3/support/ast/variant.hpp>
 
+#include "TARZAN/utilities/hash_utilities.h"
+
 // TODO: avoid code duplication (if possible).
 
 
@@ -365,6 +367,13 @@ namespace timed_automaton::ast
 
 
         [[nodiscard]] std::string to_string() const;
+
+
+        // Needed since we introduced a transition hash.
+        bool operator==(const clockConstraint &other) const
+        {
+            return clock == other.clock && constraintOperator == other.constraintOperator && comparingConstant == other.comparingConstant;
+        }
     };
 
 
@@ -427,6 +436,65 @@ namespace timed_automaton::ast
 
 
         [[nodiscard]] std::string to_string() const;
+
+
+        // Needed since we introduced a transition hash.
+        bool operator==(const transition &other) const
+        {
+            const auto intGuardStr = [](const std::optional<expr::ast::booleanExpr> &g) {
+                return g.has_value() ? g->to_string() : "";
+            };
+
+            const auto assignmentsStr = [](const std::vector<expr::ast::assignmentExpr> &a) {
+                std::string s;
+                for (const auto &e: a)
+                    s += e.to_string();
+                return s;
+            };
+
+            return startingLocation == other.startingLocation &&
+                   targetLocation == other.targetLocation &&
+                   action == other.action &&
+                   clockGuard == other.clockGuard &&
+                   clocksToReset == other.clocksToReset &&
+                   intGuardStr(integerGuard) == intGuardStr(other.integerGuard) &&
+                   assignmentsStr(integerAssignments) == assignmentsStr(other.integerAssignments);
+        }
+    };
+
+
+    /// Hash function for transition.
+    struct transitionHash
+    {
+        std::size_t operator()(const transition &tr) const
+        {
+            std::size_t seed = 0;
+
+            // Hash start and target locations.
+            hash_combine(seed, tr.startingLocation);
+            hash_combine(seed, tr.targetLocation);
+
+            // Hash action name and optional synchronization.
+            hash_combine(seed, tr.action.first);
+            if (tr.action.second.has_value())
+                hash_combine(seed, static_cast<int>(tr.action.second.value()));
+
+            // Hash clock guard.
+            hash_combine(seed, tr.clockGuard.size());
+            for (const auto &[clock, constraintOperator, comparingConstant]: tr.clockGuard)
+            {
+                hash_combine(seed, clock);
+                hash_combine(seed, static_cast<int>(constraintOperator));
+                hash_combine(seed, comparingConstant);
+            }
+
+            // Hash clocks to reset.
+            hash_combine(seed, tr.clocksToReset.size());
+            for (const auto &c: tr.clocksToReset)
+                hash_combine(seed, c);
+
+            return seed;
+        }
     };
 
 
