@@ -145,14 +145,15 @@ namespace region
 
 
         /**
-         * Determines the transitions inside the strategy graph.
+         * @brief Determines the transitions inside the strategy graph.
          *
          * Whenever a region, which can be the source of a move, is collected by the backward algorithm, this function adds the respective move transition into
          * the strategy graph, i.e., a transition in the strategy graph consists in a delay and a discrete transition together, which is exactly the definition of TCG moves.
          *
          * @param sourceRegion the source region of a move.
-         * @param action the action over the move transition.
+         * @param arenaTransition the original Timed ARena transitino over which the strategy transition is computed.
          * @param targetRegion the target region of a move.
+         * @param cv the clock valuation of a discrete predecessor of targetRegion.
          * @param setG set of goal regions.
          * @param threadLocalRegions vector of vectors collecting the resulting region if valid.
          *                           Each external vector corresponds to a thread in OpenMP (only one inner vector is present if OpenMP is not enabled).
@@ -162,8 +163,9 @@ namespace region
          * @note The delay is not considered here. It may be derived from the stored regions in the strategy graph.
          */
         inline void collectLegalRegionByPiStrategy(const Region &sourceRegion,
-                                                   const std::string &action,
+                                                   const transition &arenaTransition,
                                                    const Region &targetRegion,
+                                                   const clockValuation &cv,
                                                    const regionSet &setG,
                                                    std::vector<std::vector<Region>> &threadLocalRegions,
                                                    const absl::flat_hash_map<std::string, bool> &validActions,
@@ -439,6 +441,15 @@ namespace region
 
         // TODO: durante l'esplorazione o la sintesi, fare dei print fatti bene delle regioni, ossia nome della regione e valore dei clock.
         //       vedere se è anche possibile derivare il delay che deve scegliere il controller quando si trova nelle controller regions.
+
+        // TODO: vedere se si riesce a fare sintesi anche con i next until.
+
+        // TODO: prossimi passi:
+        //       1) Fare algoritmo che esplora lo strategy graph ed estrae una strategia.
+        //       2) Fare lo strategy graph per la safety e next until.
+        //       3) Stampare a schermo in maniera carina le strategie. Okkio magari a differenziare regioni del controller e dell'environment.
+        //       Occorre determinare quali clock sono resettati in una transizione dell'arena, così da dirlo anche nelle strategie??
+        //       I delay che devono essere presi diventano banali se si assume di avere un clock now che tiene traccia del tempo trascorso in ogni mossa.
 
         [[nodiscard]] std::string strategyGraphToString() const
         {

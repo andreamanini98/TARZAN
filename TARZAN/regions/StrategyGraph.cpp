@@ -3,45 +3,17 @@
 #include <sstream>
 
 
-void region::StrategyGraph::addStrategyTransition(const Region &sourceRegion, const std::string &action, const Region &targetRegion)
+void region::StrategyGraph::addStrategyTransition(const Region &source, const transition &arenaTransition, const Region &target, const clockValuation &cv)
 {
-    transitions[sourceRegion].emplace(action, targetRegion);
+    strategyTransitions[source].emplace(arenaTransition, target, cv);
 }
 
 
-transitionSet region::StrategyGraph::getTransitionsGivenSource(const Region &sourceRegion) const
+strategyTransitionSet region::StrategyGraph::getStrategyTransitionsGivenSource(const Region &source) const
 {
-    if (const auto it = transitions.find(sourceRegion); it != transitions.end())
+    if (const auto it = strategyTransitions.find(source); it != strategyTransitions.end())
         return it->second;
     return {};
-}
-
-
-std::string region::StrategyGraph::to_string() const
-{
-    std::ostringstream oss;
-
-    oss << "StrategyGraph:\n";
-
-    oss << "  Heads (initial regions):\n";
-    for (const auto &head: heads)
-        oss << "    " << head.toString() << "\n";
-
-    oss << "  Target regions:\n";
-    for (const auto &target: targetRegions)
-        oss << "    " << target.toString() << "\n";
-
-    oss << "  Transitions:\n";
-    for (const auto &[source, edges]: transitions)
-    {
-        oss << source.toString();
-        for (const auto &[action, target]: edges)
-            oss << "      --[" << action << "]-->\n " << target.toString();
-
-        oss << "\n\n";
-    }
-
-    return oss.str();
 }
 
 
@@ -70,18 +42,21 @@ std::string region::StrategyGraph::to_string(const std::unordered_map<int, std::
     }
 
     oss << "\n\n  Transitions:\n";
-    for (const auto &[source, edges]: transitions)
+    for (const auto &[source, edges]: strategyTransitions)
     {
         oss << "    [" << intToLocations.at(source.getLocation()) << " ";
         for (const auto &[h, hasNonZeroFrac]: source.getClockValuation())
             oss << "(" << h << ", " << (hasNonZeroFrac ? "true" : "false") << ")";
         oss << "]\n";
-        for (const auto &[action, target]: edges)
+        for (const auto &[tr, target, cv]: edges)
         {
-            oss << "      --[" << action << "]--> [" << intToLocations.at(target.getLocation()) << " ";
+            oss << "      --[" << tr.to_string() << "]--> [" << intToLocations.at(target.getLocation()) << " ";
             for (const auto &[h, hasNonZeroFrac]: target.getClockValuation())
                 oss << "(" << h << ", " << (hasNonZeroFrac ? "true" : "false") << ")";
-            oss << "]\n";
+            oss << "] (predecessor cv: ";
+            for (const auto &[h, hasNonZeroFrac]: cv)
+                oss << "(" << h << ", " << (hasNonZeroFrac ? "true" : "false") << ")";
+            oss << ")\n";
         }
         oss << "\n";
     }

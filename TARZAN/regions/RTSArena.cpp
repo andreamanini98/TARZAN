@@ -323,8 +323,9 @@ inline void region::RTSArena::collectLegalRegionByPi(const Region &reg,
 
 
 inline void region::RTSArena::collectLegalRegionByPiStrategy(const Region &sourceRegion,
-                                                             const std::string &action,
+                                                             const transition &arenaTransition,
                                                              const Region &targetRegion,
+                                                             const clockValuation &cv,
                                                              const regionSet &setG,
                                                              std::vector<std::vector<Region>> &threadLocalRegions,
                                                              const absl::flat_hash_map<std::string, bool> &validActions,
@@ -339,11 +340,11 @@ inline void region::RTSArena::collectLegalRegionByPiStrategy(const Region &sourc
         // TODO: It may be beneficial to adopt the same technique for work splitting and merging results as done for threadLocalRegions instead of using critical.
 #pragma omp critical
         {
-            strategyGraph.addStrategyTransition(sourceRegion, action, targetRegion);
+            strategyGraph.addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
         }
         threadLocalRegions[omp_get_thread_num()].push_back(sourceRegion);
 #else
-        strategyGraph.addStrategyTransition(sourceRegion, action, targetRegion);
+        strategyGraph.addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
         threadLocalRegions[0].push_back(sourceRegion);
 #endif
     }
@@ -355,7 +356,6 @@ inline void region::RTSArena::collectLegalRegionByPiStrategy(const Region &sourc
 // TODO: il puntatore head dello strategy graph devi settarlo negli algoritmi tipo timedReachability quando fai il check sulle regioni iniziali (fatti restituire un pair booleano e puntatore a regione)
 
 // TODO: rimarcare, magari lanciando un'eccezione, che le strategie al momento vengono calcolate solo per reachability e safety (senza next).
-//       analogamente per le regioni target
 void region::RTSArena::piFilter(const regionSet &setG,
                                 const std::vector<RegionPtr> &toProcess,
                                 regionSet &filteredRegions,
@@ -447,8 +447,9 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                         if (computeStrategyGraph)
                         {
                             collectLegalRegionByPiStrategy(regUnderAnalysis,
-                                                           currTrans.action.first,
+                                                           currTrans,
                                                            currentRegion,
+                                                           reg.getClockValuation(),
                                                            setG,
                                                            threadLocalRegions,
                                                            validActions,
@@ -470,8 +471,9 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                         if (computeStrategyGraph)
                         {
                             collectLegalRegionByPiStrategy(regStillToProcess,
-                                                           currTrans.action.first,
+                                                           currTrans,
                                                            currentRegion,
+                                                           reg.getClockValuation(),
                                                            setG,
                                                            threadLocalRegions,
                                                            validActions,
