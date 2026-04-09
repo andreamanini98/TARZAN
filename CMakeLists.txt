@@ -182,7 +182,8 @@ set(LIBRARY_HEADERS
         TARZAN/utilities/partition_utilities.h
         TARZAN/utilities/printing_utilities.h
         TARZAN/exceptions/emptyConjunctionOfFormulae_exception.h
-        TARZAN/exceptions/nestedCLTLocFormula_exception.h)
+        TARZAN/exceptions/nestedCLTLocFormula_exception.h
+        TARZAN/exceptions/cannotSynthesizeStrategies_exception.h)
 
 
 # Copying the headers to expose for better retrieve the library.

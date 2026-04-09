@@ -1,7 +1,9 @@
 #include "RTSArena.h"
 #include "TARZAN/utilities/file_utilities.h"
 #include "TARZAN/exceptions/nestedCLTLocFormula_exception.h"
+#include "TARZAN/exceptions/cannotSynthesizeStrategies_exception.h"
 #include "TARZAN/utilities/function_utilities.h"
+#include "TARZAN/utilities/printing_utilities.h"
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -999,6 +1001,142 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::conjunctionOfForm
 #endif
 
     return result;
+}
+
+
+void region::RTSArena::synthesizeReachabilityStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const
+{
+    constexpr int boxWidth = 42;
+    const auto &targetRegions = strategyGraph.getTargetRegions();
+
+    std::cout << "\n";
+    std::cout << "  \u2554" << repeatString("\u2550", boxWidth) << "\u2557\n";
+    std::cout << "  \u2551 WINNING CONTROLLER REACHABILITY STRATEGY \u2551\n";
+    std::cout << "  \u255a" << repeatString("\u2550", boxWidth) << "\u255d\n\n";
+
+    // We assume to always take the first region in heads as the starting one.
+    Region current = strategyGraph.getHeads()[0];
+    int step = 0;
+
+    while (!targetRegions.contains(current))
+    {
+        const strategyTransitionSet strategyTransSet = strategyGraph.getStrategyTransitionsGivenSource(current);
+
+        if (strategyTransSet.empty())
+            throw std::logic_error("No outgoing strategy transitions from current region!");
+
+        // We assume to always take the first available transition in the strategy transition set.
+        const auto &[arenaTransition, target, moveClockValuation] = *strategyTransSet.begin();
+
+        // Print the current region.
+        std::cout << "  \u250c" << repeatString("\u2500", boxWidth) << "\u2510\n";
+        std::cout << "    Step " << step << "\n";
+        std::cout << "    " << repeatString("\u2500", 8) << "\n";
+        printRegionInStrategy(current, intToLocations, indicesToClocks, locationsToPlayers, "    ");
+        std::cout << "  \u2514" << repeatString("\u2500", boxWidth) << "\u2518\n";
+
+        // Print the move details.
+        std::cout << "          \u2502\n";
+        std::cout << "          \u251c\u2500 Move clock valuation:\n";
+        printClockValuationInStrategy(moveClockValuation, indicesToClocks, "          \u2502  ");
+        std::cout << "          \u2502\n";
+
+        // Print the arena transition details.
+        std::string actionName = arenaTransition.action.first;
+        if (arenaTransition.action.second.has_value())
+            actionName += in_out_act_to_string(arenaTransition.action.second.value());
+        std::cout << "          \u251c\u2500 Action: " << actionName << "\n";
+        if (!arenaTransition.clockGuard.empty())
+        {
+            std::cout << "          \u251c\u2500 Guard: ";
+            for (size_t j = 0; j < arenaTransition.clockGuard.size(); j++)
+            {
+                if (j > 0)
+                    std::cout << " && ";
+                std::cout << arenaTransition.clockGuard[j].to_string();
+            }
+            std::cout << "\n";
+        }
+        if (!arenaTransition.clocksToReset.empty())
+        {
+            std::cout << "          \u251c\u2500 Reset: ";
+            for (size_t j = 0; j < arenaTransition.clocksToReset.size(); j++)
+            {
+                if (j > 0)
+                    std::cout << ", ";
+                std::cout << arenaTransition.clocksToReset[j];
+            }
+            std::cout << "\n";
+        }
+        std::cout << "          \u2502\n";
+        std::cout << "          \u25bc\n";
+
+        current = target;
+        step++;
+    }
+
+    // Print the final region (the target).
+    std::cout << "  \u250c" << repeatString("\u2500", boxWidth) << "\u2510\n";
+    std::cout << "    Step " << step << " \u2605\n";
+    std::cout << "    " << repeatString("\u2500", 8) << "\n";
+    printRegionInStrategy(current, intToLocations, indicesToClocks, locationsToPlayers, "    ");
+    std::cout << "  \u2514" << repeatString("\u2500", boxWidth) << "\u2518\n";
+}
+
+
+void region::RTSArena::synthesizeStrategy(const cltloc::ast::generalCLTLocFormula &formula)
+{
+    if (!computeStrategyGraph)
+        throw CannotSynthesizeStrategiesException("The parameter 'computeStrategyGraph' is set to false!");
+
+    if (!solveTimedCLTLocGame(formula))
+        throw CannotSynthesizeStrategiesException("A controller winning strategy does not exist!");
+
+    // Computing a map from clock indices to clock names for better showing the strategy.
+    // We assume here that the original mapping is a correctly constructed bijection between clock names and integers.
+    std::unordered_map<int, std::string> indicesToClocks;
+    indicesToClocks.reserve(clocksIndices.size());
+    for (const auto &[name, index]: clocksIndices)
+        indicesToClocks.emplace(index, name);
+
+    // We now synthesize a winning controller strategy based on the winning condition type.
+    std::visit([this, indicesToClocks]<typename T0>(T0 const &val) {
+        using T = std::decay_t<T0>;
+
+        if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
+        {
+            // Pure formula: currently unhandled.
+            throw std::logic_error("Pure formulae are not currently supported when solving Timed CLTLoc Games.");
+            // ---
+        } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>)
+        {
+            // Unary formula.
+            switch (const auto &unaryFormula = val.get(); unaryFormula.op)
+            {
+                case DIAMOND:
+                    synthesizeReachabilityStrategy(indicesToClocks);
+                    break;
+
+                default:
+                    throw std::logic_error("Invalid CLTLoc formula for synthesis.");
+            }
+            // ---
+        } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
+        {
+            // Binary formula.
+            switch (const auto &binaryFormula = val.get(); binaryFormula.op)
+            {
+                case UNTIL:
+                    synthesizeReachabilityStrategy(indicesToClocks);
+                    break;
+
+                default:
+                    throw std::logic_error("Invalid CLTLoc formula for synthesis.");
+            }
+            // ---
+        } else
+            throw std::logic_error("Invalid CLTLoc formula for synthesis.");
+    }, formula.value);
 }
 
 

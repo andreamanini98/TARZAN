@@ -227,6 +227,18 @@ namespace region
         [[nodiscard]] inline bool solveGameWithAndNextConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae);
 
 
+        /**
+         * @brief Synthesizes a winning controller strategy for a reachability TCG.
+         *
+         * @param indicesToClocks a map from clock indices to clock names.
+         *
+         * @throws std::logic_error if a region does not have outgoing strategy transitions.
+         *
+         * @warning The strategy graph must be cycle-free for the synthesis algorithm to work.
+         */
+        void synthesizeReachabilityStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const;
+
+
     public:
         RTSArena(const timed_automaton::ast::timedArena &arena, const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph)
         {
@@ -437,19 +449,20 @@ namespace region
         [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::conjunctionOfFormulae &conjunction);
 
 
-        // TODO: Implementare qui una funzione per esplorare o sintetizzare una strategia. Farlo magari in base al tipo di gioco considerato (winning condition).
+        /**
+         * @brief Synthesizes a winning controller strategy.
+         *
+         * @param formula the general CLTLoc formula to process.
+         *
+         * @throws CannotSynthesizeStrategiesException if a winning controller strategy cannot be synthesized.
+         * @throws std::logic_error if an invalid CLTLoc formula is used for synthesis.
+         */
+        void synthesizeStrategy(const cltloc::ast::generalCLTLocFormula &formula);
 
-        // TODO: durante l'esplorazione o la sintesi, fare dei print fatti bene delle regioni, ossia nome della regione e valore dei clock.
-        //       vedere se è anche possibile derivare il delay che deve scegliere il controller quando si trova nelle controller regions.
-
-        // TODO: vedere se si riesce a fare sintesi anche con i next until.
 
         // TODO: prossimi passi:
-        //       1) Fare algoritmo che esplora lo strategy graph ed estrae una strategia.
-        //       2) Fare lo strategy graph per la safety e next until.
-        //       3) Stampare a schermo in maniera carina le strategie. Okkio magari a differenziare regioni del controller e dell'environment.
-        //       Occorre determinare quali clock sono resettati in una transizione dell'arena, così da dirlo anche nelle strategie??
-        //       I delay che devono essere presi diventano banali se si assume di avere un clock now che tiene traccia del tempo trascorso in ogni mossa.
+        //       Testare se la sintesi funziona anche con una formula until (senza il next). Dovrebbe funzionare.
+        //       Calcolare strategie per safety e next until, usando come base la sintesi della reachability.
 
         [[nodiscard]] std::string strategyGraphToString() const
         {

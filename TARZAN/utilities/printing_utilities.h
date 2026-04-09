@@ -1,9 +1,14 @@
 #ifndef PRINTING_UTILITIES_H
 #define PRINTING_UTILITIES_H
 
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <type_traits>
+#include <unordered_map>
+#include <vector>
+
+#include "TARZAN/regions/Region.h"
 
 
 /**
@@ -42,5 +47,61 @@ std::string join_elements(const Container &container, const std::string &delimit
     return oss.str();
 }
 
+
+/**
+ * @brief Prints a clock valuation with clock names during strategy synthesis.
+ *
+ * @param cv the clock valuation to print.
+ * @param indicesToClocks a map from clock indices to clock names.
+ * @param indent the indentation string to prepend to each line.
+ */
+// TODO: if desired, this function can be modified to show the intervals in which clock values fall.
+inline void printClockValuationInStrategy(const std::vector<std::pair<int, bool>> &cv,
+                                          const std::unordered_map<int, std::string> &indicesToClocks,
+                                          const std::string &indent)
+{
+    for (int i = 0; i < static_cast<int>(cv.size()); i++)
+        std::cout << indent << indicesToClocks.at(i) << " := (" << cv[i].first << ", " << (cv[i].second ? "frac > 0" : "frac = 0") << ")\n";
+}
+
+
+/**
+ * @brief Prints a region (location name and clock valuation).
+ *
+ * @param reg the region to print.
+ * @param intToLocations a map from location indices to location names.
+ * @param indicesToClocks a map from clock indices to clock names.
+ * @param locationsToPlayers a map from location indices to players.
+ * @param indent the indentation string to prepend to each line.
+ */
+inline void printRegionInStrategy(const region::Region &reg,
+                                  const std::unordered_map<int, std::string> &intToLocations,
+                                  const std::unordered_map<int, std::string> &indicesToClocks,
+                                  const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
+                                  const std::string &indent)
+{
+    const int regLocation = reg.getLocation();
+    std::cout << indent << intToLocations.at(regLocation) << " [" << locationsToPlayers.at(regLocation) << "]\n";
+    printClockValuationInStrategy(reg.getClockValuation(), indicesToClocks, indent);
+}
+
+
+/**
+ * @brief Repeats a string n times.
+ *
+ * @param str the string to repeat.
+ * @param n how many times to repeat the string.
+ * @return a string repeated n times.
+ */
+inline std::string repeatString(const std::string &str, const size_t n)
+{
+    std::string result;
+    result.reserve(str.size() * n);
+
+    for (size_t i = 0; i < n; i++)
+        result += str;
+
+    return result;
+}
 
 #endif //PRINTING_UTILITIES_H
