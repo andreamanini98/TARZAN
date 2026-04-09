@@ -8,6 +8,7 @@
 #include "TARZAN/utilities/hash_utilities.h"
 
 using transition = timed_automaton::ast::transition;
+using clockValuation = std::vector<std::pair<int, bool>>;
 
 // TODO: vedere come adattare questo alle regioni delle arene. Secondo me non occorre fare altro, q rende possibile determinare la natura
 //       delle locations (controller o environment), ma occorre guardare nella rappresentazione dell'arena. Al limite aggiungi un Bool.
