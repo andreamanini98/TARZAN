@@ -24,6 +24,31 @@ namespace region
 
 
         /**
+         * @brief Initializes some fields of RTSArena.
+         *
+         * @param arena the arena from which to take the initialization values.
+         */
+        void initRTSArena(const timed_automaton::ast::timedArena &arena)
+        {
+            clocksIndices = arena.getClocksIndices();
+            locationsToInt = arena.mapLocationsToInt();
+            intToLocations = arena.mapIntToLocations();
+            initialLocations = arena.getInitialLocations(locationsToInt);
+            outTransitions = arena.getOutTransitions(locationsToInt);
+            inTransitions = arena.getInTransitions(locationsToInt);
+            invariants = arena.getInvariants(locationsToInt);
+            urgentLocations = arena.getUrgentLocations(locationsToInt);
+            locationsToPlayers = arena.mapLocationsToPlayers(locationsToInt);
+
+            const int numOfClocks = static_cast<int>(clocksIndices.size());
+            const auto &variables = arena.getVariables();
+
+            for (const int loc: initialLocations)
+                initialRegions.emplace_back(numOfClocks, loc, variables);
+        }
+
+
+        /**
          * @brief Recursively extracts regions from a general CLTLoc formula while tracking nesting depth.
          *
          * This function processes general CLTLoc formulae which may contain pure formulae, unary operators (BOX, DIAMOND), or binary operators (UNTIL).
@@ -254,22 +279,8 @@ namespace region
     public:
         RTSArena(const timed_automaton::ast::timedArena &arena, const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph)
         {
-            clocksIndices = arena.getClocksIndices();
-            locationsToInt = arena.mapLocationsToInt();
-            intToLocations = arena.mapIntToLocations();
+            initRTSArena(arena);
             maxConstants = arena.getMaxConstants(clocksIndices);
-            initialLocations = arena.getInitialLocations(locationsToInt);
-            outTransitions = arena.getOutTransitions(locationsToInt);
-            inTransitions = arena.getInTransitions(locationsToInt);
-            invariants = arena.getInvariants(locationsToInt);
-            urgentLocations = arena.getUrgentLocations(locationsToInt);
-            locationsToPlayers = arena.mapLocationsToPlayers(locationsToInt);
-
-            const int numOfClocks = static_cast<int>(clocksIndices.size());
-            const auto &variables = arena.getVariables();
-
-            for (const int loc: initialLocations)
-                initialRegions.emplace_back(numOfClocks, loc, variables);
         }
 
 
@@ -277,22 +288,8 @@ namespace region
                  const cltloc::ast::generalCLTLocFormula &formula,
                  const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph)
         {
-            clocksIndices = arena.getClocksIndices();
-            locationsToInt = arena.mapLocationsToInt();
-            intToLocations = arena.mapIntToLocations();
+            initRTSArena(arena);
             maxConstants = arena.getMaxConstants(clocksIndices, formula);
-            initialLocations = arena.getInitialLocations(locationsToInt);
-            outTransitions = arena.getOutTransitions(locationsToInt);
-            inTransitions = arena.getInTransitions(locationsToInt);
-            invariants = arena.getInvariants(locationsToInt);
-            urgentLocations = arena.getUrgentLocations(locationsToInt);
-            locationsToPlayers = arena.mapLocationsToPlayers(locationsToInt);
-
-            const int numOfClocks = static_cast<int>(clocksIndices.size());
-            const auto &variables = arena.getVariables();
-
-            for (const int loc: initialLocations)
-                initialRegions.emplace_back(numOfClocks, loc, variables);
         }
 
 
@@ -300,22 +297,8 @@ namespace region
                  const cltloc::ast::conjunctionOfFormulae &conjunction,
                  const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph)
         {
-            clocksIndices = arena.getClocksIndices();
-            locationsToInt = arena.mapLocationsToInt();
-            intToLocations = arena.mapIntToLocations();
+            initRTSArena(arena);
             maxConstants = arena.getMaxConstants(clocksIndices, conjunction);
-            initialLocations = arena.getInitialLocations(locationsToInt);
-            outTransitions = arena.getOutTransitions(locationsToInt);
-            inTransitions = arena.getInTransitions(locationsToInt);
-            invariants = arena.getInvariants(locationsToInt);
-            urgentLocations = arena.getUrgentLocations(locationsToInt);
-            locationsToPlayers = arena.mapLocationsToPlayers(locationsToInt);
-
-            const int numOfClocks = static_cast<int>(clocksIndices.size());
-            const auto &variables = arena.getVariables();
-
-            for (const int loc: initialLocations)
-                initialRegions.emplace_back(numOfClocks, loc, variables);
         }
 
 
