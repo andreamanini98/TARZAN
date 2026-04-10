@@ -331,22 +331,29 @@ inline void region::RTSArena::collectLegalRegionByPiStrategy(const Region &sourc
                                                              const regionSet &setG,
                                                              std::vector<std::vector<Region>> &threadLocalRegions,
                                                              const absl::flat_hash_map<std::string, bool> &validActions,
-                                                             const bool checkAllSuccessorsInvariants)
+                                                             const bool checkAllSuccessorsInvariants,
+                                                             const bool skipIfSourceIsInSetG)
 {
     // ReSharper disable once CppTooWideScopeInitStatement
     const bool isCurrentPlayerController = locationsToPlayers.at(sourceRegion.getLocation()) == CONTROLLER;
 
     if (isCurrentPlayerController ? piController(validActions) : piEnvironment(sourceRegion, setG, validActions, checkAllSuccessorsInvariants))
     {
+        bool collectStrategyTransition = true;
+
+        if (skipIfSourceIsInSetG)
+            collectStrategyTransition = !setG.contains(sourceRegion);
 #ifdef _OPENMP
         // TODO: It may be beneficial to adopt the same technique for work splitting and merging results as done for threadLocalRegions instead of using critical.
 #pragma omp critical
         {
-            strategyGraph.addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
+            if (collectStrategyTransition)
+                strategyGraph.addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
         }
         threadLocalRegions[omp_get_thread_num()].push_back(sourceRegion);
 #else
-        strategyGraph.addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
+        if (collectStrategyTransition)
+            strategyGraph.addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
         threadLocalRegions[0].push_back(sourceRegion);
 #endif
     }
@@ -363,7 +370,8 @@ void region::RTSArena::piFilter(const regionSet &setG,
                                 regionSet &filteredRegions,
                                 const regionSet &intersectionSet,
                                 bool skipPredecessorsInSetG,
-                                bool checkAllSuccessorsInvariants)
+                                bool checkAllSuccessorsInvariants,
+                                const bool skipIfSourceIsInSetG)
 {
     constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
 
@@ -455,7 +463,8 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                                                            setG,
                                                            threadLocalRegions,
                                                            validActions,
-                                                           checkAllSuccessorsInvariants);
+                                                           checkAllSuccessorsInvariants,
+                                                           skipIfSourceIsInSetG);
                         } else
                             collectLegalRegionByPi(regUnderAnalysis, setG, threadLocalRegions, validActions, checkAllSuccessorsInvariants);
                     }
@@ -479,7 +488,8 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                                                            setG,
                                                            threadLocalRegions,
                                                            validActions,
-                                                           checkAllSuccessorsInvariants);
+                                                           checkAllSuccessorsInvariants,
+                                                           skipIfSourceIsInSetG);
                         } else
                             collectLegalRegionByPi(regStillToProcess, setG, threadLocalRegions, validActions, checkAllSuccessorsInvariants);
                     }
@@ -506,8 +516,6 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 
     regionSet filteredRegions{};
 
-    // TODO: vedere se questi set possono essere fatti una volta per tutte le winning condition invece di farli in ogni funzione che risolve i giochi.
-
     // Setting the target regions of the strategy graph to math the initial regions.
     strategyGraph.setHeads(initialRegions);
 
@@ -516,7 +524,7 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 
     while (currentIteration < maxIter)
     {
-        piFilter(setG, toProcess, filteredRegions, setPhi, true, false);
+        piFilter(setG, toProcess, filteredRegions, setPhi, true, false, true);
 
         if (filteredRegions.empty())
             break;
@@ -576,9 +584,15 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
 
     regionSet filteredRegions{};
 
+    // Setting the target regions of the strategy graph to math the initial regions.
+    strategyGraph.setHeads(initialRegions);
+
+    // Setting the target regions of the strategy graph to match setG.
+    strategyGraph.setTargetRegions(setG);
+
     while (currentIteration < maxIter)
     {
-        piFilter(setG, toProcess, filteredRegions, setPhi, true, false);
+        piFilter(setG, toProcess, filteredRegions, setPhi, true, false, true);
 
         if (filteredRegions.empty())
             break;
@@ -594,7 +608,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
         currentIteration++;
     }
 
-    // Step 2: we perform one additional iteration of omega and delta filters.
+    // Step 2: we perform one additional iteration of piFilter.
     toProcess.clear();
     for (const auto &region: setG)
         toProcess.push_back(&region);
@@ -602,7 +616,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
     filteredRegions.clear();
 
     // In this case, we remove the constraints over the intersection set setPhi and put skipPredecessorsInSetG to false.
-    piFilter(setG, toProcess, filteredRegions, {}, false, false);
+    piFilter(setG, toProcess, filteredRegions, {}, false, false, true);
     setG.merge(filteredRegions);
 
     // Ending the timer for measuring computation.
@@ -646,7 +660,7 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
     {
         const size_t oldSetGSize = setG.size();
 
-        piFilter(setG, toProcess, filteredRegions, {}, false, true);
+        piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
 
         // Computing the intersection between regions returned by piFilter and setG.
         std::erase_if(setG, [&filteredRegions](const auto &region) { return !filteredRegions.contains(region); });
@@ -902,7 +916,8 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
         // We now apply piFilter for a total of totalCurrentIterations times.
         for (int j = 0; j < totalCurrentIterations; j++)
         {
-            piFilter(setG, toProcess, filteredRegions, {}, false, false);
+            // TODO: è giusto mettere skipIfSourceIsInSetG a true qui? Attenzione quando farai le strategie per l'and dei next.
+            piFilter(setG, toProcess, filteredRegions, {}, false, false, true);
 
             setG.merge(filteredRegions);
             filteredRegions.clear();
@@ -937,7 +952,8 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
 
     for (int i = 0; i < totalCurrentIterations; i++)
     {
-        piFilter(setG, toProcess, filteredRegions, {}, false, false);
+        // TODO: è giusto mettere skipIfSourceIsInSetG a true qui? Attenzione quando farai le strategie per l'and dei next.
+        piFilter(setG, toProcess, filteredRegions, {}, false, false, true);
 
         setG.merge(filteredRegions);
         filteredRegions.clear();
@@ -1031,7 +1047,7 @@ void region::RTSArena::synthesizeReachabilityStrategy(const std::unordered_map<i
         // Print the current region.
         std::cout << "  \u250c" << repeatString("\u2500", boxWidth) << "\u2510\n";
         std::cout << "    Step " << step << "\n";
-        std::cout << "    " << repeatString("\u2500", 8) << "\n";
+        std::cout << "    " << repeatString("\u2500", 10) << "\n";
         printRegionInStrategy(current, intToLocations, indicesToClocks, locationsToPlayers, "    ");
         std::cout << "  \u2514" << repeatString("\u2500", boxWidth) << "\u2518\n";
 
@@ -1078,7 +1094,7 @@ void region::RTSArena::synthesizeReachabilityStrategy(const std::unordered_map<i
     // Print the final region (the target).
     std::cout << "  \u250c" << repeatString("\u2500", boxWidth) << "\u2510\n";
     std::cout << "    Step " << step << " \u2605\n";
-    std::cout << "    " << repeatString("\u2500", 8) << "\n";
+    std::cout << "    " << repeatString("\u2500", 10) << "\n";
     printRegionInStrategy(current, intToLocations, indicesToClocks, locationsToPlayers, "    ");
     std::cout << "  \u2514" << repeatString("\u2500", boxWidth) << "\u2518\n";
 }
@@ -1111,9 +1127,11 @@ void region::RTSArena::synthesizeStrategy(const cltloc::ast::generalCLTLocFormul
         } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>)
         {
             // Unary formula.
+            // TODO: la sintesi del next per ora funziona perchè si assume che l'unico next unario sia next until.
             switch (const auto &unaryFormula = val.get(); unaryFormula.op)
             {
                 case DIAMOND:
+                case NEXT:
                     synthesizeReachabilityStrategy(indicesToClocks);
                     break;
 

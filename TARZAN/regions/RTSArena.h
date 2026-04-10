@@ -159,7 +159,8 @@ namespace region
          *                           Each external vector corresponds to a thread in OpenMP (only one inner vector is present if OpenMP is not enabled).
          * @param validActions actions that the controller can potentially choose to declare a move guaranteeing it to reach a region in setG.
          * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
-         *
+         * @param skipIfSourceIsInSetG if true, the strategy transition having sourceRegion as a source is not inserted into the strategy graph.
+         *                             Useful to ensure the absence of cycles in the strategy graph (e.g., when computing next until winning conditions).
          * @note The delay is not considered here. It may be derived from the stored regions in the strategy graph.
          */
         inline void collectLegalRegionByPiStrategy(const Region &sourceRegion,
@@ -169,7 +170,8 @@ namespace region
                                                    const regionSet &setG,
                                                    std::vector<std::vector<Region>> &threadLocalRegions,
                                                    const absl::flat_hash_map<std::string, bool> &validActions,
-                                                   bool checkAllSuccessorsInvariants);
+                                                   bool checkAllSuccessorsInvariants,
+                                                   bool skipIfSourceIsInSetG);
 
 
         /**
@@ -352,6 +354,8 @@ namespace region
          * @param intersectionSet for a region to be valid, it must also belong to intersectionSet.
          * @param skipPredecessorsInSetG if true, a predecessor already contained in setG is automatically considered valid.
          * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
+         * @param skipIfSourceIsInSetG if true, the strategy transition having sourceRegion (see collectLegalRegionByPiStrategy) as a source is not inserted into
+         *                             the strategy graph. Useful to ensure the absence of cycles in the strategy graph (e.g., when computing next until winning conditions).
          *
          * @warning The function updates filteredRegions.
          * @warning toProcess is a vector, since we may use OpenMP parallelization.
@@ -361,7 +365,8 @@ namespace region
                       regionSet &filteredRegions,
                       const regionSet &intersectionSet,
                       bool skipPredecessorsInSetG,
-                      bool checkAllSuccessorsInvariants);
+                      bool checkAllSuccessorsInvariants,
+                      bool skipIfSourceIsInSetG);
 
 
         /**
