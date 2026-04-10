@@ -1038,13 +1038,12 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::conjunctionOfForm
 
 void region::RTSArena::synthesizeReachabilityStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const
 {
-    constexpr int boxWidth = 42;
     const auto &targetRegions = strategyGraph.getTargetRegions();
 
     std::cout << "\n";
-    std::cout << "  \u2554" << repeatString("\u2550", boxWidth) << "\u2557\n";
+    std::cout << "  \u2554" << repeatString("\u2550", BOX_WIDTH) << "\u2557\n";
     std::cout << "  \u2551 WINNING CONTROLLER REACHABILITY STRATEGY \u2551\n";
-    std::cout << "  \u255a" << repeatString("\u2550", boxWidth) << "\u255d\n\n";
+    std::cout << "  \u255a" << repeatString("\u2550", BOX_WIDTH) << "\u255d\n\n";
 
     // We assume to always take the first region in heads as the starting one.
     Region current = strategyGraph.getHeads()[0];
@@ -1058,73 +1057,28 @@ void region::RTSArena::synthesizeReachabilityStrategy(const std::unordered_map<i
             throw std::logic_error("No outgoing strategy transitions from current region!");
 
         // We assume to always take the first available transition in the strategy transition set.
+        // Since the reachability strategy graph is cycle-free, every transition guarantees progress for the controller to a target region.
         const auto &[arenaTransition, target, moveClockValuation] = *strategyTransSet.begin();
 
-        // Print the current region.
-        std::cout << "  \u250c" << repeatString("\u2500", boxWidth) << "\u2510\n";
-        std::cout << "    Step " << step << "\n";
-        std::cout << "    " << repeatString("\u2500", 10) << "\n";
-        printRegionInStrategy(current, intToLocations, indicesToClocks, locationsToPlayers, "    ");
-        std::cout << "  \u2514" << repeatString("\u2500", boxWidth) << "\u2518\n";
-
-        // Print the move details.
-        std::cout << "          \u2502\n";
-        std::cout << "          \u251c\u2500 Move clock valuation:\n";
-        printClockValuationInStrategy(moveClockValuation, indicesToClocks, "          \u2502  ");
-        std::cout << "          \u2502\n";
-
-        // Print the arena transition details.
-        std::string actionName = arenaTransition.action.first;
-        if (arenaTransition.action.second.has_value())
-            actionName += in_out_act_to_string(arenaTransition.action.second.value());
-        std::cout << "          \u251c\u2500 Action: " << actionName << "\n";
-        if (!arenaTransition.clockGuard.empty())
-        {
-            std::cout << "          \u251c\u2500 Guard: ";
-            for (size_t j = 0; j < arenaTransition.clockGuard.size(); j++)
-            {
-                if (j > 0)
-                    std::cout << " && ";
-                std::cout << arenaTransition.clockGuard[j].to_string();
-            }
-            std::cout << "\n";
-        }
-        if (!arenaTransition.clocksToReset.empty())
-        {
-            std::cout << "          \u251c\u2500 Reset: ";
-            for (size_t j = 0; j < arenaTransition.clocksToReset.size(); j++)
-            {
-                if (j > 0)
-                    std::cout << ", ";
-                std::cout << arenaTransition.clocksToReset[j];
-            }
-            std::cout << "\n";
-        }
-        std::cout << "          \u2502\n";
-        std::cout << "          \u25bc\n";
+        StrategyGraph::printStrategyTransition(step, current, intToLocations, indicesToClocks, locationsToPlayers, moveClockValuation, arenaTransition);
 
         current = target;
         step++;
     }
 
     // Print the final region (the target).
-    std::cout << "  \u250c" << repeatString("\u2500", boxWidth) << "\u2510\n";
-    std::cout << "    Step " << step << " \u2605\n";
-    std::cout << "    " << repeatString("\u2500", 10) << "\n";
-    printRegionInStrategy(current, intToLocations, indicesToClocks, locationsToPlayers, "    ");
-    std::cout << "  \u2514" << repeatString("\u2500", boxWidth) << "\u2518\n";
+    StrategyGraph::printRegionWithBox(step, current, intToLocations, indicesToClocks, locationsToPlayers, " \u2605");
 }
 
 
 void region::RTSArena::synthesizeSafetyStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const
 {
-    constexpr int boxWidth = 42;
     auto targetRegions = strategyGraph.getTargetRegions();
 
     std::cout << "\n";
-    std::cout << "  \u2554" << repeatString("\u2550", boxWidth) << "\u2557\n";
+    std::cout << "  \u2554" << repeatString("\u2550", BOX_WIDTH) << "\u2557\n";
     std::cout << "  \u2551    WINNING CONTROLLER SAFETY STRATEGY    \u2551\n";
-    std::cout << "  \u255a" << repeatString("\u2550", boxWidth) << "\u255d\n\n";
+    std::cout << "  \u255a" << repeatString("\u2550", BOX_WIDTH) << "\u255d\n\n";
 
     // We assume to always take the first region in heads as the starting one.
     Region current = strategyGraph.getHeads()[0];
@@ -1134,7 +1088,7 @@ void region::RTSArena::synthesizeSafetyStrategy(const std::unordered_map<int, st
     targetRegions.emplace(current);
 
     // This loop will continue to execute until a cycle in the strategy graph is found.
-    while (true)
+    while (step <= MAX_ITERATIONS)
     {
         const strategyTransitionSet strategyTransSet = strategyGraph.getStrategyTransitionsGivenSource(current);
 
@@ -1142,6 +1096,7 @@ void region::RTSArena::synthesizeSafetyStrategy(const std::unordered_map<int, st
             throw std::logic_error("No outgoing strategy transitions from current region!");
 
         // We assume to always take the first available transition in the strategy transition set.
+        // Since every transition guarantees the controller stays in the safety set, it will eventually encounter a cycle.
         const auto &[arenaTransition, target, moveClockValuation] = *strategyTransSet.begin();
 
         if (targetRegions.contains(target))
@@ -1149,59 +1104,14 @@ void region::RTSArena::synthesizeSafetyStrategy(const std::unordered_map<int, st
 
         targetRegions.emplace(target);
 
-        // Print the current region.
-        std::cout << "  \u250c" << repeatString("\u2500", boxWidth) << "\u2510\n";
-        std::cout << "    Step " << step << "\n";
-        std::cout << "    " << repeatString("\u2500", 10) << "\n";
-        printRegionInStrategy(current, intToLocations, indicesToClocks, locationsToPlayers, "    ");
-        std::cout << "  \u2514" << repeatString("\u2500", boxWidth) << "\u2518\n";
-
-        // Print the move details.
-        std::cout << "          \u2502\n";
-        std::cout << "          \u251c\u2500 Move clock valuation:\n";
-        printClockValuationInStrategy(moveClockValuation, indicesToClocks, "          \u2502  ");
-        std::cout << "          \u2502\n";
-
-        // Print the arena transition details.
-        std::string actionName = arenaTransition.action.first;
-        if (arenaTransition.action.second.has_value())
-            actionName += in_out_act_to_string(arenaTransition.action.second.value());
-        std::cout << "          \u251c\u2500 Action: " << actionName << "\n";
-        if (!arenaTransition.clockGuard.empty())
-        {
-            std::cout << "          \u251c\u2500 Guard: ";
-            for (size_t j = 0; j < arenaTransition.clockGuard.size(); j++)
-            {
-                if (j > 0)
-                    std::cout << " && ";
-                std::cout << arenaTransition.clockGuard[j].to_string();
-            }
-            std::cout << "\n";
-        }
-        if (!arenaTransition.clocksToReset.empty())
-        {
-            std::cout << "          \u251c\u2500 Reset: ";
-            for (size_t j = 0; j < arenaTransition.clocksToReset.size(); j++)
-            {
-                if (j > 0)
-                    std::cout << ", ";
-                std::cout << arenaTransition.clocksToReset[j];
-            }
-            std::cout << "\n";
-        }
-        std::cout << "          \u2502\n";
-        std::cout << "          \u25bc\n";
+        StrategyGraph::printStrategyTransition(step, current, intToLocations, indicesToClocks, locationsToPlayers, moveClockValuation, arenaTransition);
 
         current = target;
         step++;
     }
 
-    // Print the final region (the target).
-    std::cout << "  \u250c" << repeatString("\u2500", boxWidth) << "\u2510\n";
-    std::cout << "    Step " << step << " \u2605\n";
-    std::cout << "    " << repeatString("\u2500", 10) << "\n";
-    printRegionInStrategy(current, intToLocations, indicesToClocks, locationsToPlayers, "    ");
-    std::cout << "  \u2514" << repeatString("\u2500", boxWidth) << "\u2518\n";
+    // Print the final region (the region before the safety cycle starts again).
+    StrategyGraph::printRegionWithBox(step, current, intToLocations, indicesToClocks, locationsToPlayers, " \u2605");
 }
 
 

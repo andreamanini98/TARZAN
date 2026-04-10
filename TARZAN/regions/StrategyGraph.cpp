@@ -1,5 +1,6 @@
 #include "StrategyGraph.h"
 
+#include <iostream>
 #include <sstream>
 
 
@@ -14,6 +15,91 @@ strategyTransitionSet region::StrategyGraph::getStrategyTransitionsGivenSource(c
     if (const auto it = strategyTransitions.find(source); it != strategyTransitions.end())
         return it->second;
     return {};
+}
+
+
+void region::StrategyGraph::printClockValuationInStrategy(const std::vector<std::pair<int, bool>> &cv,
+                                                          const std::unordered_map<int, std::string> &indicesToClocks,
+                                                          const std::string &indent)
+{
+    for (int i = 0; i < static_cast<int>(cv.size()); i++)
+        std::cout << indent << indicesToClocks.at(i) << " := (" << cv[i].first << ", " << (cv[i].second ? "frac > 0" : "frac = 0") << ")\n";
+}
+
+
+void region::StrategyGraph::printRegionInStrategy(const Region &reg,
+                                                  const std::unordered_map<int, std::string> &intToLocations,
+                                                  const std::unordered_map<int, std::string> &indicesToClocks,
+                                                  const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
+                                                  const std::string &indent)
+{
+    const int regLocation = reg.getLocation();
+    std::cout << indent << intToLocations.at(regLocation) << " [" << locationsToPlayers.at(regLocation) << "]\n";
+    printClockValuationInStrategy(reg.getClockValuation(), indicesToClocks, indent);
+}
+
+
+void region::StrategyGraph::printRegionWithBox(const int step,
+                                               const Region &reg,
+                                               const std::unordered_map<int, std::string> &intToLocations,
+                                               const std::unordered_map<int, std::string> &indicesToClocks,
+                                               const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
+                                               const std::string &symbolNextToStep)
+{
+    std::cout << "  \u250c" << repeatString("\u2500", BOX_WIDTH) << "\u2510\n";
+    std::cout << "    Step " << step << symbolNextToStep << "\n";
+    std::cout << "    " << repeatString("\u2500", 10) << "\n";
+    printRegionInStrategy(reg, intToLocations, indicesToClocks, locationsToPlayers, "    ");
+    std::cout << "  \u2514" << repeatString("\u2500", BOX_WIDTH) << "\u2518\n";
+}
+
+
+void region::StrategyGraph::printStrategyTransition(const int step,
+                                                    const Region &current,
+                                                    const std::unordered_map<int, std::string> &intToLocations,
+                                                    const std::unordered_map<int, std::string> &indicesToClocks,
+                                                    const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
+                                                    const clockValuation &moveClockValuation,
+                                                    const transition &arenaTransition)
+{
+    // Print the current region.
+    printRegionWithBox(step, current, intToLocations, indicesToClocks, locationsToPlayers, "");
+
+    // Print the move details.
+    std::cout << "          \u2502\n";
+    std::cout << "          \u251c\u2500 Move clock valuation:\n";
+    printClockValuationInStrategy(moveClockValuation, indicesToClocks, "          \u2502  ");
+    std::cout << "          \u2502\n";
+
+    // Print the arena transition details.
+    std::string actionName = arenaTransition.action.first;
+    if (arenaTransition.action.second.has_value())
+        actionName += in_out_act_to_string(arenaTransition.action.second.value());
+    std::cout << "          \u251c\u2500 Action: " << actionName << "\n";
+    if (!arenaTransition.clockGuard.empty())
+    {
+        std::cout << "          \u251c\u2500 Guard: ";
+        for (size_t j = 0; j < arenaTransition.clockGuard.size(); j++)
+        {
+            if (j > 0)
+                std::cout << " && ";
+            std::cout << arenaTransition.clockGuard[j].to_string();
+        }
+        std::cout << "\n";
+    }
+    if (!arenaTransition.clocksToReset.empty())
+    {
+        std::cout << "          \u251c\u2500 Reset: ";
+        for (size_t j = 0; j < arenaTransition.clocksToReset.size(); j++)
+        {
+            if (j > 0)
+                std::cout << ", ";
+            std::cout << arenaTransition.clocksToReset[j];
+        }
+        std::cout << "\n";
+    }
+    std::cout << "          \u2502\n";
+    std::cout << "          \u25bc\n";
 }
 
 

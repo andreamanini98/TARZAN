@@ -2,6 +2,9 @@
 #define TARZAN_STRATEGYGRAPH_H
 
 #include "TARZAN/regions/Region.h"
+#include "TARZAN/utilities/printing_utilities.h"
+
+#define BOX_WIDTH 42
 
 using regionSet = std::unordered_set<region::Region, region::RegionHash>;
 
@@ -48,6 +51,35 @@ namespace region
         std::unordered_map<Region, strategyTransitionSet, RegionHash> strategyTransitions{};
 
 
+        /**
+         * @brief Prints a clock valuation with clock names during strategy synthesis.
+         *
+         * @param cv the clock valuation to print.
+         * @param indicesToClocks a map from clock indices to clock names.
+         * @param indent the indentation string to prepend to each line.
+         */
+        // TODO: if desired, this function can be modified to show the intervals in which clock values fall.
+        static inline void printClockValuationInStrategy(const std::vector<std::pair<int, bool>> &cv,
+                                                         const std::unordered_map<int, std::string> &indicesToClocks,
+                                                         const std::string &indent);
+
+
+        /**
+         * @brief Prints a region (location name and clock valuation).
+         *
+         * @param reg the region to print.
+         * @param intToLocations a map from location indices to location names.
+         * @param indicesToClocks a map from clock indices to clock names.
+         * @param locationsToPlayers a map from location indices to players.
+         * @param indent the indentation string to prepend to each line.
+         */
+        static inline void printRegionInStrategy(const Region &reg,
+                                                 const std::unordered_map<int, std::string> &intToLocations,
+                                                 const std::unordered_map<int, std::string> &indicesToClocks,
+                                                 const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
+                                                 const std::string &indent);
+
+
     public:
         /**
          * @brief Adds a new transition to the 'transitions' map, possibly inserting a new key if not present.
@@ -78,6 +110,44 @@ namespace region
         // Setters.
         void setHeads(const std::vector<Region> &newHeads) { this->heads = newHeads; }
         void setTargetRegions(const regionSet &newTargetRegions) { this->targetRegions = newTargetRegions; }
+
+
+        /**
+         * @brief Prints a region bounded by a box for pretty printing a strategy.
+         *
+         * @param step the step counter, i.e., how many moves have been executed in the game.
+         * @param reg the region to print.
+         * @param intToLocations a map from location indices to location names.
+         * @param indicesToClocks a map from clock indices to clock names.
+         * @param locationsToPlayers a map from location indices to players.
+         * @param symbolNextToStep a string to print next to the step counter.
+         */
+        static inline void printRegionWithBox(int step,
+                                              const Region &reg,
+                                              const std::unordered_map<int, std::string> &intToLocations,
+                                              const std::unordered_map<int, std::string> &indicesToClocks,
+                                              const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
+                                              const std::string &symbolNextToStep);
+
+
+        /**
+         * @brief Prints a transition of the strategy graph.
+         *
+         * @param step the step counter, i.e., how many moves have been executed in the game.
+         * @param current the region to print.
+         * @param intToLocations a map from location indices to location names.
+         * @param indicesToClocks a map from clock indices to clock names.
+         * @param locationsToPlayers a map from location indices to players.
+         * @param moveClockValuation the clock valuation before a discrete transition is taken in a move.
+         * @param arenaTransition a transition of the original Timed Arena over which the current strategy transition is computed.
+         */
+        static void printStrategyTransition(int step,
+                                            const Region &current,
+                                            const std::unordered_map<int, std::string> &intToLocations,
+                                            const std::unordered_map<int, std::string> &indicesToClocks,
+                                            const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
+                                            const clockValuation &moveClockValuation,
+                                            const transition &arenaTransition);
 
 
         [[nodiscard]] std::string to_string(const std::unordered_map<int, std::string> &intToLocations) const;
