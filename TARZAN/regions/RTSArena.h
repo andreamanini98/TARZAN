@@ -241,6 +241,16 @@ namespace region
         void synthesizeReachabilityStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const;
 
 
+        /**
+         * @brief Synthesizes a winning controller strategy for a safety TCG.
+         *
+         * @param indicesToClocks a map from clock indices to clock names.
+         *
+         * @throws std::logic_error if a region does not have outgoing strategy transitions.
+         */
+        void synthesizeSafetyStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const;
+
+
     public:
         RTSArena(const timed_automaton::ast::timedArena &arena, const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph)
         {
@@ -464,10 +474,6 @@ namespace region
          */
         void synthesizeStrategy(const cltloc::ast::generalCLTLocFormula &formula);
 
-
-        // TODO: prossimi passi:
-        //       Testare se la sintesi funziona anche con una formula until (senza il next). Dovrebbe funzionare.
-        //       Calcolare strategie per safety e next until, usando come base la sintesi della reachability.
 
         [[nodiscard]] std::string strategyGraphToString() const
         {

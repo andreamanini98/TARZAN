@@ -516,7 +516,7 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 
     regionSet filteredRegions{};
 
-    // Setting the target regions of the strategy graph to math the initial regions.
+    // Setting the target regions of the strategy graph to match the initial regions.
     strategyGraph.setHeads(initialRegions);
 
     // Setting the target regions of the strategy graph to match setG.
@@ -584,7 +584,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
 
     regionSet filteredRegions{};
 
-    // Setting the target regions of the strategy graph to math the initial regions.
+    // Setting the target regions of the strategy graph to match the initial regions.
     strategyGraph.setHeads(initialRegions);
 
     // Setting the target regions of the strategy graph to match setG.
@@ -656,6 +656,16 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
 
     regionSet filteredRegions{};
 
+    // Setting the target regions of the strategy graph to match the initial regions.
+    // Here we do not need to set the targets, as they will be updated in the safety strategy synthesis algorithm.
+    strategyGraph.setHeads(initialRegions);
+
+    // Used to enable or disable the strategy transition computation.
+    const bool reactivateComputeStrategyGraph = computeStrategyGraph;
+
+    if (computeStrategyGraph)
+        computeStrategyGraph = false;
+
     while (currentIteration < maxIter)
     {
         const size_t oldSetGSize = setG.size();
@@ -676,6 +686,12 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
 
         currentIteration++;
     }
+
+    computeStrategyGraph = reactivateComputeStrategyGraph;
+
+    // If the strategy graph must be computed, here we perform one last piFilter application to compute the strategy transitions.
+    if (computeStrategyGraph)
+        piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
 
     // Ending the timer for measuring computation.
 #ifdef _OPENMP
@@ -1100,6 +1116,95 @@ void region::RTSArena::synthesizeReachabilityStrategy(const std::unordered_map<i
 }
 
 
+void region::RTSArena::synthesizeSafetyStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const
+{
+    constexpr int boxWidth = 42;
+    auto targetRegions = strategyGraph.getTargetRegions();
+
+    std::cout << "\n";
+    std::cout << "  \u2554" << repeatString("\u2550", boxWidth) << "\u2557\n";
+    std::cout << "  \u2551    WINNING CONTROLLER SAFETY STRATEGY    \u2551\n";
+    std::cout << "  \u255a" << repeatString("\u2550", boxWidth) << "\u255d\n\n";
+
+    // We assume to always take the first region in heads as the starting one.
+    Region current = strategyGraph.getHeads()[0];
+    int step = 0;
+
+    // Emplacing the current region (corresponding to an initial region) to also detect cycles involving initial regions.
+    targetRegions.emplace(current);
+
+    // This loop will continue to execute until a cycle in the strategy graph is found.
+    while (true)
+    {
+        const strategyTransitionSet strategyTransSet = strategyGraph.getStrategyTransitionsGivenSource(current);
+
+        if (strategyTransSet.empty())
+            throw std::logic_error("No outgoing strategy transitions from current region!");
+
+        // We assume to always take the first available transition in the strategy transition set.
+        const auto &[arenaTransition, target, moveClockValuation] = *strategyTransSet.begin();
+
+        if (targetRegions.contains(target))
+            break;
+
+        targetRegions.emplace(target);
+
+        // Print the current region.
+        std::cout << "  \u250c" << repeatString("\u2500", boxWidth) << "\u2510\n";
+        std::cout << "    Step " << step << "\n";
+        std::cout << "    " << repeatString("\u2500", 10) << "\n";
+        printRegionInStrategy(current, intToLocations, indicesToClocks, locationsToPlayers, "    ");
+        std::cout << "  \u2514" << repeatString("\u2500", boxWidth) << "\u2518\n";
+
+        // Print the move details.
+        std::cout << "          \u2502\n";
+        std::cout << "          \u251c\u2500 Move clock valuation:\n";
+        printClockValuationInStrategy(moveClockValuation, indicesToClocks, "          \u2502  ");
+        std::cout << "          \u2502\n";
+
+        // Print the arena transition details.
+        std::string actionName = arenaTransition.action.first;
+        if (arenaTransition.action.second.has_value())
+            actionName += in_out_act_to_string(arenaTransition.action.second.value());
+        std::cout << "          \u251c\u2500 Action: " << actionName << "\n";
+        if (!arenaTransition.clockGuard.empty())
+        {
+            std::cout << "          \u251c\u2500 Guard: ";
+            for (size_t j = 0; j < arenaTransition.clockGuard.size(); j++)
+            {
+                if (j > 0)
+                    std::cout << " && ";
+                std::cout << arenaTransition.clockGuard[j].to_string();
+            }
+            std::cout << "\n";
+        }
+        if (!arenaTransition.clocksToReset.empty())
+        {
+            std::cout << "          \u251c\u2500 Reset: ";
+            for (size_t j = 0; j < arenaTransition.clocksToReset.size(); j++)
+            {
+                if (j > 0)
+                    std::cout << ", ";
+                std::cout << arenaTransition.clocksToReset[j];
+            }
+            std::cout << "\n";
+        }
+        std::cout << "          \u2502\n";
+        std::cout << "          \u25bc\n";
+
+        current = target;
+        step++;
+    }
+
+    // Print the final region (the target).
+    std::cout << "  \u250c" << repeatString("\u2500", boxWidth) << "\u2510\n";
+    std::cout << "    Step " << step << " \u2605\n";
+    std::cout << "    " << repeatString("\u2500", 10) << "\n";
+    printRegionInStrategy(current, intToLocations, indicesToClocks, locationsToPlayers, "    ");
+    std::cout << "  \u2514" << repeatString("\u2500", boxWidth) << "\u2518\n";
+}
+
+
 void region::RTSArena::synthesizeStrategy(const cltloc::ast::generalCLTLocFormula &formula)
 {
     if (!computeStrategyGraph)
@@ -1130,6 +1235,10 @@ void region::RTSArena::synthesizeStrategy(const cltloc::ast::generalCLTLocFormul
             // TODO: la sintesi del next per ora funziona perchè si assume che l'unico next unario sia next until.
             switch (const auto &unaryFormula = val.get(); unaryFormula.op)
             {
+                case BOX:
+                    synthesizeSafetyStrategy(indicesToClocks);
+                    break;
+
                 case DIAMOND:
                 case NEXT:
                     synthesizeReachabilityStrategy(indicesToClocks);
