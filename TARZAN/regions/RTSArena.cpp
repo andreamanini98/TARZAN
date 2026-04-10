@@ -360,11 +360,6 @@ inline void region::RTSArena::collectLegalRegionByPiStrategy(const Region &sourc
 }
 
 
-// TODO: devi fare in modo che nella safety si richiami piFiler con la sintesi delle strategie solo al punto fisso (ad esempio puoi settare direttamente il booleano a false e poi a true nell'algoritmo della safety se inizialmente è a true, altrimenti lo lasci a false).
-
-// TODO: il puntatore head dello strategy graph devi settarlo negli algoritmi tipo timedReachability quando fai il check sulle regioni iniziali (fatti restituire un pair booleano e puntatore a regione)
-
-// TODO: rimarcare, magari lanciando un'eccezione, che le strategie al momento vengono calcolate solo per reachability e safety (senza next).
 void region::RTSArena::piFilter(const regionSet &setG,
                                 const std::vector<RegionPtr> &toProcess,
                                 regionSet &filteredRegions,
