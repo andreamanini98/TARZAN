@@ -39,12 +39,12 @@ void region::StrategyGraph::printRegionInStrategy(const Region &reg,
 }
 
 
-inline void region::StrategyGraph::printRegionWithBox(const int step,
-                                                      const Region &reg,
-                                                      const std::unordered_map<int, std::string> &intToLocations,
-                                                      const std::unordered_map<int, std::string> &indicesToClocks,
-                                                      const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
-                                                      const std::string &symbolNextToStep)
+void region::StrategyGraph::printRegionWithBox(const int step,
+                                               const Region &reg,
+                                               const std::unordered_map<int, std::string> &intToLocations,
+                                               const std::unordered_map<int, std::string> &indicesToClocks,
+                                               const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
+                                               const std::string &symbolNextToStep)
 {
     std::cout << "  \u250c" << repeatString("\u2500", BOX_WIDTH) << "\u2510\n";
     std::cout << "    Step " << step << symbolNextToStep << "\n";

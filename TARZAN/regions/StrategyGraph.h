@@ -59,9 +59,9 @@ namespace region
          * @param indent the indentation string to prepend to each line.
          */
         // TODO: if desired, this function can be modified to show the intervals in which clock values fall.
-        static inline void printClockValuationInStrategy(const std::vector<std::pair<int, bool>> &cv,
-                                                         const std::unordered_map<int, std::string> &indicesToClocks,
-                                                         const std::string &indent);
+        static void printClockValuationInStrategy(const std::vector<std::pair<int, bool>> &cv,
+                                                  const std::unordered_map<int, std::string> &indicesToClocks,
+                                                  const std::string &indent);
 
 
         /**
@@ -73,11 +73,11 @@ namespace region
          * @param locationsToPlayers a map from location indices to players.
          * @param indent the indentation string to prepend to each line.
          */
-        static inline void printRegionInStrategy(const Region &reg,
-                                                 const std::unordered_map<int, std::string> &intToLocations,
-                                                 const std::unordered_map<int, std::string> &indicesToClocks,
-                                                 const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
-                                                 const std::string &indent);
+        static void printRegionInStrategy(const Region &reg,
+                                          const std::unordered_map<int, std::string> &intToLocations,
+                                          const std::unordered_map<int, std::string> &indicesToClocks,
+                                          const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
+                                          const std::string &indent);
 
 
     public:
@@ -125,12 +125,12 @@ namespace region
          * @param locationsToPlayers a map from location indices to players.
          * @param symbolNextToStep a string to print next to the step counter.
          */
-        static inline void printRegionWithBox(int step,
-                                              const Region &reg,
-                                              const std::unordered_map<int, std::string> &intToLocations,
-                                              const std::unordered_map<int, std::string> &indicesToClocks,
-                                              const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
-                                              const std::string &symbolNextToStep);
+        static void printRegionWithBox(int step,
+                                       const Region &reg,
+                                       const std::unordered_map<int, std::string> &intToLocations,
+                                       const std::unordered_map<int, std::string> &indicesToClocks,
+                                       const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
+                                       const std::string &symbolNextToStep);
 
 
         /**
