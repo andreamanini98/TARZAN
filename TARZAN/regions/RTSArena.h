@@ -289,6 +289,7 @@ namespace region
 
 
     public:
+        //TODO: is it possible to remove the boolean from the constructor and directly et such boolean value when synthesizing a strategy?
         RTSArena(const timed_automaton::ast::timedArena &arena,
                  const cltloc::ast::generalCLTLocFormula &formula,
                  const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph), strategyGraph(std::make_unique<StrategyGraph>())
