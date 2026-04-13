@@ -1116,20 +1116,19 @@ void region::RTSArena::synthesizeSafetyStrategy(const std::unordered_map<int, st
         // Since every transition guarantees the controller stays in the safety set, it will eventually encounter a cycle.
         const auto &[arenaTransition, target, moveClockValuation] = *strategyTransSet.begin();
 
+        StrategyGraph::printStrategyTransition(step, current, intToLocations, indicesToClocks, locationsToPlayers, moveClockValuation, arenaTransition);
+
+        step++;
+        current = target;
+
         if (targetRegions.contains(target))
             break;
 
         targetRegions.emplace(target);
-
-        StrategyGraph::printStrategyTransition(step, current, intToLocations, indicesToClocks, locationsToPlayers, moveClockValuation, arenaTransition);
-
-        current = target;
-        step++;
     }
 
-    // Print the final region (the region before the safety cycle starts again).
+    // Print the region from which the cycle starts.
     StrategyGraph::printRegionWithBox(step, current, intToLocations, indicesToClocks, locationsToPlayers, " \u2605");
-    std::cout << "          \u2502\n\n          \u2502\n\n          \u2502\n";
 }
 
 
