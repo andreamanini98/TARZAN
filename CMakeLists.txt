@@ -103,6 +103,7 @@ set(LIBRARY_SOURCES
         TARZAN/regions/RTS.cpp
         TARZAN/regions/RTSArena.cpp
         TARZAN/regions/StrategyGraph.cpp
+        TARZAN/regions/StrategyGraphForConjunction.cpp
         TARZAN/regions/networkOfTA/RTSNetwork.cpp
         TARZAN/regions/networkOfTA/NetworkRegion.cpp)
 
@@ -173,6 +174,7 @@ set(LIBRARY_HEADERS
         TARZAN/regions/RTS.h
         TARZAN/regions/RTSArena.h
         TARZAN/regions/StrategyGraph.h
+        TARZAN/regions/StrategyGraphForConjunction.h
         TARZAN/regions/enums/state_space_exploration_enum.h
         TARZAN/regions/networkOfTA/NetworkRegion.h
         TARZAN/regions/networkOfTA/RTSNetwork.h

@@ -4,11 +4,11 @@
 #include "TARZAN/regions/Region.h"
 #include "TARZAN/regions/RTS.h"
 #include "TARZAN/regions/StrategyGraph.h"
+#include "TARZAN/regions/StrategyGraphForConjunction.h"
 
 
 // A pointer to a region object.
 using RegionPtr = const region::Region *;
-using regionSet = std::unordered_set<region::Region, region::RegionHash>;
 
 
 namespace region
@@ -20,7 +20,7 @@ namespace region
         // Whenever set to true, the function piFilter() will compute the strategy graph for a given application of pi.
         bool computeStrategyGraph;
 
-        StrategyGraph strategyGraph{};
+        std::unique_ptr<StrategyGraph> strategyGraph{};
 
 
         /**
@@ -276,17 +276,22 @@ namespace region
         void synthesizeSafetyStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const;
 
 
+        /**
+         * @brief Synthesizes a winning controller strategy for an AND NEXT TCG.
+         *
+         * @param indicesToClocks a map from clock indices to clock names.
+         *
+         * @throws std::logic_error if a region does not have outgoing strategy transitions.
+         *
+         * @warning The strategy graph must be an object of class StrategyGraphForConjunction.
+         */
+        void synthesizeAndNextConjunctionStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const;
+
+
     public:
-        RTSArena(const timed_automaton::ast::timedArena &arena, const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph)
-        {
-            initRTSArena(arena);
-            maxConstants = arena.getMaxConstants(clocksIndices);
-        }
-
-
         RTSArena(const timed_automaton::ast::timedArena &arena,
                  const cltloc::ast::generalCLTLocFormula &formula,
-                 const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph)
+                 const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph), strategyGraph(std::make_unique<StrategyGraph>())
         {
             initRTSArena(arena);
             maxConstants = arena.getMaxConstants(clocksIndices, formula);
@@ -295,7 +300,7 @@ namespace region
 
         RTSArena(const timed_automaton::ast::timedArena &arena,
                  const cltloc::ast::conjunctionOfFormulae &conjunction,
-                 const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph)
+                 const bool computeStrategyGraph) : computeStrategyGraph(computeStrategyGraph), strategyGraph(std::make_unique<StrategyGraphForConjunction>())
         {
             initRTSArena(arena);
             maxConstants = arena.getMaxConstants(clocksIndices, conjunction);
@@ -458,9 +463,20 @@ namespace region
         void synthesizeStrategy(const cltloc::ast::generalCLTLocFormula &formula);
 
 
+        /**
+         * @brief Synthesizes a winning controller strategy for a conjunction of general CLTLoc formulae.
+         *
+         * @param conjunction the conjunction of general CLTLoc formulae to process.
+         *
+         * @throws CannotSynthesizeStrategiesException if a winning controller strategy cannot be synthesized.
+         * @throws std::logic_error if an invalid CLTLoc formula is used for synthesis.
+         */
+        void synthesizeStrategy(const cltloc::ast::conjunctionOfFormulae &conjunction);
+
+
         [[nodiscard]] std::string strategyGraphToString() const
         {
-            return strategyGraph.to_string(intToLocations);
+            return strategyGraph->to_string(intToLocations);
         }
 
 

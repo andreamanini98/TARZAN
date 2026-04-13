@@ -81,6 +81,9 @@ namespace region
 
 
     public:
+        virtual ~StrategyGraph() = default;
+
+
         /**
          * @brief Adds a new transition to the 'transitions' map, possibly inserting a new key if not present.
          *
@@ -89,7 +92,7 @@ namespace region
          * @param target the target of the strategy transition.
          * @param cv the clock valuation of a discrete predecessor of target.
          */
-        void addStrategyTransition(const Region &source, const transition &arenaTransition, const Region &target, const clockValuation &cv);
+        virtual void addStrategyTransition(const Region &source, const transition &arenaTransition, const Region &target, const clockValuation &cv);
 
 
         /**
@@ -150,7 +153,22 @@ namespace region
                                             const transition &arenaTransition);
 
 
-        [[nodiscard]] std::string to_string(const std::unordered_map<int, std::string> &intToLocations) const;
+        // To be overridden in StrategyGraphForConjunction.
+        virtual void addNewStrategyTransitionMapToBack()
+        {
+            throw std::logic_error("Not supported by this StrategyGraph type.");
+        }
+
+
+        // To be overridden in StrategyGraphForConjunction.
+        [[nodiscard]] virtual strategyTransitionSet getStrategyTransitionsGivenSourceAndIndex(const Region &source, const size_t index) const
+        {
+            std::cout << "Given source:\n" << source.toString() << "\n" << "Given index: " << index << std::endl;
+            throw std::logic_error("Not supported by this StrategyGraph type.");
+        }
+
+
+        [[nodiscard]] virtual std::string to_string(const std::unordered_map<int, std::string> &intToLocations) const;
     };
 }
 

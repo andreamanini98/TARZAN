@@ -348,12 +348,12 @@ inline void region::RTSArena::collectLegalRegionByPiStrategy(const Region &sourc
 #pragma omp critical
         {
             if (collectStrategyTransition)
-                strategyGraph.addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
+                strategyGraph->addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
         }
         threadLocalRegions[omp_get_thread_num()].push_back(sourceRegion);
 #else
         if (collectStrategyTransition)
-            strategyGraph.addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
+            strategyGraph->addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
         threadLocalRegions[0].push_back(sourceRegion);
 #endif
     }
@@ -511,11 +511,14 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 
     regionSet filteredRegions{};
 
-    // Setting the target regions of the strategy graph to match the initial regions.
-    strategyGraph.setHeads(initialRegions);
+    if (computeStrategyGraph)
+    {
+        // Setting the target regions of the strategy graph to match the initial regions.
+        strategyGraph->setHeads(initialRegions);
 
-    // Setting the target regions of the strategy graph to match setG.
-    strategyGraph.setTargetRegions(setG);
+        // Setting the target regions of the strategy graph to match setG.
+        strategyGraph->setTargetRegions(setG);
+    }
 
     while (currentIteration < maxIter)
     {
@@ -579,11 +582,14 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
 
     regionSet filteredRegions{};
 
-    // Setting the target regions of the strategy graph to match the initial regions.
-    strategyGraph.setHeads(initialRegions);
+    if (computeStrategyGraph)
+    {
+        // Setting the target regions of the strategy graph to match the initial regions.
+        strategyGraph->setHeads(initialRegions);
 
-    // Setting the target regions of the strategy graph to match setG.
-    strategyGraph.setTargetRegions(setG);
+        // Setting the target regions of the strategy graph to match setG.
+        strategyGraph->setTargetRegions(setG);
+    }
 
     while (currentIteration < maxIter)
     {
@@ -651,15 +657,17 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
 
     regionSet filteredRegions{};
 
-    // Setting the target regions of the strategy graph to match the initial regions.
-    // Here we do not need to set the targets, as they will be updated in the safety strategy synthesis algorithm.
-    strategyGraph.setHeads(initialRegions);
-
     // Used to enable or disable the strategy transition computation.
     const bool reactivateComputeStrategyGraph = computeStrategyGraph;
 
     if (computeStrategyGraph)
+    {
+        // Setting the target regions of the strategy graph to match the initial regions.
+        // Here we do not need to set the targets, as they will be updated in the safety strategy synthesis algorithm.
+        strategyGraph->setHeads(initialRegions);
+
         computeStrategyGraph = false;
+    }
 
     while (currentIteration < maxIter)
     {
@@ -905,6 +913,10 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
     int currentIteration = 0;
     const int totalStartingRegions = static_cast<int>(setG.size());
 
+    // Setting the target regions of the strategy graph to match the initial regions.
+    if (computeStrategyGraph)
+        strategyGraph->setHeads(initialRegions);
+
     // The computation proceeds backwards from the last (i.e., from the back) formula in the formulaRegionSets vector.
     // Depending on its applicationCount, we apply piFilter until another formula is met (going backwards).
     // When this happens, we intersect its states with the ones collected up to the current iteration.
@@ -927,8 +939,13 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
         // We now apply piFilter for a total of totalCurrentIterations times.
         for (int j = 0; j < totalCurrentIterations; j++)
         {
-            // TODO: è giusto mettere skipIfSourceIsInSetG a true qui? Attenzione quando farai le strategie per l'and dei next.
-            piFilter(setG, toProcess, filteredRegions, {}, false, false, true);
+            // Each step of the conjunction will be saved backwards (at the end of computation, the back of strategyTransitionsForConjunction contains the
+            // first strategy transition and so on). For this reason, in this algorithm we add maps to strategyTransitionsForConjunction at each step of the game.
+            if (computeStrategyGraph)
+                strategyGraph->addNewStrategyTransitionMapToBack();
+
+            // Here we put skipPredecessorsInSetG and skipIfSourceIsInSetG to false, since we may need to traverse cycles in the conjunction of next.
+            piFilter(setG, toProcess, filteredRegions, {}, false, false, false);
 
             setG.merge(filteredRegions);
             filteredRegions.clear();
@@ -963,8 +980,13 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
 
     for (int i = 0; i < totalCurrentIterations; i++)
     {
-        // TODO: è giusto mettere skipIfSourceIsInSetG a true qui? Attenzione quando farai le strategie per l'and dei next.
-        piFilter(setG, toProcess, filteredRegions, {}, false, false, true);
+        // Each step of the conjunction will be saved backwards (at the end of computation, the back of strategyTransitionsForConjunction contains the
+        // first strategy transition and so on). For this reason, in this algorithm we add maps to strategyTransitionsForConjunction at each step of the game.
+        if (computeStrategyGraph)
+            strategyGraph->addNewStrategyTransitionMapToBack();
+
+        // Here we put skipPredecessorsInSetG and skipIfSourceIsInSetG to false, since we may need to traverse cycles in the conjunction of next.
+        piFilter(setG, toProcess, filteredRegions, {}, false, false, false);
 
         setG.merge(filteredRegions);
         filteredRegions.clear();
@@ -1033,7 +1055,7 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::conjunctionOfForm
 
 void region::RTSArena::synthesizeReachabilityStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const
 {
-    const auto &targetRegions = strategyGraph.getTargetRegions();
+    const auto &targetRegions = strategyGraph->getTargetRegions();
 
     std::cout << "\n";
     std::cout << "  \u2554" << repeatString("\u2550", BOX_WIDTH) << "\u2557\n";
@@ -1041,12 +1063,12 @@ void region::RTSArena::synthesizeReachabilityStrategy(const std::unordered_map<i
     std::cout << "  \u255a" << repeatString("\u2550", BOX_WIDTH) << "\u255d\n\n";
 
     // We assume to always take the first region in heads as the starting one.
-    Region current = strategyGraph.getHeads()[0];
+    Region current = strategyGraph->getHeads()[0];
     int step = 0;
 
     while (!targetRegions.contains(current))
     {
-        const strategyTransitionSet strategyTransSet = strategyGraph.getStrategyTransitionsGivenSource(current);
+        const strategyTransitionSet strategyTransSet = strategyGraph->getStrategyTransitionsGivenSource(current);
 
         if (strategyTransSet.empty())
             throw std::logic_error("No outgoing strategy transitions from current region!");
@@ -1068,7 +1090,7 @@ void region::RTSArena::synthesizeReachabilityStrategy(const std::unordered_map<i
 
 void region::RTSArena::synthesizeSafetyStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const
 {
-    auto targetRegions = strategyGraph.getTargetRegions();
+    auto targetRegions = strategyGraph->getTargetRegions();
 
     std::cout << "\n";
     std::cout << "  \u2554" << repeatString("\u2550", BOX_WIDTH) << "\u2557\n";
@@ -1076,7 +1098,7 @@ void region::RTSArena::synthesizeSafetyStrategy(const std::unordered_map<int, st
     std::cout << "  \u255a" << repeatString("\u2550", BOX_WIDTH) << "\u255d\n\n";
 
     // We assume to always take the first region in heads as the starting one.
-    Region current = strategyGraph.getHeads()[0];
+    Region current = strategyGraph->getHeads()[0];
     int step = 0;
 
     // Emplacing the current region (corresponding to an initial region) to also detect cycles involving initial regions.
@@ -1085,7 +1107,7 @@ void region::RTSArena::synthesizeSafetyStrategy(const std::unordered_map<int, st
     // This loop will continue to execute until a cycle in the strategy graph is found.
     while (step <= MAX_ITERATIONS)
     {
-        const strategyTransitionSet strategyTransSet = strategyGraph.getStrategyTransitionsGivenSource(current);
+        const strategyTransitionSet strategyTransSet = strategyGraph->getStrategyTransitionsGivenSource(current);
 
         if (strategyTransSet.empty())
             throw std::logic_error("No outgoing strategy transitions from current region!");
@@ -1137,7 +1159,7 @@ void region::RTSArena::synthesizeStrategy(const cltloc::ast::generalCLTLocFormul
         } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>)
         {
             // Unary formula.
-            // TODO: la sintesi del next per ora funziona perchè si assume che l'unico next unario sia next until.
+            // TODO: la sintesi del next unario per ora funziona perchè si assume che l'unico next unario sia next until.
             switch (const auto &unaryFormula = val.get(); unaryFormula.op)
             {
                 case BOX:
@@ -1169,6 +1191,73 @@ void region::RTSArena::synthesizeStrategy(const cltloc::ast::generalCLTLocFormul
         } else
             throw std::logic_error("Invalid CLTLoc formula for synthesis.");
     }, formula.value);
+}
+
+
+void region::RTSArena::synthesizeAndNextConjunctionStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const
+{
+    std::cout << "\n";
+    std::cout << "  \u2554" << repeatString("\u2550", BOX_WIDTH) << "\u2557\n";
+    std::cout << "  \u2551   WINNING CONTROLLER AND_NEXT STRATEGY   \u2551\n";
+    std::cout << "  \u255a" << repeatString("\u2550", BOX_WIDTH) << "\u255d\n\n";
+
+    // We assume to always take the first region in heads as the starting one.
+    Region current = strategyGraph->getHeads()[0];
+
+    // Dynamic cast to get the strategy transition vector for the conjunction.
+    const auto *sg_p = dynamic_cast<StrategyGraphForConjunction *>(strategyGraph.get());
+    if (!sg_p)
+        throw std::logic_error("Expected a StrategyGraphForConjunction!");
+    const auto &strategyTransitionsForConjunction = sg_p->getStrategyTransitionsForConjunction();
+
+    int step{};
+    const int mStep = static_cast<int>(strategyTransitionsForConjunction.size());
+
+    for (step = mStep - 1; step >= 0; step--)
+    {
+        const strategyTransitionSet strategyTransSet = strategyGraph->getStrategyTransitionsGivenSourceAndIndex(current, step);
+
+        if (strategyTransSet.empty())
+            throw std::logic_error("No outgoing strategy transitions from current region!");
+
+        // We assume to always take the first available transition in the strategy transition set.
+        const auto &[arenaTransition, target, moveClockValuation] = *strategyTransSet.begin();
+
+        StrategyGraph::printStrategyTransition(mStep - step, current, intToLocations, indicesToClocks, locationsToPlayers, moveClockValuation, arenaTransition);
+
+        current = target;
+    }
+
+    // Print the final region (the target).
+    StrategyGraph::printRegionWithBox(mStep - step, current, intToLocations, indicesToClocks, locationsToPlayers, " \u2605");
+}
+
+
+void region::RTSArena::synthesizeStrategy(const cltloc::ast::conjunctionOfFormulae &conjunction)
+{
+    if (!computeStrategyGraph)
+        throw CannotSynthesizeStrategiesException("The parameter 'computeStrategyGraph' is set to false!");
+
+    if (!solveTimedCLTLocGame(conjunction))
+        throw CannotSynthesizeStrategiesException("A controller winning strategy does not exist!");
+
+    // Computing a map from clock indices to clock names for better showing the strategy.
+    // We assume here that the original mapping is a correctly constructed bijection between clock names and integers.
+    std::unordered_map<int, std::string> indicesToClocks;
+    indicesToClocks.reserve(clocksIndices.size());
+    for (const auto &[name, index]: clocksIndices)
+        indicesToClocks.emplace(index, name);
+
+    // We now synthesize a winning controller strategy based on the winning conjunction type.
+    switch (conjunction.type)
+    {
+        case AND_NEXT:
+            synthesizeAndNextConjunctionStrategy(indicesToClocks);
+            break;
+
+        default:
+            throw std::logic_error("Invalid conjunction type.");
+    }
 }
 
 

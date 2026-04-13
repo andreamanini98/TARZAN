@@ -1,0 +1,61 @@
+#ifndef TARZAN_STRATEGYGRAPHFORCONJUNCTION_H
+#define TARZAN_STRATEGYGRAPHFORCONJUNCTION_H
+
+#include "StrategyGraph.h"
+
+
+namespace region
+{
+    class StrategyGraphForConjunction : public StrategyGraph
+    {
+        // A vector of strategy transitions, useful to follow such transitions step by step during strategy synthesis.
+        std::vector<std::unordered_map<Region, strategyTransitionSet, RegionHash>> strategyTransitionsForConjunction{};
+
+
+    public:
+        /**
+         * @brief Adds a new transition to the map in the back position of strategyTransitionsForConjunction, possibly inserting a new key if not present.
+         *
+         * @param source the source region of the strategy transition.
+         * @param arenaTransition a transition of the original Timed Arena over which the current strategy transition is computed.
+         * @param target the target of the strategy transition.
+         * @param cv the clock valuation of a discrete predecessor of target.
+         *
+         * @throws std::logic_error if strategyTransitionsForConjunction is empty.
+         */
+        void addStrategyTransition(const Region &source,
+                                   const transition &arenaTransition,
+                                   const Region &target,
+                                   const clockValuation &cv) override;
+
+
+        /**
+         * @brief Adds a new empty map to the back of strategyTransitionsForConjunction. Useful to differentiate between different steps of the strategy.
+         */
+        void addNewStrategyTransitionMapToBack() override;
+
+
+        /**
+         * @brief Returns all strategy transitions associated with the given source, taking them from the back of strategyTransitionsForConjunction.
+         *
+         * @param source the desired source region.
+         * @param index the index of strategyTransitionsForConjunction from which to return strategy transitions.
+         * @return all strategy transitions associated with source at position index in strategyTransitionsForConjunction, or an empty vector if none exist.
+         *
+         * @throws std::logic_error if the index is too big.
+         */
+        [[nodiscard]] strategyTransitionSet getStrategyTransitionsGivenSourceAndIndex(const Region &source, size_t index) const override;
+
+
+        // Getters.
+        [[nodiscard]] std::vector<std::unordered_map<Region, strategyTransitionSet, RegionHash>> const &getStrategyTransitionsForConjunction() const
+        {
+            return strategyTransitionsForConjunction;
+        }
+
+
+        [[nodiscard]] std::string to_string(const std::unordered_map<int, std::string> &intToLocations) const override;
+    };
+}
+
+#endif //TARZAN_STRATEGYGRAPHFORCONJUNCTION_H
