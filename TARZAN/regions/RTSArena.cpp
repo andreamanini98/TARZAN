@@ -1129,6 +1129,7 @@ void region::RTSArena::synthesizeSafetyStrategy(const std::unordered_map<int, st
 
     // Print the final region (the region before the safety cycle starts again).
     StrategyGraph::printRegionWithBox(step, current, intToLocations, indicesToClocks, locationsToPlayers, " \u2605");
+    std::cout << "          \u2502\n\n          \u2502\n\n          \u2502\n";
 }
 
 
@@ -1223,13 +1224,14 @@ void region::RTSArena::synthesizeAndNextConjunctionStrategy(const std::unordered
         // We assume to always take the first available transition in the strategy transition set.
         const auto &[arenaTransition, target, moveClockValuation] = *strategyTransSet.begin();
 
-        StrategyGraph::printStrategyTransition(mStep - step, current, intToLocations, indicesToClocks, locationsToPlayers, moveClockValuation, arenaTransition);
+        StrategyGraph::printStrategyTransition(mStep - step - 1, current, intToLocations, indicesToClocks, locationsToPlayers, moveClockValuation,
+                                               arenaTransition);
 
         current = target;
     }
 
     // Print the final region (the target).
-    StrategyGraph::printRegionWithBox(mStep - step, current, intToLocations, indicesToClocks, locationsToPlayers, " \u2605");
+    StrategyGraph::printRegionWithBox(mStep - step - 1, current, intToLocations, indicesToClocks, locationsToPlayers, " \u2605");
 }
 
 
