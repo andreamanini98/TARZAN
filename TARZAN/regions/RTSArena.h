@@ -460,6 +460,10 @@ namespace region
          *
          * @throws CannotSynthesizeStrategiesException if a winning controller strategy cannot be synthesized.
          * @throws std::logic_error if an invalid CLTLoc formula is used for synthesis.
+         *
+         * @warning The printed strategies assume that specific values are given for the environment's delays and for the chosen
+         *          actions (how the nondeterminism is resolved). Thus, calling them strategies is a little abuse of notation.
+         *          They should be more correctly identified as paths within a given strategy (essentially a play).
          */
         void synthesizeStrategy(const cltloc::ast::generalCLTLocFormula &formula);
 
@@ -471,6 +475,10 @@ namespace region
          *
          * @throws CannotSynthesizeStrategiesException if a winning controller strategy cannot be synthesized.
          * @throws std::logic_error if an invalid CLTLoc formula is used for synthesis.
+         *
+         * @warning The printed strategies assume that specific values are given for the environment's delays and for the chosen
+         *          actions (how the nondeterminism is resolved). Thus, calling them strategies is a little abuse of notation.
+         *          They should be more correctly identified as paths within a given strategy (essentially a play).
          */
         void synthesizeStrategy(const cltloc::ast::conjunctionOfFormulae &conjunction);
 
