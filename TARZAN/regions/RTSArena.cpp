@@ -1053,13 +1053,13 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::conjunctionOfForm
 }
 
 
-void region::RTSArena::synthesizeReachabilityStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const
+void region::RTSArena::printReachabilityPlay(const std::unordered_map<int, std::string> &indicesToClocks) const
 {
     const auto &targetRegions = strategyGraph->getTargetRegions();
 
     std::cout << "\n";
     std::cout << "  \u2554" << repeatString("\u2550", BOX_WIDTH) << "\u2557\n";
-    std::cout << "  \u2551 WINNING CONTROLLER REACHABILITY STRATEGY \u2551\n";
+    std::cout << "  \u2551   WINNING CONTROLLER REACHABILITY PLAY   \u2551\n";
     std::cout << "  \u255a" << repeatString("\u2550", BOX_WIDTH) << "\u255d\n\n";
 
     // We assume to always take the first region in heads as the starting one.
@@ -1088,13 +1088,13 @@ void region::RTSArena::synthesizeReachabilityStrategy(const std::unordered_map<i
 }
 
 
-void region::RTSArena::synthesizeSafetyStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const
+void region::RTSArena::printSafetyPlay(const std::unordered_map<int, std::string> &indicesToClocks) const
 {
     auto targetRegions = strategyGraph->getTargetRegions();
 
     std::cout << "\n";
     std::cout << "  \u2554" << repeatString("\u2550", BOX_WIDTH) << "\u2557\n";
-    std::cout << "  \u2551    WINNING CONTROLLER SAFETY STRATEGY    \u2551\n";
+    std::cout << "  \u2551      WINNING CONTROLLER SAFETY PLAY      \u2551\n";
     std::cout << "  \u255a" << repeatString("\u2550", BOX_WIDTH) << "\u255d\n\n";
 
     // We assume to always take the first region in heads as the starting one.
@@ -1132,7 +1132,7 @@ void region::RTSArena::synthesizeSafetyStrategy(const std::unordered_map<int, st
 }
 
 
-void region::RTSArena::synthesizeStrategy(const cltloc::ast::generalCLTLocFormula &formula)
+void region::RTSArena::printPlay(const cltloc::ast::generalCLTLocFormula &formula)
 {
     if (!computeStrategyGraph)
         throw CannotSynthesizeStrategiesException("The parameter 'computeStrategyGraph' is set to false!");
@@ -1140,14 +1140,14 @@ void region::RTSArena::synthesizeStrategy(const cltloc::ast::generalCLTLocFormul
     if (!solveTimedCLTLocGame(formula))
         throw CannotSynthesizeStrategiesException("A controller winning strategy does not exist!");
 
-    // Computing a map from clock indices to clock names for better showing the strategy.
+    // Computing a map from clock indices to clock names for better showing the play.
     // We assume here that the original mapping is a correctly constructed bijection between clock names and integers.
     std::unordered_map<int, std::string> indicesToClocks;
     indicesToClocks.reserve(clocksIndices.size());
     for (const auto &[name, index]: clocksIndices)
         indicesToClocks.emplace(index, name);
 
-    // We now synthesize a winning controller strategy based on the winning condition type.
+    // We now synthesize a winning controller play based on the winning condition type.
     std::visit([this, indicesToClocks]<typename T0>(T0 const &val) {
         using T = std::decay_t<T0>;
 
@@ -1163,12 +1163,12 @@ void region::RTSArena::synthesizeStrategy(const cltloc::ast::generalCLTLocFormul
             switch (const auto &unaryFormula = val.get(); unaryFormula.op)
             {
                 case BOX:
-                    synthesizeSafetyStrategy(indicesToClocks);
+                    printSafetyPlay(indicesToClocks);
                     break;
 
                 case DIAMOND:
                 case NEXT:
-                    synthesizeReachabilityStrategy(indicesToClocks);
+                    printReachabilityPlay(indicesToClocks);
                     break;
 
                 default:
@@ -1181,7 +1181,7 @@ void region::RTSArena::synthesizeStrategy(const cltloc::ast::generalCLTLocFormul
             switch (const auto &binaryFormula = val.get(); binaryFormula.op)
             {
                 case UNTIL:
-                    synthesizeReachabilityStrategy(indicesToClocks);
+                    printReachabilityPlay(indicesToClocks);
                     break;
 
                 default:
@@ -1194,11 +1194,11 @@ void region::RTSArena::synthesizeStrategy(const cltloc::ast::generalCLTLocFormul
 }
 
 
-void region::RTSArena::synthesizeAndNextConjunctionStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const
+void region::RTSArena::printAndNextConjunctionPlay(const std::unordered_map<int, std::string> &indicesToClocks) const
 {
     std::cout << "\n";
     std::cout << "  \u2554" << repeatString("\u2550", BOX_WIDTH) << "\u2557\n";
-    std::cout << "  \u2551   WINNING CONTROLLER AND_NEXT STRATEGY   \u2551\n";
+    std::cout << "  \u2551     WINNING CONTROLLER AND_NEXT PLAY     \u2551\n";
     std::cout << "  \u255a" << repeatString("\u2550", BOX_WIDTH) << "\u255d\n\n";
 
     // We assume to always take the first region in heads as the starting one.
@@ -1223,8 +1223,8 @@ void region::RTSArena::synthesizeAndNextConjunctionStrategy(const std::unordered
         // We assume to always take the first available transition in the strategy transition set.
         const auto &[arenaTransition, target, moveClockValuation] = *strategyTransSet.begin();
 
-        StrategyGraph::printStrategyTransition(mStep - step - 1, current, intToLocations, indicesToClocks, locationsToPlayers, moveClockValuation,
-                                               arenaTransition);
+        const int fixedStep = mStep - step - 1;
+        StrategyGraph::printStrategyTransition(fixedStep, current, intToLocations, indicesToClocks, locationsToPlayers, moveClockValuation, arenaTransition);
 
         current = target;
     }
@@ -1234,7 +1234,7 @@ void region::RTSArena::synthesizeAndNextConjunctionStrategy(const std::unordered
 }
 
 
-void region::RTSArena::synthesizeStrategy(const cltloc::ast::conjunctionOfFormulae &conjunction)
+void region::RTSArena::printPlay(const cltloc::ast::conjunctionOfFormulae &conjunction)
 {
     if (!computeStrategyGraph)
         throw CannotSynthesizeStrategiesException("The parameter 'computeStrategyGraph' is set to false!");
@@ -1253,7 +1253,7 @@ void region::RTSArena::synthesizeStrategy(const cltloc::ast::conjunctionOfFormul
     switch (conjunction.type)
     {
         case AND_NEXT:
-            synthesizeAndNextConjunctionStrategy(indicesToClocks);
+            printAndNextConjunctionPlay(indicesToClocks);
             break;
 
         default:

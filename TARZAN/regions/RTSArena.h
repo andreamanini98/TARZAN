@@ -255,29 +255,29 @@ namespace region
 
 
         /**
-         * @brief Synthesizes a winning controller strategy for a reachability TCG.
+         * @brief Prints a reachability play from the strategy graph.
          *
          * @param indicesToClocks a map from clock indices to clock names.
          *
          * @throws std::logic_error if a region does not have outgoing strategy transitions.
          *
-         * @warning The strategy graph must be cycle-free for the synthesis algorithm to work.
+         * @warning The strategy graph must be cycle-free for the algorithm to work.
          */
-        void synthesizeReachabilityStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const;
+        void printReachabilityPlay(const std::unordered_map<int, std::string> &indicesToClocks) const;
 
 
         /**
-         * @brief Synthesizes a winning controller strategy for a safety TCG.
+         * @brief Prints a safety play from the strategy graph.
          *
          * @param indicesToClocks a map from clock indices to clock names.
          *
          * @throws std::logic_error if a region does not have outgoing strategy transitions.
          */
-        void synthesizeSafetyStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const;
+        void printSafetyPlay(const std::unordered_map<int, std::string> &indicesToClocks) const;
 
 
         /**
-         * @brief Synthesizes a winning controller strategy for an AND NEXT TCG.
+         * @brief Prints an AND NEXT play from the strategy graph.
          *
          * @param indicesToClocks a map from clock indices to clock names.
          *
@@ -285,7 +285,7 @@ namespace region
          *
          * @warning The strategy graph must be an object of class StrategyGraphForConjunction.
          */
-        void synthesizeAndNextConjunctionStrategy(const std::unordered_map<int, std::string> &indicesToClocks) const;
+        void printAndNextConjunctionPlay(const std::unordered_map<int, std::string> &indicesToClocks) const;
 
 
     public:
@@ -454,33 +454,29 @@ namespace region
 
 
         /**
-         * @brief Synthesizes a winning controller strategy.
+         * @brief Prints a play (in which the controller wins) from the strategy graph.
          *
          * @param formula the general CLTLoc formula to process.
          *
-         * @throws CannotSynthesizeStrategiesException if a winning controller strategy cannot be synthesized.
-         * @throws std::logic_error if an invalid CLTLoc formula is used for synthesis.
-         *
-         * @warning The printed strategies assume that specific values are given for the environment's delays and for the chosen
-         *          actions (how the nondeterminism is resolved). Thus, calling them strategies is a little abuse of notation.
-         *          They should be more correctly identified as paths within a given strategy (essentially a play).
+         * @throws CannotSynthesizeStrategiesException if a play (in which the controller wins) cannot be derived from the strategy graph.
+         * @throws std::logic_error if an invalid CLTLoc formula is used.
          */
-        void synthesizeStrategy(const cltloc::ast::generalCLTLocFormula &formula);
+        void printPlay(const cltloc::ast::generalCLTLocFormula &formula);
 
 
         /**
-         * @brief Synthesizes a winning controller strategy for a conjunction of general CLTLoc formulae.
+         * @brief Prints a play (in which the controller wins) from the strategy graph for a conjunction of general CLTLoc formulae.
          *
          * @param conjunction the conjunction of general CLTLoc formulae to process.
          *
-         * @throws CannotSynthesizeStrategiesException if a winning controller strategy cannot be synthesized.
-         * @throws std::logic_error if an invalid CLTLoc formula is used for synthesis.
-         *
-         * @warning The printed strategies assume that specific values are given for the environment's delays and for the chosen
-         *          actions (how the nondeterminism is resolved). Thus, calling them strategies is a little abuse of notation.
-         *          They should be more correctly identified as paths within a given strategy (essentially a play).
+         * @throws CannotSynthesizeStrategiesException if a play (in which the controller wins) cannot be derived from the strategy graph.
+         * @throws std::logic_error if an invalid CLTLoc formula is used.
          */
-        void synthesizeStrategy(const cltloc::ast::conjunctionOfFormulae &conjunction);
+        void printPlay(const cltloc::ast::conjunctionOfFormulae &conjunction);
+
+
+        // TODO: creare funzioni che stampino tutto lo strategy graph in formato graphviz (per tutte le tipologie di winning conditions).
+        //       In quel modo il grafo codifica tutte le possibili strategie.
 
 
         [[nodiscard]] std::string strategyGraphToString() const

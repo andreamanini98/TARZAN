@@ -31,7 +31,7 @@ int main()
     std::cout << phi << std::endl;
     // std::cout << rts.to_string() << std::endl;
 
-    rts.synthesizeStrategy(phi);
+    rts.printPlay(phi);
 
     return 0;
 }
