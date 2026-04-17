@@ -31,13 +31,7 @@ int main()
     std::cout << phi << std::endl;
     // std::cout << rts.to_string() << std::endl;
 
-
-
     rts.strategyGraphToDot("/Users/echo/Desktop/PhD/Tools/TARZAN/output/strategy_graphs/g1.dot", phi);
-
-    std::cout << rts.strategyGraphToString() << std::endl;
-
-    // rts.printPlay(phi);
 
     return 0;
 }

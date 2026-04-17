@@ -207,6 +207,19 @@ namespace region
 
 
         /**
+         * @brief Deletes unnecessary strategy transitions from strategyTransitions.
+         *
+         * A strategy transition is unnecessary if its source is not contained in the intersectionSet parameter.
+         *
+         * @param intersectionSet the set of regions from which transitions in strategyTransitions must originate.
+         */
+        virtual void eraseUnnecessaryTransitions(const regionSet &intersectionSet)
+        {
+            std::erase_if(strategyTransitions, [&intersectionSet](const auto &pair) { return !intersectionSet.contains(pair.first); });
+        }
+
+
+        /**
          * @brief Converts the strategy graph to a .dot representation.
          *
          * @param path the path in which to save the .dot representation (must end with file_name.dot).

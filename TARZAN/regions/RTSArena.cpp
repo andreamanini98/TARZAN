@@ -929,9 +929,14 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
     int currentIteration = 0;
     const int totalStartingRegions = static_cast<int>(setG.size());
 
-    // Setting the target regions of the strategy graph to match the initial regions.
     if (computeStrategyGraph)
+    {
+        // Setting the heads of the strategy graph to match the initial regions.
         strategyGraph->setHeads(initialRegions);
+
+        // Setting the target regions of the strategy graph to match the back of formulaRegions, that is, the initial content of setG.
+        strategyGraph->setTargetRegions(setG);
+    }
 
     // The computation proceeds backwards from the last (i.e., from the back) formula in the formulaRegionSets vector.
     // Depending on its applicationCount, we apply piFilter until another formula is met (going backwards).
@@ -980,6 +985,10 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
         // Computing the intersection between setG and the regions specified by formulaRegionSets[i - 1].
         const regionSet &target = formulaRegionSets[i - 1];
         std::erase_if(setG, [&target](const auto &region) { return !target.contains(region); });
+
+        // Since we are restricting setG, we must restrict the collected strategy transitions as well.
+        if (computeStrategyGraph)
+            strategyGraph->eraseUnnecessaryTransitions(setG);
 
         toProcess.clear();
         for (const auto &region: setG)
