@@ -41,14 +41,17 @@ namespace region
 {
     class StrategyGraph
     {
+    protected:
+        // An adjacency list from a source region to a target region (under the move semantics of TCG) with additional information to synthesize strategies.
+        std::unordered_map<Region, strategyTransitionSet, RegionHash> strategyTransitions{};
+
+
+    private:
         // Regions corresponding to the starting states of the strategy graph (i.e., those corresponding to initial regions in the original RTS).
         std::vector<Region> heads{};
 
         // Regions used in comparisons (e.g., the goal regions in a reachability TCG).
         regionSet targetRegions{};
-
-        // An adjacency list from a source region to a target region (under the move semantics of TCG) with additional information to synthesize strategies.
-        std::unordered_map<Region, strategyTransitionSet, RegionHash> strategyTransitions{};
 
 
         /**
@@ -216,7 +219,7 @@ namespace region
         virtual void to_dot(const std::string &path,
                             const std::unordered_map<int, std::string> &indicesToClocks,
                             const std::unordered_map<int, std::string> &intToLocations,
-                            const absl::flat_hash_map<int, players_sym> &locationsToPlayers) const;
+                            const absl::flat_hash_map<int, players_sym> &locationsToPlayers);
 
 
         // To be overridden in StrategyGraphForConjunction.

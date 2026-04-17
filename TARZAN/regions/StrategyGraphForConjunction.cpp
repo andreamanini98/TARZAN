@@ -32,6 +32,19 @@ strategyTransitionSet region::StrategyGraphForConjunction::getStrategyTransition
 }
 
 
+void region::StrategyGraphForConjunction::to_dot(const std::string &path,
+                                                 const std::unordered_map<int, std::string> &indicesToClocks,
+                                                 const std::unordered_map<int, std::string> &intToLocations,
+                                                 const absl::flat_hash_map<int, players_sym> &locationsToPlayers)
+{
+    for (const auto &map: strategyTransitionsForConjunction)
+        for (const auto &[region, transSet]: map)
+            strategyTransitions[region].insert(transSet.begin(), transSet.end());
+
+    StrategyGraph::to_dot(path, indicesToClocks, intToLocations, locationsToPlayers);
+}
+
+
 std::string region::StrategyGraphForConjunction::to_string(const std::unordered_map<int, std::string> &intToLocations) const
 {
     std::ostringstream oss;

@@ -47,6 +47,22 @@ namespace region
         [[nodiscard]] strategyTransitionSet getStrategyTransitionsGivenSourceAndIndex(const Region &source, size_t index) const override;
 
 
+        /**
+         * @brief Converts the strategy graph to a .dot representation.
+         *
+         * @param path the path in which to save the .dot representation (must end with file_name.dot).
+         * @param indicesToClocks a map from clock indices to clock names.
+         * @param intToLocations a map from location indices to location names.
+         * @param locationsToPlayers a map from location indices to players.
+         *
+         * @throws std::runtime_error if it fails to open the given .dot file path.
+         */
+        void to_dot(const std::string &path,
+                    const std::unordered_map<int, std::string> &indicesToClocks,
+                    const std::unordered_map<int, std::string> &intToLocations,
+                    const absl::flat_hash_map<int, players_sym> &locationsToPlayers) override;
+
+
         // Getters.
         [[nodiscard]] std::vector<std::unordered_map<Region, strategyTransitionSet, RegionHash>> const &getStrategyTransitionsForConjunction() const
         {

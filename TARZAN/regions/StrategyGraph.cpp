@@ -218,7 +218,7 @@ std::string region::StrategyGraph::dotEdgeLabel(const transition &arenaTransitio
 void region::StrategyGraph::to_dot(const std::string &path,
                                    const std::unordered_map<int, std::string> &indicesToClocks,
                                    const std::unordered_map<int, std::string> &intToLocations,
-                                   const absl::flat_hash_map<int, players_sym> &locationsToPlayers) const
+                                   const absl::flat_hash_map<int, players_sym> &locationsToPlayers)
 {
     std::ofstream file(path);
     if (!file.is_open())
