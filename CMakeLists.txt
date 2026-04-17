@@ -31,6 +31,7 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/include)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/lib)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/backwards_tarzan_results)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/games_tarzan_results)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/strategy_graphs)
 
 
 # The library archive is now written inside this directory.

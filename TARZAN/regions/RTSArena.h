@@ -309,6 +309,16 @@ namespace region
 
 
         /**
+         * @brief Computes a map from clock indices to clock names.
+         *
+         * @return a map from clock indices to clock names.
+         *
+         * @warning The original mapping must be a correctly constructed bijection between clock names and integers.
+         */
+        [[nodiscard]] std::unordered_map<int, std::string> getIndicesToClocksMap() const;
+
+
+        /**
          * @brief Generates regions from a pure CLTLoc formula.
          *
          * Processes a pure CLTLoc formula (containing only location and clock constraints without temporal operators) and generates the corresponding set of
@@ -475,8 +485,15 @@ namespace region
         void printPlay(const cltloc::ast::conjunctionOfFormulae &conjunction);
 
 
-        // TODO: creare funzioni che stampino tutto lo strategy graph in formato graphviz (per tutte le tipologie di winning conditions).
-        //       In quel modo il grafo codifica tutte le possibili strategie.
+        /**
+         * @brief Prints an entire strategy graph to .dot format.
+         *
+         * @param path the path in which the .dot file will be generated. The path must end with file_name.dot to properly save such a file.
+         * @param formula the general CLTLoc formula to process.
+         *
+         * @throws std::runtime_error if a winning controller strategy does not exist (hence, the strategy graph cannot be saved to file).
+         */
+        void strategyGraphToDot(const std::string &path, const cltloc::ast::generalCLTLocFormula &formula);
 
 
         [[nodiscard]] std::string strategyGraphToString() const

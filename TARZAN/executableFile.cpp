@@ -14,7 +14,7 @@ int main()
 
     // const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks_games/models/production_cell/winning_conditions/reachability1.txt";
 
-    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks_games/models/production_cell/winning_conditions/safety0.txt";
+     const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks_games/models/production_cell/winning_conditions/safety0.txt";
 
     // const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks_games/models/production_cell/winning_conditions/until6.txt";
 
@@ -31,7 +31,9 @@ int main()
     std::cout << phi << std::endl;
     // std::cout << rts.to_string() << std::endl;
 
-    rts.printPlay(phi);
+    rts.strategyGraphToDot("/Users/echo/Desktop/PhD/Tools/TARZAN/output/strategy_graphs/g1.dot", phi);
+
+    // rts.printPlay(phi);
 
     return 0;
 }

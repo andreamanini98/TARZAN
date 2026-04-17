@@ -59,9 +59,9 @@ namespace region
          * @param indent the indentation string to prepend to each line.
          */
         // TODO: if desired, this function can be modified to show the intervals in which clock values fall.
-        static void printClockValuationInStrategy(const std::vector<std::pair<int, bool>> &cv,
-                                                  const std::unordered_map<int, std::string> &indicesToClocks,
-                                                  const std::string &indent);
+        inline static void printClockValuationInStrategy(const std::vector<std::pair<int, bool>> &cv,
+                                                         const std::unordered_map<int, std::string> &indicesToClocks,
+                                                         const std::string &indent);
 
 
         /**
@@ -73,11 +73,61 @@ namespace region
          * @param locationsToPlayers a map from location indices to players.
          * @param indent the indentation string to prepend to each line.
          */
-        static void printRegionInStrategy(const Region &reg,
-                                          const std::unordered_map<int, std::string> &intToLocations,
-                                          const std::unordered_map<int, std::string> &indicesToClocks,
-                                          const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
-                                          const std::string &indent);
+        inline static void printRegionInStrategy(const Region &reg,
+                                                 const std::unordered_map<int, std::string> &intToLocations,
+                                                 const std::unordered_map<int, std::string> &indicesToClocks,
+                                                 const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
+                                                 const std::string &indent);
+
+
+        /**
+         * @brief Escapes characters that would break a DOT double-quoted string label.
+         *
+         * @param s the string to escape.
+         * @return the escaped string.
+         */
+        [[nodiscard]] inline static std::string escapeDot(const std::string &s);
+
+
+        /**
+         * @brief Formats a clock valuation as a human-readable string.
+         *
+         * @param cv the clock valuation to format.
+         * @param indicesToClocks a map from clock indices to clock names.
+         * @param separator the string inserted between consecutive clock entries.
+         * @return the formatted clock valuation string.
+         */
+        [[nodiscard]] inline static std::string formatClockValuation(const clockValuation &cv,
+                                                                     const std::unordered_map<int, std::string> &indicesToClocks,
+                                                                     const std::string &separator);
+
+
+        /**
+         * @brief Builds a DOT node label for a region.
+         *
+         * @param reg the region to label.
+         * @param intToLocations a map from location indices to location names.
+         * @param indicesToClocks a map from clock indices to clock names.
+         * @param locationsToPlayers a map from location indices to players.
+         * @return the DOT label string.
+         */
+        [[nodiscard]] inline static std::string dotRegionLabel(const Region &reg,
+                                                               const std::unordered_map<int, std::string> &intToLocations,
+                                                               const std::unordered_map<int, std::string> &indicesToClocks,
+                                                               const absl::flat_hash_map<int, players_sym> &locationsToPlayers);
+
+
+        /**
+         * @brief Builds a DOT edge label for a strategy transition.
+         *
+         * @param arenaTransition the arena transition associated with the strategy transition.
+         * @param moveCV the clock valuation at the moment the discrete transition is taken.
+         * @param indicesToClocks a map from clock indices to clock names.
+         * @return the DOT label string.
+         */
+        [[nodiscard]] inline static std::string dotEdgeLabel(const transition &arenaTransition,
+                                                             const clockValuation &moveCV,
+                                                             const std::unordered_map<int, std::string> &indicesToClocks);
 
 
     public:
@@ -151,6 +201,22 @@ namespace region
                                             const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
                                             const clockValuation &moveClockValuation,
                                             const transition &arenaTransition);
+
+
+        /**
+         * @brief Converts the strategy graph to a .dot representation.
+         *
+         * @param path the path in which to save the .dot representation (must end with file_name.dot).
+         * @param indicesToClocks a map from clock indices to clock names.
+         * @param intToLocations a map from location indices to location names.
+         * @param locationsToPlayers a map from location indices to players.
+         *
+         * @throws std::runtime_error if it fails to open the given .dot file path.
+         */
+        virtual void to_dot(const std::string &path,
+                            const std::unordered_map<int, std::string> &indicesToClocks,
+                            const std::unordered_map<int, std::string> &intToLocations,
+                            const absl::flat_hash_map<int, players_sym> &locationsToPlayers) const;
 
 
         // To be overridden in StrategyGraphForConjunction.

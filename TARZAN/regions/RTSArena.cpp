@@ -20,6 +20,18 @@
 #define MAX_ITERATIONS 10000
 
 
+std::unordered_map<int, std::string> region::RTSArena::getIndicesToClocksMap() const
+{
+    std::unordered_map<int, std::string> indicesToClocks;
+    indicesToClocks.reserve(clocksIndices.size());
+
+    for (const auto &[name, index]: clocksIndices)
+        indicesToClocks.emplace(index, name);
+
+    return indicesToClocks;
+}
+
+
 regionSet region::RTSArena::getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const
 {
 #ifdef RTSARENA_DEBUG
@@ -38,7 +50,8 @@ regionSet region::RTSArena::getRegionsFromPureCLTLocFormula(const cltloc::ast::p
     if (!invariants.empty())
     {
         // Removing regions that do not satisfy the invariants of the Timed Arena.
-        std::erase_if(res, [this](const Region &reg) {
+        std::erase_if(res, [this](const Region &reg)
+        {
             if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
                 return !isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices);
             return false; // No invariant = keep the region.
@@ -56,7 +69,8 @@ inline std::vector<regionSet> region::RTSArena::getRegionsFromGeneralCLTLocFormu
 {
     std::vector<regionSet> res{};
 
-    std::visit([this, &res, depth]<typename T0>(T0 const &val) {
+    std::visit([this, &res, depth]<typename T0>(T0 const &val)
+    {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
@@ -777,7 +791,8 @@ inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binar
 inline bool region::RTSArena::solveGameWithNextFormula(const cltloc::ast::generalCLTLocFormula &formula)
 {
     // The formula must be of the form: phi UNTIL psi.
-    const bool result = std::visit([this]<typename T0>(T0 const &val) -> bool {
+    const bool result = std::visit([this]<typename T0>(T0 const &val) -> bool
+    {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
@@ -816,7 +831,8 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
     const auto start = std::chrono::high_resolution_clock::now();
 #endif
 
-    const bool result = std::visit([this]<typename T0>(T0 const &val) -> bool {
+    const bool result = std::visit([this]<typename T0>(T0 const &val) -> bool
+    {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
@@ -1140,15 +1156,11 @@ void region::RTSArena::printPlay(const cltloc::ast::generalCLTLocFormula &formul
     if (!solveTimedCLTLocGame(formula))
         throw CannotSynthesizeStrategiesException("A controller winning strategy does not exist!");
 
-    // Computing a map from clock indices to clock names for better showing the play.
-    // We assume here that the original mapping is a correctly constructed bijection between clock names and integers.
-    std::unordered_map<int, std::string> indicesToClocks;
-    indicesToClocks.reserve(clocksIndices.size());
-    for (const auto &[name, index]: clocksIndices)
-        indicesToClocks.emplace(index, name);
+    const auto &indicesToClocks = getIndicesToClocksMap();
 
     // We now synthesize a winning controller play based on the winning condition type.
-    std::visit([this, indicesToClocks]<typename T0>(T0 const &val) {
+    std::visit([this, indicesToClocks]<typename T0>(T0 const &val)
+    {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
@@ -1242,12 +1254,7 @@ void region::RTSArena::printPlay(const cltloc::ast::conjunctionOfFormulae &conju
     if (!solveTimedCLTLocGame(conjunction))
         throw CannotSynthesizeStrategiesException("A controller winning strategy does not exist!");
 
-    // Computing a map from clock indices to clock names for better showing the strategy.
-    // We assume here that the original mapping is a correctly constructed bijection between clock names and integers.
-    std::unordered_map<int, std::string> indicesToClocks;
-    indicesToClocks.reserve(clocksIndices.size());
-    for (const auto &[name, index]: clocksIndices)
-        indicesToClocks.emplace(index, name);
+    const auto &indicesToClocks = getIndicesToClocksMap();
 
     // We now synthesize a winning controller strategy based on the winning conjunction type.
     switch (conjunction.type)
@@ -1259,6 +1266,17 @@ void region::RTSArena::printPlay(const cltloc::ast::conjunctionOfFormulae &conju
         default:
             throw std::logic_error("Invalid conjunction type.");
     }
+}
+
+
+void region::RTSArena::strategyGraphToDot(const std::string &path, const cltloc::ast::generalCLTLocFormula &formula)
+{
+    const auto &indicesToClocks = getIndicesToClocksMap();
+
+    if (solveTimedCLTLocGame(formula))
+        return strategyGraph->to_dot(path, indicesToClocks, intToLocations, locationsToPlayers);
+
+    throw std::runtime_error("No winning controller strategy exists, hence the strategy graph cannot be computed!");
 }
 
 

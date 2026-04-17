@@ -2,6 +2,11 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
+#include <queue>
+#include <unordered_set>
+
+#include "RTSArena.h"
 
 
 void region::StrategyGraph::addStrategyTransition(const Region &source, const transition &arenaTransition, const Region &target, const clockValuation &cv)
@@ -18,20 +23,20 @@ strategyTransitionSet region::StrategyGraph::getStrategyTransitionsGivenSource(c
 }
 
 
-void region::StrategyGraph::printClockValuationInStrategy(const std::vector<std::pair<int, bool>> &cv,
-                                                          const std::unordered_map<int, std::string> &indicesToClocks,
-                                                          const std::string &indent)
+inline void region::StrategyGraph::printClockValuationInStrategy(const std::vector<std::pair<int, bool>> &cv,
+                                                                 const std::unordered_map<int, std::string> &indicesToClocks,
+                                                                 const std::string &indent)
 {
     for (int i = 0; i < static_cast<int>(cv.size()); i++)
         std::cout << indent << indicesToClocks.at(i) << " := (" << cv[i].first << ", " << (cv[i].second ? "frac > 0" : "frac = 0") << ")\n";
 }
 
 
-void region::StrategyGraph::printRegionInStrategy(const Region &reg,
-                                                  const std::unordered_map<int, std::string> &intToLocations,
-                                                  const std::unordered_map<int, std::string> &indicesToClocks,
-                                                  const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
-                                                  const std::string &indent)
+inline void region::StrategyGraph::printRegionInStrategy(const Region &reg,
+                                                         const std::unordered_map<int, std::string> &intToLocations,
+                                                         const std::unordered_map<int, std::string> &indicesToClocks,
+                                                         const absl::flat_hash_map<int, players_sym> &locationsToPlayers,
+                                                         const std::string &indent)
 {
     const int regLocation = reg.getLocation();
     std::cout << indent << intToLocations.at(regLocation) << " [" << locationsToPlayers.at(regLocation) << "]\n";
@@ -100,6 +105,199 @@ void region::StrategyGraph::printStrategyTransition(const int step,
     }
     std::cout << "          \u2502\n";
     std::cout << "          \u25bc\n";
+}
+
+
+inline std::string region::StrategyGraph::escapeDot(const std::string &s)
+{
+    std::string result;
+    result.reserve(s.size());
+
+    for (const char c: s)
+    {
+        switch (c)
+        {
+            case '"':
+                result += "\\\"";
+                break;
+
+            case '\\':
+                result += "\\\\";
+                break;
+
+            default:
+                result += c;
+        }
+    }
+
+    return result;
+}
+
+
+std::string region::StrategyGraph::formatClockValuation(const clockValuation &cv,
+                                                        const std::unordered_map<int, std::string> &indicesToClocks,
+                                                        const std::string &separator)
+{
+    std::string result;
+
+    for (int i = 0; i < static_cast<int>(cv.size()); i++)
+    {
+        if (i > 0)
+            result += separator;
+        result += indicesToClocks.at(i) + ": (" + std::to_string(cv[i].first) + ", " + (cv[i].second ? "frac > 0" : "frac = 0") + ")";
+    }
+
+    return result;
+}
+
+
+std::string region::StrategyGraph::dotRegionLabel(const Region &reg,
+                                                  const std::unordered_map<int, std::string> &intToLocations,
+                                                  const std::unordered_map<int, std::string> &indicesToClocks,
+                                                  const absl::flat_hash_map<int, players_sym> &locationsToPlayers)
+{
+    const int regLocation = reg.getLocation();
+    std::string label = escapeDot(intToLocations.at(regLocation) + " [" + players_sym_to_string(locationsToPlayers.at(regLocation)) + "]");
+
+    // ReSharper disable once CppTooWideScopeInitStatement
+    const auto &cv = reg.getClockValuation();
+    if (!cv.empty())
+        label += "\n" + escapeDot(formatClockValuation(cv, indicesToClocks, "\n"));
+
+    return label;
+}
+
+
+std::string region::StrategyGraph::dotEdgeLabel(const transition &arenaTransition,
+                                                const clockValuation &moveCV,
+                                                const std::unordered_map<int, std::string> &indicesToClocks)
+{
+    std::string label;
+
+    // Move clock valuation (the clock values at the moment the discrete transition is taken).
+    label += escapeDot(formatClockValuation(moveCV, indicesToClocks, "\n"));
+
+    label += "\n\u2500\u2500\u2500";
+
+    // Action name.
+    std::string actionName = arenaTransition.action.first;
+    if (arenaTransition.action.second.has_value())
+        actionName += in_out_act_to_string(arenaTransition.action.second.value());
+    label += "\\nAction: " + escapeDot(actionName);
+
+    // Clock guard (only if non-empty).
+    if (!arenaTransition.clockGuard.empty())
+    {
+        std::string guardStr;
+        for (size_t i = 0; i < arenaTransition.clockGuard.size(); i++)
+        {
+            if (i > 0)
+                guardStr += " && ";
+            guardStr += arenaTransition.clockGuard[i].to_string();
+        }
+        label += "\\nGuard: " + escapeDot(guardStr);
+    }
+
+    // Clock resets (only if non-empty).
+    if (!arenaTransition.clocksToReset.empty())
+    {
+        std::string resetStr;
+        for (size_t i = 0; i < arenaTransition.clocksToReset.size(); i++)
+        {
+            if (i > 0)
+                resetStr += ", ";
+            resetStr += arenaTransition.clocksToReset[i];
+        }
+        label += "\\nReset: " + escapeDot(resetStr);
+    }
+
+    return label;
+}
+
+
+void region::StrategyGraph::to_dot(const std::string &path,
+                                   const std::unordered_map<int, std::string> &indicesToClocks,
+                                   const std::unordered_map<int, std::string> &intToLocations,
+                                   const absl::flat_hash_map<int, players_sym> &locationsToPlayers) const
+{
+    std::ofstream file(path);
+    if (!file.is_open())
+        throw std::runtime_error("Failed to open file for .dot output: " + path);
+
+    // Write DOT header.
+    file << "digraph StrategyGraph {\n";
+    file << "    rankdir=LR;\n";
+    file << "    nodesep=3.0;\n";
+    file << "    ranksep=7.0;\n";
+    file << "    node [shape=box, fontname=\"Monospace:matrix=1 .1 0 1\"];\n\n";
+
+    // Single BFS: assign IDs, write node declarations, and write edges in one traversal.
+    // Assigning unique identifiers to regions, as this is required for DOT nodes representation.
+    std::unordered_map<Region, int, RegionHash> regionToId;
+    int nextId = 0;
+    std::queue<RegionPtr> bfsQueue;
+
+    // Used to enqueue region pointers during BFS exploration.
+    const auto enqueue = [&](const Region &reg) -> RegionPtr
+    {
+        const auto [it, inserted] = regionToId.emplace(reg, nextId);
+
+        if (inserted)
+        {
+            nextId++;
+
+            // DOT-related formatting.
+            const bool isTarget = targetRegions.contains(reg);
+            const bool isHead = std::ranges::find(heads, reg) != heads.end();
+
+            file << "    n" << it->second << " [label=\"" << dotRegionLabel(reg, intToLocations, indicesToClocks, locationsToPlayers) << "\"";
+
+            if (isTarget)
+                file << ", style=filled, fillcolor=lightgreen, peripheries=2";
+            else if (isHead)
+                file << ", style=filled, fillcolor=lightblue";
+
+            file << "];\n";
+
+            // Enqueuing the region pointer.
+            bfsQueue.push(&it->first);
+        }
+
+        return &it->first;
+    };
+
+    for (const auto &head: heads)
+        enqueue(head);
+
+    // Invisible entry points: all head IDs are now assigned.
+    file << "\n";
+    for (int i = 0; i < static_cast<int>(heads.size()); i++)
+    {
+        file << "    __init" << i << " [shape=point, width=0.1];\n";
+        file << "    __init" << i << " -> n" << regionToId.at(heads[i]) << ";\n";
+    }
+    file << "\n";
+
+    const auto &allTransitions = getStrategyTransitions();
+
+    while (!bfsQueue.empty())
+    {
+        const RegionPtr current = bfsQueue.front();
+        bfsQueue.pop();
+
+        if (const auto it = allTransitions.find(*current); it != allTransitions.end())
+        {
+            for (const auto &[arenaTransition, target, moveCV]: it->second)
+            {
+                const RegionPtr targetPtr = enqueue(target);
+                file << "    n" << regionToId.at(*current) << " -> n" << regionToId.at(*targetPtr)
+                        << " [label=\"" << dotEdgeLabel(arenaTransition, moveCV, indicesToClocks) << "\"];\n";
+            }
+        }
+    }
+
+    file << "}\n";
+    file.close();
 }
 
 
