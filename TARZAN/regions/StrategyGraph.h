@@ -42,18 +42,62 @@ namespace region
     class StrategyGraph
     {
     protected:
+        // Regions used in comparisons (e.g., the goal regions in a reachability TCG).
+        regionSet targetRegions{};
+
+        // Regions corresponding to the starting states of the strategy graph (i.e., those corresponding to initial regions in the original RTS).
+        std::vector<Region> heads{};
+
         // An adjacency list from a source region to a target region (under the move semantics of TCG) with additional information to synthesize strategies.
         std::unordered_map<Region, strategyTransitionSet, RegionHash> strategyTransitions{};
 
 
+        /**
+         * @brief Builds a DOT node label for a region.
+         *
+         * @param reg the region to label.
+         * @param labelId a string o append near to the location name.
+         * @param intToLocations a map from location indices to location names.
+         * @param indicesToClocks a map from clock indices to clock names.
+         * @param locationsToPlayers a map from location indices to players.
+         * @return the DOT label string.
+         */
+        [[nodiscard]] static std::string dotRegionLabel(const Region &reg,
+                                                        const std::string &labelId,
+                                                        const std::unordered_map<int, std::string> &intToLocations,
+                                                        const std::unordered_map<int, std::string> &indicesToClocks,
+                                                        const absl::flat_hash_map<int, players_sym> &locationsToPlayers);
+
+
+        /**
+         * @brief Builds a DOT node label for a region.
+         *
+         * @param reg the region to label.
+         * @param intToLocations a map from location indices to location names.
+         * @param indicesToClocks a map from clock indices to clock names.
+         * @param locationsToPlayers a map from location indices to players.
+         * @return the DOT label string.
+         */
+        [[nodiscard]] static std::string dotRegionLabel(const Region &reg,
+                                                        const std::unordered_map<int, std::string> &intToLocations,
+                                                        const std::unordered_map<int, std::string> &indicesToClocks,
+                                                        const absl::flat_hash_map<int, players_sym> &locationsToPlayers);
+
+
+        /**
+         * @brief Builds a DOT edge label for a strategy transition.
+         *
+         * @param arenaTransition the arena transition associated with the strategy transition.
+         * @param moveCV the clock valuation at the moment the discrete transition is taken.
+         * @param indicesToClocks a map from clock indices to clock names.
+         * @return the DOT label string.
+         */
+        [[nodiscard]] static std::string dotEdgeLabel(const transition &arenaTransition,
+                                                      const clockValuation &moveCV,
+                                                      const std::unordered_map<int, std::string> &indicesToClocks);
+
+
     private:
-        // Regions corresponding to the starting states of the strategy graph (i.e., those corresponding to initial regions in the original RTS).
-        std::vector<Region> heads{};
-
-        // Regions used in comparisons (e.g., the goal regions in a reachability TCG).
-        regionSet targetRegions{};
-
-
         /**
          * @brief Prints a clock valuation with clock names during strategy synthesis.
          *
@@ -103,34 +147,6 @@ namespace region
         [[nodiscard]] inline static std::string formatClockValuation(const clockValuation &cv,
                                                                      const std::unordered_map<int, std::string> &indicesToClocks,
                                                                      const std::string &separator);
-
-
-        /**
-         * @brief Builds a DOT node label for a region.
-         *
-         * @param reg the region to label.
-         * @param intToLocations a map from location indices to location names.
-         * @param indicesToClocks a map from clock indices to clock names.
-         * @param locationsToPlayers a map from location indices to players.
-         * @return the DOT label string.
-         */
-        [[nodiscard]] inline static std::string dotRegionLabel(const Region &reg,
-                                                               const std::unordered_map<int, std::string> &intToLocations,
-                                                               const std::unordered_map<int, std::string> &indicesToClocks,
-                                                               const absl::flat_hash_map<int, players_sym> &locationsToPlayers);
-
-
-        /**
-         * @brief Builds a DOT edge label for a strategy transition.
-         *
-         * @param arenaTransition the arena transition associated with the strategy transition.
-         * @param moveCV the clock valuation at the moment the discrete transition is taken.
-         * @param indicesToClocks a map from clock indices to clock names.
-         * @return the DOT label string.
-         */
-        [[nodiscard]] inline static std::string dotEdgeLabel(const transition &arenaTransition,
-                                                             const clockValuation &moveCV,
-                                                             const std::unordered_map<int, std::string> &indicesToClocks);
 
 
     public:

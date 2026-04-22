@@ -1,12 +1,11 @@
 #include "StrategyGraph.h"
+#include "RTSArena.h"
 
 #include <iostream>
 #include <sstream>
 #include <fstream>
 #include <queue>
 #include <unordered_set>
-
-#include "RTSArena.h"
 
 
 void region::StrategyGraph::addStrategyTransition(const Region &source, const transition &arenaTransition, const Region &target, const clockValuation &cv)
@@ -134,9 +133,9 @@ inline std::string region::StrategyGraph::escapeDot(const std::string &s)
 }
 
 
-std::string region::StrategyGraph::formatClockValuation(const clockValuation &cv,
-                                                        const std::unordered_map<int, std::string> &indicesToClocks,
-                                                        const std::string &separator)
+inline std::string region::StrategyGraph::formatClockValuation(const clockValuation &cv,
+                                                               const std::unordered_map<int, std::string> &indicesToClocks,
+                                                               const std::string &separator)
 {
     std::string result;
 
@@ -152,12 +151,13 @@ std::string region::StrategyGraph::formatClockValuation(const clockValuation &cv
 
 
 std::string region::StrategyGraph::dotRegionLabel(const Region &reg,
+                                                  const std::string &labelId,
                                                   const std::unordered_map<int, std::string> &intToLocations,
                                                   const std::unordered_map<int, std::string> &indicesToClocks,
                                                   const absl::flat_hash_map<int, players_sym> &locationsToPlayers)
 {
     const int regLocation = reg.getLocation();
-    std::string label = escapeDot(intToLocations.at(regLocation) + " [" + players_sym_to_string(locationsToPlayers.at(regLocation)) + "]");
+    std::string label = escapeDot(intToLocations.at(regLocation) + labelId + " [" + players_sym_to_string(locationsToPlayers.at(regLocation)) + "]");
 
     // ReSharper disable once CppTooWideScopeInitStatement
     const auto &cv = reg.getClockValuation();
@@ -165,6 +165,15 @@ std::string region::StrategyGraph::dotRegionLabel(const Region &reg,
         label += "\n" + escapeDot(formatClockValuation(cv, indicesToClocks, "\n"));
 
     return label;
+}
+
+
+std::string region::StrategyGraph::dotRegionLabel(const Region &reg,
+                                                  const std::unordered_map<int, std::string> &intToLocations,
+                                                  const std::unordered_map<int, std::string> &indicesToClocks,
+                                                  const absl::flat_hash_map<int, players_sym> &locationsToPlayers)
+{
+    return dotRegionLabel(reg, "", intToLocations, indicesToClocks, locationsToPlayers);
 }
 
 
