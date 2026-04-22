@@ -37,6 +37,7 @@ TARZAN needs the following dependencies to be installed:
 - A C++20 compatible compiler (should also support OpenMP, e.g., Clang).
 - Python v. 3.10 (required for benchmark summary generation).
 - A proper LaTeX distributon (required for benchmark summary generation).
+- <a href="https://graphviz.org" target="_blank" rel="noopener noreferrer">Graphviz</a> (every version should work, required for the visualization of Strategy Graphs).
 
 When performing Timed Games analysis, OpenMP parallelization is enabled by default.
 You can change this behavior before installing or building the library by setting to OFF the relative toggle in the `CMakeLists.txt` file.
