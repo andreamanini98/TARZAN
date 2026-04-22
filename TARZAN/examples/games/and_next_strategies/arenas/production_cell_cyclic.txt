@@ -7,12 +7,12 @@ create arena production_cell
 
     actions
     {
-        toTable, takePlate_p, toPress, restore_p, takePlate_d, toDepot, restore_d, newPlate;
+        toTable, takePlate_p, toPress, restore_p, takePlate_d, toDepot, restore_d, newPlate, newPlate_r;
     }
 
     locations
     {
-        feed    <player: c, <ini: T>>,
+        feed    <player: c, <ini: T, inv: [(x, <=, 2)]>>,
         table   <player: c, <ini: F>>,
         robot_p <player: c, <ini: F>>,
         fall_p  <player: e, <ini: F>>,
@@ -24,7 +24,7 @@ create arena production_cell
 
     transitions
     {
-        (feed,    toTable,     [(x, ==, 2)],             [x], table),
+        (feed,    toTable,     [(x, >=, 2)],             [x], table),
         (table,   takePlate_p, [(x, >=, 1), (x, <=, 3)], [x], robot_p),
         (robot_p, toPress,     [(x, <, 2)],              [x], fall_p),
         (robot_p, toPress,     [(x, >, 4)],              [x], fall_p),
@@ -35,6 +35,7 @@ create arena production_cell
         (robot_d, toDepot,     [(x, >=, 4)],             [x], fall_d),
         (fall_d,  restore_d,   [(x, >, 1), (x, <=, 5)],  [],  feed),
         (robot_d, toDepot,     [(x, >=, 3), (x, <=, 6)], [x], depot),
+        (depot,   newPlate_r,  [],                       [x,y], feed),
         (depot,   newPlate,    [],                       [x], feed);
     }
 }
