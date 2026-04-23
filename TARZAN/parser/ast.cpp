@@ -913,6 +913,14 @@ std::string cltloc::ast::generalCLTLocFormula::to_string() const
 
 // ---
 
+std::string cltloc::ast::conjunctionOfFormulae::separetor() const 
+{
+  switch (type) {
+    case AND_GENERAL: return " && ";
+    case AND_NEXT: return " && ";
+    case NESTED_UNTIL: return " UNTIL ";
+  }
+}
 
 std::string cltloc::ast::conjunctionOfFormulae::to_string() const
 {
@@ -929,7 +937,7 @@ std::string cltloc::ast::conjunctionOfFormulae::to_string() const
             oss << generalCLTLocFormula;
             first = false;
         } else
-            oss << " && " << generalCLTLocFormula;
+        oss << separetor() << generalCLTLocFormula;
     }
 
     return oss.str();

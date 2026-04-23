@@ -10,9 +10,7 @@
 #include "enums/conjunction_type_enum.h"
 
 #include <vector>
-#include <map>
 #include <ranges>
-#include <variant>
 #include <absl/container/flat_hash_set.h>
 
 
@@ -953,6 +951,8 @@ namespace cltloc::ast
 
 
         [[nodiscard]] std::string to_string() const;
+
+        [[nodiscard]] std::string separetor() const; 
     };
 }
 

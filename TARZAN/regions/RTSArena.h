@@ -287,6 +287,15 @@ namespace region
          */
         void printAndNextConjunctionPlay(const std::unordered_map<int, std::string> &indicesToClocks) const;
 
+        
+        /**
+         * TODO:
+         *
+         */
+        [[nodiscard]] inline bool solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) const;
+
+
+
 
     public:
         //TODO: is it possible to remove the boolean from the constructor and directly et such boolean value when synthesizing a strategy?
