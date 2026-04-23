@@ -5,8 +5,7 @@
 
 
 // Enumeration containing the type of conjunctionOfGeneralCLTLocFormulae formulae.
-enum conjunction_type { AND_GENERAL, AND_NEXT };
-
+enum conjunction_type { AND_GENERAL, AND_NEXT, NESTED_UNTIL};
 
 // Convert conjunction_type to string.
 inline std::string conjunction_type_to_string(const conjunction_type ct)
@@ -15,6 +14,7 @@ inline std::string conjunction_type_to_string(const conjunction_type ct)
     {
         case AND_GENERAL: return "AND_GENERAL";
         case AND_NEXT: return "AND_NEXT";
+        case NESTED_UNTIL: return "NESTED_UNTIL";
         default: return "conjunction_type";
     }
 }

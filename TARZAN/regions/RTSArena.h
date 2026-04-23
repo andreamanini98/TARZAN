@@ -192,6 +192,15 @@ namespace region
          */
         [[nodiscard]] inline bool solveGameWithAndNextConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) const;
 
+        
+        /**
+         * TODO:
+         *
+         */
+        [[nodiscard]] inline bool solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) const;
+
+
+
 
     public:
         explicit RTSArena(const timed_automaton::ast::timedArena &arena)

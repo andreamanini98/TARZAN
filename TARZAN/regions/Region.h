@@ -2,6 +2,7 @@
 #define REGION_H
 
 #include <vector>
+#include <ranges>
 #include <boost/dynamic_bitset.hpp>
 
 #include "TARZAN/parser/ast.h"

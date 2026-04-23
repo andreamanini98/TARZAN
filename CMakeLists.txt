@@ -50,6 +50,15 @@ if (ENABLE_OPTIMIZATION)
     endif ()
 endif ()
 
+option(ENABLE_DEBUG "Enable debug flags" OFF)
+if (ENABLE_DEBUG)
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -g")
+        message(STATUS "Debug enable")
+    endif ()
+endif ()
+
+
 
 # Handle OpenMP.
 if (ENABLE_OPENMP)
@@ -185,6 +194,7 @@ set(LIBRARY_HEADERS
     TARZAN/parser/enums/input_output_action_enum.h
     TARZAN/parser/enums/players_enum.h
     TARZAN/parser/enums/cltloc_op_enum.h
+    TARZAN/parser/enums/conjunction_type_enum.h
     TARZAN/regions/Region.h
     TARZAN/regions/RTS.h
     TARZAN/regions/RTSArena.h
