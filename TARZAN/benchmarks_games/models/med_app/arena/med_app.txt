@@ -1,0 +1,102 @@
+create arena MedApp
+{
+    clocks
+    {
+        x, y, t;
+    }
+
+    actions
+    {
+        draw, prepare, arrive, handoff, ack_hand, pulse, ack, ack_safe, ack_nurse, interrupt, retry, call_nurse, nurse_ok, dispense, recover, to_dock, idle;
+    }
+
+    locations
+    {
+        q0            <player: c, <ini: T>>,
+        q1            <player: c, <ini: F, inv: [(x, <=, 2)]>>,
+        q2            <player: c, <ini: F, inv: [(x, <=, 8)]>>,
+        q_stall       <player: e, <ini: F>>,
+        q3            <player: c, <ini: F>>,
+        q_hand        <player: e, <ini: F>>,
+        q_interrupt   <player: e, <ini: F>>,
+        q4            <player: c, <ini: F, inv: [(x, <=, 2)]>>,
+        q_P1Env       <player: e, <ini: F, inv: [(y, <=, 6)]>>,
+        q_safe1       <player: e, <ini: F>>,
+        q5            <player: c, <ini: F, inv: [(x, <=, 2)]>>,
+        q_P2Env       <player: e, <ini: F, inv: [(y, <=, 6)]>>,
+        q_safe2       <player: e, <ini: F>>,
+        q6            <player: c, <ini: F, inv: [(x, <=, 2)]>>,
+        q_P3Env       <player: e, <ini: F, inv: [(y, <=, 6)]>>,
+        q_safe3       <player: e, <ini: F>>,
+        q7            <player: c, <ini: F>>,
+        q8            <player: c, <ini: F, inv: [(x, <=, 2)]>>,
+        q9            <player: c, <ini: F>>,
+        Dock          <player: c, <ini: F>>,
+        q10           <player: c, <ini: F>>,
+        q_nurse       <player: e, <ini: F>>,
+        q4_p          <player: c, <ini: F, inv: [(x, <=, 2)]>>,
+        q_interrupt_p <player: e, <ini: F>>,
+        q_P1Env_p     <player: e, <ini: F, inv: [(y, <=, 6)]>>,
+        q_safe1_p     <player: e, <ini: F>>,
+        q5_p          <player: c, <ini: F, inv: [(x, <=, 2)]>>,
+        q_P2Env_p     <player: e, <ini: F, inv: [(y, <=, 6)]>>,
+        q_safe2_p     <player: e, <ini: F>>,
+        q6_p          <player: c, <ini: F, inv: [(x, <=, 2)]>>,
+        q_P3Env_p     <player: e, <ini: F, inv: [(y, <=, 6)]>>,
+        q_safe3_p     <player: e, <ini: F>>,
+        q7_p          <player: c, <ini: F>>;
+    }
+
+    transitions
+    {
+        (q0,            draw,       [(x, ==, 1)],              [x],    q1),
+        (q1,            prepare,    [(x, >=, 1)],              [x],    q2),
+        (q2,            arrive,     [(x, >=, 2), (x, <=, 5)],  [x],    q3),
+        (q2,            arrive,     [(x, >=, 5)],              [],     q_stall),
+        (q_stall,       idle,       [],                        [],     q_stall),
+        (q3,            handoff,    [(x, <=, 2)],              [x],    q_hand),
+        (q_hand,        ack_hand,   [(x, <=, 3)],              [x],    q4),
+        (q_interrupt,   retry,      [(x, >=, 2), (x, <=, 4)],  [x],    q4),
+        (q4,            pulse,      [],                        [y],    q_P1Env),
+        (q_P1Env,       ack,        [(y, >=, 3), (y, <=, 5)],  [x],    q5),
+        (q_P1Env,       ack,        [(y, >=, 3), (y, <=, 5)],  [y],    q_safe1),
+        (q_P1Env,       interrupt,  [(x, <=, 1)],              [],     q_interrupt),
+        (q_P1Env,       interrupt,  [(x, >, 1)],               [x],    q10),
+        (q_safe1,       ack_safe,   [(y, >=, 2), (y, <=, 8)],  [x],    q5),
+        (q5,            pulse,      [],                        [y],    q_P2Env),
+        (q_P2Env,       ack,        [(y, >=, 3), (y, <=, 5)],  [x],    q6),
+        (q_P2Env,       ack,        [(y, >=, 3), (y, <=, 5)],  [y],    q_safe2),
+        (q_P2Env,       interrupt,  [(x, <=, 1)],              [],     q_interrupt),
+        (q_P2Env,       interrupt,  [(x, >, 1)],               [x],    q10),
+        (q_safe2,       ack_safe,   [(y, >=, 2), (y, <=, 8)],  [x],    q6),
+        (q6,            pulse,      [],                        [y],    q_P3Env),
+        (q_P3Env,       ack,        [(y, >=, 3), (y, <=, 5)],  [x],    q7),
+        (q_P3Env,       ack,        [(y, >=, 3), (y, <=, 5)],  [y],    q_safe3),
+        (q_P3Env,       interrupt,  [(x, <=, 1)],              [],     q_interrupt),
+        (q_P3Env,       interrupt,  [(x, >, 1)],               [x],    q10),
+        (q_safe3,       ack_safe,   [(y, >=, 2), (y, <=, 8)],  [x],    q7),
+        (q7,            dispense,   [(x, <=, 2)],              [x],    q8),
+        (q8,            recover,    [(x, >=, 1)],              [x],    q9),
+        (q9,            to_dock,    [(x, >=, 2), (x, <=, 6)],  [],     Dock),
+        (Dock,          idle,       [],                        [],     Dock),
+        (q10,           call_nurse, [(x, <=, 1)],              [x],    q_nurse),
+        (q_nurse,       nurse_ok,   [(x, >=, 3), (x, <=, 10)], [x, y], q4_p),
+        (q_interrupt_p, retry,      [(x, >=, 2), (x, <=, 4)],  [x],    q4_p),
+        (q4_p,          pulse,      [],                        [y],    q_P1Env_p),
+        (q_P1Env_p,     ack,        [(y, >=, 3), (y, <=, 5)],  [x],    q5_p),
+        (q_P1Env_p,     ack_nurse,  [(y, >=, 3), (y, <=, 5)],  [y],    q_safe1_p),
+        (q_P1Env_p,     interrupt,  [(x, <=, 1)],              [],     q_interrupt_p),
+        (q_safe1_p,     ack_nurse,  [(y, >=, 2), (y, <=, 8)],  [x],    q5_p),
+        (q5_p,          pulse,      [],                        [y],    q_P2Env_p),
+        (q_P2Env_p,     ack,        [(y, >=, 3), (y, <=, 5)],  [x],    q6_p),
+        (q_P2Env_p,     ack_nurse,  [(y, >=, 3), (y, <=, 5)],  [y],    q_safe2_p),
+        (q_P2Env_p,     interrupt,  [(x, <=, 1)],              [],     q_interrupt_p),
+        (q_safe2_p,     ack_nurse,  [(y, >=, 2), (y, <=, 8)],  [x],    q6_p),
+        (q6_p,          pulse,      [],                        [y],    q_P3Env_p),
+        (q_P3Env_p,     ack,        [(y, >=, 3), (y, <=, 5)],  [x],    q7_p),
+        (q_P3Env_p,     ack_nurse,  [(y, >=, 3), (y, <=, 5)],  [y],    q_safe3_p),
+        (q_P3Env_p,     interrupt,  [(x, <=, 1)],              [],     q_interrupt_p),
+        (q_safe3_p,     ack_nurse,  [(y, >=, 2), (y, <=, 8)],  [x],    q7_p),
+        (q7_p,          dispense,   [(x, <=, 2)],              [x],    q8);
+    }
+}
