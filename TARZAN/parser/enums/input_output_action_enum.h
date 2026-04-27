@@ -5,7 +5,7 @@
 
 
 // Enumeration containing symbols used to specify input and output actions.
-enum in_out_act { OUTACT, INACT };
+enum in_out_act { OUTACT, INACT, BROADCAST_OUTACT, BROADCAST_INACT };
 
 
 // Convert in_out_act to string.
@@ -15,6 +15,8 @@ inline std::string in_out_act_to_string(const in_out_act ioa)
     {
         case OUTACT: return "!";
         case INACT: return "?";
+        case BROADCAST_OUTACT: return "!!";
+        case BROADCAST_INACT: return "??";
         default: return "invalid_input_output_action";
     }
 }

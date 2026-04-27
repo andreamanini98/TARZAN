@@ -4,6 +4,7 @@
 
 # Created directories.
 /output/
+/.vscode/
 /debug/
 /doc/
 /build/
