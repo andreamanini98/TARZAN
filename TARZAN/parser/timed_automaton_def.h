@@ -84,8 +84,8 @@ namespace parser
         comp_op()
         {
             auto &self = add
-                    ("<", LT)
                     ("<=", LE)
+                    ("<", LT)
                     ("==", EQ)
                     (">=", GE)
                     (">", GT);
@@ -109,6 +109,8 @@ namespace parser
         io_act()
         {
             auto &self = add
+                    ("!!", BROADCAST_OUTACT)
+                    ("??", BROADCAST_INACT)
                     ("!", OUTACT)
                     ("?", INACT);
             (void) self;

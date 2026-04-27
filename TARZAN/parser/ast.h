@@ -90,7 +90,7 @@
 //
 //  <actions_rule> -> <literal> (eps | <input_output_action>)
 //
-//  <input_output_action> -> '!' | '?'
+//  <input_output_action> -> '!' | '?' | '!!' | '??'
 //
 //  <clock_constraint_rule> -> '(' <literal> ',' <comparison_operator> ',' <int> ')'
 //
