@@ -7,15 +7,32 @@ create arena MedApp
 
     actions
     {
-        draw, prepare, arrive, handoff, ack_hand, pulse, ack, ack_safe, ack_nurse, interrupt, retry, call_nurse, nurse_ok, dispense, recover, to_dock, idle;
+        draw,
+        prepare,
+        restore,
+        arrive,
+        handoff,
+        ack_hand,
+        pulse,
+        ack,
+        ack_safe,
+        ack_nurse,
+        interrupt,
+        retry,
+        call_nurse,
+        nurse_ok,
+        dispense,
+        recover,
+        to_dock,
+        idle;
     }
 
     locations
     {
         q0            <player: c, <ini: T>>,
-        q1            <player: c, <ini: F, inv: [(x, <=, 2)]>>,
-        q2            <player: c, <ini: F, inv: [(x, <=, 8)]>>,
-        q_stall       <player: e, <ini: F>>,
+        q1            <player: c, <ini: F, inv: [(x, <=, 3)]>>,
+        q2            <player: c, <ini: F>>,
+        q_restore     <player: e, <ini: F>>,
         q3            <player: c, <ini: F>>,
         q_hand        <player: e, <ini: F>>,
         q_interrupt   <player: e, <ini: F>>,
@@ -51,11 +68,12 @@ create arena MedApp
     {
         (q0,            draw,       [(x, ==, 1)],              [x],    q1),
         (q1,            prepare,    [(x, >=, 1)],              [x],    q2),
-        (q2,            arrive,     [(x, >=, 2), (x, <=, 5)],  [x],    q3),
-        (q2,            arrive,     [(x, >=, 5)],              [],     q_stall),
-        (q_stall,       idle,       [],                        [],     q_stall),
+        (q1,            prepare,    [(x, >=, 2)],              [],     q_restore),
+        (q_restore,     restore,    [(x, <=, 5)],              [x],    q0),
+        (q2,            arrive,     [(x, >=, 2), (x, <=, 5)],  [x, y], q3),
         (q3,            handoff,    [(x, <=, 2)],              [x],    q_hand),
         (q_hand,        ack_hand,   [(x, <=, 3)],              [x],    q4),
+        (q_hand,        ack_hand,   [(y, <, 1)],               [],     q_restore),
         (q_interrupt,   retry,      [(x, >=, 2), (x, <=, 4)],  [x],    q4),
         (q4,            pulse,      [],                        [y],    q_P1Env),
         (q_P1Env,       ack,        [(y, >=, 3), (y, <=, 5)],  [x],    q5),
