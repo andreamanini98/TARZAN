@@ -94,8 +94,12 @@ For a detailed description of TARZAN, please refer to:
 
 # Publications
 
-[1] A. Manini, M. Rossi, and P. San Pietro, "TARZAN: A Region-Based Library for Forward and Backward Reachability of Timed Automata (Extended Version)," arXiv:2602.15435 [cs.FL], 2026. Available: https://arxiv.org/abs/2602.15435
+[1] A. Manini, M. Rossi, and P. San Pietro, "TARZAN: A Region-Based Library for Forward and Backward Reachability of Timed Automata (Extended Version)", arXiv:2602.15435 [cs.FL], 2026. Available: https://arxiv.org/abs/2602.15435
 
-[2] A. Manini, M. Rossi, and P. San Pietro, "TARZAN: A Region-Based Library for Forward and Backward Reachability of Timed Automata," to appear in Proc. 46th International Conference on Formal Techniques for Distributed Objects, Components, and Systems (FORTE 2026), 2026.
+[2] A. Manini, M. Rossi, and P. San Pietro, "TARZAN: A Region-Based Library for Forward and Backward Reachability of Timed Automata", to appear in Proc. 46th International Conference on Formal Techniques for Distributed Objects, Components, and Systems (FORTE 2026), 2026.
 
 [3] A. Manini, M. Rossi, and P. San Pietro, "TARZAN Artifact". Zenodo, feb. 16, 2026. doi: <a href="https://doi.org/10.5281/zenodo.18656202" target="_blank" rel="noopener noreferrer">10.5281/zenodo.18656203</a>. Artifact evaluated at FORTE 2026; awarded Available and Functional badges.
+
+[4] A. Manini, M. Rossi, and P. San Pietro, "Timed Games under Environmental Interference with Real-Time Objectives", to appear in Proc. 20th International Symposium on Theoretical Aspects of Software Engineering (TASE 2026), 2026.
+
+
