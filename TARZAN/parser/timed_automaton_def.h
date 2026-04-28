@@ -326,39 +326,40 @@ namespace parser
     inline auto locationContent_rule_def =
             lit('<')
             >> (
-                // ini, urg, -inv
+                // ini, urg, -inv (no com)
                 lit("ini") >> lit(':') >> my_boolean
                 >> lit(',') >> lit("urg") >> lit(':') >> my_boolean
+                >> x3::attr(false)
                 >> -(lit(',') >> lit("inv") >> lit(':') >> lit('[') >> clockConstraint_rule % ',' >> lit(']'))
                 |
-                // ini, inv (no urg)
+                // ini, com, -inv (no urg)
                 lit("ini") >> lit(':') >> my_boolean
                 >> x3::attr(false)
-                >> lit(',') >> lit("inv") >> lit(':') >> lit('[') >> clockConstraint_rule % ',' >> lit(']')
+                >> lit(',') >> lit("com") >> lit(':') >> my_boolean
+                >> -(lit(',') >> lit("inv") >> lit(':') >> lit('[') >> clockConstraint_rule % ',' >> lit(']'))
                 |
-                // ini (no urg, no inv)
+                // ini, -inv (no urg, no com)
                 lit("ini") >> lit(':') >> my_boolean
-                >> x3::attr(false)
-                >> x3::attr(std::vector<timed_automaton::ast::clockConstraint>{})
+                >> x3::attr(false) >> x3::attr(false)
+                >> -(lit(',') >> lit("inv") >> lit(':') >> lit('[') >> clockConstraint_rule % ',' >> lit(']'))
                 |
-                // urg, -inv (no ini)
+                // urg, -inv (no ini, no com)
                 x3::attr(false)
                 >> lit("urg") >> lit(':') >> my_boolean
+                >> x3::attr(false)
                 >> -(lit(',') >> lit("inv") >> lit(':') >> lit('[') >> clockConstraint_rule % ',' >> lit(']'))
                 |
-                // inv (no ini, no urg)
-                x3::attr(false)
-                >> x3::attr(false)
+                // com, -inv (no ini, no urg)
+                x3::attr(false) >> x3::attr(false)
+                >> lit("com") >> lit(':') >> my_boolean
+                >> -(lit(',') >> lit("inv") >> lit(':') >> lit('[') >> clockConstraint_rule % ',' >> lit(']'))
+                |
+                // inv (no ini, no urg, no com)
+                x3::attr(false) >> x3::attr(false) >> x3::attr(false)
                 >> lit("inv") >> lit(':') >> lit('[') >> clockConstraint_rule % ',' >> lit(']')
                 |
-                // urg (no ini, no inv)
-                x3::attr(false)
-                >> lit("urg") >> lit(':') >> my_boolean
-                >> x3::attr(std::vector<timed_automaton::ast::clockConstraint>{})
-                |
-                // no ini, no urg, no inv
-                x3::attr(false)
-                >> x3::attr(false)
+                // eps (no ini, no urg, no com, no inv)
+                x3::attr(false) >> x3::attr(false) >> x3::attr(false)
                 >> x3::attr(std::vector<timed_automaton::ast::clockConstraint>{})
             )
             > lit('>');

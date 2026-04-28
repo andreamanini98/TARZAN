@@ -282,6 +282,7 @@ std::string timed_automaton::ast::locationContent::to_string() const
     oss << "<";
     oss << "initial: " << (isInitial ? "true, " : "false, ");
     oss << "urgent: " << (isUrgent ? "true, " : "false, ");
+    oss << "committed: " << (isCommitted ? "true, " : "false, ");
     oss << "invariant: [" << join_elements(invariant, " and ") << "]";
     oss << ">";
     return oss.str();
@@ -399,6 +400,12 @@ bool timed_automaton::ast::timedAutomaton::hasUrgentLocations() const
 }
 
 
+bool timed_automaton::ast::timedAutomaton::hasCommittedLocations() const
+{
+    return std::ranges::any_of(locations | std::views::values, &locationContent::isCommitted);
+}
+
+
 std::unordered_map<std::string, int> timed_automaton::ast::timedAutomaton::getClocksIndices() const
 {
     std::unordered_map<std::string, int> indices{};
@@ -504,6 +511,18 @@ absl::flat_hash_set<int> timed_automaton::ast::timedAutomaton::getUrgentLocation
             urgentLocations.insert(locToIntMap.at(locName));
 
     return urgentLocations;
+}
+
+
+absl::flat_hash_set<int> timed_automaton::ast::timedAutomaton::getCommittedLocations(const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    absl::flat_hash_set<int> committedLocations;
+
+    for (const auto &[locName, locContent]: locations)
+        if (locContent.isCommitted)
+            committedLocations.insert(locToIntMap.at(locName));
+
+    return committedLocations;
 }
 
 
@@ -655,6 +674,12 @@ bool timed_automaton::ast::timedArena::hasUrgentLocations() const
 }
 
 
+bool timed_automaton::ast::timedArena::hasCommittedLocations() const
+{
+    return std::ranges::any_of(locations | std::views::values, [](const auto &pair) { return pair.second.isCommitted; });
+}
+
+
 std::unordered_map<std::string, int> timed_automaton::ast::timedArena::getClocksIndices() const
 {
     std::unordered_map<std::string, int> indices{};
@@ -760,6 +785,18 @@ absl::flat_hash_set<int> timed_automaton::ast::timedArena::getUrgentLocations(co
             urgentLocations.insert(locToIntMap.at(locName));
 
     return urgentLocations;
+}
+
+
+absl::flat_hash_set<int> timed_automaton::ast::timedArena::getCommittedLocations(const std::unordered_map<std::string, int> &locToIntMap) const
+{
+    absl::flat_hash_set<int> committedLocations;
+
+    for (const auto &[locName, locContent]: locations)
+        if (locContent.second.isCommitted)
+            committedLocations.insert(locToIntMap.at(locName));
+
+    return committedLocations;
 }
 
 

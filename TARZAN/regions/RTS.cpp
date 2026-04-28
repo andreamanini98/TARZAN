@@ -157,8 +157,8 @@ std::vector<region::Region> region::RTS::forwardReachability(const std::vector<t
             return { currentRegion };
         }
 
-        // Computing immediate delay successor if there is at least one clock in the region and the current location is not urgent.
-        const bool isDelayComputable = isThereAnyClock && !urgentLocations.contains(currentRegionLocation);
+        // Computing immediate delay successor if there is at least one clock in the region and the current location is neither urgent nor committed.
+        const bool isDelayComputable = isThereAnyClock && !urgentLocations.contains(currentRegionLocation) &&  !committedLocations.contains(currentRegionLocation);
         const Region delaySuccessor = isDelayComputable ? currentRegion.getImmediateDelaySuccessor(maxConstants) : Region{};
 
         // Computing discrete successors.

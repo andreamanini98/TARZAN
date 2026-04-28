@@ -32,6 +32,8 @@ namespace region
 
         absl::flat_hash_set<int> urgentLocations{};
 
+        absl::flat_hash_set<int> committedLocations{};
+
 
     public:
         explicit RTS(const timed_automaton::ast::timedAutomaton &automaton)
@@ -45,6 +47,7 @@ namespace region
             inTransitions = automaton.getInTransitions(locationsToInt);
             invariants = automaton.getInvariants(locationsToInt);
             urgentLocations = automaton.getUrgentLocations(locationsToInt);
+            committedLocations = automaton.getCommittedLocations(locationsToInt);
 
             const int numOfClocks = static_cast<int>(clocksIndices.size());
             const auto &variables = automaton.getVariables();
@@ -123,6 +126,7 @@ namespace region
         [[nodiscard]] const std::vector<std::vector<transition>> &getInTransitions() const { return inTransitions; }
         [[nodiscard]] const absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> &getInvariants() const { return invariants; }
         [[nodiscard]] const absl::flat_hash_set<int> &getUrgentLocations() const { return urgentLocations; }
+        [[nodiscard]] const absl::flat_hash_set<int> &getCommittedLocations() const { return committedLocations; }
 
 
         [[nodiscard]] std::string to_string() const;

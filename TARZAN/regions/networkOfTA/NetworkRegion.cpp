@@ -282,56 +282,84 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                 singleTransition.push_back(transition_i);
 
                 const std::vector<region::Region> senderSuccessors =
-                    tmpReg.getImmediateDiscreteSuccessors(singleTransition, clockIndices[regIdx_i], locationsToInt[regIdx_i]);
+                        tmpReg.getImmediateDiscreteSuccessors(singleTransition, clockIndices[regIdx_i], locationsToInt[regIdx_i]);
 
                 if (senderSuccessors.empty()) continue;
 
-                // Collect all enabled receivers, threading variables forward.
-                auto currentVars = senderSuccessors[0].getVariables();
-                std::vector<std::tuple<int, region::Region, const transition*>> receiverResults;
+                // To collect all available receivers We create a list of groups (i.e. TA)
+                // Each group contains all the transitions that the considered TA could use to receive the signal
+                std::vector<std::vector<std::tuple<int, region::Region, const transition*>>> allReceiversOptions;
 
                 for (int regIdx_j = 0; regIdx_j < transitionSize; regIdx_j++)
                 {
+                    // TA cannot receive its own broadcast, so we skip the TA of the sender.
                     if (regIdx_j == regIdx_i) continue;
+
+                    std::vector<std::pair<const transition*, region::Region>> enabledForThisTA;
 
                     for (const auto& transition_j : transitions[regIdx_j].get())
                     {
-                        if (transition_j.action.second != BROADCAST_INACT) continue;
-                        if (transition_j.action.first != transition_i.action.first) continue;
+                        // Match the channel name of the receiver with the one of the sender and the broadcast symbol ?? for the receiver.
+                        if (transition_j.action.first != transition_i.action.first || transition_j.action.second != BROADCAST_INACT) continue;
 
                         region::Region tmpRegJ = regions[regIdx_j].clone();
-                        tmpRegJ.set_variables(currentVars);
+                        tmpRegJ.set_variables(senderSuccessors[0].getVariables());
 
                         singleTransition.clear();
                         singleTransition.push_back(transition_j);
 
-                        const std::vector<region::Region> receiverSuccessors =
-                            tmpRegJ.getImmediateDiscreteSuccessors(singleTransition, clockIndices[regIdx_j], locationsToInt[regIdx_j]);
-
-                        if (!receiverSuccessors.empty())
-                        {
-                            currentVars = receiverSuccessors[0].getVariables();
-                            receiverResults.emplace_back(regIdx_j, receiverSuccessors[0], &transition_j);
+                        auto succJ = tmpRegJ.getImmediateDiscreteSuccessors(singleTransition, clockIndices[regIdx_j], locationsToInt[regIdx_j]);
+                        
+                        if (!succJ.empty()) {
+                            enabledForThisTA.emplace_back(regIdx_j, succJ[0], &transition_j);
                         }
-                        break; // at most one broadcast receive per TA per channel
+
+                    }
+                    // If this TA has at least one enabled way to receive, add the group.
+                    if (!enabledForThisTA.empty()) {
+                        allReceiversOptions.push_back(std::move(enabledForThisTA));
                     }
                 }
 
-#ifdef NETWORKREGION_DEBUG
-                assert(senderSuccessors.size() <= 1);
-                std::cout << "Computing broadcast actions. Sender num. successors: " << senderSuccessors.size()
-                          << ", num. receivers: " << receiverResults.size() << std::endl;
-#endif
+                // If every TA has 1 enabled transition, we get 1 successor for each.
+                // If some TA have multiple enabled transition, we need a Cartesian product to cover all the possible fired groups for each.
+                // --- STEP C: GENERATE ALL COMBINATIONS (Non-deterministic branching) ---
+    
+                std::function<void(size_t, NetworkRegion, std::unordered_map<std::string, int>)> generatePaths;
+                
+                generatePaths = [&](size_t groupIdx, NetworkRegion currentNetReg, std::unordered_map<std::string, int> vars) {
+                    // If our index has reached the end of the list of receivers, we are done.
+                    if (groupIdx == allReceiversOptions.size()) {
+                        // We take the "world" (i.e. network region) we’ve built, set the final variables, and shove it into the results vector
+                        currentNetReg.setNetworkVariables(vars);
+                        res.emplace_back(std::move(currentNetReg));
+                        return;
+                    }
 
-                // Assemble the successor (valid even with zero receivers).
-                NetworkRegion netReg = clone();
-                netReg.setNetworkVariables(currentVars);
-                updateNetRegionWithDiscSucc(netReg, senderSuccessors[0], regIdx_i, transition_i.clocksToReset, clockIndices);
+                    // Try every transition option for the current Automaton
+                    for (const auto& enabledForThisTA : allReceiversOptions[groupIdx]) {
 
-                for (const auto& [rIdx, rSucc, rTrans] : receiverResults)
-                    updateNetRegionWithDiscSucc(netReg, rSucc, rIdx, rTrans->clocksToReset, clockIndices);
+                        const auto& [rIdx, rSucc, rTrans] = enabledForThisTA;
+                        
+                        NetworkRegion branchReg = currentNetReg.clone();
+                        
+                        updateNetRegionWithDiscSucc(branchReg, rSucc, rIdx, rTrans->clocksToReset, clockIndices);
+                        
+                        // Recurse to the next group, passing along updated variables
+                        generatePaths(groupIdx + 1, std::move(branchReg), rSucc.getVariables());
+                    }
+                };
 
-                res.emplace_back(std::move(netReg));
+                // Initialize state with the Sender's move
+                NetworkRegion initialNetReg = clone();
+                updateNetRegionWithDiscSucc(initialNetReg, senderSuccessors[0], regIdx_i, transition_i.clocksToReset, clockIndices);
+
+                if (allReceiversOptions.empty()) {
+                    initialNetReg.setNetworkVariables(senderSuccessors[0].getVariables());
+                    res.emplace_back(std::move(initialNetReg));
+                } else {
+                    generatePaths(0, std::move(initialNetReg), senderSuccessors[0].getVariables());
+                }
             }
         }
     }

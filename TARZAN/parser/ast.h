@@ -66,11 +66,13 @@
 //
 //  <player> -> 'c' | 'e'
 //
-//  <loc_content_rule> -> '<' (eps | <ini> | <urg> | <inv> | <ini> ',' <urg> | <ini> ',' <inv> | <urg> ',' <inv> | <ini> ',' <urg> ',' <inv>) '>'
+//  <loc_content_rule> -> '<' (eps | <ini> | <urg> | <com> | <inv> | <ini> ',' <urg> | <ini> ',' <com> | <ini> ',' <inv> | <urg> ',' <inv> | <com> ',' <inv> | <ini> ',' <urg> ',' <inv> | <ini> ',' <com> ',' <inv>) '>'
 //
 //  <ini> -> 'ini' ':' <bool>
 //
 //  <urg> -> 'urg' ':' <bool>
+//
+//  <com> -> 'com' ':' <bool>
 //
 //  <inv> -> 'inv' ':' <guard_rule>
 //
@@ -381,6 +383,7 @@ namespace timed_automaton::ast
     {
         bool isInitial;
         bool isUrgent;
+        bool isCommitted;
         std::vector<clockConstraint> invariant;
 
 
@@ -540,6 +543,12 @@ namespace timed_automaton::ast
 
 
         /**
+         * @return true if the Timed Automaton has at least one committed location, false otherwise.
+         */
+        [[nodiscard]] bool hasCommittedLocations() const;
+
+
+        /**
          * @return a std::unordered_map from clock names to their index in the clocks vector.
          *
          * @warning To be used at the beginning, right after parsing a Timed Automaton, since at the current time of development this is
@@ -621,6 +630,15 @@ namespace timed_automaton::ast
          * @return a map from integers representing the urgent locations.
          */
         [[nodiscard]] absl::flat_hash_set<int> getUrgentLocations(const std::unordered_map<std::string, int> &locToIntMap) const;
+
+
+        /**
+        * @brief Collects the committed locations.
+        *
+        * @param locToIntMap a mapping from locations (represented by std::string) to int.
+        * @return a set of integers representing the committed locations.
+        */
+        [[nodiscard]] absl::flat_hash_set<int> getCommittedLocations(const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
         /**
@@ -712,6 +730,12 @@ namespace timed_automaton::ast
 
 
         /**
+        * @return true if the Timed Arena has at least one committed location, false otherwise.
+        */
+        [[nodiscard]] bool hasCommittedLocations() const;
+
+
+        /**
          * @return a std::unordered_map from clock names to their index in the clocks vector.
          *
          * @warning To be used at the beginning, right after parsing a Timed Arena, since at the current time of development this is
@@ -793,6 +817,15 @@ namespace timed_automaton::ast
          * @return a map from integers representing the urgent locations.
          */
         [[nodiscard]] absl::flat_hash_set<int> getUrgentLocations(const std::unordered_map<std::string, int> &locToIntMap) const;
+
+
+        /**
+        * @brief Collects the committed locations.
+        *
+        * @param locToIntMap a mapping from locations (represented by std::string) to int.
+        * @return a set of integers representing the committed locations.
+        */
+        [[nodiscard]] absl::flat_hash_set<int> getCommittedLocations(const std::unordered_map<std::string, int> &locToIntMap) const;
 
 
         /**
