@@ -285,7 +285,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
 
                 if (senderSuccessors.empty()) continue;
 
-                // To collect all available receivers We create a list of groups (i.e. TA)
+                // To collect all available receivers we create a list of groups (i.e. TA)
                 // Each group contains all the transitions that the considered TA could use to receive the signal
                 std::vector<std::vector<std::tuple<int, region::Region, const transition*>>> allReceiversOptions;
 
@@ -298,7 +298,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
 
                     for (const auto& transition_j : transitions[regIdx_j].get())
                     {
-                        // Match the channel name of the receiver with the one of the sender and the broadcast symbol ?? for the receiver.
+                        // Match the channel name of the receiver with the one of the sender and check the broadcast symbol ?? for the receiver.
                         if (transition_j.action.first != transition_i.action.first || transition_j.action.second != BROADCAST_INACT) continue;
 
                         region::Region tmpRegJ = regions[regIdx_j].clone();
@@ -321,16 +321,17 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                     }
                 }
 
-                // If every TA has 1 enabled transition, we get 1 successor for each.
+                // If every TA has at most 1 enabled transition, we get 1 successor for each.
                 // If some TA have multiple enabled transition, we need a Cartesian product to cover all the possible fired groups for each.
     
                 // We use a lambda function instead of a separate function to avoid passing many parameters that are already in the scope and to keep the code more compact and readable.
                 std::function<void(int, networkOfTA::NetworkRegion, const absl::btree_map<std::string, int>)> generatePaths;
                 
+                // The function is designed as recursive since the number of groups (i.e. TA with at least one enabled transition) is not fixed, and we need to explore all the combinations of transitions that can be fired together.
                 generatePaths = [&](int groupIdx, networkOfTA::NetworkRegion currentNetReg, const absl::btree_map<std::string, int> vars) {
                     // If our index has reached the end of the list of receivers, we are done.
                     if (groupIdx == allReceiversOptions.size()) {
-                        // We take the "world" (i.e. network region) we’ve built, set the final variables, and shove it into the results vector
+                        // We take the "world" (i.e. network region) we’ve built, set the final variables, and shove it into the results vector.
                         currentNetReg.setNetworkVariables(vars);
                         res.emplace_back(std::move(currentNetReg));
                         return;
