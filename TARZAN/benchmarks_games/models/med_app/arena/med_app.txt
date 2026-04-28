@@ -66,7 +66,7 @@ create arena MedApp
         (q_dock,    draw,       [(x, ==, 1)],              [x],    q_draw),
         (q_draw,    prepare,    [(x, >=, 1)],              [x],    q_prep),
         (q_draw,    prepare,    [(x, >=, 2)],              [],     q_exp),
-        (q_exp,     restore,    [(x, <=, 5)],              [x],    q_dock),
+        (q_exp,     restore,    [(x, <=, 5)],              [x, y], q_dock),
         (q_prep,    arrive,     [(x, >=, 2), (x, <=, 5)],  [x, y], q_room),
         (q_room,    handoff,    [(x, <=, 2)],              [x],    q_hand),
         (q_hand,    ack_hand,   [(x, <=, 3)],              [x],    q_pulse),

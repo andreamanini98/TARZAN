@@ -7,9 +7,9 @@
 
 int main()
 {
-     constexpr std::string formulaName = "reachability0.txt";
-    // constexpr std::string formulaName = "reachability1.txt";
-//     constexpr std::string formulaName = "and_next0.txt";
+    //  constexpr std::string formulaName = "reachability0.txt";
+    constexpr std::string formulaName = "reachability1.txt";
+    //  constexpr std::string formulaName = "and_next0.txt";
 
     const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks_games/models/med_app/winning_conditions/" + formulaName;
 
