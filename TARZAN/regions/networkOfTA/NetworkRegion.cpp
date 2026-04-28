@@ -1,6 +1,5 @@
 #include "NetworkRegion.h"
 #include "TARZAN/utilities/function_utilities.h"
-
 // #define NETWORKREGION_DEBUG
 
 
@@ -295,7 +294,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                     // TA cannot receive its own broadcast, so we skip the TA of the sender.
                     if (regIdx_j == regIdx_i) continue;
 
-                    std::vector<std::pair<const transition*, region::Region>> enabledForThisTA;
+                    std::vector<std::tuple<int, region::Region, const transition*>> enabledForThisTA;
 
                     for (const auto& transition_j : transitions[regIdx_j].get())
                     {
@@ -315,6 +314,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                         }
 
                     }
+
                     // If this TA has at least one enabled way to receive, add the group.
                     if (!enabledForThisTA.empty()) {
                         allReceiversOptions.push_back(std::move(enabledForThisTA));
@@ -323,11 +323,11 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
 
                 // If every TA has 1 enabled transition, we get 1 successor for each.
                 // If some TA have multiple enabled transition, we need a Cartesian product to cover all the possible fired groups for each.
-                // --- STEP C: GENERATE ALL COMBINATIONS (Non-deterministic branching) ---
     
-                std::function<void(size_t, NetworkRegion, std::unordered_map<std::string, int>)> generatePaths;
+                // We use a lambda function instead of a separate function to avoid passing many parameters that are already in the scope and to keep the code more compact and readable.
+                std::function<void(int, networkOfTA::NetworkRegion, const absl::btree_map<std::string, int>)> generatePaths;
                 
-                generatePaths = [&](size_t groupIdx, NetworkRegion currentNetReg, std::unordered_map<std::string, int> vars) {
+                generatePaths = [&](int groupIdx, networkOfTA::NetworkRegion currentNetReg, const absl::btree_map<std::string, int> vars) {
                     // If our index has reached the end of the list of receivers, we are done.
                     if (groupIdx == allReceiversOptions.size()) {
                         // We take the "world" (i.e. network region) we’ve built, set the final variables, and shove it into the results vector
@@ -336,28 +336,29 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                         return;
                     }
 
-                    // Try every transition option for the current Automaton
+                    // Try every transition option for the current TA
                     for (const auto& enabledForThisTA : allReceiversOptions[groupIdx]) {
 
                         const auto& [rIdx, rSucc, rTrans] = enabledForThisTA;
                         
-                        NetworkRegion branchReg = currentNetReg.clone();
+                        networkOfTA::NetworkRegion branchReg = currentNetReg.clone();
                         
                         updateNetRegionWithDiscSucc(branchReg, rSucc, rIdx, rTrans->clocksToReset, clockIndices);
                         
-                        // Recurse to the next group, passing along updated variables
+                        // We call generatePaths again, but we increment groupIdx + 1 --> we made a choice for TA_x, now go make a choice for TA_(x+1) with the "world" (i.e. network region) we’ve built so far and the updated variables of this branch.
                         generatePaths(groupIdx + 1, std::move(branchReg), rSucc.getVariables());
                     }
                 };
 
-                // Initialize state with the Sender's move
+                // Initialize the network region with the sender's discrete successor and then start the recursive generation of paths for each combination of receivers.
                 NetworkRegion initialNetReg = clone();
                 updateNetRegionWithDiscSucc(initialNetReg, senderSuccessors[0], regIdx_i, transition_i.clocksToReset, clockIndices);
 
                 if (allReceiversOptions.empty()) {
                     initialNetReg.setNetworkVariables(senderSuccessors[0].getVariables());
                     res.emplace_back(std::move(initialNetReg));
-                } else {
+                }
+                else {
                     generatePaths(0, std::move(initialNetReg), senderSuccessors[0].getVariables());
                 }
             }
