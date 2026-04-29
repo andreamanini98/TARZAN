@@ -41,6 +41,12 @@ namespace networkOfTA
         absl::flat_hash_map<int, absl::flat_hash_set<int>> automataWithUrgentLocations{};
 
         /**
+         * The key of the external map represents an automaton which has at least one committed location.
+         * Committed locations are contained in the inner set.
+         */
+        absl::flat_hash_map<int, absl::flat_hash_set<int>> automataWithCommittedLocations{};
+
+        /**
          * Groups of automaton indices that are structurally symmetric.
          * Each inner vector contains indices of automata that are identical.
          */
@@ -73,6 +79,9 @@ namespace networkOfTA
 
                 if (automaton.hasUrgentLocations())
                     automataWithUrgentLocations[i] = automaton.getUrgentLocations(locationsToInt[i]);
+
+                if (automaton.hasCommittedLocations())
+                    automataWithCommittedLocations[i] = automaton.getCommittedLocations(locationsToInt[i]);
 
                 if (automaton.symmetryGroup.has_value())
                     groups[automaton.symmetryGroup.value()].push_back(i);

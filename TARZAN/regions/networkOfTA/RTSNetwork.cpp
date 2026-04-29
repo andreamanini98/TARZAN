@@ -135,6 +135,8 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
     // Initializing auxiliary data structures for reachability computation.
     std::deque<NetworkRegionPtr> toProcess{};
     std::unordered_set<NetworkRegion, NetworkRegionHash> regionsHashMap{};
+    
+    const std::vector<transition> emptyTransitions{}; // Empty transition list for non-committed automata.
 
     const bool useSymmetryReduction = !symmetryGroups.empty() && symmetryReduction;
 
@@ -205,18 +207,39 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
             return { currentRegion };
         }
 
-        // Computing a network immediate delay successor if no region is in an urgent location.
-        const bool isDelayComputable = !std::ranges::any_of(automataWithUrgentLocations, [&](const auto &pair) {
+        // Computing a network immediate delay successor if no region is in an urgent or committed location.
+        const bool anyRegionInUrgentLocation = std::ranges::any_of(automataWithUrgentLocations, [&](const auto &pair) {
             return pair.second.contains(currentRegionRegions[pair.first].getLocation());
         });
+        const bool anyRegionInCommittedLocation = std::ranges::any_of(automataWithCommittedLocations, [&](const auto &pair) {
+            return pair.second.contains(currentRegionRegions[pair.first].getLocation());
+        });
+        
+        const bool isDelayComputable = !anyRegionInUrgentLocation && !anyRegionInCommittedLocation;
 
         const NetworkRegion delaySuccessor = isDelayComputable ? currentRegion.getImmediateDelaySuccessor(maxConstants) : NetworkRegion{};
 
         // Setting up the transitions for the network discrete successor computation.
+        // If any committed locations -> add empty transition list for non-committed automata.
         std::vector<std::reference_wrapper<const std::vector<transition>>> transitions{};
         transitions.reserve(currentRegionRegions.size());
+        
+        absl::flat_hash_set<int> committedAutomata{};
+        if (anyRegionInCommittedLocation) {
+            for (const auto &[automIdx, committedSet] : automataWithCommittedLocations)
+                if (committedSet.contains(currentRegionRegions[automIdx].getLocation()))
+                    committedAutomata.insert(automIdx);
+        }
+
         for (int i = 0; i < static_cast<int>(currentRegionRegions.size()); i++)
-            transitions.emplace_back(std::cref(outTransitions[i][currentRegionRegions[i].getLocation()]));
+        {
+            if (anyRegionInCommittedLocation && !committedAutomata.contains(i))
+                // There are committed automata && the current automaton is not committed -> empty transitions.
+                transitions.emplace_back(std::cref(emptyTransitions));
+            else
+                // No committed automata || the current automaton is committed -> add automa transitions.
+                transitions.emplace_back(std::cref(outTransitions[i][currentRegionRegions[i].getLocation()]));
+        }
 
         // Computing network discrete successors.
         const std::vector<NetworkRegion> discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
