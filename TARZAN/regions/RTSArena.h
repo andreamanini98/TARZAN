@@ -38,6 +38,7 @@ namespace region
             inTransitions = arena.getInTransitions(locationsToInt);
             invariants = arena.getInvariants(locationsToInt);
             urgentLocations = arena.getUrgentLocations(locationsToInt);
+            committedLocations = arena.getCommittedLocations(locationsToInt);
             locationsToPlayers = arena.mapLocationsToPlayers(locationsToInt);
 
             const int numOfClocks = static_cast<int>(clocksIndices.size());

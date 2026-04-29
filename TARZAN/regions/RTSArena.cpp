@@ -1338,6 +1338,15 @@ std::string region::RTSArena::to_string() const
             oss << "  " << loc << "\n";
     oss << "\n";
 
+    // Committed locations.
+    oss << "Committed Locations (" << committedLocations.size() << "):\n";
+    if (committedLocations.empty())
+        oss << "  (none)\n";
+    else
+        for (const int loc: committedLocations)
+            oss << "  " << loc << "\n";
+    oss << "\n";
+
     // Locations to players (arena-specific, may be empty).
     oss << "Locations to Players (" << locationsToPlayers.size() << "):\n";
     if (locationsToPlayers.empty())

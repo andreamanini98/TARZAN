@@ -431,4 +431,15 @@ std::string region::RTS::to_string() const
     oss << "\n";
 
     return oss.str();
+
+    // Committed locations.
+    oss << "Committed Locations (" << committedLocations.size() << "):\n";
+    if (committedLocations.empty())
+        oss << "  (none)\n";
+    else
+        for (const int loc: committedLocations)
+            oss << "  " << loc << "\n";
+    oss << "\n";
+
+    return oss.str();
 }
