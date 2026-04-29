@@ -294,8 +294,8 @@ std::vector<region::Region> region::RTS::backwardReachability(const std::vector<
 
 #endif
 
-        // Computing immediate delay predecessors if there is at least one clock in the region and the current location is not urgent.
-        const bool isDelayComputable = isThereAnyClock && !urgentLocations.contains(currentRegionLocation);
+        // Computing immediate delay predecessors if there is at least one clock in the region and the current location is neither urgent nor committed.
+        const bool isDelayComputable = isThereAnyClock && !urgentLocations.contains(currentRegionLocation) && !committedLocations.contains(currentRegionLocation);
         const std::vector<Region> delayPredecessors = isDelayComputable ? currentRegion.getImmediateDelayPredecessors() : std::vector<Region>{};
 
 #ifdef RTS_DEBUG
