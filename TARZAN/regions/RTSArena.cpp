@@ -536,7 +536,7 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 
     while (currentIteration < maxIter)
     {
-        piFilter(setG, toProcess, filteredRegions, setPhi, true, false, true);
+        piFilter(setG, toProcess, filteredRegions, setPhi, true, true, true);
 
         if (filteredRegions.empty())
             break;
@@ -607,7 +607,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
 
     while (currentIteration < maxIter)
     {
-        piFilter(setG, toProcess, filteredRegions, setPhi, true, false, true);
+        piFilter(setG, toProcess, filteredRegions, setPhi, true, true, true);
 
         if (filteredRegions.empty())
             break;
@@ -631,7 +631,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
     filteredRegions.clear();
 
     // In this case, we remove the constraints over the intersection set setPhi and put skipPredecessorsInSetG to false.
-    piFilter(setG, toProcess, filteredRegions, {}, false, false, true);
+    piFilter(setG, toProcess, filteredRegions, {}, false, true, true);
     setG.merge(filteredRegions);
 
     // Ending the timer for measuring computation.
@@ -966,7 +966,7 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
                 strategyGraph->addNewStrategyTransitionMapToBack();
 
             // Here we put skipPredecessorsInSetG and skipIfSourceIsInSetG to false, since we may need to traverse cycles in the conjunction of next.
-            piFilter(setG, toProcess, filteredRegions, {}, false, false, false);
+            piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
 
             setG.merge(filteredRegions);
             filteredRegions.clear();
@@ -1011,7 +1011,7 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
             strategyGraph->addNewStrategyTransitionMapToBack();
 
         // Here we put skipPredecessorsInSetG and skipIfSourceIsInSetG to false, since we may need to traverse cycles in the conjunction of next.
-        piFilter(setG, toProcess, filteredRegions, {}, false, false, false);
+        piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
 
         setG.merge(filteredRegions);
         filteredRegions.clear();

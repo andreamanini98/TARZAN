@@ -134,7 +134,7 @@ namespace region
          * @param reg the region over which the pi_e condition must be evaluated.
          * @param setG set of goal regions.
          * @param validActions actions that the controller can potentially choose to declare a move guaranteeing it to reach a region in setG.
-         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
+         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants.
          * @return true if reg satisfies the pi_e condition, false otherwise.
          */
         [[nodiscard]] inline bool piEnvironment(const Region &reg,
@@ -160,7 +160,7 @@ namespace region
          * @param threadLocalRegions vector of vectors collecting the resulting region if valid.
          *                           Each external vector corresponds to a thread in OpenMP (only one inner vector is present if OpenMP is not enabled).
          * @param validActions actions that the controller can potentially choose to declare a move guaranteeing it to reach a region in setG.
-         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
+         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants.
          */
         inline void collectLegalRegionByPi(const Region &reg,
                                            const regionSet &setG,
@@ -183,7 +183,7 @@ namespace region
          * @param threadLocalRegions vector of vectors collecting the resulting region if valid.
          *                           Each external vector corresponds to a thread in OpenMP (only one inner vector is present if OpenMP is not enabled).
          * @param validActions actions that the controller can potentially choose to declare a move guaranteeing it to reach a region in setG.
-         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
+         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants.
          * @param skipIfSourceIsInSetG if true, the strategy transition having sourceRegion as a source is not inserted into the strategy graph.
          *                             Useful to ensure the absence of cycles in the strategy graph (e.g., when computing next until winning conditions).
          * @note The delay is not considered here. It may be derived from the stored regions in the strategy graph.
@@ -362,13 +362,16 @@ namespace region
          * @param filteredRegions at the end of execution, will contain the filtered discrete predecessors regions ensuring the controller can reach setG.
          * @param intersectionSet for a region to be valid, it must also belong to intersectionSet.
          * @param skipPredecessorsInSetG if true, a predecessor already contained in setG is automatically considered valid.
-         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants (useful for safety).
+         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants.
          * @param skipIfSourceIsInSetG if true, the strategy transition having sourceRegion (see collectLegalRegionByPiStrategy) as a source is not inserted into
          *                             the strategy graph. Useful to ensure the absence of cycles in the strategy graph (e.g., when computing next until winning conditions).
          *
          * @warning The function updates filteredRegions.
          * @warning toProcess is a vector, since we may use OpenMP parallelization.
          */
+        // TODO: checkAllSuccessorsInvariants era messo a false tranne che nella safety, probabilmente un refuso di quando piFilter era sdoppiato.
+        //       Ora è stato messo a true in tutti gli algoritmi, poiché giustamente le environment regions devono soddisfare gli invarianti.
+        //       Controllare che sia definitivamente corretto metterlo sempre a true e, nel caso, toglierlo dal codice (o lascialo).
         void piFilter(const regionSet &setG,
                       const std::vector<RegionPtr> &toProcess,
                       regionSet &filteredRegions,
