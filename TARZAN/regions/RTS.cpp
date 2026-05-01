@@ -91,7 +91,6 @@ inline bool checkIfTargetRegionReached(const region::Region &currentRegion,
                 return false;
         }
     }
-
     return true;
 }
 
