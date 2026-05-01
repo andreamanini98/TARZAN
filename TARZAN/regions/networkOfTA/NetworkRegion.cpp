@@ -192,8 +192,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
 
                     updateNetRegionWithDiscSucc(netReg, discreteSuccessors[0], regIdx_i, transition_i.clocksToReset, clockIndices);
 
-                    // `netReg` is a local variable that is never used after this call, so we move
-                    // it into the vector instead of copying it. This transfers ownership of its
+                    // netReg is a local variable that is never used after this call, so we move it into the vectorinstead of copying it. This transfers ownership of its
                     // internal data directly, avoiding an unnecessary deep copy.
                     res.emplace_back(std::move(netReg));
                 }
@@ -287,14 +286,14 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
 
                 // To collect all available receivers we create a list of groups (i.e. TA)
                 // Each group contains all the transitions that the considered TA could use to receive the signal
-                std::vector<std::vector<std::tuple<int, region::Region, const transition*>>> allReceiversOptions;
+                std::vector<std::vector<std::pair<int, const transition*>>> allReceiversOptions;
 
                 for (int regIdx_j = 0; regIdx_j < transitionSize; regIdx_j++)
                 {
                     // TA cannot receive its own broadcast, so we skip the TA of the sender.
                     if (regIdx_j == regIdx_i) continue;
 
-                    std::vector<std::tuple<int, region::Region, const transition*>> enabledForThisTA;
+                    std::vector<std::pair<int, const transition*>> enabledForThisTA;
 
                     for (const auto& transition_j : transitions[regIdx_j].get())
                     {
@@ -306,13 +305,10 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
 
                         singleTransition.clear();
                         singleTransition.push_back(transition_j);
-
-                        auto succJ = tmpRegJ.getImmediateDiscreteSuccessors(singleTransition, clockIndices[regIdx_j], locationsToInt[regIdx_j]);
                         
-                        if (!succJ.empty()) {
-                            enabledForThisTA.emplace_back(regIdx_j, succJ[0], &transition_j);
+                        if (!tmpRegJ.getImmediateDiscreteSuccessors(singleTransition, clockIndices[regIdx_j], locationsToInt[regIdx_j]).empty()) {
+                            enabledForThisTA.emplace_back(regIdx_j, &transition_j);
                         }
-
                     }
 
                     // If this TA has at least one enabled way to receive, add the group.
@@ -322,32 +318,41 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                 }
 
                 // If every TA has at most 1 enabled transition, we get 1 successor for each.
-                // If some TA have multiple enabled transition, we need a Cartesian product to cover all the possible fired groups for each.
-    
+                // If some TA have multiple enabled transition, we need a Cartesian product to cover all the possible fired groups for each.                    
                 // We use a lambda function instead of a separate function to avoid passing many parameters that are already in the scope and to keep the code more compact and readable.
                 std::function<void(int, networkOfTA::NetworkRegion, const absl::btree_map<std::string, int>)> generatePaths;
                 
                 // The function is designed as recursive since the number of groups (i.e. TA with at least one enabled transition) is not fixed, and we need to explore all the combinations of transitions that can be fired together.
                 generatePaths = [&](int groupIdx, networkOfTA::NetworkRegion currentNetReg, const absl::btree_map<std::string, int> vars) {
-                    // If our index has reached the end of the list of receivers, we are done.
+                    
+                    // If our index has reached the end of the list of receivers, we are done --> base case
                     if (groupIdx == allReceiversOptions.size()) {
-                        // We take the "world" (i.e. network region) we’ve built, set the final variables, and shove it into the results vector.
+                        // We take the "world" (i.e. network region) weve built, set the final variables, and shove it into the results vector.
                         currentNetReg.setNetworkVariables(vars);
                         res.emplace_back(std::move(currentNetReg));
                         return;
                     }
 
                     // Try every transition option for the current TA
-                    for (const auto& enabledForThisTA : allReceiversOptions[groupIdx]) {
+                    for (const auto& choice : allReceiversOptions[groupIdx]) {
+                        const auto& [rIdx, rTrans] = choice;
+                        
+                        region::Region tmpReg = regions[rIdx].clone();
+                        tmpReg.set_variables(vars); 
+                        
+                        std::vector<transition> singleTrans = { *rTrans };
+                        
+                        // Calculate the successor using the cascaded variables to apply assignments
+                        auto actualSucc = tmpReg.getImmediateDiscreteSuccessors(singleTrans, clockIndices[rIdx], locationsToInt[rIdx]);
 
-                        const auto& [rIdx, rSucc, rTrans] = enabledForThisTA;
-                        
-                        networkOfTA::NetworkRegion branchReg = currentNetReg.clone();
-                        
-                        updateNetRegionWithDiscSucc(branchReg, rSucc, rIdx, rTrans->clocksToReset, clockIndices);
-                        
-                        // We call generatePaths again, but we increment groupIdx + 1 --> we made a choice for TA_x, now go make a choice for TA_(x+1) with the "world" (i.e. network region) we’ve built so far and the updated variables of this branch.
-                        generatePaths(groupIdx + 1, std::move(branchReg), rSucc.getVariables());
+                        // The check is done for redundancy, but we assume actualSucc is not empty since the guard has been already validated in precedence
+                        if (!actualSucc.empty()) {
+                            networkOfTA::NetworkRegion branchReg = currentNetReg.clone();
+                            updateNetRegionWithDiscSucc(branchReg, actualSucc[0], rIdx, rTrans->clocksToReset, clockIndices);
+                            
+                            // Recursive call using the newly updated variables
+                            generatePaths(groupIdx + 1, std::move(branchReg), actualSucc[0].getVariables());
+                        }
                     }
                 };
 

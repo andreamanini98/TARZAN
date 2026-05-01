@@ -220,29 +220,40 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
         const NetworkRegion delaySuccessor = isDelayComputable ? currentRegion.getImmediateDelaySuccessor(maxConstants) : NetworkRegion{};
 
         // Setting up the transitions for the network discrete successor computation.
-        // If any committed locations -> add empty transition list for non-committed automata.
         std::vector<std::reference_wrapper<const std::vector<transition>>> transitions{};
         transitions.reserve(currentRegionRegions.size());
-        
-        absl::flat_hash_set<int> committedAutomata{};
-        if (anyRegionInCommittedLocation) {
+        for (int i = 0; i < static_cast<int>(currentRegionRegions.size()); i++)
+            transitions.emplace_back(std::cref(outTransitions[i][currentRegionRegions[i].getLocation()]));
+
+        // Computing network discrete successors.
+        const std::vector<NetworkRegion> allDiscreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
+
+        // If any automaton is in a committed location, keep only successors where
+        // at least one committed automaton has partecipated in the transition
+        // (the current transition || the sender || at least one of the receivers).
+        std::vector<NetworkRegion> discreteSuccessors{};
+        if (anyRegionInCommittedLocation)
+        {
+            // Build the set of committed automata indices.
+            absl::flat_hash_set<int> committedAutomata{};
             for (const auto &[automIdx, committedSet] : automataWithCommittedLocations)
                 if (committedSet.contains(currentRegionRegions[automIdx].getLocation()))
                     committedAutomata.insert(automIdx);
-        }
 
-        for (int i = 0; i < static_cast<int>(currentRegionRegions.size()); i++)
-        {
-            if (anyRegionInCommittedLocation && !committedAutomata.contains(i))
-                // There are committed automata && the current automaton is not committed -> empty transitions.
-                transitions.emplace_back(std::cref(emptyTransitions));
-            else
-                // No committed automata || the current automaton is committed -> add automa transitions.
-                transitions.emplace_back(std::cref(outTransitions[i][currentRegionRegions[i].getLocation()]));
-        }
+            // Filter successors to keep only those where at least one committed automaton has partecipated in the transition.
+            for (const auto &succ : allDiscreteSuccessors)
+            {
+                const auto &succRegions = succ.getRegions();
+                const bool committedParticipated = std::ranges::any_of(committedAutomata, [&](const int idx) {
+                    return succRegions[idx].getLocation() != currentRegionRegions[idx].getLocation();
+                });
 
-        // Computing network discrete successors.
-        const std::vector<NetworkRegion> discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
+                if (committedParticipated)
+                    discreteSuccessors.push_back(succ);
+            }
+        }
+        else
+            discreteSuccessors = allDiscreteSuccessors;
 
         totalRegions += discreteSuccessors.size() + (isDelayComputable ? 1 : 0);
 
