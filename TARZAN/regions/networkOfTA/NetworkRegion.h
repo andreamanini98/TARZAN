@@ -105,7 +105,8 @@ namespace networkOfTA
         [[nodiscard]] std::vector<NetworkRegion> getImmediateDiscreteSuccessors(
             const std::vector<std::reference_wrapper<const std::vector<transition>>> &transitions,
             const std::vector<std::unordered_map<std::string, int>> &clockIndices,
-            const std::vector<std::unordered_map<std::string, int>> &locationsToInt) const;
+            const std::vector<std::unordered_map<std::string, int>> &locationsToInt,
+            const absl::flat_hash_set<int> &committedAutomata) const;
 
 
         /**
