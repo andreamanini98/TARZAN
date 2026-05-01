@@ -325,10 +325,21 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                 const bool senderIsCommitted = committedAutomata.contains(regIdx_i);
 
                 bool anyReceiverIsCommitted = false;
-                for (const auto &group : allReceiversOptions)
-                    for (const auto &[rIdx, rTrans] : group)
-                        if (committedAutomata.contains(rIdx))
-                            anyReceiverIsCommitted = true;
+                if (!committedAutomata.empty())
+                {
+                    for (const auto &group : allReceiversOptions)
+                    {
+                        for (const auto &[rIdx, rTrans] : group)
+                        {
+                            if (committedAutomata.contains(rIdx))
+                            {
+                                anyReceiverIsCommitted = true;
+                                break;
+                            }
+                        }
+                        if (anyReceiverIsCommitted) break;
+                    }
+                }
                 
                 if (committedAutomata.empty() || senderIsCommitted || anyReceiverIsCommitted)
                 {

@@ -135,8 +135,6 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::RTSNetwork::forwardReachabi
     // Initializing auxiliary data structures for reachability computation.
     std::deque<NetworkRegionPtr> toProcess{};
     std::unordered_set<NetworkRegion, NetworkRegionHash> regionsHashMap{};
-    
-    const std::vector<transition> emptyTransitions{}; // Empty transition list for non-committed automata.
 
     const bool useSymmetryReduction = !symmetryGroups.empty() && symmetryReduction;
 
