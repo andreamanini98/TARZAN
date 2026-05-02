@@ -172,6 +172,56 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
 }
 
 
+std::vector<region::Region> region::Region::getImmediateDiscreteSuccessorsNoCheck(const std::vector<transition> &transitions,
+                                                                           const std::unordered_map<std::string, int> &clockIndices,
+                                                                           const std::unordered_map<std::string, int> &locationsAsIntMap) const
+{
+    std::vector<Region> res{};
+
+    const std::vector<std::pair<int, bool>> &clockValuation = getClockValuation();
+    const int numOfClocks = getNumberOfClocks();
+
+    for (const auto &transition: transitions)
+    {
+        Region reg = clone();
+        reg.set_q(locationsAsIntMap.at(transition.targetLocation));
+
+        if (!transition.clocksToReset.empty())
+        {
+            boost::dynamic_bitset<> resetClocksMask(numOfClocks);
+
+            for (const std::string &resetClock: transition.clocksToReset)
+            {
+                const int resetClockIdx = clockIndices.at(resetClock);
+                reg.h[resetClockIdx] = 0;
+                resetClocksMask.set(cIdx(numOfClocks, resetClockIdx));
+            }
+
+            reg.x0 |= resetClocksMask;
+
+            resetClocksMask.flip();
+
+            for (auto &clockSet: reg.unbounded)
+                clockSet &= resetClocksMask;
+            for (auto &clockSet: reg.bounded)
+                clockSet &= resetClocksMask;
+
+            std::erase_if(reg.unbounded, [](const auto &clockSet) { return clockSet.none(); });
+            std::erase_if(reg.bounded, [](const auto &clockSet) { return clockSet.none(); });
+        }
+
+        // Evaluating all integer assignments.
+        // The region must hold the current values of integer variables in order for this evaluation to be performed.
+        for (const auto &intAss: transition.integerAssignments)
+            intAss.evaluate(reg.variables);
+
+        res.emplace_back(reg);
+    }
+
+    return res;
+}
+
+
 std::vector<region::Region> region::Region::permRegsBounded(const int qReg,
                                                             const std::vector<int> &H,
                                                             const std::deque<boost::dynamic_bitset<>> &unboundedReg,

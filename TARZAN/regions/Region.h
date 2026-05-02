@@ -159,7 +159,26 @@ namespace region
                                                                          const std::unordered_map<std::string, int> &clockIndices,
                                                                          const std::unordered_map<std::string, int> &locationsAsIntMap) const;
 
-
+        /**
+         * @brief Computes the immediate discrete successor of the current region as detailed in our paper but without the checking part to enable atomic operations.
+         *
+         * @param transitions the transitions over which immediate discrete successors must be computed.
+         * @param clockIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
+         * @param locationsAsIntMap a std::unordered_map associating an integer with each string name.
+         * @return a std::vector<Region> containing immediate discrete successors of the current region.
+         *         If no successors can be computed, returns an empty std::vector.
+         *
+         * @warning Must check if the returned regions satisfy the invariants.
+         * @warning The region must hold the current values of integer variables in order for the integer evaluation to be performed.
+         *          These values can either be directly contained if using RTS or must be set if using RTSNetwork.
+         * @warning The transitions parameter must contain all and only the transitions exiting from the location of the region.
+         *          To provide such transitions, the getOutTransitions() function of a Timed Automaton can be used.
+         * @warning To provide the clockIndices parameter, the getClocksIndices() function of a Timed Automaton can be used.
+         * @warning To provide the locationsAsIntMap, the mapLocationsToInt() function of a Timed Automaton can be used.
+         */
+        [[nodiscard]] std::vector<Region> getImmediateDiscreteSuccessorsNoCheck(const std::vector<transition> &transitions,
+                                                                         const std::unordered_map<std::string, int> &clockIndices,
+                                                                         const std::unordered_map<std::string, int> &locationsAsIntMap) const;
         /**
          * @brief Auxiliary function computing the permRegs function as seen in our paper for the bounded case.
          *
