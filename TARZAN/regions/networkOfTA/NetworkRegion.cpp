@@ -369,7 +369,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                             std::vector<transition> singleTrans = { *rTrans };
                             
                             // Calculate the successor using the cascaded variables to apply assignments
-                            auto actualSucc = tmpReg.getImmediateDiscreteSuccessors(singleTrans, clockIndices[rIdx], locationsToInt[rIdx]);
+                            auto actualSucc = tmpReg.getImmediateDiscreteSuccessorsNoCheck(singleTrans, clockIndices[rIdx], locationsToInt[rIdx]);
 
                             // The check is done for redundancy, but we assume actualSucc is not empty since the guard has been already validated in precedence
                             if (!actualSucc.empty()) {
