@@ -299,13 +299,13 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
 
                     std::vector<std::pair<int, const transition*>> enabledForThisTA;
 
+                    region::Region tmpRegJ = regions[regIdx_j].clone();
+                    tmpRegJ.set_variables(senderSuccessors[0].getVariables());
+
                     for (const auto& transition_j : transitions[regIdx_j].get())
                     {
                         // Match the channel name of the receiver with the one of the sender and check the broadcast symbol ?? for the receiver.
                         if (transition_j.action.first != transition_i.action.first || transition_j.action.second != BROADCAST_INACT) continue;
-
-                        region::Region tmpRegJ = regions[regIdx_j].clone();
-                        tmpRegJ.set_variables(senderSuccessors[0].getVariables());
 
                         singleTransition.clear();
                         singleTransition.push_back(transition_j);
@@ -324,6 +324,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                 // If there are committed automata, the sender or at least one receiver must be committed for the transition to be valid.
                 const bool senderIsCommitted = committedAutomata.contains(regIdx_i);
 
+                // Check if any of the receivers is committed.
                 bool anyReceiverIsCommitted = false;
                 if (!committedAutomata.empty())
                 {
@@ -343,6 +344,8 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                 
                 if (committedAutomata.empty() || senderIsCommitted || anyReceiverIsCommitted)
                 {
+                    const int receiversSize = static_cast<int>(allReceiversOptions.size());
+
                     // If every TA has at most 1 enabled transition, we get 1 successor for each.
                     // If some TA have multiple enabled transition, we need a Cartesian product to cover all the possible fired groups for each.                    
                     // We use a lambda function instead of a separate function to avoid passing many parameters that are already in the scope and to keep the code more compact and readable.
@@ -352,7 +355,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                     generatePaths = [&](int groupIdx, networkOfTA::NetworkRegion currentNetReg, const absl::btree_map<std::string, int> vars) {
                         
                         // If our index has reached the end of the list of receivers, we are done --> base case
-                        if (groupIdx == allReceiversOptions.size()) {
+                        if (groupIdx == receiversSize) {
                             // We take the "world" (i.e. network region) weve built, set the final variables, and shove it into the results vector.
                             currentNetReg.setNetworkVariables(vars);
                             res.emplace_back(std::move(currentNetReg));
