@@ -618,7 +618,7 @@ namespace timed_automaton::ast
          * @brief Collects the urgent locations.
          *
          * @param locToIntMap a mapping from locations (represented by std::string) to int.
-         * @return a map from integers representing the urgent locations.
+         * @return a set of integers representing the urgent locations.
          */
         [[nodiscard]] absl::flat_hash_set<int> getUrgentLocations(const std::unordered_map<std::string, int> &locToIntMap) const;
 
@@ -790,7 +790,7 @@ namespace timed_automaton::ast
          * @brief Collects the urgent locations.
          *
          * @param locToIntMap a mapping from locations (represented by std::string) to int.
-         * @return a map from integers representing the urgent locations.
+         * @return a set of integers representing the urgent locations.
          */
         [[nodiscard]] absl::flat_hash_set<int> getUrgentLocations(const std::unordered_map<std::string, int> &locToIntMap) const;
 
