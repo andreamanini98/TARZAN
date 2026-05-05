@@ -8,23 +8,26 @@
 int main()
 {
     // constexpr std::string formulaName = "reachability0.txt"; // Tbot can complete a single patient procedure.
-    // constexpr std::string formulaName = "reachability1.txt"; // Tbot can complete a single patient procedure in at most 50 time units.
+    constexpr std::string formulaName = "reachability1.txt"; // Tbot can complete a single patient procedure in at most 50 time units.
+
     // constexpr std::string formulaName = "safety0.txt";       // Tbot always makes the drug expire (not proper safety).
-    // constexpr std::string formulaName = "safety1.txt";          // Tbot can always complete a patient procedure without raising interrupts or making the drug expire.
+    // constexpr std::string formulaName = "safety1.txt";       // Tbot can always complete a patient procedure without raising interrupts or making the drug expire.
 
     // constexpr std::string formulaName = "and_next0.txt"; // Tbot can complete a single patient procedure by calling the nurse during pulse measurement.
-    constexpr std::string formulaName = "and_next1.txt"; // Tbot can complete a single patient procedure by raising an interrupt during pulse measurement
+    // constexpr std::string formulaName = "and_next1.txt"; // Tbot can complete a single patient procedure by raising an interrupt during pulse measurement
     //                                                      three times, after which a nurse is called. The nurse intervention makes Tbot complete without
     //                                                      raising interrupts or requiring safety mode.
+    //constexpr std::string formulaName = "and_next2.txt"; // As above, but after the nurse is called and by completing the mission in under 50 time units.
 
     const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks_games/models/med_app/winning_conditions/" + formulaName;
 
-    // const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
-    const cltloc::ast::conjunctionOfFormulae phi = TARZAN::parseConjunctionOfFormulae(formulaPath);
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
+    //const cltloc::ast::conjunctionOfFormulae phi = TARZAN::parseConjunctionOfFormulae(formulaPath);
 
     // ---
 
     constexpr std::string arenaName = "med_app.txt";
+    // constexpr std::string arenaName = "med_app_eq.txt";
 
     const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks_games/models/med_app/arena/" + arenaName;
     const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath);
