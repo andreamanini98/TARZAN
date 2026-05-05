@@ -536,6 +536,8 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 
     while (currentIteration < maxIter)
     {
+        currentIteration++;
+
         piFilter(setG, toProcess, filteredRegions, setPhi, true, true, true);
 
         if (filteredRegions.empty())
@@ -548,8 +550,6 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
             toProcess.push_back(&region);
 
         filteredRegions.clear();
-
-        currentIteration++;
     }
 
     // Ending the timer for measuring computation.
@@ -607,6 +607,8 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
 
     while (currentIteration < maxIter)
     {
+        currentIteration++;
+
         piFilter(setG, toProcess, filteredRegions, setPhi, true, true, true);
 
         if (filteredRegions.empty())
@@ -619,8 +621,6 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
             toProcess.push_back(&region);
 
         filteredRegions.clear();
-
-        currentIteration++;
     }
 
     // Step 2: we perform one additional iteration of piFilter.
@@ -685,6 +685,8 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
 
     while (currentIteration < maxIter)
     {
+        currentIteration++;
+
         const size_t oldSetGSize = setG.size();
 
         piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
@@ -700,8 +702,6 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
             toProcess.push_back(&region);
 
         filteredRegions.clear();
-
-        currentIteration++;
     }
 
     computeStrategyGraph = reactivateComputeStrategyGraph;
@@ -960,6 +960,8 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
         // We now apply piFilter for a total of totalCurrentIterations times.
         for (int j = 0; j < totalCurrentIterations; j++)
         {
+            currentIteration++;
+
             // Each step of the conjunction will be saved backwards (at the end of computation, the back of strategyTransitionsForConjunction contains the
             // first strategy transition and so on). For this reason, in this algorithm we add maps to strategyTransitionsForConjunction at each step of the game.
             if (computeStrategyGraph)
@@ -978,8 +980,6 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
                 for (const auto &region: setG)
                     toProcess.push_back(&region);
             }
-
-            currentIteration++;
         }
 
         // Computing the intersection between setG and the regions specified by formulaRegionSets[i - 1].
@@ -1005,6 +1005,8 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
 
     for (int i = 0; i < totalCurrentIterations; i++)
     {
+        currentIteration++;
+
         // Each step of the conjunction will be saved backwards (at the end of computation, the back of strategyTransitionsForConjunction contains the
         // first strategy transition and so on). For this reason, in this algorithm we add maps to strategyTransitionsForConjunction at each step of the game.
         if (computeStrategyGraph)
@@ -1023,8 +1025,6 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
             for (const auto &region: setG)
                 toProcess.push_back(&region);
         }
-
-        currentIteration++;
     }
 
     const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
