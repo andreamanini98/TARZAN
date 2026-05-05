@@ -1,0 +1,7 @@
+AND_NEXT
+( NEXT^0  ([q_dock],[(x, ==, 0), (y, ==, 0), (t, ==, 0)]) ) &&
+( NEXT^7  ([q_int],[]) )                                    &&
+( NEXT^10 ([q_int],[]) )                                    &&
+( NEXT^13 ([q_int],[]) )                                    &&
+( NEXT^16 ([q_call],[]) )                                   &&
+( NEXT^27 ([q_dock],[]) )                                   &&
