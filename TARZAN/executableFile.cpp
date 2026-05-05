@@ -7,8 +7,8 @@
 
 int main()
 {
-    // constexpr std::string formulaName = "reachability0.txt"; // Tbot can complete a single patient procedure.
-    constexpr std::string formulaName = "reachability1.txt"; // Tbot can complete a single patient procedure in at most 50 time units.
+    constexpr std::string formulaName = "reachability0.txt"; // Tbot can complete a single patient procedure.
+    // constexpr std::string formulaName = "reachability1.txt"; // Tbot can complete a single patient procedure in at most 50 time units.
 
     // constexpr std::string formulaName = "safety0.txt";       // Tbot always makes the drug expire (not proper safety).
     // constexpr std::string formulaName = "safety1.txt";       // Tbot can always complete a patient procedure without raising interrupts or making the drug expire.
@@ -18,6 +18,8 @@ int main()
     //                                                      three times, after which a nurse is called. The nurse intervention makes Tbot complete without
     //                                                      raising interrupts or requiring safety mode.
     //constexpr std::string formulaName = "and_next2.txt"; // As above, but after the nurse is called and by completing the mission in under 50 time units.
+
+    // constexpr std::string formulaName = "q_int_unreachable.txt";
 
     const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/benchmarks_games/models/med_app/winning_conditions/" + formulaName;
 
