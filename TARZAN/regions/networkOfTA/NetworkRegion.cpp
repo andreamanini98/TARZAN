@@ -402,10 +402,10 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
             }
         }
     }
-    res1.reserve(res.size() + res1.size() + res2.size());
-    res1.insert(res1.end(), std::make_move_iterator(res.begin()), std::make_move_iterator(res.end()));
-    res1.insert(res1.end(), std::make_move_iterator(res2.begin()), std::make_move_iterator(res2.end()));
-    return res1;
+    res.reserve(res.size() + res1.size() + res2.size());
+    res.insert(res.end(), std::make_move_iterator(res1.begin()), std::make_move_iterator(res1.end()));
+    res.insert(res.end(), std::make_move_iterator(res2.begin()), std::make_move_iterator(res2.end()));
+    return res;
 }
 
 
