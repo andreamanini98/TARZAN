@@ -8,6 +8,10 @@
 #include <omp.h>
 #endif
 
+#ifdef _TBB
+#include "oneapi/tbb/parallel_for_each.h"
+#include "tbb/enumerable_thread_specific.h"
+#endif
 
 // #define RTSARENA_DEBUG
 #define THROW_NESTEDCLTLOC_EXCEPTION
@@ -305,7 +309,7 @@ inline bool region::RTSArena::piController(const absl::flat_hash_map<std::string
 
 inline void region::RTSArena::collectLegalRegionByPi(const Region &reg,
                                                      const regionSet &setG,
-                                                     std::vector<std::vector<Region>> &threadLocalRegions,
+                                                     std::vector<Region> &threadLocalRegions,
                                                      const absl::flat_hash_map<std::string, bool> &validActions,
                                                      const bool checkAllSuccessorsInvariants) const
 {
@@ -314,14 +318,10 @@ inline void region::RTSArena::collectLegalRegionByPi(const Region &reg,
 
     if (isCurrentPlayerController ? piController(validActions) : piEnvironment(reg, setG, validActions, checkAllSuccessorsInvariants))
     {
-#ifdef _OPENMP
-        threadLocalRegions[omp_get_thread_num()].push_back(reg);
-#else
-        threadLocalRegions[0].push_back(reg);
-#endif
+        threadLocalRegions.push_back(reg);
+
     }
 }
-
 
 void region::RTSArena::piFilter(const regionSet &setG,
                                 const std::vector<RegionPtr> &toProcess,
@@ -330,8 +330,12 @@ void region::RTSArena::piFilter(const regionSet &setG,
                                 bool skipPredecessorsInSetG,
                                 bool checkAllSuccessorsInvariants) const
 {
-    constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
 
+#ifdef _TBB
+    tbb::enumerable_thread_specific<std::vector<Region>> threadLocalRegions;
+#else
+
+    constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
     // Thread-local storage for valid predecessors.
 #ifdef _OPENMP
     std::vector<std::vector<Region>> threadLocalRegions(omp_get_max_threads());
@@ -339,6 +343,9 @@ void region::RTSArena::piFilter(const regionSet &setG,
     std::vector<std::vector<Region>> threadLocalRegions(1);
 #endif
 
+#endif
+
+#ifndef _TBB
     // Reserve space to reduce allocations.
     if (toProcess.size() >= parallelThreshold)
     {
@@ -352,13 +359,54 @@ void region::RTSArena::piFilter(const regionSet &setG,
             vec.reserve(estimatedSize);
     }
 
+#endif
+
+
+  // OBJ NOT TO SHARE: outTransitions, invariants, locationsToPlayers
+  //
+  // setG andrebbe mandato a TUTTI i core perche' funzioni tipo skipRegion ci accedono in modo totale.
+  // Anche intersectionSet e invariants ecc. Tutte queste strutture dati hanno bisogno di essere accedute da TUTTI i core. Se l'obbiettivo e' quello di usare openMPI 
+  // su una solo macchina non conviene perche comporta una duplicazione della memoria per ogni core.
+  // Non esiste neanche il vantaggio di far girare questo loop su piu nodi poiche conviene spezzarlo in piu nodi se il problema e la dimensione delle strutture dati 
+  // ma come ho appena detto non sono separabili. 
+  //
+  // Siccome setG cambia a ogni iterazione del while in timedReachability, dopo ogni piFilter dovresti fare una MPI_Allgather per sincronizzare i nuovi setG tra tutti
+  // i nodi. Trasformado una lookup alla cache o alla ram ad una richiesta di rete (nettamente piu lenta).
+  //
+  //
+
+#ifdef _TBB
+
+   printf("Number of regions to process using TBB: %ld\n", toProcess.size());
+
+
+    oneapi::tbb::parallel_for_each(toProcess.begin(), toProcess.end(), 
+        [&](const Region* reg, oneapi::tbb::feeder<Region*>& feeder) {
+
+        const Region& currentRegion = *reg; 
+        std::vector<Region>& currThreadLocRegions = threadLocalRegions.local();
+
+
+#else
+
 #pragma omp parallel for if(toProcess.size() >= parallelThreshold) schedule(dynamic) default(none) \
-shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, checkAllSuccessorsInvariants, threadLocalRegions), \
-shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants, invariants, initialRegions, locationsToPlayers)
+    shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, checkAllSuccessorsInvariants, threadLocalRegions), \
+    shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants, invariants, initialRegions, locationsToPlayers)
     for (int i = 0; i < static_cast<int>(toProcess.size()); i++) // NOLINT(modernize-loop-convert)
     {
+
         // Getting the current region to process and its incoming transitions.
         const Region &currentRegion = *toProcess[i];
+
+        std::vector<Region>& currThreadLocRegions = 
+#ifdef _OPENMP
+        threadLocalRegions[omp_get_thread_num()];
+#else
+        threadLocalRegions[0];
+#endif
+
+#endif
+
         const std::vector<transition> &currTransitions = inTransitions[currentRegion.getLocation()];
 
         // We collect every discrete predecessor that we filter later based on the pi conditions.
@@ -401,24 +449,35 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                     delayPredecessorsToProcess.push(delayPred);
 
                 if (regUnderAnalysis.hasAtLeastOneDiscretePredecessor(inTransitions[regUnderAnalysis.getLocation()], clocksIndices))
-                    collectLegalRegionByPi(regUnderAnalysis, setG, threadLocalRegions, validActions, checkAllSuccessorsInvariants);
+                    collectLegalRegionByPi(regUnderAnalysis, setG, currThreadLocRegions, validActions, checkAllSuccessorsInvariants);
             }
 
             // Checking the case in which a region with no delay predecessors is either initial or has an incoming discrete transition (has a discrete predecessor).
             for (const auto &regStillToProcess: regionsStillToProcess)
             {
-                const bool isRegionInitial = std::ranges::find(initialRegions, regStillToProcess) != initialRegions.end();
+                const bool isRegionInitial = std::find(initialRegions.begin(), initialRegions.end(), regStillToProcess) != initialRegions.end();
                 // ReSharper disable once CppTooWideScopeInitStatement
                 const bool hasDiscPreds = regStillToProcess.hasAtLeastOneDiscretePredecessor(inTransitions[regStillToProcess.getLocation()], clocksIndices);
 
                 if (isRegionInitial || hasDiscPreds)
-                    collectLegalRegionByPi(regStillToProcess, setG, threadLocalRegions, validActions, checkAllSuccessorsInvariants);
+                    collectLegalRegionByPi(regStillToProcess, setG, currThreadLocRegions, validActions, checkAllSuccessorsInvariants);
             }
         }
     }
 
+#ifdef _TBB
+    );
+
+    for (const auto& localVect : threadLocalRegions) {
+      for (const auto& r : localVect) {
+        filteredRegions.insert(r);
+      }
+    }
+#else
+
     mergeResults(threadLocalRegions, filteredRegions);
-}
+#endif
+        }
 
 
 bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter) const
@@ -762,8 +821,6 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
 
 inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) const
 {
-
-  printf("Entering nested until");
 
   if (formulae.empty())
     throw std::logic_error("Formulae vector is empty!");

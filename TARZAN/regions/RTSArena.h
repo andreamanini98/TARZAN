@@ -133,7 +133,7 @@ namespace region
          */
         inline void collectLegalRegionByPi(const Region &reg,
                                            const regionSet &setG,
-                                           std::vector<std::vector<Region>> &threadLocalRegions,
+                                           std::vector<Region> &threadLocalRegions,
                                            const absl::flat_hash_map<std::string, bool> &validActions,
                                            bool checkAllSuccessorsInvariants) const;
 

@@ -26,12 +26,9 @@ using permutationsCache = absl::flat_hash_map<int, std::vector<std::vector<boost
  */
 inline permutationsCache &get_p_cache()
 {
-#ifdef _OPENMP
+    // Rimuovi gli ifdef. thread_local è la scelta corretta per 
+    // qualunque esecuzione multi-thread.
     thread_local permutationsCache cache;
-#else
-    static permutationsCache cache;
-#endif
-
     return cache;
 }
 

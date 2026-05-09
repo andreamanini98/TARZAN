@@ -74,6 +74,23 @@ if (ENABLE_OPENMP)
     endif ()
 endif ()
 
+#########################################################################
+###                      Handle oneTBB                                ###
+#########################################################################
+option(ENABLE_TBB "Enable Intel oneTBB parallelization." ON)
+
+if (ENABLE_TBB)
+    find_package(TBB REQUIRED)
+
+    if (TBB_FOUND)
+        message(STATUS "oneTBB enabled (Found version: ${TBB_VERSION})")
+        set(TBB_LIB TBB::tbb) 
+        list(APPEND TARZAN_LIBRARIES TBB::tbb)
+        add_compile_definitions(_TBB)
+    else()
+        message(FATAL_ERROR "oneTBB enabled but not found. Please source the TBB environment variables.")
+    endif()
+endif()
 
 # Find Boost libraries.
 # set(BOOST_ROOT "/path/to/boost/dir")
@@ -136,7 +153,9 @@ set(TARZAN_LIBRARIES
         Boost::filesystem
         absl::base
         absl::strings
-        absl::flat_hash_map)
+        absl::flat_hash_map
+        ${TBB_LIB}
+      )
 
 
 # Add conditional libraries.
@@ -149,6 +168,7 @@ endif ()
 target_link_libraries(TARZAN_OBJECTS PUBLIC 
     Boost::headers 
     Boost::filesystem
+    ${TARZAN_LIBRARIES}
 )
 target_link_libraries(TARZAN_OBJECTS PRIVATE 
     absl::base 
@@ -159,6 +179,7 @@ target_link_libraries(TARZAN_OBJECTS PRIVATE
 target_link_libraries(TARZAN PUBLIC 
     Boost::headers 
     Boost::filesystem
+    ${TARZAN_LIBRARIES}
 )
 target_link_libraries(TARZAN PRIVATE 
     absl::base 
