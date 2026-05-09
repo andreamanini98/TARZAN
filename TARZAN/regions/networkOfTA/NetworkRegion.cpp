@@ -138,6 +138,8 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
     const absl::flat_hash_set<int> &committedAutomata) const
 {
     std::vector<NetworkRegion> res;
+    std::vector<NetworkRegion> res1;
+    std::vector<NetworkRegion> res2;
 
 #ifdef NETWORKREGION_DEBUG
 
@@ -268,7 +270,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                             updateNetRegionWithDiscSucc(netReg, discreteSuccessors_sender[0], senderIdx, senderTrans.clocksToReset, clockIndices);
                             updateNetRegionWithDiscSucc(netReg, discreteSuccessors_receiver[0], receiverIdx, receiverTrans.clocksToReset, clockIndices);
 
-                            res.emplace_back(std::move(netReg));
+                            res1.emplace_back(std::move(netReg));
                         }
                     
                     }
@@ -358,7 +360,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                         if (groupIdx == receiversSize) {
                             // We take the "world" (i.e. network region) weve built, set the final variables, and shove it into the results vector.
                             currentNetReg.setNetworkVariables(vars);
-                            res.emplace_back(std::move(currentNetReg));
+                            res2.emplace_back(std::move(currentNetReg));
                             return;
                         }
 
@@ -391,7 +393,7 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
 
                     if (allReceiversOptions.empty()) {
                         initialNetReg.setNetworkVariables(senderSuccessors[0].getVariables());
-                        res.emplace_back(std::move(initialNetReg));
+                        res2.emplace_back(std::move(initialNetReg));
                     }
                     else {
                         generatePaths(0, std::move(initialNetReg), senderSuccessors[0].getVariables());
@@ -400,8 +402,10 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
             }
         }
     }
-
-    return res;
+    res1.reserve(res.size() + res1.size() + res2.size());
+    res1.insert(res1.end(), std::make_move_iterator(res.begin()), std::make_move_iterator(res.end()));
+    res1.insert(res1.end(), std::make_move_iterator(res2.begin()), std::make_move_iterator(res2.end()));
+    return res1;
 }
 
 
