@@ -45,15 +45,19 @@ In Timed Arenas, each location is assigned to a player: controller (`c`) or envi
 
 <span style="font-weight:bold;">⟨loc_content_rule⟩</span> ――> <span style="color:orange;">'&lt;'</span>
                        (ε | 
-                        <span style="font-weight:bold;">⟨ini⟩</span> | <span style="font-weight:bold;">⟨urg⟩</span> | <span style="font-weight:bold;">⟨inv⟩</span> |
-                        <span style="font-weight:bold;">⟨ini⟩</span> <span style="color:orange;">','</span> <span style="font-weight:bold;">⟨urg⟩</span> | <span style="font-weight:bold;">⟨ini⟩</span> <span style="color:orange;">','</span> <span style="font-weight:bold;">⟨inv⟩</span> | <span style="font-weight:bold;">⟨urg⟩</span> <span style="color:orange;">','</span> <span style="font-weight:bold;">⟨inv⟩</span> |
-                        <span style="font-weight:bold;">⟨ini⟩</span> <span style="color:orange;">','</span> <span style="font-weight:bold;">⟨urg⟩</span> <span style="color:orange;">','</span> <span style="font-weight:bold;">⟨inv⟩</span>)
+                        <span style="font-weight:bold;">⟨ini⟩</span> | <span style="font-weight:bold;">⟨urg_com⟩</span> | <span style="font-weight:bold;">⟨inv⟩</span> |
+                        <span style="font-weight:bold;">⟨ini⟩</span> <span style="color:orange;">','</span> <span style="font-weight:bold;">⟨urg_com⟩</span> | <span style="font-weight:bold;">⟨ini⟩</span> <span style="color:orange;">','</span> <span style="font-weight:bold;">⟨inv⟩</span> | <span style="font-weight:bold;">⟨urg_com⟩</span> <span style="color:orange;">','</span> <span style="font-weight:bold;">⟨inv⟩</span> |
+                        <span style="font-weight:bold;">⟨ini⟩</span> <span style="color:orange;">','</span> <span style="font-weight:bold;">⟨urg_com⟩</span> <span style="color:orange;">','</span> <span style="font-weight:bold;">⟨inv⟩</span>)
        <span style="color:orange;">                '&gt;'</span>
 
+<span style="font-weight:bold;">⟨urg_com⟩</span> ――> <span style="font-weight:bold;">⟨urg⟩</span> | <span style="font-weight:bold;">⟨com⟩</span>
+  
 <span style="font-weight:bold;">⟨ini⟩</span> ――> <span style="color:orange;">'ini'</span> <span style="color:orange;">':'</span> <span style="font-weight:bold;">⟨bool⟩</span>
 
 <span style="font-weight:bold;">⟨urg⟩</span> ――> <span style="color:orange;">'urg'</span> <span style="color:orange;">':'</span> <span style="font-weight:bold;">⟨bool⟩</span>
 
+<span style="font-weight:bold;">⟨com⟩</span> ――> <span style="color:orange;">'com'</span> <span style="color:orange;">':'</span> <span style="font-weight:bold;">⟨bool⟩</span>
+  
 <span style="font-weight:bold;">⟨inv⟩</span> ――> <span style="color:orange;">'inv'</span> <span style="color:orange;">':'</span> <span style="font-weight:bold;">⟨guard_rule⟩</span>
 
 <span style="font-weight:bold;">⟨bool⟩</span> ――> <span style="color:orange;">'T'</span> | <span style="color:orange;">'F'</span> | <span style="color:orange;">'true'</span> | <span style="color:orange;">'false'</span>
@@ -72,7 +76,7 @@ In Timed Arenas, each location is assigned to a player: controller (`c`) or envi
 
 <span style="font-weight:bold;">⟨actions_rule⟩</span> ――> <span style="font-weight:bold;">⟨literal⟩</span> (ε | <span style="font-weight:bold;">⟨input_output_action⟩</span>)
 
-<span style="font-weight:bold;">⟨input_output_action⟩</span> ――> <span style="color:orange;">'!'</span> | <span style="color:orange;">'?'</span>
+<span style="font-weight:bold;">⟨input_output_action⟩</span> ――> <span style="color:orange;">'!'</span> | <span style="color:orange;">'?'</span> | <span style="color:orange;">'!!'</span> | <span style="color:orange;">'??'</span>
 
 <span style="font-weight:bold;">⟨clock_constraint_rule⟩</span> ――> <span style="color:orange;">'('</span> <span style="font-weight:bold;">⟨literal⟩</span> <span style="color:orange;">','</span> <span style="font-weight:bold;">⟨comparison_operator⟩</span> <span style="color:orange;">','</span> <span style="font-weight:bold;">⟨int⟩</span> <span style="color:orange;">')'</span>
 
