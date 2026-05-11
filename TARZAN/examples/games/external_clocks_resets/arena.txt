@@ -1,0 +1,35 @@
+create arena external_resets
+{
+    clocks
+    {
+        x,
+        y;
+    }
+
+    actions
+    {
+        a, a1;
+    }
+
+    locations
+    {
+        q0 <player: c, <ini: T>>,
+        q1 <player: c, <ini: F>>,
+        q2 <player: c, <ini: F>>,
+        q3 <player: c, <ini: F>>;
+    }
+
+    transitions
+    {
+        (q0, a,  [], [],     q1),
+        (q0, a1, [], [x],    q1),
+
+        (q1, a,  [], [],     q2),
+        (q1, a1, [], [x],    q2),
+
+        (q2, a,  [], [],     q3),
+        (q2, a1, [], [x],    q3),
+
+        (q3, a,  [], [],     q3);
+    }
+}

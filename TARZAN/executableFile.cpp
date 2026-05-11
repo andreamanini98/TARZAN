@@ -7,6 +7,7 @@
 
 int main()
 {
+    /*
     // constexpr std::string formulaName = "reachability0.txt"; // Tbot can complete a single patient procedure.
     // constexpr std::string formulaName = "reachability1.txt"; // Tbot can complete a single patient procedure in at most 50 time units.
 
@@ -42,6 +43,27 @@ int main()
     // std::cout << rts.to_string() << std::endl;
 
     rts.strategyGraphToDot("/Users/echo/Desktop/PhD/Tools/TARZAN/output/strategy_graphs/g1.dot", phi);
+    */
+
+
+    // ---
+
+
+    // For the external clocks reset example.
+
+    const std::string formulaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/external_clocks_resets/winning_condition.txt";
+    const cltloc::ast::conjunctionOfFormulae phi = TARZAN::parseConjunctionOfFormulae(formulaPath);
+
+    const std::string arenaPath = "/Users/echo/Desktop/PhD/Tools/TARZAN/TARZAN/examples/games/external_clocks_resets/arena.txt";
+    const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath);
+
+    region::RTSArena rts(arena, phi, true);
+
+    std::cout << phi << std::endl;
+    std::cout << rts.to_string() << std::endl;
+
+    rts.strategyGraphToDot("/Users/echo/Desktop/PhD/Tools/TARZAN/output/strategy_graphs/g1.dot", phi);
+
 
     return 0;
 }
