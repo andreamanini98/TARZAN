@@ -66,9 +66,11 @@
 //
 //  <player> -> 'c' | 'e'
 //
-//  <loc_content_rule> -> '<' (eps | <ini> | <urg> | <com> | <inv> | <ini> ',' <urg> | <ini> ',' <com> | <ini> ',' <inv> | <urg> ',' <inv> | <com> ',' <inv> | <ini> ',' <urg> ',' <inv> | <ini> ',' <com> ',' <inv>) '>'
+//  <loc_content_rule> -> '<' (eps | <ini> | <urg_com> | <inv> | <ini> ',' <urg_com> | <ini> ',' <inv> | <urg_com> ',' <inv> | <ini> ',' <urg_com> ',' <inv>) '>'
 //
 //  <ini> -> 'ini' ':' <bool>
+//
+//  <urg_com> -> <urg> | <com>
 //
 //  <urg> -> 'urg' ':' <bool>
 //
