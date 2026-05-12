@@ -1,0 +1,27 @@
+create automaton Sender
+{
+    clocks
+    {
+        z;
+    }
+
+    actions
+    {
+        signal;
+    }
+
+    locations
+    {
+        Start <ini: T, com: T>,
+        Checker <ini: F, com: T>,
+        Success <ini: F>,
+        Failure <ini: F>;
+    }
+
+    transitions
+    {
+        (Start, signal, [], [z], Checker),
+        (Checker, signal, [(z, == ,0)], [], Success),
+        (Checker, signal, [(z, > ,0)], [], Failure);
+    }
+}

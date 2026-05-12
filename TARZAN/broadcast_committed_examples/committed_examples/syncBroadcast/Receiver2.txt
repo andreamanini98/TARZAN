@@ -1,0 +1,28 @@
+create automaton Receiver2 
+{
+    clocks
+    {
+        z;
+    }
+
+    actions
+    {
+        signal;
+    }
+
+    integers
+    {
+        x;
+    }
+
+    locations
+    {
+        Idle <ini: T>,
+        Updated <ini: F>;
+    }
+
+    transitions
+    {
+        (Idle, signal??, [], [], Updated);
+    }
+}

@@ -1,0 +1,19 @@
+clockCheck: In this example we check the property that a committed state cannot delay.
+In this case the initial location is committed and has a transition to a committed location called checker,
+since they are both commited the only possible value of the clock at the 
+end of the transitions is 0. We formally test this by perform reachability on both Success and Failure 
+locations.
+
+operationsOrder: In this example we check that the once in a committed locations the only transitions are the one of the committed locations.
+All the locations of the Sender2 are committed and the goal is to test that the Sender1 can never reach the Done location.
+In this way we check that  the next transition from a committed location must involve an outgoing edge of at least one of the committed locations.
+
+syncReceiver: In this example we check that the transitions are performed correctly even when the receiver reach a committed locations.
+More in detail the example provided simulate a broadcast transition with the committed locations, by sending two signals (signal1, signal2) through an atomic sequence.
+
+
+syncBroadcast: In this example we check that broadcast signals work correctly with committed locations.
+In particular the sender performs the transition signal!! from Start to Done. We formally checked it performing 
+the reachability analysis on the sender(Done) and Receivers(Updated).
+syncSelfLoop: We check that syncBroadcast has the same expected outcome even when there is a self loop.
+To test this we inserted a self loop in the Receiver1 from idle to idle.
