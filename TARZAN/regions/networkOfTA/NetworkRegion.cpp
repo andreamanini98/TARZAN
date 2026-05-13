@@ -247,14 +247,24 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
                                     // If a discrete successor has been found, we compute the one corresponding to the transition with an input action.
                                     if (!discreteSuccessors_i.empty())
                                     {
-                                        tmpReg = regions[regIdx_j].clone();
-                                        tmpReg.set_variables(discreteSuccessors_i[0].getVariables());
+                                        // We first check whether the receiver transition is satisfied using the values of clocks and shared integer variables
+                                        // prior to the sender's updates (especially for shared integer variables, clocks are not affected since at the moment clocks are only local).
+                                        if (transition_j.isTransitionSatisfied(regions[regIdx_j].getClockValuation(),
+                                                                               clockIndices[regIdx_j],
+                                                                               networkVariables,
+                                                                               false))
+                                        {
+                                            tmpReg = regions[regIdx_j].clone();
+                                            tmpReg.set_variables(discreteSuccessors_i[0].getVariables());
 
-                                        singleTransition.clear();
-                                        singleTransition.push_back(transition_j);
+                                            singleTransition.clear();
+                                            singleTransition.push_back(transition_j);
 
-                                        discreteSuccessors_j =
-                                                tmpReg.getImmediateDiscreteSuccessors(singleTransition, clockIndices[regIdx_j], locationsToInt[regIdx_j]);
+                                            discreteSuccessors_j = tmpReg.getImmediateDiscreteSuccessors(singleTransition,
+                                                                                                         clockIndices[regIdx_j],
+                                                                                                         locationsToInt[regIdx_j],
+                                                                                                         true);
+                                        }
                                     }
                                 } else
                                 {
@@ -270,14 +280,24 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
 
                                     if (!discreteSuccessors_j.empty())
                                     {
-                                        tmpReg = regions[regIdx_i].clone();
-                                        tmpReg.set_variables(discreteSuccessors_j[0].getVariables());
+                                        // We first check whether the receiver transition is satisfied using the values of clocks and shared integer variables
+                                        // prior to the sender's updates (especially for shared integer variables, clocks are not affected since at the moment clocks are only local).
+                                        if (transition_i.isTransitionSatisfied(regions[regIdx_i].getClockValuation(),
+                                                                               clockIndices[regIdx_i],
+                                                                               networkVariables,
+                                                                               false))
+                                        {
+                                            tmpReg = regions[regIdx_i].clone();
+                                            tmpReg.set_variables(discreteSuccessors_j[0].getVariables());
 
-                                        singleTransition.clear();
-                                        singleTransition.push_back(transition_i);
+                                            singleTransition.clear();
+                                            singleTransition.push_back(transition_i);
 
-                                        discreteSuccessors_i =
-                                                tmpReg.getImmediateDiscreteSuccessors(singleTransition, clockIndices[regIdx_i], locationsToInt[regIdx_i]);
+                                            discreteSuccessors_i = tmpReg.getImmediateDiscreteSuccessors(singleTransition,
+                                                                                                         clockIndices[regIdx_i],
+                                                                                                         locationsToInt[regIdx_i],
+                                                                                                         true);
+                                        }
                                     }
                                 }
 
@@ -348,7 +368,8 @@ networkOfTA::NetworkRegion networkOfTA::NetworkRegion::getCanonicalForm(const st
             groupRegions.emplace_back(idx, regions[idx]);
 
         // Sort by region content to get canonical form using Region's operator<.
-        std::ranges::sort(groupRegions, [](const auto &a, const auto &b) {
+        std::ranges::sort(groupRegions, [](const auto &a, const auto &b)
+        {
             return a.second < b.second;
         });
 
