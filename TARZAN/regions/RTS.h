@@ -75,6 +75,12 @@ namespace region
                                                               ssee explorationTechnique) const;
 
 
+        [[nodiscard]] std::vector<Region> forwardReachabilityWithVector(const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr,
+                                                                        const std::vector<timed_automaton::ast::clockConstraint> &goalClockConstraints,
+                                                                        int targetLocation,
+                                                                        ssee explorationTechnique) const;
+
+
         /**
          * @brief Computes whether a region with a location equal to targetLocation is reachable from the set of initial regions.
          *

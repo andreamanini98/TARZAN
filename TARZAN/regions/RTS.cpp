@@ -49,6 +49,38 @@ inline void insertRegionInMapAndToProcess(const region::Region &reg,
 
 
 /**
+ * @brief Auxiliary function for forwardReachabilityWithVector. Uses a vector (linear scan) to check for duplicates.
+ *
+ * @param reg the current region to handle.
+ * @param toProcess collects indices into visitedRegions that must be processed.
+ * @param visitedRegions a vector containing already processed regions.
+ * @param clocksIndices a map from clock names to their index in the clocks vector.
+ * @param invariants the invariants of the original Timed Automaton.
+ */
+inline void insertRegionInVectorAndToProcess(const region::Region &reg,
+                                             std::deque<std::size_t> &toProcess,
+                                             std::vector<region::Region> &visitedRegions,
+                                             const std::unordered_map<std::string, int> &clocksIndices,
+                                             const absl::flat_hash_map<int, std::vector<timed_automaton::ast::clockConstraint>> &invariants)
+{
+    // ReSharper disable once CppTooWideScopeInitStatement
+    const int regLocation = reg.getLocation();
+
+    // Check invariant satisfaction first (avoid linear scan if invariant fails).
+    if (invariants.contains(regLocation))
+        if (!isInvariantSatisfied(invariants.at(regLocation), reg.getClockValuation(), clocksIndices))
+            return;
+
+    // Linear scan to check whether the region was already visited.
+    if (std::ranges::find(visitedRegions, reg) != visitedRegions.end())
+        return;
+
+    visitedRegions.push_back(reg);
+    toProcess.push_back(visitedRegions.size() - 1);
+}
+
+
+/**
  * @brief Auxiliary function checking whether the reachability objective has been reached.
  *
  * @param currentRegion the current region.
@@ -177,6 +209,111 @@ std::vector<region::Region> region::RTS::forwardReachability(const std::vector<t
 
         for (const auto &discreteSuccessor: discreteSuccessors)
             insertRegionInMapAndToProcess(discreteSuccessor, toProcess, regionsHashMap, clocksIndices, invariants);
+    }
+
+    // No target region has been reached if the while loop ends.
+    // Ending the timer for measuring computation.
+    const auto end = std::chrono::high_resolution_clock::now();
+
+    std::cout << "Goal is not reachable\n";
+    std::cout << "Number of regions: " << totalRegions << std::endl;
+
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
+
+#ifdef EARLY_EXIT
+
+    std::quick_exit(EXIT_SUCCESS);
+
+#endif
+
+    return {};
+}
+
+
+std::vector<region::Region> region::RTS::forwardReachabilityWithVector(const std::vector<timed_automaton::ast::clockConstraint> &intVarConstr,
+                                                                       const std::vector<timed_automaton::ast::clockConstraint> &goalClockConstraints,
+                                                                       const int targetLocation,
+                                                                       const ssee explorationTechnique) const
+{
+    // Starting the timer for measuring computation.
+    const auto start = std::chrono::high_resolution_clock::now();
+
+    // Initializing auxiliary data structures for reachability computation.
+    // toProcess stores indices into visitedRegions (raw pointers would be invalidated by vector reallocation).
+    std::deque<std::size_t> toProcess{};
+    std::vector<Region> visitedRegions{};
+
+    for (const auto &init: getInitialRegions())
+    {
+        visitedRegions.push_back(init);
+        toProcess.push_back(visitedRegions.size() - 1);
+    }
+
+    // Boolean used to track whether a region has clocks or not. If not, delay successors must not be computed.
+    const bool isThereAnyClock = !clocksIndices.empty();
+
+    unsigned long long int totalRegions = 0;
+
+    while (!toProcess.empty())
+    {
+        // Index of the region to process next.
+        const std::size_t currentIndex = explorationTechnique == BFS ? toProcess.front() : toProcess.back();
+        const Region currentRegion = visitedRegions[currentIndex];
+        const int currentRegionLocation = currentRegion.getLocation();
+
+#ifdef RTS_DEBUG
+
+        std::cout << "Current region:\n" << currentRegion.toString() << std::endl;
+
+#endif
+
+        const bool isTargetRegionReached = checkIfTargetRegionReached(currentRegion,
+                                                                      targetLocation,
+                                                                      goalClockConstraints,
+                                                                      intVarConstr,
+                                                                      clocksIndices);
+
+        if (isTargetRegionReached)
+        {
+            // Ending the timer for measuring computation.
+            const auto end = std::chrono::high_resolution_clock::now();
+
+            std::cout << "Goal is reachable\n";
+            std::cout << "Number of regions: " << totalRegions << std::endl;
+
+            const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+            std::cout << "Total time       : " << duration.count() << " microseconds." << std::endl;
+
+#ifdef EARLY_EXIT
+
+            std::quick_exit(EXIT_SUCCESS);
+
+#endif
+
+            return { currentRegion };
+        }
+
+        // Computing immediate delay successor if there is at least one clock in the region and the current location is not urgent.
+        const bool isDelayComputable = isThereAnyClock && !urgentLocations.contains(currentRegionLocation);
+        const Region delaySuccessor = isDelayComputable ? currentRegion.getImmediateDelaySuccessor(maxConstants) : Region{};
+
+        // Computing discrete successors.
+        const std::vector<transition> &transitions = outTransitions[currentRegionLocation];
+        const std::vector<Region> &discreteSuccessors = currentRegion.getImmediateDiscreteSuccessors(transitions, clocksIndices, locationsToInt);
+
+        totalRegions += discreteSuccessors.size() + (isDelayComputable ? 1 : 0);
+
+        // Removing the processed region now since we do not need it anymore.
+        explorationTechnique == BFS ? toProcess.pop_front() : toProcess.pop_back();
+
+        // We insert the delay successor first and then the discrete successors.
+        // Note: insertRegionInVectorAndToProcess checks for duplicates internally via a linear scan over visitedRegions.
+        if (isDelayComputable)
+            insertRegionInVectorAndToProcess(delaySuccessor, toProcess, visitedRegions, clocksIndices, invariants);
+
+        for (const auto &discreteSuccessor: discreteSuccessors)
+            insertRegionInVectorAndToProcess(discreteSuccessor, toProcess, visitedRegions, clocksIndices, invariants);
     }
 
     // No target region has been reached if the while loop ends.
