@@ -120,7 +120,8 @@ std::vector<region::Region> region::Region::getImmediateDelayPredecessors() cons
 
 std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const std::vector<transition> &transitions,
                                                                            const std::unordered_map<std::string, int> &clockIndices,
-                                                                           const std::unordered_map<std::string, int> &locationsAsIntMap) const
+                                                                           const std::unordered_map<std::string, int> &locationsAsIntMap,
+                                                                           const bool skipTransitionCheck) const
 {
     std::vector<Region> res{};
 
@@ -130,7 +131,7 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
     for (const auto &transition: transitions)
     {
         // The region must hold the current values of integer variables in order for this evaluation to be performed.
-        if (transition.isTransitionSatisfied(clockValuation, clockIndices, variables))
+        if (skipTransitionCheck || transition.isTransitionSatisfied(clockValuation, clockIndices, variables))
         {
             Region reg = clone();
             reg.set_q(locationsAsIntMap.at(transition.targetLocation));
@@ -169,6 +170,14 @@ std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const
     }
 
     return res;
+}
+
+
+std::vector<region::Region> region::Region::getImmediateDiscreteSuccessors(const std::vector<transition> &transitions,
+                                                                           const std::unordered_map<std::string, int> &clockIndices,
+                                                                           const std::unordered_map<std::string, int> &locationsAsIntMap) const
+{
+    return getImmediateDiscreteSuccessors(transitions, clockIndices, locationsAsIntMap, false);
 }
 
 
@@ -950,7 +959,8 @@ inline bool satisfiesAllClockConstraints(const region::Region &reg,
 {
     const std::vector<std::pair<int, bool>> clockValuation = reg.getClockValuation();
 
-    return std::ranges::all_of(clockConstraints, [&](const auto &constraint) {
+    return std::ranges::all_of(clockConstraints, [&](const auto &constraint)
+    {
         // Skip constraints for clocks not in the index map.
         if (!clockIndices.contains(constraint.clock))
             return true;

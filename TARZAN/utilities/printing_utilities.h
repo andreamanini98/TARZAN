@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <type_traits>
+#include <vector>
 
 
 /**
@@ -42,5 +43,23 @@ std::string join_elements(const Container &container, const std::string &delimit
     return oss.str();
 }
 
+
+/**
+ * @brief Repeats a string n times.
+ *
+ * @param str the string to repeat.
+ * @param n how many times to repeat the string.
+ * @return a string repeated n times.
+ */
+inline std::string repeatString(const std::string &str, const size_t n)
+{
+    std::string result;
+    result.reserve(str.size() * n);
+
+    for (size_t i = 0; i < n; i++)
+        result += str;
+
+    return result;
+}
 
 #endif //PRINTING_UTILITIES_H

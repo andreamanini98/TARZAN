@@ -1,0 +1,1 @@
+( NEXT ( ([q_draw, q_exp, q_prep, q_room, q_hand, q_pulse, q_int, qN_pulse, qN1_safe, q_blood, qN_blood, qN2_safe, q_drug, qN_drug, qN3_safe, q_disp, q_reset, q_back, q_call, q_doc, qD_pulse, qD_int, qDN_pulse, qD1N_safe, qD_blood, qDN_blood, qD2N_safe, qD_drug, qDN_drug, qD3N_safe],[(t, >, 0)]) UNTIL ([q_dock],[(y, >, 0), (t, <=, 50)]) ) )

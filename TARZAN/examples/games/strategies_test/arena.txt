@@ -1,0 +1,31 @@
+create arena strategy_test
+{
+    clocks
+    {
+        x;
+    }
+
+    actions
+    {
+        a, b, c;
+    }
+
+    locations
+    {
+        q0   <player: c, <ini: T>>,
+        q1   <player: e, <ini: F>>,
+        q2   <player: c, <ini: F>>,
+        goal <player: c, <ini: F>>;
+    }
+
+    transitions
+    {
+        (q0,   a, [(x, >=, 2)], [x], q1),
+        (q0,   a, [(x, <=, 1)], [],  q2),
+        (q0,   c, [(x, <=, 1)], [],  q2),
+        (q0,   b, [(x, ==, 3)], [x], q1),
+        (q2,   a, [(x, >=, 0)], [],  q2),
+        (q1,   a, [(x, ==, 1)], [],  goal),
+        (goal, a, [(x, >=, 0)], [],  goal);
+    }
+}

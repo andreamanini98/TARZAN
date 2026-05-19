@@ -1,12 +1,13 @@
 @page lianaGrammar Liana Grammar
 
-## Timed Automata
+## Timed Automata and Arenas
 
-The following is the grammar for the Liana DSL used to create Timed Automata.
+The following is the grammar for the Liana DSL used to create Timed Automata and Timed Arenas.
 Whether the actions are input (?) or output (!) actions must be specified only in the transitions.
 T and F are syntactic sugar for true and false.
 Since clock guards cannot directly express disjunctions, OR conditions must be modeled by defining one transition per disjunct.
 Timed Automata marked as symmetric must be structurally identical (the integer indicates the symmetry group to which they are assigned).
+In Timed Arenas, each location is assigned to a player: controller (`c`) or environment (`e`).
 
 \htmlonly
 <pre style="font-family: monospace; font-size: 1.1em;">
@@ -19,11 +20,28 @@ Timed Automata marked as symmetric must be structurally identical (the integer i
 <span style="color:orange;">                'transitions'</span>   <span style="color:orange;">'{'</span> <span style="font-weight:bold;">⟨transition_rule⟩</span> (<span style="color:orange;">','</span> <span style="font-weight:bold;">⟨transition_rule⟩</span>)* <span style="color:orange;">';'</span> <span style="color:orange;">'}'</span>
 <span style="color:orange;">                '}'</span>
 
+<span style="font-weight:bold;">⟨arena⟩</span> ――> <span style="color:orange;">'create'</span> <span style="color:orange;">'arena'</span> <span style="font-weight:bold;">⟨literal⟩</span> (ε | <span style="font-weight:bold;">⟨symm_rule⟩</span>)
+<span style="color:orange;">             '{'</span>
+<span style="color:orange;">             'clocks'</span>        <span style="color:orange;">'{'</span> (ε | <span style="font-weight:bold;">⟨literal⟩</span> (<span style="color:orange;">','</span> <span style="font-weight:bold;">⟨literal⟩</span>)* <span style="color:orange;">';'</span>) <span style="color:orange;">'}'</span>
+<span style="color:orange;">             'actions'</span>       <span style="color:orange;">'{'</span> <span style="font-weight:bold;">⟨literal⟩</span> (<span style="color:orange;">','</span> <span style="font-weight:bold;">⟨literal⟩</span>)* <span style="color:orange;">';'</span> <span style="color:orange;">'}'</span>
+             (ε | <span style="color:orange;">'integers'</span> <span style="color:orange;">'{'</span> <span style="font-weight:bold;">⟨literal⟩</span> (<span style="color:orange;">','</span> <span style="font-weight:bold;">⟨literal⟩</span>)* <span style="color:orange;">';'</span> <span style="color:orange;">'}'</span>)
+<span style="color:orange;">             'locations'</span>     <span style="color:orange;">'{'</span> <span style="font-weight:bold;">⟨arena_locations_rule⟩</span> <span style="color:orange;">'}'</span>
+<span style="color:orange;">             'transitions'</span>   <span style="color:orange;">'{'</span> <span style="font-weight:bold;">⟨transition_rule⟩</span> (<span style="color:orange;">','</span> <span style="font-weight:bold;">⟨transition_rule⟩</span>)* <span style="color:orange;">';'</span> <span style="color:orange;">'}'</span>
+<span style="color:orange;">             '}'</span>
+
 <span style="font-weight:bold;">⟨symm_rule⟩</span> ――> <span style="color:orange;">'::'</span> <span style="color:orange;">'symm'</span> <span style="color:orange;">'&lt;'</span> <span style="font-weight:bold;">⟨int⟩</span> <span style="color:orange;">'&gt;'</span>
 
 <span style="font-weight:bold;">⟨locations_rule⟩</span> ――> <span style="font-weight:bold;">⟨loc_rule⟩</span> (<span style="color:orange;">','</span> <span style="font-weight:bold;">⟨loc_rule⟩</span>)* <span style="color:orange;">';'</span>
 
 <span style="font-weight:bold;">⟨loc_rule⟩</span> ――> <span style="font-weight:bold;">⟨literal⟩</span> <span style="font-weight:bold;">⟨loc_content_rule⟩</span>
+
+<span style="font-weight:bold;">⟨arena_locations_rule⟩</span> ――> <span style="font-weight:bold;">⟨arena_loc_rule⟩</span> (<span style="color:orange;">','</span> <span style="font-weight:bold;">⟨arena_loc_rule⟩</span>)* <span style="color:orange;">';'</span>
+
+<span style="font-weight:bold;">⟨arena_loc_rule⟩</span> ――> <span style="font-weight:bold;">⟨literal⟩</span> <span style="font-weight:bold;">⟨arena_loc_content_rule⟩</span>
+
+<span style="font-weight:bold;">⟨arena_loc_content_rule⟩</span> ――> <span style="color:orange;">'&lt;'</span> <span style="color:orange;">'player'</span> <span style="color:orange;">':'</span> <span style="font-weight:bold;">⟨player⟩</span> <span style="color:orange;">','</span> <span style="font-weight:bold;">⟨loc_content_rule⟩</span> <span style="color:orange;">'&gt;'</span>
+
+<span style="font-weight:bold;">⟨player⟩</span> ――> <span style="color:orange;">'c'</span> | <span style="color:orange;">'e'</span>
 
 <span style="font-weight:bold;">⟨loc_content_rule⟩</span> ――> <span style="color:orange;">'&lt;'</span>
                        (ε | 
@@ -74,6 +92,7 @@ The following is the grammar for the Liana DSL used to declare arithmetic expres
 Integer variables in Timed Automata are automatically initialized to zero. 
 To overcome this, a transition can be added to initialize them in the Timed Automaton itself.
 
+\htmlonly
 <pre style="font-family: monospace; font-size: 1.1em;">
 <span style="font-weight:bold;">⟨assignment_expr⟩</span> ――> <span style="font-weight:bold;">⟨variable⟩</span> <span style="color:orange;">'='</span> <span style="font-weight:bold;">⟨arithmetic_expr⟩</span>
 
@@ -105,5 +124,35 @@ To overcome this, a transition can be added to initialize them in the Timed Auto
 
 <span style="font-weight:bold;">⟨and_op⟩</span> ――> <span style="color:orange;">'&&'</span>
 </pre>
+\endhtmlonly
+
+---
+
+## CLTLoc Formulae
+
+The following is the grammar for CLTLoc (Constraint Linear Temporal Logic over clocks) formulae.
+
+\htmlonly
+<pre style="font-family: monospace; font-size: 1.1em;">
+<span style="font-weight:bold;">⟨general_cltloc_formula⟩</span> ――> <span style="color:orange;">'('</span> (<span style="font-weight:bold;">⟨unary_cltloc_formula⟩</span> | <span style="font-weight:bold;">⟨binary_cltloc_formula⟩</span> | <span style="font-weight:bold;">⟨pure_cltloc_formula⟩</span>) <span style="color:orange;">')'</span>
+
+<span style="font-weight:bold;">⟨unary_cltloc_formula⟩</span> ――> <span style="font-weight:bold;">⟨unary_cltloc_op⟩</span> (ε | <span style="color:orange;">'^'</span> <span style="font-weight:bold;">⟨int⟩</span>) <span style="font-weight:bold;">⟨general_cltloc_formula⟩</span>
+
+<span style="font-weight:bold;">⟨binary_cltloc_formula⟩</span> ――> <span style="font-weight:bold;">⟨general_cltloc_formula⟩</span> <span style="font-weight:bold;">⟨binary_cltloc_op⟩</span> <span style="font-weight:bold;">⟨general_cltloc_formula⟩</span>
+
+<span style="font-weight:bold;">⟨pure_cltloc_formula⟩</span> ――> <span style="font-weight:bold;">⟨pure_disjunct⟩</span> (<span style="color:orange;">'||'</span> <span style="font-weight:bold;">⟨pure_disjunct⟩</span>)*
+
+<span style="font-weight:bold;">⟨pure_disjunct⟩</span> ――> <span style="color:orange;">'['</span> (ε | <span style="font-weight:bold;">⟨literal⟩</span> (<span style="color:orange;">','</span> <span style="font-weight:bold;">⟨literal⟩</span>)*) <span style="color:orange;">']'</span> <span style="color:orange;">','</span>
+                    <span style="color:orange;">'['</span> (ε | <span style="font-weight:bold;">⟨clock_constraint_rule⟩</span> (<span style="color:orange;">','</span> <span style="font-weight:bold;">⟨clock_constraint_rule⟩</span>)*) <span style="color:orange;">']'</span>
+
+<span style="font-weight:bold;">⟨unary_cltloc_op⟩</span> ――> <span style="color:orange;">'BOX'</span> | <span style="color:orange;">'DIAMOND'</span>
+
+<span style="font-weight:bold;">⟨binary_cltloc_op⟩</span> ――> <span style="color:orange;">'UNTIL'</span>
+
+<span style="font-weight:bold;">⟨conjunction_of_formulae⟩</span> ――> <span style="font-weight:bold;">⟨conjunction_type⟩</span> <span style="font-weight:bold;">⟨general_cltloc_formula⟩</span> (<span style="font-weight:bold;">⟨and_op⟩</span> <span style="font-weight:bold;">⟨general_cltloc_formula⟩</span>)*
+
+<span style="font-weight:bold;">⟨conjunction_type⟩</span> ――> <span style="color:orange;">'AND_GENERAL'</span> | <span style="color:orange;">'AND_NEXT'</span>
+</pre>
+\endhtmlonly
 
 [← Back to Main Page](@ref index)

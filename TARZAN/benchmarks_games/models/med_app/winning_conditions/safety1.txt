@@ -1,0 +1,1 @@
+( BOX ([q_dock, q_draw, q_prep, q_room, q_hand, q_pulse, qN_pulse, qN1_safe, q_blood, qN_blood, qN2_safe, q_drug, qN_drug, qN3_safe, q_disp, q_reset, q_back],[]) )

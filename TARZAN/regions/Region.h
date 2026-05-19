@@ -9,6 +9,7 @@
 #include "TARZAN/utilities/hash_utilities.h"
 
 using transition = timed_automaton::ast::transition;
+using clockValuation = std::vector<std::pair<int, bool>>;
 
 // TODO: vedere come adattare questo alle regioni delle arene. Secondo me non occorre fare altro, q rende possibile determinare la natura
 //       delle locations (controller o environment), ma occorre guardare nella rappresentazione dell'arena. Al limite aggiungi un Bool.
@@ -136,6 +137,31 @@ namespace region
          * @warning Must check if the returned regions satisfy the invariants.
          */
         [[nodiscard]] std::vector<Region> getImmediateDelayPredecessors() const;
+
+
+        /**
+         * @brief Computes the immediate discrete successor of the current region as detailed in our paper.
+         *
+         * @param transitions the transitions over which immediate discrete successors must be computed.
+         * @param clockIndices the indices of the clocks as they appear in the clocks vector of a Timed Automaton.
+         * @param locationsAsIntMap a std::unordered_map associating an integer with each string name.
+         * @param skipTransitionCheck if true, the discrete successor is computed regardless of the fact that any transition is satisfied.
+         * @return a std::vector<Region> containing immediate discrete successors of the current region.
+         *         If no successors can be computed, returns an empty std::vector.
+         *
+         * @warning Must check if the returned regions satisfy the invariants.
+         * @warning The region must hold the current values of integer variables in order for the integer evaluation to be performed.
+         *          These values can either be directly contained if using RTS or must be set if using RTSNetwork.
+         * @warning The transitions parameter must contain all and only the transitions exiting from the location of the region.
+         *          To provide such transitions, the getOutTransitions() function of a Timed Automaton can be used.
+         * @warning To provide the clockIndices parameter, the getClocksIndices() function of a Timed Automaton can be used.
+         * @warning To provide the locationsAsIntMap, the mapLocationsToInt() function of a Timed Automaton can be used.
+         * @warning If skipTransitionCheck is true, it is suggested to check the satisfiability of the transitions before calling this function.
+         */
+        [[nodiscard]] std::vector<Region> getImmediateDiscreteSuccessors(const std::vector<transition> &transitions,
+                                                                         const std::unordered_map<std::string, int> &clockIndices,
+                                                                         const std::unordered_map<std::string, int> &locationsAsIntMap,
+                                                                         bool skipTransitionCheck) const;
 
 
         /**

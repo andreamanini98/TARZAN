@@ -8,6 +8,9 @@ TARZAN (Timed Automata Region and Zone library for real-time systems ANalysis) i
 Although zones are the de facto standard in the formal verification of TA, TARZAN exhibits superior performance on TA having punctual guards (i.e., guards restricted to equality constraints) and on closed TA.
 Consequently, integrating TARZAN into existing zone-based state-of-the-art tools has the potential to significantly enhance their overall verification capabilities.
 
+TARZAN currently supports forward and backward reachability analysis of Timed Automata and Timed Games solving.
+More information about the supported Timed Games variants in the wiki.
+
 
 
 # Getting Started
@@ -34,6 +37,12 @@ TARZAN needs the following dependencies to be installed:
 - A C++20 compatible compiler (should also support OpenMP, e.g., Clang).
 - Python v. 3.10 (required for benchmark summary generation).
 - A proper LaTeX distributon (required for benchmark summary generation).
+- <a href="https://graphviz.org" target="_blank" rel="noopener noreferrer">Graphviz</a> (every version should work, required for the visualization of Strategy Graphs).
+
+When performing Timed Games analysis, OpenMP parallelization is enabled by default.
+You can change this behavior before installing or building the library by setting to OFF the relative toggle in the `CMakeLists.txt` file.
+Currently, the only tested OpenMP-compatible compiler is Clang, which requires the following dependency:
+-  <a href="https://formulae.brew.sh/formula/libomp" target="_blank" rel="noopener noreferrer">libmop</a> (every version should work).
   
 If you want to run the benchmarks against Uppaal and TChecker, you also need to install those tools:
 - <a href="https://uppaal.org" target="_blank" rel="noopener noreferrer">Uppaal</a> v. 5.0 (other versions should work as well).
@@ -82,6 +91,15 @@ Assuming TARZAN has been installed as described above, using it in a CMake proje
 For a detailed description of TARZAN, please refer to:
 - The TARZAN <a href="https://github.com/andreamanini98/TARZAN/wiki" target="_blank" rel="noopener noreferrer">wiki</a>.
 - The TARZAN <a href="https://andreamanini98.github.io/TARZAN/" target="_blank" rel="noopener noreferrer">online documentation</a>.
-- The TARZAN <a href="https://doi.org/10.5281/zenodo.18656202" target="_blank" rel="noopener noreferrer">Artifact</a>.
+
+# Publications
+
+[1] A. Manini, M. Rossi, and P. San Pietro, "TARZAN: A Region-Based Library for Forward and Backward Reachability of Timed Automata (Extended Version)", arXiv:2602.15435 [cs.FL], 2026. Available: https://arxiv.org/abs/2602.15435
+
+[2] A. Manini, M. Rossi, and P. San Pietro, "TARZAN: A Region-Based Library for Forward and Backward Reachability of Timed Automata", to appear in Proc. 46th International Conference on Formal Techniques for Distributed Objects, Components, and Systems (FORTE 2026), 2026.
+
+[3] A. Manini, M. Rossi, and P. San Pietro, "TARZAN Artifact". Zenodo, feb. 16, 2026. doi: <a href="https://doi.org/10.5281/zenodo.18656202" target="_blank" rel="noopener noreferrer">10.5281/zenodo.18656203</a>. Artifact evaluated at FORTE 2026; awarded Available and Functional badges.
+
+[4] A. Manini, M. Rossi, and P. San Pietro, "Timed Games under Environmental Interference with Real-Time Objectives", to appear in Proc. 20th International Symposium on Theoretical Aspects of Software Engineering (TASE 2026), 2026.
 
 

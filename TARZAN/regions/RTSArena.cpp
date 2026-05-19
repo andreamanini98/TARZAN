@@ -1,8 +1,10 @@
 #include "RTSArena.h"
 #include "TARZAN/utilities/file_utilities.h"
 #include "TARZAN/exceptions/nestedCLTLocFormula_exception.h"
+#include "TARZAN/exceptions/cannotSynthesizeStrategies_exception.h"
 #include "TARZAN/utilities/function_utilities.h"
 #include <cstdio>
+#include "TARZAN/utilities/printing_utilities.h"
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -23,6 +25,18 @@
 #define MAX_ITERATIONS 10000
 
 
+std::unordered_map<int, std::string> region::RTSArena::getIndicesToClocksMap() const
+{
+    std::unordered_map<int, std::string> indicesToClocks;
+    indicesToClocks.reserve(clocksIndices.size());
+
+    for (const auto &[name, index]: clocksIndices)
+        indicesToClocks.emplace(index, name);
+
+    return indicesToClocks;
+}
+
+
 regionSet region::RTSArena::getRegionsFromPureCLTLocFormula(const cltloc::ast::pureCLTLocFormula &formula) const
 {
 #ifdef RTSARENA_DEBUG
@@ -41,7 +55,8 @@ regionSet region::RTSArena::getRegionsFromPureCLTLocFormula(const cltloc::ast::p
     if (!invariants.empty())
     {
         // Removing regions that do not satisfy the invariants of the Timed Arena.
-        std::erase_if(res, [this](const Region &reg) {
+        std::erase_if(res, [this](const Region &reg)
+        {
             if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
                 return !isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices);
             return false; // No invariant = keep the region.
@@ -323,12 +338,49 @@ inline void region::RTSArena::collectLegalRegionByPi(const Region &reg,
     }
 }
 
+
+inline void region::RTSArena::collectLegalRegionByPiStrategy(const Region &sourceRegion,
+                                                             const transition &arenaTransition,
+                                                             const Region &targetRegion,
+                                                             const clockValuation &cv,
+                                                             const regionSet &setG,
+                                                             std::vector<Region> &currThreadLocRegions,
+                                                             const absl::flat_hash_map<std::string, bool> &validActions,
+                                                             const bool checkAllSuccessorsInvariants,
+                                                             const bool skipIfSourceIsInSetG)
+{
+    // ReSharper disable once CppTooWideScopeInitStatement
+    const bool isCurrentPlayerController = locationsToPlayers.at(sourceRegion.getLocation()) == CONTROLLER;
+
+    if (isCurrentPlayerController ? piController(validActions) : piEnvironment(sourceRegion, setG, validActions, checkAllSuccessorsInvariants))
+    {
+        bool collectStrategyTransition = true;
+
+        if (skipIfSourceIsInSetG)
+            collectStrategyTransition = !setG.contains(sourceRegion);
+#ifdef _OPENMP
+        // TODO: It may be beneficial to adopt the same technique for work splitting and merging results as done for threadLocalRegions instead of using critical.
+#pragma omp critical
+        {
+            if (collectStrategyTransition)
+                strategyGraph->addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
+        }
+#else
+        if (collectStrategyTransition)
+            strategyGraph->addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
+#endif
+        currThreadLocRegions.push_back(sourceRegion);
+    }
+}
+
+
 void region::RTSArena::piFilter(const regionSet &setG,
                                 const std::vector<RegionPtr> &toProcess,
                                 regionSet &filteredRegions,
                                 const regionSet &intersectionSet,
                                 bool skipPredecessorsInSetG,
-                                bool checkAllSuccessorsInvariants) const
+                                bool checkAllSuccessorsInvariants,
+                                const bool skipIfSourceIsInSetG)
 {
 
 #ifdef _TBB
@@ -388,10 +440,12 @@ void region::RTSArena::piFilter(const regionSet &setG,
 
 
 #else
-
-#pragma omp parallel for if(toProcess.size() >= parallelThreshold) schedule(dynamic) default(none) \
-    shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, checkAllSuccessorsInvariants, threadLocalRegions), \
-    shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants, invariants, initialRegions, locationsToPlayers)
+    // The following pragma has default(shared) since apparently there is a bug with OpenMP and std::unordered:set.
+    // If a solution is found, put this pragma back to default(none).
+#pragma omp parallel for if(toProcess.size() >= parallelThreshold) schedule(dynamic) default(shared) \
+shared(setG, toProcess, skipPredecessorsInSetG, intersectionSet, checkAllSuccessorsInvariants, threadLocalRegions), \
+shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstants,\
+    invariants, initialRegions, locationsToPlayers, computeStrategyGraph, strategyGraph)
     for (int i = 0; i < static_cast<int>(toProcess.size()); i++) // NOLINT(modernize-loop-convert)
     {
 
@@ -407,60 +461,95 @@ void region::RTSArena::piFilter(const regionSet &setG,
 
 #endif
 
+        // ReSharper disable once CppTooWideScopeInitStatement
         const std::vector<transition> &currTransitions = inTransitions[currentRegion.getLocation()];
 
-        // We collect every discrete predecessor that we filter later based on the pi conditions.
-        // ReSharper disable once CppTooWideScopeInitStatement
-        const std::vector<Region> discPreds = currentRegion.getImmediateDiscretePredecessors(currTransitions, clocksIndices, locationsToInt, maxConstants);
-
-        // Processing each discrete predecessor to see if it can be inserted in filteredRegions.
-        for (const auto &reg: discPreds)
+        // We iterate transition by transition for better action handling.
+        for (const auto &currTrans: currTransitions)
         {
-            const absl::flat_hash_map<std::string, bool> &validActions = computeValidActions(reg, setG);
+            // We collect every discrete predecessor that we filter later based on the pi conditions.
+            // ReSharper disable once CppTooWideScopeInitStatement
+            const std::vector<Region> discPreds = currentRegion.getImmediateDiscretePredecessors({ currTrans }, clocksIndices, locationsToInt, maxConstants);
 
-            // Since a region may have multiple delay predecessors, we create a deque to process each delay predecessor.
-            // Since reg itself must be processed as well, we already add it to delayPredecessorsToProcess.
-            std::queue<Region> delayPredecessorsToProcess{};
-            delayPredecessorsToProcess.push(reg);
-
-            // Furthermore, we need to later reconsider the regions from which a delay predecessor does not exist.
-            regionSet regionsStillToProcess{};
-
-            // We now process each delay predecessor according to the definition of pi as given in our paper.
-            while (!delayPredecessorsToProcess.empty())
+            // Processing each discrete predecessor to see if a delay predecessor originating from such region can be inserted in filteredRegions.
+            for (const auto &reg: discPreds)
             {
-                const Region regUnderAnalysis = delayPredecessorsToProcess.front();
-                delayPredecessorsToProcess.pop();
+                const absl::flat_hash_map<std::string, bool> &validActions = computeValidActions(reg, setG);
 
-                // Check whether a region that is the source of a move must be skipped.
-                if (skipRegion(regUnderAnalysis, setG, intersectionSet, skipPredecessorsInSetG))
-                    continue;
+                // Since a region may have multiple delay predecessors, we create a deque to process each delay predecessor.
+                // Since reg itself must be processed as well, we already add it to delayPredecessorsToProcess.
+                std::queue<Region> delayPredecessorsToProcess{};
+                delayPredecessorsToProcess.push(reg);
 
-                const std::vector<Region> delayPreds = regUnderAnalysis.getImmediateDelayPredecessors();
+                // Furthermore, we need to later reconsider the regions from which a delay predecessor does not exist.
+                regionSet regionsStillToProcess{};
 
-                // If a region does not have a delay predecessor, we put 'continue' here, since it will be checked later due to regionsStillToProcess.
-                if (delayPreds.empty())
+                // We now process each delay predecessor according to the definition of pi as given in our paper.
+                while (!delayPredecessorsToProcess.empty())
                 {
-                    regionsStillToProcess.insert(regUnderAnalysis);
-                    continue;
+                    const Region regUnderAnalysis = delayPredecessorsToProcess.front();
+                    delayPredecessorsToProcess.pop();
+
+                    // Check whether a region that is the source of a move must be skipped.
+                    if (skipRegion(regUnderAnalysis, setG, intersectionSet, skipPredecessorsInSetG))
+                        continue;
+
+                    const std::vector<Region> delayPreds = regUnderAnalysis.getImmediateDelayPredecessors();
+
+                    // If a region does not have a delay predecessor, we put 'continue' here, since it will be checked later due to regionsStillToProcess.
+                    if (delayPreds.empty())
+                    {
+                        regionsStillToProcess.insert(regUnderAnalysis);
+                        continue;
+                    }
+
+                    for (const auto &delayPred: delayPreds)
+                        delayPredecessorsToProcess.push(delayPred);
+
+                    // If a delay predecessor has at least one incoming discrete transition (it has at least one discrete predecessor), then it can be the
+                    // source of a move, hence we may collect it in filteredRegions.
+                    if (regUnderAnalysis.hasAtLeastOneDiscretePredecessor(inTransitions[regUnderAnalysis.getLocation()], clocksIndices))
+                    {
+                        if (computeStrategyGraph)
+                        {
+                            collectLegalRegionByPiStrategy(regUnderAnalysis,
+                                                           currTrans,
+                                                           currentRegion,
+                                                           reg.getClockValuation(),
+                                                           setG,
+                                                           currThreadLocRegions,
+                                                           validActions,
+                                                           checkAllSuccessorsInvariants,
+                                                           skipIfSourceIsInSetG);
+                        } else
+                            collectLegalRegionByPi(regUnderAnalysis, setG, currThreadLocRegions, validActions, checkAllSuccessorsInvariants);
+                    }
                 }
 
-                for (const auto &delayPred: delayPreds)
-                    delayPredecessorsToProcess.push(delayPred);
+                // Checking the case in which a region with no delay predecessors is either initial or has an incoming discrete transition (has a discrete predecessor).
+                for (const auto &regStillToProcess: regionsStillToProcess)
+                {
+                    const bool isRegionInitial = std::ranges::find(initialRegions, regStillToProcess) != initialRegions.end();
+                    // ReSharper disable once CppTooWideScopeInitStatement
+                    const bool hasDiscPreds = regStillToProcess.hasAtLeastOneDiscretePredecessor(inTransitions[regStillToProcess.getLocation()], clocksIndices);
 
-                if (regUnderAnalysis.hasAtLeastOneDiscretePredecessor(inTransitions[regUnderAnalysis.getLocation()], clocksIndices))
-                    collectLegalRegionByPi(regUnderAnalysis, setG, currThreadLocRegions, validActions, checkAllSuccessorsInvariants);
-            }
-
-            // Checking the case in which a region with no delay predecessors is either initial or has an incoming discrete transition (has a discrete predecessor).
-            for (const auto &regStillToProcess: regionsStillToProcess)
-            {
-                const bool isRegionInitial = std::find(initialRegions.begin(), initialRegions.end(), regStillToProcess) != initialRegions.end();
-                // ReSharper disable once CppTooWideScopeInitStatement
-                const bool hasDiscPreds = regStillToProcess.hasAtLeastOneDiscretePredecessor(inTransitions[regStillToProcess.getLocation()], clocksIndices);
-
-                if (isRegionInitial || hasDiscPreds)
-                    collectLegalRegionByPi(regStillToProcess, setG, currThreadLocRegions, validActions, checkAllSuccessorsInvariants);
+                    if (isRegionInitial || hasDiscPreds)
+                    {
+                        if (computeStrategyGraph)
+                        {
+                            collectLegalRegionByPiStrategy(regStillToProcess,
+                                                           currTrans,
+                                                           currentRegion,
+                                                           reg.getClockValuation(),
+                                                           setG,
+                                                           currThreadLocRegions,
+                                                           validActions,
+                                                           checkAllSuccessorsInvariants,
+                                                           skipIfSourceIsInSetG);
+                        } else
+                            collectLegalRegionByPi(regStillToProcess, setG, currThreadLocRegions, validActions, checkAllSuccessorsInvariants);
+                    }
+                }
             }
         }
     }
@@ -480,7 +569,7 @@ void region::RTSArena::piFilter(const regionSet &setG,
         }
 
 
-bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter) const
+bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter)
 {
     // Starting the timer for measuring computation.
 #ifdef _OPENMP
@@ -494,9 +583,20 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 
     regionSet filteredRegions{};
 
+    if (computeStrategyGraph)
+    {
+        // Setting the target regions of the strategy graph to match the initial regions.
+        strategyGraph->setHeads(initialRegions);
+
+        // Setting the target regions of the strategy graph to match setG.
+        strategyGraph->setTargetRegions(setG);
+    }
+
     while (currentIteration < maxIter)
     {
-        piFilter(setG, toProcess, filteredRegions, setPhi, true, false);
+        currentIteration++;
+
+        piFilter(setG, toProcess, filteredRegions, setPhi, true, true, true);
 
         if (filteredRegions.empty())
             break;
@@ -508,8 +608,6 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
             toProcess.push_back(&region);
 
         filteredRegions.clear();
-
-        currentIteration++;
     }
 
     // Ending the timer for measuring computation.
@@ -535,13 +633,13 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
 }
 
 
-bool region::RTSArena::timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter) const
+bool region::RTSArena::timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter)
 {
     return timedReachability({}, setG, toProcess, maxIter);
 }
 
 
-bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter) const
+bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter)
 {
     // Starting the timer for measuring computation.
 #ifdef _OPENMP
@@ -556,9 +654,20 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
 
     regionSet filteredRegions{};
 
+    if (computeStrategyGraph)
+    {
+        // Setting the target regions of the strategy graph to match the initial regions.
+        strategyGraph->setHeads(initialRegions);
+
+        // Setting the target regions of the strategy graph to match setG.
+        strategyGraph->setTargetRegions(setG);
+    }
+
     while (currentIteration < maxIter)
     {
-        piFilter(setG, toProcess, filteredRegions, setPhi, true, false);
+        currentIteration++;
+
+        piFilter(setG, toProcess, filteredRegions, setPhi, true, true, true);
 
         if (filteredRegions.empty())
             break;
@@ -570,11 +679,9 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
             toProcess.push_back(&region);
 
         filteredRegions.clear();
-
-        currentIteration++;
     }
 
-    // Step 2: we perform one additional iteration of omega and delta filters.
+    // Step 2: we perform one additional iteration of piFilter.
     toProcess.clear();
     for (const auto &region: setG)
         toProcess.push_back(&region);
@@ -582,7 +689,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
     filteredRegions.clear();
 
     // In this case, we remove the constraints over the intersection set setPhi and put skipPredecessorsInSetG to false.
-    piFilter(setG, toProcess, filteredRegions, {}, false, false);
+    piFilter(setG, toProcess, filteredRegions, {}, false, true, true);
     setG.merge(filteredRegions);
 
     // Ending the timer for measuring computation.
@@ -608,7 +715,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
 }
 
 
-bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter) const
+bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter)
 {
     // Starting the timer for measuring computation.
 #ifdef _OPENMP
@@ -622,11 +729,25 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
 
     regionSet filteredRegions{};
 
+    // Used to enable or disable the strategy transition computation.
+    const bool reactivateComputeStrategyGraph = computeStrategyGraph;
+
+    if (computeStrategyGraph)
+    {
+        // Setting the target regions of the strategy graph to match the initial regions.
+        // Here we do not need to set the targets, as they will be updated in the safety strategy synthesis algorithm.
+        strategyGraph->setHeads(initialRegions);
+
+        computeStrategyGraph = false;
+    }
+
     while (currentIteration < maxIter)
     {
+        currentIteration++;
+
         const size_t oldSetGSize = setG.size();
 
-        piFilter(setG, toProcess, filteredRegions, {}, false, true);
+        piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
 
         // Computing the intersection between regions returned by piFilter and setG.
         std::erase_if(setG, [&filteredRegions](const auto &region) { return !filteredRegions.contains(region); });
@@ -639,9 +760,13 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
             toProcess.push_back(&region);
 
         filteredRegions.clear();
-
-        currentIteration++;
     }
+
+    computeStrategyGraph = reactivateComputeStrategyGraph;
+
+    // If the strategy graph must be computed, here we perform one last piFilter application to compute the strategy transitions.
+    if (computeStrategyGraph)
+        piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
 
     // Ending the timer for measuring computation.
 #ifdef _OPENMP
@@ -665,7 +790,7 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
 }
 
 
-inline bool region::RTSArena::solveGameWithBoxFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula) const
+inline bool region::RTSArena::solveGameWithBoxFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula)
 {
     std::vector<regionSet> startingRegions = getRegionsFromGeneralCLTLocFormula(unaryFormula.rightFormula);
 
@@ -683,7 +808,7 @@ inline bool region::RTSArena::solveGameWithBoxFormula(const cltloc::ast::unaryCL
 }
 
 
-inline bool region::RTSArena::solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula) const
+inline bool region::RTSArena::solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula)
 {
     std::vector<regionSet> startingRegions = getRegionsFromGeneralCLTLocFormula(unaryFormula.rightFormula);
 
@@ -701,7 +826,7 @@ inline bool region::RTSArena::solveGameWithDiamondFormula(const cltloc::ast::una
 }
 
 
-inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula) const
+inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula)
 {
     const std::vector<regionSet> leftRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.leftFormula);
     std::vector<regionSet> rightRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.rightFormula);
@@ -721,7 +846,7 @@ inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binar
 }
 
 
-inline bool region::RTSArena::solveGameWithNextFormula(const cltloc::ast::generalCLTLocFormula &formula) const
+inline bool region::RTSArena::solveGameWithNextFormula(const cltloc::ast::generalCLTLocFormula &formula)
 {
     // The formula must be of the form: phi UNTIL psi.
     const bool result = boost::apply_visitor([this]<typename T0>(T0 const &val) -> bool {
@@ -754,7 +879,7 @@ inline bool region::RTSArena::solveGameWithNextFormula(const cltloc::ast::genera
 }
 
 
-bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula) const
+bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula)
 {
     // Starting the timer for measuring computation.
 #ifdef _OPENMP
@@ -819,7 +944,7 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
     return result;
 }
 
-inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) const
+inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae)
 {
 
   if (formulae.empty())
@@ -868,7 +993,7 @@ inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vec
       size_t sizeBefore = currentStepSet.size();
 
       regionSet predecessors{};
-      piFilter(currentStepSet, toProcess, predecessors, {}, false, false);
+      piFilter(currentStepSet, toProcess, predecessors, {}, false, false, false);
 
       const regionSet &targetFormula = formulaRegionSets[i - 1];
       std::erase_if(predecessors, [&targetFormula](const auto &reg) { 
@@ -897,7 +1022,7 @@ inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vec
   return reachable;
 }
 
-inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) const
+inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae)
 {
     if (formulae.empty())
         throw std::logic_error("Formulae vector is empty!");
@@ -937,6 +1062,15 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
     int currentIteration = 0;
     const int totalStartingRegions = static_cast<int>(setG.size());
 
+    if (computeStrategyGraph)
+    {
+        // Setting the heads of the strategy graph to match the initial regions.
+        strategyGraph->setHeads(initialRegions);
+
+        // Setting the target regions of the strategy graph to match the back of formulaRegions, that is, the initial content of setG.
+        strategyGraph->setTargetRegions(setG);
+    }
+
     // The computation proceeds backwards from the last (i.e., from the back) formula in the formulaRegionSets vector.
     // Depending on its applicationCount, we apply piFilter until another formula is met (going backwards).
     // When this happens, we intersect its states with the ones collected up to the current iteration.
@@ -959,7 +1093,15 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
         // We now apply piFilter for a total of totalCurrentIterations times.
         for (int j = 0; j < totalCurrentIterations; j++)
         {
-            piFilter(setG, toProcess, filteredRegions, {}, false, false);
+            currentIteration++;
+
+            // Each step of the conjunction will be saved backwards (at the end of computation, the back of strategyTransitionsForConjunction contains the
+            // first strategy transition and so on). For this reason, in this algorithm we add maps to strategyTransitionsForConjunction at each step of the game.
+            if (computeStrategyGraph)
+                strategyGraph->addNewStrategyTransitionMapToBack();
+
+            // Here we put skipPredecessorsInSetG and skipIfSourceIsInSetG to false, since we may need to traverse cycles in the conjunction of next.
+            piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
 
             setG.merge(filteredRegions);
             filteredRegions.clear();
@@ -971,13 +1113,15 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
                 for (const auto &region: setG)
                     toProcess.push_back(&region);
             }
-
-            currentIteration++;
         }
 
         // Computing the intersection between setG and the regions specified by formulaRegionSets[i - 1].
         const regionSet &target = formulaRegionSets[i - 1];
         std::erase_if(setG, [&target](const auto &region) { return !target.contains(region); });
+
+        // Since we are restricting setG, we must restrict the collected strategy transitions as well.
+        if (computeStrategyGraph)
+            strategyGraph->eraseUnnecessaryTransitions(setG);
 
         toProcess.clear();
         for (const auto &region: setG)
@@ -994,7 +1138,15 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
 
     for (int i = 0; i < totalCurrentIterations; i++)
     {
-        piFilter(setG, toProcess, filteredRegions, {}, false, false);
+        currentIteration++;
+
+        // Each step of the conjunction will be saved backwards (at the end of computation, the back of strategyTransitionsForConjunction contains the
+        // first strategy transition and so on). For this reason, in this algorithm we add maps to strategyTransitionsForConjunction at each step of the game.
+        if (computeStrategyGraph)
+            strategyGraph->addNewStrategyTransitionMapToBack();
+
+        // Here we put skipPredecessorsInSetG and skipIfSourceIsInSetG to false, since we may need to traverse cycles in the conjunction of next.
+        piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
 
         setG.merge(filteredRegions);
         filteredRegions.clear();
@@ -1006,8 +1158,6 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
             for (const auto &region: setG)
                 toProcess.push_back(&region);
         }
-
-        currentIteration++;
     }
 
     const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
@@ -1021,7 +1171,7 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
 }
 
 
-bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::conjunctionOfFormulae &conjunction) const
+bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::conjunctionOfFormulae &conjunction)
 {
     // Starting the timer for measuring computation.
 #ifdef _OPENMP
@@ -1062,6 +1212,234 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::conjunctionOfForm
 #endif
 
     return result;
+}
+
+
+void region::RTSArena::printReachabilityPlay(const std::unordered_map<int, std::string> &indicesToClocks) const
+{
+    const auto &targetRegions = strategyGraph->getTargetRegions();
+
+    std::cout << "\n";
+    std::cout << "  \u2554" << repeatString("\u2550", BOX_WIDTH) << "\u2557\n";
+    std::cout << "  \u2551   WINNING CONTROLLER REACHABILITY PLAY   \u2551\n";
+    std::cout << "  \u255a" << repeatString("\u2550", BOX_WIDTH) << "\u255d\n\n";
+
+    // We assume to always take the first region in heads as the starting one.
+    Region current = strategyGraph->getHeads()[0];
+    int step = 0;
+
+    while (!targetRegions.contains(current))
+    {
+        const strategyTransitionSet strategyTransSet = strategyGraph->getStrategyTransitionsGivenSource(current);
+
+        if (strategyTransSet.empty())
+            throw std::logic_error("No outgoing strategy transitions from current region!");
+
+        // We assume to always take the first available transition in the strategy transition set.
+        // Since the reachability strategy graph is cycle-free, every transition guarantees progress for the controller to a target region.
+        const auto &[arenaTransition, target, moveClockValuation] = *strategyTransSet.begin();
+
+        StrategyGraph::printStrategyTransition(step, current, intToLocations, indicesToClocks, locationsToPlayers, moveClockValuation, arenaTransition);
+
+        current = target;
+        step++;
+    }
+
+    // Print the final region (the target).
+    StrategyGraph::printRegionWithBox(step, current, intToLocations, indicesToClocks, locationsToPlayers, " \u2605");
+}
+
+
+void region::RTSArena::printSafetyPlay(const std::unordered_map<int, std::string> &indicesToClocks) const
+{
+    auto targetRegions = strategyGraph->getTargetRegions();
+
+    std::cout << "\n";
+    std::cout << "  \u2554" << repeatString("\u2550", BOX_WIDTH) << "\u2557\n";
+    std::cout << "  \u2551      WINNING CONTROLLER SAFETY PLAY      \u2551\n";
+    std::cout << "  \u255a" << repeatString("\u2550", BOX_WIDTH) << "\u255d\n\n";
+
+    // We assume to always take the first region in heads as the starting one.
+    Region current = strategyGraph->getHeads()[0];
+    int step = 0;
+
+    // Emplacing the current region (corresponding to an initial region) to also detect cycles involving initial regions.
+    targetRegions.emplace(current);
+
+    // This loop will continue to execute until a cycle in the strategy graph is found.
+    while (step <= MAX_ITERATIONS)
+    {
+        const strategyTransitionSet strategyTransSet = strategyGraph->getStrategyTransitionsGivenSource(current);
+
+        if (strategyTransSet.empty())
+            throw std::logic_error("No outgoing strategy transitions from current region!");
+
+        // We assume to always take the first available transition in the strategy transition set.
+        // Since every transition guarantees the controller stays in the safety set, it will eventually encounter a cycle.
+        const auto &[arenaTransition, target, moveClockValuation] = *strategyTransSet.begin();
+
+        StrategyGraph::printStrategyTransition(step, current, intToLocations, indicesToClocks, locationsToPlayers, moveClockValuation, arenaTransition);
+
+        step++;
+        current = target;
+
+        if (targetRegions.contains(target))
+            break;
+
+        targetRegions.emplace(target);
+    }
+
+    // Print the region from which the cycle starts.
+    StrategyGraph::printRegionWithBox(step, current, intToLocations, indicesToClocks, locationsToPlayers, " \u2605");
+}
+
+
+void region::RTSArena::printPlay(const cltloc::ast::generalCLTLocFormula &formula)
+{
+    if (!computeStrategyGraph)
+        throw CannotSynthesizeStrategiesException("The parameter 'computeStrategyGraph' is set to false!");
+
+    if (!solveTimedCLTLocGame(formula))
+        throw CannotSynthesizeStrategiesException("A controller winning strategy does not exist!");
+
+    const auto &indicesToClocks = getIndicesToClocksMap();
+
+    // We now synthesize a winning controller play based on the winning condition type.
+    boost::apply_visitor([this, indicesToClocks]<typename T0>(T0 const &val)
+    {
+        using T = std::decay_t<T0>;
+
+        if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
+        {
+            // Pure formula: currently unhandled.
+            throw std::logic_error("Pure formulae are not currently supported when solving Timed CLTLoc Games.");
+            // ---
+        } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>)
+        {
+            // Unary formula.
+            // TODO: la sintesi del next unario per ora funziona perchè si assume che l'unico next unario sia next until.
+            switch (const auto &unaryFormula = val.get(); unaryFormula.op)
+            {
+                case BOX:
+                    printSafetyPlay(indicesToClocks);
+                    break;
+
+                case DIAMOND:
+                case NEXT:
+                    printReachabilityPlay(indicesToClocks);
+                    break;
+
+                default:
+                    throw std::logic_error("Invalid CLTLoc formula for synthesis.");
+            }
+            // ---
+        } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
+        {
+            // Binary formula.
+            switch (const auto &binaryFormula = val.get(); binaryFormula.op)
+            {
+                case UNTIL:
+                    printReachabilityPlay(indicesToClocks);
+                    break;
+
+                default:
+                    throw std::logic_error("Invalid CLTLoc formula for synthesis.");
+            }
+            // ---
+        } else
+            throw std::logic_error("Invalid CLTLoc formula for synthesis.");
+    }, formula.value);
+}
+
+
+void region::RTSArena::printAndNextConjunctionPlay(const std::unordered_map<int, std::string> &indicesToClocks) const
+{
+    std::cout << "\n";
+    std::cout << "  \u2554" << repeatString("\u2550", BOX_WIDTH) << "\u2557\n";
+    std::cout << "  \u2551     WINNING CONTROLLER AND_NEXT PLAY     \u2551\n";
+    std::cout << "  \u255a" << repeatString("\u2550", BOX_WIDTH) << "\u255d\n\n";
+
+    // We assume to always take the first region in heads as the starting one.
+    Region current = strategyGraph->getHeads()[0];
+
+    // Dynamic cast to get the strategy transition vector for the conjunction.
+    const auto *sg_p = dynamic_cast<StrategyGraphForConjunction *>(strategyGraph.get());
+    if (!sg_p)
+        throw std::logic_error("Expected a StrategyGraphForConjunction!");
+    const auto &strategyTransitionsForConjunction = sg_p->getStrategyTransitionsForConjunction();
+
+    int step{};
+    const int mStep = static_cast<int>(strategyTransitionsForConjunction.size());
+
+    for (step = mStep - 1; step >= 0; step--)
+    {
+        const strategyTransitionSet strategyTransSet = strategyGraph->getStrategyTransitionsGivenSourceAndIndex(current, step);
+
+        if (strategyTransSet.empty())
+            throw std::logic_error("No outgoing strategy transitions from current region!");
+
+        // We assume to always take the first available transition in the strategy transition set.
+        const auto &[arenaTransition, target, moveClockValuation] = *strategyTransSet.begin();
+
+        const int fixedStep = mStep - step - 1;
+        StrategyGraph::printStrategyTransition(fixedStep, current, intToLocations, indicesToClocks, locationsToPlayers, moveClockValuation, arenaTransition);
+
+        current = target;
+    }
+
+    // Print the final region (the target).
+    StrategyGraph::printRegionWithBox(mStep - step - 1, current, intToLocations, indicesToClocks, locationsToPlayers, " \u2605");
+}
+
+
+void region::RTSArena::printPlay(const cltloc::ast::conjunctionOfFormulae &conjunction)
+{
+    if (!computeStrategyGraph)
+        throw CannotSynthesizeStrategiesException("The parameter 'computeStrategyGraph' is set to false!");
+
+    if (!solveTimedCLTLocGame(conjunction))
+        throw CannotSynthesizeStrategiesException("A controller winning strategy does not exist!");
+
+    const auto &indicesToClocks = getIndicesToClocksMap();
+
+    // We now synthesize a winning controller strategy based on the winning conjunction type.
+    switch (conjunction.type)
+    {
+        case AND_NEXT:
+            printAndNextConjunctionPlay(indicesToClocks);
+            break;
+
+        default:
+            throw std::logic_error("Invalid conjunction type.");
+    }
+}
+
+
+void region::RTSArena::strategyGraphToDot(const std::string &path, const cltloc::ast::generalCLTLocFormula &formula)
+{
+    if (!computeStrategyGraph)
+        throw CannotSynthesizeStrategiesException("The parameter 'computeStrategyGraph' is set to false!");
+
+    const auto &indicesToClocks = getIndicesToClocksMap();
+
+    if (solveTimedCLTLocGame(formula))
+        return strategyGraph->to_dot(path, indicesToClocks, intToLocations, locationsToPlayers);
+
+    throw std::runtime_error("No winning controller strategy exists, hence the strategy graph cannot be computed!");
+}
+
+
+void region::RTSArena::strategyGraphToDot(const std::string &path, const cltloc::ast::conjunctionOfFormulae &conjunction)
+{
+    if (!computeStrategyGraph)
+        throw CannotSynthesizeStrategiesException("The parameter 'computeStrategyGraph' is set to false!");
+
+    const auto &indicesToClocks = getIndicesToClocksMap();
+
+    if (solveTimedCLTLocGame(conjunction))
+        return strategyGraph->to_dot(path, indicesToClocks, intToLocations, locationsToPlayers);
+
+    throw std::runtime_error("No winning controller strategy exists, hence the strategy graph cannot be computed!");
 }
 
 

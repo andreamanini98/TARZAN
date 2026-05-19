@@ -17,6 +17,8 @@ namespace region
 
         std::unordered_map<std::string, int> locationsToInt{};
 
+        std::unordered_map<int, std::string> intToLocations{};
+
         std::vector<int> maxConstants{};
 
         std::vector<int> initialLocations{};
@@ -37,6 +39,7 @@ namespace region
         {
             clocksIndices = automaton.getClocksIndices();
             locationsToInt = automaton.mapLocationsToInt();
+            intToLocations = automaton.mapIntToLocations();
             maxConstants = automaton.getMaxConstants(clocksIndices);
             initialLocations = automaton.getInitialLocations(locationsToInt);
             outTransitions = automaton.getOutTransitions(locationsToInt);

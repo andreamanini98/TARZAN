@@ -1,0 +1,8 @@
+AND_NEXT
+( NEXT^0  ([q_dock],[(x, ==, 0), (y, ==, 0), (t, ==, 0)]) ) &&
+( NEXT^7  ([q_call],[]) )                                   &&
+( NEXT^9  ([qD_pulse],[]) )                                 &&
+( NEXT^11 ([qD_int],[]) )                                   &&
+( NEXT^14 ([qD_int],[]) )                                   &&
+( NEXT^17 ([qD_int],[]) )                                   &&
+( NEXT^27 ([q_dock],[(t, <=, 50)]) )

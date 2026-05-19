@@ -18,7 +18,7 @@ int main()
     // std::cout << phi.to_string() << std::endl;
     // std::cout << rts.to_string() << std::endl;
 
-    if (const region::RTSArena rts(arena, phi); rts.solveTimedCLTLocGame(phi))
+    if (region::RTSArena rts(arena, phi, false); rts.solveTimedCLTLocGame(phi))
         std::cout << "-----" << std::endl;
     else
         std::cout << "----- " << std::endl;
