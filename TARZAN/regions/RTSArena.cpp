@@ -11,7 +11,7 @@
 #endif
 
 #ifdef _TBB
-#include "oneapi/tbb/parallel_for_each.h"
+#include "oneapi/tbb/parallel_for.h"
 #include "tbb/enumerable_thread_specific.h"
 #endif
 
@@ -383,9 +383,7 @@ void region::RTSArena::piFilter(const regionSet &setG,
                                 const bool skipIfSourceIsInSetG)
 {
 
-#ifdef _TBB
-    tbb::enumerable_thread_specific<std::vector<Region>> threadLocalRegions;
-#else
+#ifndef _TBB
 
     constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
     // Thread-local storage for valid predecessors.
@@ -395,9 +393,6 @@ void region::RTSArena::piFilter(const regionSet &setG,
     std::vector<std::vector<Region>> threadLocalRegions(1);
 #endif
 
-#endif
-
-#ifndef _TBB
     // Reserve space to reduce allocations.
     if (toProcess.size() >= parallelThreshold)
     {
@@ -428,17 +423,37 @@ void region::RTSArena::piFilter(const regionSet &setG,
   //
 
 #ifdef _TBB
+    size_t numThreads = oneapi::tbb::info::default_concurrency();
+    size_t totalRegions = toProcess.size();
+    size_t estimatedSize = (totalRegions / numThreads) * 2; 
 
-   printf("Number of regions to process using TBB: %ld\n", toProcess.size());
+    constexpr size_t BATCH_SIZE = 512;
+    
+    // Vettore globale che conterrà tutti i batch pronti per TBB
+    std::vector<std::vector<const Region*>> macroBatches;
 
+    // Pre-allocazione dello storage dei risultati per TBB
+    std::vector<std::vector<Region>> threadLocalRegions(numThreads);
+    for (auto& vec : threadLocalRegions) {
+        vec.reserve(estimatedSize);
+    }
 
-    oneapi::tbb::parallel_for_each(toProcess.begin(), toProcess.end(), 
-        [&](const Region* reg, oneapi::tbb::feeder<Region*>& feeder) {
+    printf("TBB: Processing %ld regions using %ld threads con Auto-Partitioning\n", totalRegions, numThreads);
 
-        const Region& currentRegion = *reg; 
-        std::vector<Region>& currThreadLocRegions = threadLocalRegions.local();
+    oneapi::tbb::parallel_for(
+        oneapi::tbb::blocked_range<size_t>(0, totalRegions, BATCH_SIZE),
+        [&](const oneapi::tbb::blocked_range<size_t>& range) {
 
+        size_t threadIdx = oneapi::tbb::this_task_arena::current_thread_index();
 
+        // Se TBB usa thread esterni al pool primario (raro), l'indice può essere -1. 
+        // In quel caso ripieghiamo sullo slot 0 in sicurezza.
+        if (threadIdx == size_t(-1)) threadIdx = 0;
+
+        std::vector<Region>& currThreadLocRegions = threadLocalRegions[threadIdx];
+
+        for (size_t i = range.begin(); i != range.end(); ++i) {
+          const Region& currentRegion = *toProcess[i];
 #else
     // The following pragma has default(shared) since apparently there is a bug with OpenMP and std::unordered:set.
     // If a solution is found, put this pragma back to default(none).
@@ -555,18 +570,11 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
     }
 
 #ifdef _TBB
-    );
-
-    for (const auto& localVect : threadLocalRegions) {
-      for (const auto& r : localVect) {
-        filteredRegions.insert(r);
-      }
-    }
-#else
-
-    mergeResults(threadLocalRegions, filteredRegions);
+    }, oneapi::tbb::auto_partitioner());
 #endif
-        }
+
+  mergeResults(threadLocalRegions, filteredRegions);
+}
 
 
 bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter)
@@ -604,6 +612,7 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
         setG.merge(filteredRegions);
 
         toProcess.clear();
+        toProcess.reserve(setG.size());
         for (const auto &region: setG)
             toProcess.push_back(&region);
 
@@ -675,6 +684,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
         setG.merge(filteredRegions);
 
         toProcess.clear();
+        toProcess.reserve(setG.size());
         for (const auto &region: setG)
             toProcess.push_back(&region);
 
@@ -683,6 +693,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
 
     // Step 2: we perform one additional iteration of piFilter.
     toProcess.clear();
+    toProcess.reserve(setG.size());
     for (const auto &region: setG)
         toProcess.push_back(&region);
 
@@ -756,6 +767,7 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
             break;
 
         toProcess.clear();
+        toProcess.reserve(setG.size());
         for (const auto &region: setG)
             toProcess.push_back(&region);
 
@@ -1005,6 +1017,8 @@ inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vec
       if (currentStepSet.size() == sizeBefore) changed = false;
 
       toProcess.clear();
+      toProcess.reserve(setG.size());
+
       for (const auto &region : currentStepSet) toProcess.push_back(&region);
     }
 
@@ -1110,6 +1124,7 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
             if (j < totalCurrentIterations - 1)
             {
                 toProcess.clear();
+                toProcess.reserve(setG.size());
                 for (const auto &region: setG)
                     toProcess.push_back(&region);
             }
@@ -1124,6 +1139,7 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
             strategyGraph->eraseUnnecessaryTransitions(setG);
 
         toProcess.clear();
+        toProcess.reserve(setG.size());
         for (const auto &region: setG)
             toProcess.push_back(&region);
     }
@@ -1155,6 +1171,7 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
         if (i < totalCurrentIterations - 1)
         {
             toProcess.clear();
+            toProcess.reserve(setG.size());
             for (const auto &region: setG)
                 toProcess.push_back(&region);
         }
