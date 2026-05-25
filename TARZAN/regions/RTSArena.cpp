@@ -888,8 +888,6 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
 inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) const
 {
 
-  printf("Entering nested until");
-
   if (formulae.empty())
     throw std::logic_error("Formulae vector is empty!");
 
@@ -934,14 +932,10 @@ inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vec
 
     while (changed) {
       size_t sizeBefore = currentStepSet.size();
+      const regionSet &targetFormula = formulaRegionSets[i - 1];
 
       regionSet predecessors{};
-      piFilter(currentStepSet, toProcess, predecessors, {}, false, false);
-
-      const regionSet &targetFormula = formulaRegionSets[i - 1];
-      std::erase_if(predecessors, [&targetFormula](const auto &reg) { 
-          return !targetFormula.contains(reg); 
-          });
+      piFilter(currentStepSet, toProcess, predecessors, targetFormula, true, false);
 
       currentStepSet.merge(predecessors);
 
