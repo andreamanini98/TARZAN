@@ -970,7 +970,8 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
             // Here we put skipPredecessorsInSetG and skipIfSourceIsInSetG to false, since we may need to traverse cycles in the conjunction of next.
             piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
 
-            setG.merge(filteredRegions);
+            // SetG must be equal to the result of pi, we must not accumulate regions in setG during the repeated application of pi.
+            setG = std::move(filteredRegions);
             filteredRegions.clear();
 
             // We can skip this during the last iteration since toProcess will be computed again after the intersection (see below).
@@ -1015,7 +1016,8 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
         // Here we put skipPredecessorsInSetG and skipIfSourceIsInSetG to false, since we may need to traverse cycles in the conjunction of next.
         piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
 
-        setG.merge(filteredRegions);
+        // SetG must be equal to the result of pi, we must not accumulate regions in setG during the repeated application of pi.
+        setG = std::move(filteredRegions);
         filteredRegions.clear();
 
         // We can skip this during the last iteration.
