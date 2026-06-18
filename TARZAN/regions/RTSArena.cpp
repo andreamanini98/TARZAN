@@ -383,11 +383,13 @@ void region::RTSArena::piFilter(const regionSet &setG,
                                 const bool skipIfSourceIsInSetG)
 {
 
-#ifndef _TBB
 
-    constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
+constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
+
+#ifndef _TBB
     // Thread-local storage for valid predecessors.
 #ifdef _OPENMP
+    printf("Working with OMP\n");
     std::vector<std::vector<Region>> threadLocalRegions(omp_get_max_threads());
 #else
     std::vector<std::vector<Region>> threadLocalRegions(1);
@@ -408,37 +410,21 @@ void region::RTSArena::piFilter(const regionSet &setG,
 
 #endif
 
-
-  // OBJ NOT TO SHARE: outTransitions, invariants, locationsToPlayers
-  //
-  // setG andrebbe mandato a TUTTI i core perche' funzioni tipo skipRegion ci accedono in modo totale.
-  // Anche intersectionSet e invariants ecc. Tutte queste strutture dati hanno bisogno di essere accedute da TUTTI i core. Se l'obbiettivo e' quello di usare openMPI 
-  // su una solo macchina non conviene perche comporta una duplicazione della memoria per ogni core.
-  // Non esiste neanche il vantaggio di far girare questo loop su piu nodi poiche conviene spezzarlo in piu nodi se il problema e la dimensione delle strutture dati 
-  // ma come ho appena detto non sono separabili. 
-  //
-  // Siccome setG cambia a ogni iterazione del while in timedReachability, dopo ogni piFilter dovresti fare una MPI_Allgather per sincronizzare i nuovi setG tra tutti
-  // i nodi. Trasformado una lookup alla cache o alla ram ad una richiesta di rete (nettamente piu lenta).
-  //
-  //
-
 #ifdef _TBB
-    size_t numThreads = oneapi::tbb::info::default_concurrency();
-    size_t totalRegions = toProcess.size();
-    size_t estimatedSize = (totalRegions / numThreads) * 2; 
-
-    constexpr size_t BATCH_SIZE = 512;
+    const size_t totalRegions = toProcess.size();
     
-    // Vettore globale che conterrà tutti i batch pronti per TBB
-    std::vector<std::vector<const Region*>> macroBatches;
+    // Usign a threshold here is just degrading the performance
+    const bool multi_thread = true;
+    const size_t BATCH_SIZE = (multi_thread) ? 2 : totalRegions;
+    const size_t numThreads = (multi_thread) ? oneapi::tbb::info::default_concurrency() : 1;
+    const size_t estimatedSize = (totalRegions / numThreads) * 2;
 
-    // Pre-allocazione dello storage dei risultati per TBB
     std::vector<std::vector<Region>> threadLocalRegions(numThreads);
     for (auto& vec : threadLocalRegions) {
         vec.reserve(estimatedSize);
     }
 
-    printf("TBB: Processing %ld regions using %ld threads con Auto-Partitioning\n", totalRegions, numThreads);
+    //printf("TBB: Processing %ld regions using a batch of size %ld\n", totalRegions, BATCH_SIZE);
 
     oneapi::tbb::parallel_for(
         oneapi::tbb::blocked_range<size_t>(0, totalRegions, BATCH_SIZE),
@@ -446,8 +432,7 @@ void region::RTSArena::piFilter(const regionSet &setG,
 
         size_t threadIdx = oneapi::tbb::this_task_arena::current_thread_index();
 
-        // Se TBB usa thread esterni al pool primario (raro), l'indice può essere -1. 
-        // In quel caso ripieghiamo sullo slot 0 in sicurezza.
+        // Sometimes index can be -1, fallback to slot 0
         if (threadIdx == size_t(-1)) threadIdx = 0;
 
         std::vector<Region>& currThreadLocRegions = threadLocalRegions[threadIdx];
