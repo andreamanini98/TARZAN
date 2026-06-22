@@ -30,6 +30,8 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/include)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/lib)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/backwards_tarzan_results)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/games_tarzan_results)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/strategy_graphs)
 
 
 # The library archive is now written inside this directory.
@@ -75,10 +77,18 @@ if (ENABLE_OPENMP)
 endif ()
 
 
+# Force CMake to not use Anaconda's abseil.
+# This prevents version conflicts between abseil installations.
+# Users can specify a custom path via: cmake -DANACONDA_PATH=/custom/path ..
+set(ANACONDA_PATH "/opt/anaconda3" CACHE PATH "Path to Anaconda installation to ignore")
+if (ANACONDA_PATH)
+    set(CMAKE_IGNORE_PATH "${ANACONDA_PATH}")
+    message(STATUS "Ignoring Anaconda path: ${ANACONDA_PATH}")
+endif ()
+
 # Find Boost libraries.
 # set(BOOST_ROOT "/path/to/boost/dir")
 find_package(Boost 1.90.0 REQUIRED filesystem)
-
 
 include(FetchContent)
 
@@ -138,7 +148,8 @@ set(TARZAN_LIBRARIES
         Boost::filesystem
         absl::base
         absl::strings
-        absl::flat_hash_map)
+        absl::flat_hash_map
+      )
 
 
 # Add conditional libraries.
@@ -151,6 +162,7 @@ endif ()
 target_link_libraries(TARZAN_OBJECTS PUBLIC 
     Boost::headers 
     Boost::filesystem
+    ${TARZAN_LIBRARIES}
 )
 target_link_libraries(TARZAN_OBJECTS PRIVATE 
     absl::base 
@@ -161,6 +173,7 @@ target_link_libraries(TARZAN_OBJECTS PRIVATE
 target_link_libraries(TARZAN PUBLIC 
     Boost::headers 
     Boost::filesystem
+    ${TARZAN_LIBRARIES}
 )
 target_link_libraries(TARZAN PRIVATE 
     absl::base 
@@ -188,26 +201,31 @@ target_include_directories(TARZAN
 
 # Define the headers to expose.
 set(LIBRARY_HEADERS
-    TARZAN/headers/library.h
-    TARZAN/parser/ast.h
-    TARZAN/parser/enums/arithmetic_enum.h
-    TARZAN/parser/enums/boolean_op_enum.h
-    TARZAN/parser/enums/comparison_op_enum.h
-    TARZAN/parser/enums/input_output_action_enum.h
-    TARZAN/parser/enums/players_enum.h
-    TARZAN/parser/enums/cltloc_op_enum.h
-    TARZAN/parser/enums/conjunction_type_enum.h
-    TARZAN/regions/Region.h
-    TARZAN/regions/RTS.h
-    TARZAN/regions/RTSArena.h
-    TARZAN/regions/enums/state_space_exploration_enum.h
-    TARZAN/regions/networkOfTA/NetworkRegion.h
-    TARZAN/regions/networkOfTA/RTSNetwork.h
-    TARZAN/utilities/hash_utilities.h
-    TARZAN/utilities/function_utilities.h
-    TARZAN/utilities/file_utilities.h
-    TARZAN/utilities/partition_utilities.h
-    TARZAN/utilities/printing_utilities.h)
+        TARZAN/headers/library.h
+        TARZAN/parser/ast.h
+        TARZAN/parser/enums/arithmetic_enum.h
+        TARZAN/parser/enums/boolean_op_enum.h
+        TARZAN/parser/enums/cltloc_op_enum.h
+        TARZAN/parser/enums/comparison_op_enum.h
+        TARZAN/parser/enums/conjunction_type_enum.h
+        TARZAN/parser/enums/input_output_action_enum.h
+        TARZAN/parser/enums/players_enum.h
+        TARZAN/regions/Region.h
+        TARZAN/regions/RTS.h
+        TARZAN/regions/RTSArena.h
+        TARZAN/regions/StrategyGraph.h
+        TARZAN/regions/StrategyGraphForConjunction.h
+        TARZAN/regions/enums/state_space_exploration_enum.h
+        TARZAN/regions/networkOfTA/NetworkRegion.h
+        TARZAN/regions/networkOfTA/RTSNetwork.h
+        TARZAN/utilities/hash_utilities.h
+        TARZAN/utilities/function_utilities.h
+        TARZAN/utilities/file_utilities.h
+        TARZAN/utilities/partition_utilities.h
+        TARZAN/utilities/printing_utilities.h
+        TARZAN/exceptions/emptyConjunctionOfFormulae_exception.h
+        TARZAN/exceptions/nestedCLTLocFormula_exception.h
+        TARZAN/exceptions/cannotSynthesizeStrategies_exception.h)
 
 
 # Copying the headers to expose for better retrieve the library.
@@ -250,6 +268,11 @@ if (BENCHMARK_EXECUTABLES)
         # Targeting the source with libraries.
         target_link_libraries(${executable_name} PRIVATE TARZAN)
 
+        set(MY_TARGET_DIR "${CMAKE_CURRENT_BINARY_DIR}/executables/benchmark_executables")
+
+        # Create the folder if not present
+        file(MAKE_DIRECTORY "${MY_TARGET_DIR}")
+
         # Set output directory to executables/benchmark_executables.
         set_target_properties(${executable_name} PROPERTIES
                 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/benchmark_executables)
@@ -280,6 +303,12 @@ if (BACKWARDS_EXECUTABLES)
         # NOTE: EARLY_EXIT is intentionally NOT defined for backwards executables.
         # The LIBRARY_SOURCES are compiled directly into this executable without EARLY_EXIT.
 
+        set(MY_TARGET_DIR "${CMAKE_CURRENT_BINARY_DIR}/executables/backwards_executables")
+
+        # Create the folder if not present
+        file(MAKE_DIRECTORY "${MY_TARGET_DIR}")
+
+
         # Set output directory to executables/backwards_executables.
         set_target_properties(${executable_name} PROPERTIES
                 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/backwards_executables)
@@ -298,6 +327,11 @@ if (GAMES_EXECUTABLES)
 
         # Targeting the source with libraries.
         target_link_libraries(${executable_name} PRIVATE TARZAN)
+
+        set(MY_TARGET_DIR "${CMAKE_CURRENT_BINARY_DIR}/executables/games_executables")
+
+        # Create the folder if not present
+        file(MAKE_DIRECTORY "${MY_TARGET_DIR}")
 
         # Set output directory to executables/games_executable.
         set_target_properties(${executable_name} PROPERTIES
@@ -328,7 +362,7 @@ endforeach ()
 file(GLOB GAMES_SCRIPTS TARZAN/benchmarks_games/games_scripts/*.sh)
 foreach (script ${GAMES_SCRIPTS})
     execute_process(COMMAND chmod +x ${script})
-endforeach()
+endforeach ()
 
 #########################################################################
 ###   The following code deals with the installation of the library   ###
@@ -352,7 +386,7 @@ install(TARGETS TARZAN       # Install target, the one created with add_library(
 
 
 # Install headers with directory structure preserved.
-foreach(header ${LIBRARY_HEADERS})
+foreach (header ${LIBRARY_HEADERS})
     # Get the relative path from TARZAN/ directory.
     file(RELATIVE_PATH rel_path "${CMAKE_CURRENT_SOURCE_DIR}/TARZAN" "${CMAKE_CURRENT_SOURCE_DIR}/${header}")
     get_filename_component(header_dir ${rel_path} DIRECTORY)
@@ -360,7 +394,7 @@ foreach(header ${LIBRARY_HEADERS})
     # Install to the appropriate subdirectory.
     install(FILES ${header}
             DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/TARZAN/${header_dir})
-endforeach()
+endforeach ()
 
 
 # Export targets to make the library discoverable by other CMake projects.

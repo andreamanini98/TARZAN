@@ -294,7 +294,7 @@ namespace region
          * @param formulae the conjunction of formulae to solve.
          * @return true if the controller wins, false otherwise.
          */        
-        [[nodiscard]] inline bool solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) const;
+        [[nodiscard]] inline bool solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae);
 
 
 

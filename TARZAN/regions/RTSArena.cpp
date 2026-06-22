@@ -3,7 +3,8 @@
 #include "TARZAN/exceptions/nestedCLTLocFormula_exception.h"
 #include "TARZAN/exceptions/cannotSynthesizeStrategies_exception.h"
 #include "TARZAN/utilities/function_utilities.h"
-#include <cstdio>
+#include "TARZAN/utilities/printing_utilities.h"
+#include <boost/variant/detail/apply_visitor_unary.hpp>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -885,7 +886,7 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
     return result;
 }
 
-inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) const
+inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) 
 {
 
   if (formulae.empty())
@@ -935,7 +936,7 @@ inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vec
       const regionSet &targetFormula = formulaRegionSets[i - 1];
 
       regionSet predecessors{};
-      piFilter(currentStepSet, toProcess, predecessors, targetFormula, true, false);
+      piFilter(currentStepSet, toProcess, predecessors, targetFormula, true, false, false);
 
       currentStepSet.merge(predecessors);
 
@@ -1244,7 +1245,7 @@ void region::RTSArena::printPlay(const cltloc::ast::generalCLTLocFormula &formul
     const auto &indicesToClocks = getIndicesToClocksMap();
 
     // We now synthesize a winning controller play based on the winning condition type.
-    std::visit([this, indicesToClocks]<typename T0>(T0 const &val)
+    boost::apply_visitor([this, indicesToClocks]<typename T0>(T0 const &val)
     {
         using T = std::decay_t<T0>;
 
