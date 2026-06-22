@@ -1015,10 +1015,10 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
     for (int i = formulaeSize - 1; i > 0; i--)
     {
         // Getting the current applicationCount value.
-        const auto currCount = std::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[i].value).get().applicationCount;
+        const auto currCount = boost::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[i].value).get().applicationCount;
 
         // Getting the applicationCount value of the formula that is met going backwards.
-        const auto backCount = std::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[i - 1].value).get().applicationCount;
+        const auto backCount = boost::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[i - 1].value).get().applicationCount;
 
         if (!currCount.has_value() || !backCount.has_value())
             throw std::logic_error("No currCount or backCount value!");
@@ -1068,7 +1068,7 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
     }
 
     // Now only the last formula (the one in the first position of formulaRegionSets) must be checked.
-    const auto count = std::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[0].value).get().applicationCount;
+    const auto count = boost::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[0].value).get().applicationCount;
 
     if (!count.has_value())
         throw std::logic_error("No applicationCount value!");
