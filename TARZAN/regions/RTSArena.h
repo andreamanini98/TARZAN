@@ -287,11 +287,13 @@ namespace region
          */
         void printAndNextConjunctionPlay(const std::unordered_map<int, std::string> &indicesToClocks) const;
 
-        
         /**
-         * TODO:
+         * @brief Solves a game where the formula is a conjunction of nested UNTIL operators:
+         * phi_0 UNTIL (phi_1 UNTIL (... UNTIL phi_k)).
          *
-         */
+         * @param formulae the conjunction of formulae to solve.
+         * @return true if the controller wins, false otherwise.
+         */        
         [[nodiscard]] inline bool solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) const;
 
 
