@@ -6,6 +6,9 @@
 #include <cstdio>
 #include "TARZAN/utilities/printing_utilities.h"
 
+#include <iostream>
+#include <numeric>
+
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -14,6 +17,8 @@
 #include "oneapi/tbb/parallel_for.h"
 #include "tbb/enumerable_thread_specific.h"
 #endif
+
+#define DEBUG_MEMORY 1
 
 // #define RTSARENA_DEBUG
 #define THROW_NESTEDCLTLOC_EXCEPTION
@@ -373,6 +378,45 @@ inline void region::RTSArena::collectLegalRegionByPiStrategy(const Region &sourc
     }
 }
 
+// Funzione Helper per calcolare e stampare la dimensione reale di un vettore di RegionPtr (come toProcess)
+void printToProcessSpecs(const std::vector<RegionPtr>& toProcess) {
+    size_t totalBytes = 0;
+    for (const auto& ptr : toProcess) {
+        if (ptr) {
+            // Sfrutta la tua funzione membro per ottenere i byte effettivi dell'oggetto puntato
+            totalBytes += ptr->printSizeInBytes(false); 
+        }
+    }
+    
+    std::cout << "[TARZAN MPI PROFILING] INPUT 'toProcess' -\n"
+              << "  DATO: Numero di elementi: " << toProcess.size() << "\n"
+              << "  DATO: Dimensione media elemento: " << (toProcess.empty() ? 0 : totalBytes / toProcess.size()) << " bytes\n"
+              << "  DATO: Dimensione totale in memoria: " << totalBytes << " bytes (" 
+              << (double)totalBytes / 1024.0 / 1024.0 << " MB)\n" << std::endl;
+}
+
+// Funzione Helper per calcolare e stampare la dimensione reale di un regionSet (come setG o intersectionSet)
+void printRegionSetSpecs(const std::string& setName, const regionSet& rSet) {
+    size_t totalBytes = 0;
+    
+    // Un unordered_set ha un overhead fisso per i bucket (circa 8 byte a puntatore di bucket)
+    size_t bucketOverhead = rSet.bucket_count() * sizeof(void*);
+    
+    for (const auto& region : rSet) {
+        totalBytes += region.printSizeInBytes(false);
+        // Ogni nodo di un std::unordered_set introduce un overhead di link (tipicamente 1 o 2 puntatori, ~16 byte)
+        totalBytes += 2 * sizeof(void*); 
+    }
+    
+    totalBytes += bucketOverhead;
+
+    std::cout << "[TARZAN MPI PROFILING] INPUT '" << setName << "' -\n"
+              << "  DATO: Numero di elementi: " << rSet.size() << "\n"
+              << "  DATO: Dimensione media elemento (incluso overhead set): " << (rSet.empty() ? 0 : totalBytes / rSet.size()) << " bytes\n"
+              << "  DATO: Dimensione totale in memoria: " << totalBytes << " bytes (" 
+              << (double)totalBytes / 1024.0 / 1024.0 << " MB)\n" << std::endl;
+}
+
 
 void region::RTSArena::piFilter(const regionSet &setG,
                                 const std::vector<RegionPtr> &toProcess,
@@ -383,13 +427,22 @@ void region::RTSArena::piFilter(const regionSet &setG,
                                 const bool skipIfSourceIsInSetG)
 {
 
+#if DEBUG_MEMORY
+    static unsigned long long callCounter = 0;
+    callCounter++;
+    std::cout << "CHIAMATA piFilter #" << callCounter << "\n";
+    
+    // printToProcessSpecs(toProcess);
+    printRegionSetSpecs("setG", setG);
+    // printRegionSetSpecs("intersectionSet", intersectionSet);
+#endif
 
 constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
 
 #ifndef _TBB
     // Thread-local storage for valid predecessors.
 #ifdef _OPENMP
-    printf("Working with OMP\n");
+    // printf("Working with OMP\n");
     std::vector<std::vector<Region>> threadLocalRegions(omp_get_max_threads());
 #else
     std::vector<std::vector<Region>> threadLocalRegions(1);
