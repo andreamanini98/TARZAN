@@ -27,7 +27,7 @@ fi
 # Define directories (resolve to absolute paths before any cd).
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 EXECUTABLES_DIR="${SCRIPT_DIR}/../../../executables/games_executables/${BENCHMARK_DIRECTORY_NAME}"
-OUTPUT_DIR="${SCRIPT_DIR}/../../../output/games_tarzan_results"
+OUTPUT_DIR="${SCRIPT_DIR}/../../../output/games_tarzan_results/${BENCHMARK_DIRECTORY_NAME}"
 
 # Detect OS and set appropriate /usr/bin/time options.
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -152,7 +152,7 @@ for executable in *; do
             fi
 
             # Parse numeric values.
-            val=$(grep "^Total time:" "$TEMP_OUTPUT_FILE" | grep -v "including" | awk '{print $(NF-1)}')
+            val=$(grep "^Total time:" "$TEMP_OUTPUT_FILE" | grep -v "including" | awk '{printf "%.6f\n", $(NF-1)}')
             [[ -n "$val" ]] && sum_time=$(echo "$sum_time + $val" | bc)
 
             val=$(grep "Total iterations:" "$TEMP_OUTPUT_FILE" | awk '{print $NF}')
@@ -167,7 +167,7 @@ for executable in *; do
             val=$(grep "Total stored regions:" "$TEMP_OUTPUT_FILE" | awk '{print $NF}')
             [[ -n "$val" ]] && sum_stored_regions=$(echo "$sum_stored_regions + $val" | bc)
 
-            val=$(grep "Total time including region generation:" "$TEMP_OUTPUT_FILE" | awk '{print $(NF-1)}')
+            val=$(grep "Total time including region generation:" "$TEMP_OUTPUT_FILE" | awk '{printf "%.6f\n", $(NF-1)}')
             [[ -n "$val" ]] && sum_time_gen=$(echo "$sum_time_gen + $val" | bc)
 
             # Parse RSS from time output.
