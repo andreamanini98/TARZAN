@@ -3,9 +3,9 @@
 # Shell script to run all games executables N times and average their output.
 
 # Validate command-line argument.
-if [[ "$#" -ne 1 ]]; then
-    echo "Usage: $0 <num_runs>"
-    echo "Example: $0 5"
+if [[ "$#" -ne 2 ]]; then
+    echo "Usage: $0 <num_runs> <benchmark_directory_name>"
+    echo "Example: $0 5 production_cell"
     exit 1
 fi
 
@@ -15,9 +15,18 @@ if ! [[ "$NUM_RUNS" =~ ^[0-9]+$ ]] || [[ "$NUM_RUNS" -lt 1 ]]; then
     exit 1
 fi
 
+BENCHMARK_DIRECTORY_NAME="$2"
+if [[ "$BENCHMARK_DIRECTORY_NAME" =~ ^[a-zA-Z0-9_]+$ ]]; then
+      echo "Executing benchmarks from the $BENCHMARK_DIRECTORY_NAME directory"
+else
+      echo "Error: benchmark directory name must be a string (can also contain underscores)"
+      exit 1
+fi
+
+
 # Define directories (resolve to absolute paths before any cd).
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-EXECUTABLES_DIR="${SCRIPT_DIR}/../../../executables/games_executables"
+EXECUTABLES_DIR="${SCRIPT_DIR}/../../../executables/games_executables/${BENCHMARK_DIRECTORY_NAME}"
 OUTPUT_DIR="${SCRIPT_DIR}/../../../output/games_tarzan_results"
 
 # Detect OS and set appropriate /usr/bin/time options.

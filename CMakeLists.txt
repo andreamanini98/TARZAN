@@ -266,10 +266,10 @@ if (BACKWARDS_EXECUTABLES)
 endif ()
 
 
-# Collect all .cpp files from games_executables directory.
-file(GLOB GAMES_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks_games/games_executables/*.cpp)
+# Collect all .cpp files from games_executables/production_cell directory.
+file(GLOB GAMES_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks_games/games_executables/production_cell/*.cpp)
 
-# Create games executables in executables/games_executables subdirectory.
+# Create games executables in executables/games_executables/production_cell subdirectory.
 if (GAMES_EXECUTABLES)
     foreach (source IN LISTS GAMES_EXECUTABLES)
         get_filename_component(executable_name ${source} NAME_WE)
@@ -278,9 +278,9 @@ if (GAMES_EXECUTABLES)
         # Targeting the source with libraries.
         target_link_libraries(${executable_name} PRIVATE TARZAN)
 
-        # Set output directory to executables/games_executable.
+        # Set output directory to executables/games_executable/production_cell.
         set_target_properties(${executable_name} PROPERTIES
-                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/games_executables)
+                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/games_executables/production_cell)
     endforeach ()
 endif ()
 
