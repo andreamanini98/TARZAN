@@ -70,7 +70,8 @@ inline std::vector<regionSet> region::RTSArena::getRegionsFromGeneralCLTLocFormu
 {
     std::vector<regionSet> res{};
 
-    boost::apply_visitor([this, &res, depth]<typename T0>(T0 const &val) {
+    boost::apply_visitor([this, &res, depth]<typename T0>(T0 const &val)
+    {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
@@ -791,7 +792,8 @@ inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binar
 inline bool region::RTSArena::solveGameWithNextFormula(const cltloc::ast::generalCLTLocFormula &formula)
 {
     // The formula must be of the form: phi UNTIL psi.
-    const bool result = boost::apply_visitor([this]<typename T0>(T0 const &val) -> bool {
+    const bool result = boost::apply_visitor([this]<typename T0>(T0 const &val) -> bool
+    {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
@@ -830,7 +832,8 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
     const auto start = std::chrono::high_resolution_clock::now();
 #endif
 
-    const bool result = boost::apply_visitor([this]<typename T0>(T0 const &val) -> bool {
+    const bool result = boost::apply_visitor([this]<typename T0>(T0 const &val) -> bool
+    {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
@@ -886,79 +889,81 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
     return result;
 }
 
-inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) 
+
+inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae)
 {
+    if (formulae.empty())
+        throw std::logic_error("Formulae vector is empty!");
 
-  if (formulae.empty())
-    throw std::logic_error("Formulae vector is empty!");
+    const int formulaeSize = static_cast<int>(formulae.size());
 
-  const int formulaeSize = static_cast<int>(formulae.size());
-
-  // Storage for valid region sets. At position i, the vector will contain the regions specified by formulae[i].
+    // Storage for valid region sets. At position i, the vector will contain the regions specified by formulae[i].
 #ifdef _OPENMP
-  std::vector<regionSet> formulaRegionSets(formulaeSize);
+    std::vector<regionSet> formulaRegionSets(formulaeSize);
 #else
-  std::vector<regionSet> formulaRegionSets{};
+    std::vector<regionSet> formulaRegionSets{};
 #endif
 
 #pragma omp parallel for schedule(dynamic) default(none) shared(formulaRegionSets, formulaeSize, formulae)
-  for (int i = 0; i < formulaeSize; i++)
-  {
-    const std::vector<regionSet> formulaRegions = getRegionsFromGeneralCLTLocFormula(formulae[i]);
+    for (int i = 0; i < formulaeSize; i++)
+    {
+        const std::vector<regionSet> formulaRegions = getRegionsFromGeneralCLTLocFormula(formulae[i]);
 
-    if (formulaRegions.size() != 1)
-      throw std::logic_error("Wrong size of unary formula!");
+        if (formulaRegions.size() != 1)
+            throw std::logic_error("Wrong size of unary formula!");
 
 #ifdef _OPENMP
-    formulaRegionSets[i] = formulaRegions.at(0);
+        formulaRegionSets[i] = formulaRegions.at(0);
 #else
-    formulaRegionSets.push_back(formulaRegions.at(0));
+        formulaRegionSets.push_back(formulaRegions.at(0));
 #endif
-  }
-
-  // Defining the starting set of states used during computation (it corresponds to the set in the back of formulaRegionSets).
-  regionSet setG = std::move(formulaRegionSets.back());
-  std::vector<RegionPtr> toProcess{};
-
-  for (const auto &region: setG)
-    toProcess.push_back(&region);
-
-  int currentIteration = 0;
-  const int totalStartingRegions = static_cast<int>(setG.size());
-
-  for (int i = formulaeSize - 1; i > 0; i--) 
-  {
-    regionSet currentStepSet = setG; 
-    bool changed = true;
-
-    while (changed) {
-      size_t sizeBefore = currentStepSet.size();
-      const regionSet &targetFormula = formulaRegionSets[i - 1];
-
-      regionSet predecessors{};
-      piFilter(currentStepSet, toProcess, predecessors, targetFormula, true, false, false);
-
-      currentStepSet.merge(predecessors);
-
-      if (currentStepSet.size() == sizeBefore) changed = false;
-
-      toProcess.clear();
-      for (const auto &region : currentStepSet) toProcess.push_back(&region);
     }
 
-    setG = std::move(currentStepSet);
-    currentIteration++;
-  }
+    // Defining the starting set of states used during computation (it corresponds to the set in the back of formulaRegionSets).
+    regionSet setG = std::move(formulaRegionSets.back());
+    std::vector<RegionPtr> toProcess{};
 
-  const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
+    for (const auto &region: setG)
+        toProcess.push_back(&region);
 
-  std::cout << "Total iterations:       " << currentIteration << std::endl;
-  std::cout << "Total starting regions: " << totalStartingRegions << std::endl;
-  std::cout << "Total stored regions:   " << setG.size() << std::endl;
-  std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
+    int currentIteration = 0;
+    const int totalStartingRegions = static_cast<int>(setG.size());
 
-  return reachable;
+    for (int i = formulaeSize - 1; i > 0; i--)
+    {
+        regionSet currentStepSet = setG;
+        bool changed = true;
+
+        while (changed)
+        {
+            size_t sizeBefore = currentStepSet.size();
+            const regionSet &targetFormula = formulaRegionSets[i - 1];
+
+            regionSet predecessors{};
+            piFilter(currentStepSet, toProcess, predecessors, targetFormula, true, false, false);
+
+            currentStepSet.merge(predecessors);
+
+            if (currentStepSet.size() == sizeBefore) changed = false;
+
+            toProcess.clear();
+            for (const auto &region: currentStepSet) toProcess.push_back(&region);
+        }
+
+        setG = std::move(currentStepSet);
+        currentIteration++;
+    }
+
+    const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
+
+    std::cout << "Total iterations:       " << currentIteration << std::endl;
+    std::cout << "Total starting regions: " << totalStartingRegions << std::endl;
+    std::cout << "Total stored regions:   " << setG.size() << std::endl;
+    std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
+
+    return reachable;
 }
+
 
 inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae)
 {
