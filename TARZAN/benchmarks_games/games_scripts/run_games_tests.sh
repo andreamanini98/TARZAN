@@ -2,6 +2,9 @@
 
 # Shell script to run all games executables N times and average their output.
 
+# Force C locale so awk/bc use dot as decimal separator regardless of system locale.
+export LC_ALL=C
+
 # Validate command-line argument.
 if [[ "$#" -ne 2 ]]; then
     echo "Usage: $0 <num_runs> <benchmark_directory_name>"
