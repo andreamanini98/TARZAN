@@ -1,3 +1,7 @@
+#include "TARZAN/parser/ast.h"
+
+#include <boost/variant/detail/apply_visitor_delayed.hpp>
+#include <boost/variant/detail/apply_visitor_unary.hpp>
 #include <iostream>
 
 #include "TARZAN/parser/ast.h"
@@ -12,7 +16,7 @@ using transition = timed_automaton::ast::transition;
 
 int expr::ast::arithmeticExpr::evaluate(const absl::btree_map<std::string, int> &variables) const
 {
-    return std::visit([&variables]<typename T0>(T0 const &val) -> int {
+    return boost::apply_visitor([&variables]<typename T0>(T0 const &val) -> int {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, int>)
@@ -57,7 +61,7 @@ std::string expr::ast::arithmeticExpr::to_string() const
 {
     std::ostringstream oss;
 
-    oss << std::visit([]<typename T0>(T0 const &val) -> std::string {
+    oss << boost::apply_visitor([]<typename T0>(T0 const &val) -> std::string {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, int>)
@@ -154,7 +158,8 @@ std::string expr::ast::comparisonExpr::to_string() const
 
 bool expr::ast::booleanExpr::evaluate(const absl::btree_map<std::string, int> &variables) const
 {
-    return std::visit([&variables]<typename T0>(T0 const &val) -> bool {
+    return boost::apply_visitor([&variables]<typename T0>(T0 const &val) -> bool {
+
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, bool>)
@@ -195,7 +200,7 @@ std::string expr::ast::booleanExpr::to_string() const
 {
     std::ostringstream oss;
 
-    oss << std::visit([]<typename T0>(T0 const &val) -> std::string {
+    oss << boost::apply_visitor([]<typename T0>(T0 const &val) -> std::string {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, bool>)
@@ -600,7 +605,7 @@ void getMaxConstantsRecursive(const std::unordered_map<std::string, int> &clocks
                               const cltloc::ast::generalCLTLocFormula &formula,
                               std::vector<int> &maxConstants)
 {
-    std::visit([&maxConstants, &clocksIndices]<typename T0>(T0 const &val) -> void {
+    boost::apply_visitor([&maxConstants, &clocksIndices]<typename T0>(T0 const &val) -> void {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
@@ -897,7 +902,7 @@ std::string cltloc::ast::generalCLTLocFormula::to_string() const
     std::ostringstream oss;
 
     // Keeping the visit pattern for future extensions (currently, it is unnecessary).
-    oss << std::visit([]<typename T0>(T0 const &val) -> std::string {
+    oss << boost::apply_visitor([]<typename T0>(T0 const &val) -> std::string {
         // Recursive case: pure, unary, or binary formula.
         return "(" + val.get().to_string() + ")";
     }, value);
@@ -908,6 +913,14 @@ std::string cltloc::ast::generalCLTLocFormula::to_string() const
 
 // ---
 
+std::string cltloc::ast::conjunctionOfFormulae::separetor() const 
+{
+  switch (type) {
+    case AND_GENERAL: return " && ";
+    case AND_NEXT: return " && ";
+    case NESTED_UNTIL: return " UNTIL ";
+  }
+}
 
 std::string cltloc::ast::conjunctionOfFormulae::to_string() const
 {
@@ -924,7 +937,7 @@ std::string cltloc::ast::conjunctionOfFormulae::to_string() const
             oss << generalCLTLocFormula;
             first = false;
         } else
-            oss << " && " << generalCLTLocFormula;
+        oss << separetor() << generalCLTLocFormula;
     }
 
     return oss.str();

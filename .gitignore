@@ -41,4 +41,8 @@
 # Backup files
 *~
 
+# Vim compile flags
+.cache/
+compile_commands.json
+
 CLAUDE.md

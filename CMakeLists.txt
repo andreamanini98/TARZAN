@@ -1,5 +1,5 @@
 # Setting the minimum required version for cmake.
-cmake_minimum_required(VERSION 3.31)
+cmake_minimum_required(VERSION 3.22)
 
 
 # Getting the project name as the current directory name.
@@ -41,7 +41,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output/TARZAN/lib
 # When changing the value of the options, remember to:
 # (1) click on the cmake icon at the bottom left corner -> (2) three dots -> (3) reset cache and reload project.
 option(ENABLE_OPTIMIZATION "Enable O3 optimization level." ON)
-option(ENABLE_OPENMP "Enable OpenMP parallelization." ON)
+option(ENABLE_OPENMP "Enable OpenMP parallelization." OFF)
 
 
 # Handle O3 optimization.
@@ -51,6 +51,15 @@ if (ENABLE_OPTIMIZATION)
         message(STATUS "O3 Optimization enabled.")
     endif ()
 endif ()
+
+option(ENABLE_DEBUG "Enable debug flags" OFF)
+if (ENABLE_DEBUG)
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -g")
+        message(STATUS "Debug enable")
+    endif ()
+endif ()
+
 
 
 # Handle OpenMP.
@@ -68,10 +77,6 @@ if (ENABLE_OPENMP)
 endif ()
 
 
-# Find Boost libraries.
-find_package(Boost 1.89.0 REQUIRED filesystem)
-
-
 # Force CMake to not use Anaconda's abseil.
 # This prevents version conflicts between abseil installations.
 # Users can specify a custom path via: cmake -DANACONDA_PATH=/custom/path ..
@@ -81,9 +86,23 @@ if (ANACONDA_PATH)
     message(STATUS "Ignoring Anaconda path: ${ANACONDA_PATH}")
 endif ()
 
+# Find Boost libraries.
+# set(BOOST_ROOT "/path/to/boost/dir")
+find_package(Boost 1.90.0 REQUIRED filesystem)
 
-# Find Abseil libraries.
-find_package(absl CONFIG REQUIRED)
+include(FetchContent)
+
+FetchContent_Declare(
+    abseil-cpp
+    GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
+    GIT_TAG        20240722.0
+)
+
+# Ensure Abseil uses the same C++ standard as the project.
+set(ABSL_PROPAGATE_CXX_STD ON)
+set(ABSL_ENABLE_INSTALL ON)
+
+FetchContent_MakeAvailable(abseil-cpp)
 
 
 # Add compiler warnings.
@@ -129,7 +148,8 @@ set(TARZAN_LIBRARIES
         Boost::filesystem
         absl::base
         absl::strings
-        absl::flat_hash_map)
+        absl::flat_hash_map
+      )
 
 
 # Add conditional libraries.
@@ -139,8 +159,27 @@ endif ()
 
 
 # Link libraries to both object library and static library.
-target_link_libraries(TARZAN_OBJECTS PUBLIC ${TARZAN_LIBRARIES})
-target_link_libraries(TARZAN PUBLIC ${TARZAN_LIBRARIES})
+target_link_libraries(TARZAN_OBJECTS PUBLIC 
+    Boost::headers 
+    Boost::filesystem
+    ${TARZAN_LIBRARIES}
+)
+target_link_libraries(TARZAN_OBJECTS PRIVATE 
+    absl::base 
+    absl::strings 
+    absl::flat_hash_map
+)
+
+target_link_libraries(TARZAN PUBLIC 
+    Boost::headers 
+    Boost::filesystem
+    ${TARZAN_LIBRARIES}
+)
+target_link_libraries(TARZAN PRIVATE 
+    absl::base 
+    absl::strings 
+    absl::flat_hash_map
+)
 
 
 # Setup include directories for both object library and static library.
@@ -229,6 +268,11 @@ if (BENCHMARK_EXECUTABLES)
         # Targeting the source with libraries.
         target_link_libraries(${executable_name} PRIVATE TARZAN)
 
+        set(MY_TARGET_DIR "${CMAKE_CURRENT_BINARY_DIR}/executables/benchmark_executables")
+
+        # Create the folder if not present
+        file(MAKE_DIRECTORY "${MY_TARGET_DIR}")
+
         # Set output directory to executables/benchmark_executables.
         set_target_properties(${executable_name} PROPERTIES
                 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/benchmark_executables)
@@ -258,6 +302,12 @@ if (BACKWARDS_EXECUTABLES)
 
         # NOTE: EARLY_EXIT is intentionally NOT defined for backwards executables.
         # The LIBRARY_SOURCES are compiled directly into this executable without EARLY_EXIT.
+
+        set(MY_TARGET_DIR "${CMAKE_CURRENT_BINARY_DIR}/executables/backwards_executables")
+
+        # Create the folder if not present
+        file(MAKE_DIRECTORY "${MY_TARGET_DIR}")
+
 
         # Set output directory to executables/backwards_executables.
         set_target_properties(${executable_name} PROPERTIES
@@ -327,7 +377,6 @@ file(GLOB GAMES_SCRIPTS TARZAN/benchmarks_games/games_scripts/*.sh)
 foreach (script ${GAMES_SCRIPTS})
     execute_process(COMMAND chmod +x ${script})
 endforeach ()
-
 
 #########################################################################
 ###   The following code deals with the installation of the library   ###

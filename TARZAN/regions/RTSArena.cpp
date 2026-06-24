@@ -4,6 +4,7 @@
 #include "TARZAN/exceptions/cannotSynthesizeStrategies_exception.h"
 #include "TARZAN/utilities/function_utilities.h"
 #include "TARZAN/utilities/printing_utilities.h"
+#include <boost/variant/detail/apply_visitor_unary.hpp>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -69,8 +70,7 @@ inline std::vector<regionSet> region::RTSArena::getRegionsFromGeneralCLTLocFormu
 {
     std::vector<regionSet> res{};
 
-    std::visit([this, &res, depth]<typename T0>(T0 const &val)
-    {
+    boost::apply_visitor([this, &res, depth]<typename T0>(T0 const &val) {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
@@ -791,8 +791,7 @@ inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binar
 inline bool region::RTSArena::solveGameWithNextFormula(const cltloc::ast::generalCLTLocFormula &formula)
 {
     // The formula must be of the form: phi UNTIL psi.
-    const bool result = std::visit([this]<typename T0>(T0 const &val) -> bool
-    {
+    const bool result = boost::apply_visitor([this]<typename T0>(T0 const &val) -> bool {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
@@ -831,8 +830,7 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
     const auto start = std::chrono::high_resolution_clock::now();
 #endif
 
-    const bool result = std::visit([this]<typename T0>(T0 const &val) -> bool
-    {
+    const bool result = boost::apply_visitor([this]<typename T0>(T0 const &val) -> bool {
         using T = std::decay_t<T0>;
 
         if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
@@ -888,6 +886,79 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
     return result;
 }
 
+inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae) 
+{
+
+  if (formulae.empty())
+    throw std::logic_error("Formulae vector is empty!");
+
+  const int formulaeSize = static_cast<int>(formulae.size());
+
+  // Storage for valid region sets. At position i, the vector will contain the regions specified by formulae[i].
+#ifdef _OPENMP
+  std::vector<regionSet> formulaRegionSets(formulaeSize);
+#else
+  std::vector<regionSet> formulaRegionSets{};
+#endif
+
+#pragma omp parallel for schedule(dynamic) default(none) shared(formulaRegionSets, formulaeSize, formulae)
+  for (int i = 0; i < formulaeSize; i++)
+  {
+    const std::vector<regionSet> formulaRegions = getRegionsFromGeneralCLTLocFormula(formulae[i]);
+
+    if (formulaRegions.size() != 1)
+      throw std::logic_error("Wrong size of unary formula!");
+
+#ifdef _OPENMP
+    formulaRegionSets[i] = formulaRegions.at(0);
+#else
+    formulaRegionSets.push_back(formulaRegions.at(0));
+#endif
+  }
+
+  // Defining the starting set of states used during computation (it corresponds to the set in the back of formulaRegionSets).
+  regionSet setG = std::move(formulaRegionSets.back());
+  std::vector<RegionPtr> toProcess{};
+
+  for (const auto &region: setG)
+    toProcess.push_back(&region);
+
+  int currentIteration = 0;
+  const int totalStartingRegions = static_cast<int>(setG.size());
+
+  for (int i = formulaeSize - 1; i > 0; i--) 
+  {
+    regionSet currentStepSet = setG; 
+    bool changed = true;
+
+    while (changed) {
+      size_t sizeBefore = currentStepSet.size();
+      const regionSet &targetFormula = formulaRegionSets[i - 1];
+
+      regionSet predecessors{};
+      piFilter(currentStepSet, toProcess, predecessors, targetFormula, true, false, false);
+
+      currentStepSet.merge(predecessors);
+
+      if (currentStepSet.size() == sizeBefore) changed = false;
+
+      toProcess.clear();
+      for (const auto &region : currentStepSet) toProcess.push_back(&region);
+    }
+
+    setG = std::move(currentStepSet);
+    currentIteration++;
+  }
+
+  const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
+
+  std::cout << "Total iterations:       " << currentIteration << std::endl;
+  std::cout << "Total starting regions: " << totalStartingRegions << std::endl;
+  std::cout << "Total stored regions:   " << setG.size() << std::endl;
+  std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
+
+  return reachable;
+}
 
 inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae)
 {
@@ -944,10 +1015,10 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
     for (int i = formulaeSize - 1; i > 0; i--)
     {
         // Getting the current applicationCount value.
-        const auto currCount = std::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[i].value).get().applicationCount;
+        const auto currCount = boost::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[i].value).get().applicationCount;
 
         // Getting the applicationCount value of the formula that is met going backwards.
-        const auto backCount = std::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[i - 1].value).get().applicationCount;
+        const auto backCount = boost::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[i - 1].value).get().applicationCount;
 
         if (!currCount.has_value() || !backCount.has_value())
             throw std::logic_error("No currCount or backCount value!");
@@ -997,7 +1068,7 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
     }
 
     // Now only the last formula (the one in the first position of formulaRegionSets) must be checked.
-    const auto count = std::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[0].value).get().applicationCount;
+    const auto count = boost::get<boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>(formulae[0].value).get().applicationCount;
 
     if (!count.has_value())
         throw std::logic_error("No applicationCount value!");
@@ -1059,6 +1130,10 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::conjunctionOfForm
 
         case AND_NEXT:
             result = solveGameWithAndNextConjunction(conjunction.formulae);
+            break;
+
+        case NESTED_UNTIL:
+            result = solveGameWithNestedUntilConjunction(conjunction.formulae);
             break;
 
         default:
@@ -1170,7 +1245,7 @@ void region::RTSArena::printPlay(const cltloc::ast::generalCLTLocFormula &formul
     const auto &indicesToClocks = getIndicesToClocksMap();
 
     // We now synthesize a winning controller play based on the winning condition type.
-    std::visit([this, indicesToClocks]<typename T0>(T0 const &val)
+    boost::apply_visitor([this, indicesToClocks]<typename T0>(T0 const &val)
     {
         using T = std::decay_t<T0>;
 

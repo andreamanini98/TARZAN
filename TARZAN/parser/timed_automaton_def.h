@@ -6,6 +6,7 @@
 
 #include "TARZAN/parser/ast.h"
 #include "TARZAN/parser/ast_adapted.h"
+#include "TARZAN/parser/enums/cltloc_op_enum.h"
 #include "TARZAN/parser/error_handler.h"
 #include "TARZAN/parser/timed_automaton.h"
 #include "TARZAN/parser/success_handler.h"
@@ -156,11 +157,11 @@ namespace parser
         {
             auto &self = add
                     ("AND_GENERAL", AND_GENERAL)
-                    ("AND_NEXT", AND_NEXT);
+                    ("AND_NEXT", AND_NEXT)
+                    ("NESTED_UNTIL", NESTED_UNTIL);
             (void) self;
         }
     } cltloc_conjunction_type;
-
 
     namespace x3 = boost::spirit::x3;
     namespace ascii = x3::ascii;

@@ -18,7 +18,7 @@
 //     std::cout << "\n\nVikings Flat 2" << std::endl;
 //
 //     const std::string path = "../../TARZAN/benchmarks/benchmarksFlat/vikingsFlat/vf2/";
-//     constexpr std::string automatonFileName = "vf.txt";
+//     const std::string automatonFileName = "vf.txt";
 //     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 //
 //     const region::RTS regionTransitionSystem(automaton);
@@ -77,7 +77,7 @@
 //     std::cout << "\n\nVikings Flat 3" << std::endl;
 //
 //     const std::string path = "../../TARZAN/benchmarks/benchmarksFlat/vikingsFlat/vf3/";
-//     constexpr std::string automatonFileName = "vf.txt";
+//     const std::string automatonFileName = "vf.txt";
 //     const timed_automaton::ast::timedAutomaton automaton = TARZAN::parseTimedAutomaton(path + automatonFileName);
 //
 //     const region::RTS regionTransitionSystem(automaton);
