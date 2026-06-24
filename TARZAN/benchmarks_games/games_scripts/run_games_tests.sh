@@ -3,9 +3,9 @@
 # Shell script to run all games executables N times and average their output.
 
 # Validate command-line argument.
-if [[ "$#" -ne 1 ]]; then
-    echo "Usage: $0 <num_runs>"
-    echo "Example: $0 5"
+if [[ "$#" -ne 2 ]]; then
+    echo "Usage: $0 <num_runs> <benchmark_directory_name>"
+    echo "Example: $0 5 production_cell"
     exit 1
 fi
 
@@ -15,10 +15,19 @@ if ! [[ "$NUM_RUNS" =~ ^[0-9]+$ ]] || [[ "$NUM_RUNS" -lt 1 ]]; then
     exit 1
 fi
 
+BENCHMARK_DIRECTORY_NAME="$2"
+if [[ "$BENCHMARK_DIRECTORY_NAME" =~ ^[a-zA-Z0-9_]+$ ]]; then
+      echo "Executing benchmarks from the $BENCHMARK_DIRECTORY_NAME directory"
+else
+      echo "Error: benchmark directory name must be a string (can also contain underscores)"
+      exit 1
+fi
+
+
 # Define directories (resolve to absolute paths before any cd).
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-EXECUTABLES_DIR="${SCRIPT_DIR}/../../../executables/games_executables"
-OUTPUT_DIR="${SCRIPT_DIR}/../../../output/games_tarzan_results"
+EXECUTABLES_DIR="${SCRIPT_DIR}/../../../executables/games_executables/${BENCHMARK_DIRECTORY_NAME}"
+OUTPUT_DIR="${SCRIPT_DIR}/../../../output/games_tarzan_results/${BENCHMARK_DIRECTORY_NAME}"
 
 # Detect OS and set appropriate /usr/bin/time options.
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -143,7 +152,7 @@ for executable in *; do
             fi
 
             # Parse numeric values.
-            val=$(grep "^Total time:" "$TEMP_OUTPUT_FILE" | grep -v "including" | awk '{print $(NF-1)}')
+            val=$(grep "^Total time:" "$TEMP_OUTPUT_FILE" | grep -v "including" | awk '{printf "%.6f\n", $(NF-1)}')
             [[ -n "$val" ]] && sum_time=$(echo "$sum_time + $val" | bc)
 
             val=$(grep "Total iterations:" "$TEMP_OUTPUT_FILE" | awk '{print $NF}')
@@ -158,7 +167,7 @@ for executable in *; do
             val=$(grep "Total stored regions:" "$TEMP_OUTPUT_FILE" | awk '{print $NF}')
             [[ -n "$val" ]] && sum_stored_regions=$(echo "$sum_stored_regions + $val" | bc)
 
-            val=$(grep "Total time including region generation:" "$TEMP_OUTPUT_FILE" | awk '{print $(NF-1)}')
+            val=$(grep "Total time including region generation:" "$TEMP_OUTPUT_FILE" | awk '{printf "%.6f\n", $(NF-1)}')
             [[ -n "$val" ]] && sum_time_gen=$(echo "$sum_time_gen + $val" | bc)
 
             # Parse RSS from time output.
