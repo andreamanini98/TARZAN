@@ -100,6 +100,5 @@ For a detailed description of TARZAN, please refer to:
 
 [3] A. Manini, M. Rossi, and P. San Pietro, "TARZAN Artifact". Zenodo, feb. 16, 2026. doi: <a href="https://doi.org/10.5281/zenodo.18656202" target="_blank" rel="noopener noreferrer">10.5281/zenodo.18656203</a>. Artifact evaluated at FORTE 2026; awarded Available and Functional badges.
 
-[4] A. Manini, M. Rossi, and P. San Pietro, "Timed Games under Environmental Interference with Real-Time Objectives", to appear in Proc. 20th International Symposium on Theoretical Aspects of Software Engineering (TASE 2026), 2026.
-
+[4] A. Manini, M. Rossi, and P. San Pietro, "Timed Games Under Environmental Interference with Real-Time Objectives", In: Giuseppe De Giacomo, Jianwen Li, and Lili Xiao (eds.), Theoretical Aspects of Software Engineering, Springer Nature Switzerland, Cham, pp. 343–349, 2027. DOI: <a href="https://doi.org/10.1007/978-3-032-30693-7_22" target="_blank" rel="noopener noreferrer">10.1007/978-3-032-30693-7_22</a>.
 
