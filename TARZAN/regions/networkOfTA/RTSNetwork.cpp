@@ -1,4 +1,5 @@
 #include "RTSNetwork.h"
+#include <iostream>
 
 // #define RTSNETWORK_DEBUG
 // #define EARLY_EXIT   // Controlled via CMake.

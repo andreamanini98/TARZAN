@@ -65,14 +65,28 @@ endif ()
 # Handle OpenMP.
 if (ENABLE_OPENMP)
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-        # Homebrew libomp paths.
-        set(LIBOMP_INCLUDE_DIR /opt/homebrew/opt/libomp/include)
-        set(LIBOMP_LIB_DIR /opt/homebrew/opt/libomp/lib)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp")
-        # Add include path.
-        include_directories(${LIBOMP_INCLUDE_DIR})
-        link_directories(${LIBOMP_LIB_DIR})
-        message(STATUS "OpenMP enabled.")
+        if (APPLE)
+            # --- CONFIGURAZIONE ORIGINALE PER macOS / HOMEBREW ---
+            message(STATUS "OpenMP: Rilevato macOS, utilizzo i percorsi Homebrew.")
+            set(LIBOMP_INCLUDE_DIR /opt/homebrew/opt/libomp/include)                                   
+            set(LIBOMP_LIB_DIR /opt/homebrew/opt/libomp/lib)                                                        
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp")
+            
+            # Add include path.                              
+            include_directories(${LIBOMP_INCLUDE_DIR})
+            link_directories(${LIBOMP_LIB_DIR})
+        else ()
+            # --- CONFIGURAZIONE UNIVERSALE PER LINUX (E ALTRI OS) ---
+            message(STATUS "OpenMP: Rilevato Linux/altro OS, utilizzo la configurazione nativa.")
+            
+            find_package(OpenMP REQUIRED)
+            if (OpenMP_CXX_FOUND)
+                # Aggiunge i flag di compilazione corretti (es. -fopenmp per GCC)
+                set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+            endif ()
+        endif ()         
+
+	message(STATUS "OpenMP enabled.")
     endif ()
 endif ()
 
@@ -92,17 +106,26 @@ find_package(Boost 1.90.0 REQUIRED filesystem)
 
 include(FetchContent)
 
-FetchContent_Declare(
-    abseil-cpp
-    GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
-    GIT_TAG        20240722.0
-)
+if (APPLE)
+    # --- CONFIGURAZIONE PER macOS ---
+    message(STATUS "Abseil: Rilevato macOS.")
+    FetchContent_Declare(
+        abseil-cpp
+        GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
+        GIT_TAG        20240722.0
+    )
+
+    FetchContent_MakeAvailable(abseil-cpp)
+else ()
+    # --- CONFIGURAZIONE PER LINUX (E ALTRI OS) ---
+    message(STATUS "Abseil: Rilevato Linux/altro OS, utilizzo find_package di sistema.")
+
+    find_package(absl REQUIRED)
+endif ()
 
 # Ensure Abseil uses the same C++ standard as the project.
 set(ABSL_PROPAGATE_CXX_STD ON)
 set(ABSL_ENABLE_INSTALL ON)
-
-FetchContent_MakeAvailable(abseil-cpp)
 
 
 # Add compiler warnings.
@@ -154,7 +177,17 @@ set(TARZAN_LIBRARIES
 
 # Add conditional libraries.
 if (ENABLE_OPENMP)
-    list(APPEND TARZAN_LIBRARIES omp)
+    if (APPLE)
+        # --- CONFIGURAZIONE ORIGINALE PER MAC ---
+        list(APPEND TARZAN_LIBRARIES omp)
+    else ()
+        # --- CONFIGURAZIONE UNIVERSALE PER LINUX ---
+        if (TARGET OpenMP::OpenMP_CXX)
+            list(APPEND TARZAN_LIBRARIES OpenMP::OpenMP_CXX)
+        else ()
+            list(APPEND TARZAN_LIBRARIES gomp)
+        endif ()
+    endif ()
 endif ()
 
 

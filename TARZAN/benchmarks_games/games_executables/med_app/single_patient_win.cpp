@@ -9,8 +9,8 @@ int main()
 {
     // Tbot can complete a single patient procedure.
 
-    constexpr std::string arenaName = "med_app.txt";
-    constexpr std::string formulaName = "reachability0.txt";
+    const std::string arenaName = "med_app.txt";
+    const std::string formulaName = "reachability0.txt";
 
     const std::string formulaPath = "../../../TARZAN/benchmarks_games/models/med_app/winning_conditions/" + formulaName;
     const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);

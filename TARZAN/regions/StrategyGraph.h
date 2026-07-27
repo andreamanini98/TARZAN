@@ -3,6 +3,7 @@
 
 #include "TARZAN/regions/Region.h"
 #include "TARZAN/utilities/printing_utilities.h"
+#include <iostream>
 
 #define BOX_WIDTH 42
 

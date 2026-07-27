@@ -11,8 +11,8 @@ int main()
     // This is LOSING, meaning that Tbot cannot enforce reaching the interrupt state: it needs the intervention of humans.
     // In the paper, you can cite ethical decisions such as "the robot cannot take critical decisions unless a human approves".
 
-    constexpr std::string arenaName = "med_app.txt";
-    constexpr std::string formulaName = "q_int_unreachable.txt";
+    const std::string arenaName = "med_app.txt";
+    const std::string formulaName = "q_int_unreachable.txt";
 
     const std::string formulaPath = "../../../TARZAN/benchmarks_games/models/med_app/winning_conditions/" + formulaName;
     const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);

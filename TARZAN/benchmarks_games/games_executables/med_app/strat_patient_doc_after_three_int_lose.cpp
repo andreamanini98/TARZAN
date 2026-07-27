@@ -8,8 +8,8 @@ int main()
     // Tbot can complete a single patient procedure by raising an interrupt during pulse measurement three times, after which a doctor is called.
     // The doctor intervention makes Tbot complete without raising interrupts or requiring safety mode.
 
-    constexpr std::string arenaName = "med_app.txt";
-    constexpr std::string formulaName = "and_next1.txt";
+    const std::string arenaName = "med_app.txt";
+    const std::string formulaName = "and_next1.txt";
 
     const std::string formulaPath = "../../../TARZAN/benchmarks_games/models/med_app/winning_conditions/" + formulaName;
     const cltloc::ast::conjunctionOfFormulae phi = TARZAN::parseConjunctionOfFormulae(formulaPath);

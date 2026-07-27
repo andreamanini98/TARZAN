@@ -1,6 +1,7 @@
 #ifndef TARZAN_FISCHER_BACKWARD_H
 #define TARZAN_FISCHER_BACKWARD_H
 
+#include <iostream>
 #include <string>
 #include <fstream>
 
@@ -11,7 +12,6 @@
 #include "TARZAN/regions/Region.h"
 #include "TARZAN/regions/RTS.h"
 #include "TARZAN/testing/successorsAndPredecessorsTesting.h"
-
 
 inline void testFischerFlat2()
 {
