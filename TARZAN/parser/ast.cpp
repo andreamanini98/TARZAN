@@ -1,3 +1,7 @@
+#include "TARZAN/parser/ast.h"
+
+#include <boost/variant/detail/apply_visitor_delayed.hpp>
+#include <boost/variant/detail/apply_visitor_unary.hpp>
 #include <iostream>
 
 #include "TARZAN/parser/ast.h"

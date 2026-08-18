@@ -7,13 +7,13 @@
 
 int main()
 {
-    // std::cout << "\nSolving a conjunction of NEXT formulae. Should be winning for the controller." << std::endl;
+    // std::cout << "\nSolving the formula number 2 of section 6 of our paper. Should be losing for the controller." << std::endl;
 
-    const std::string arenaPath = "../../TARZAN/benchmarks_games/models/production_cell/arena/production_cell.txt";
+    const std::string arenaPath = "../../../TARZAN/benchmarks_games/models/production_cell/arena/production_cell.txt";
     const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath);
 
-    const std::string formulaPath = "../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/and_next.txt";
-    const cltloc::ast::conjunctionOfFormulae phi = TARZAN::parseConjunctionOfFormulae(formulaPath);
+    const std::string formulaPath = "../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt";
+    const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
 
     // std::cout << phi.to_string() << std::endl;
     // std::cout << rts.to_string() << std::endl;

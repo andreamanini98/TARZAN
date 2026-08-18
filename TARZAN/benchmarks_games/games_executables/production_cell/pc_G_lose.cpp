@@ -7,12 +7,12 @@
 
 int main()
 {
-    // std::cout << "\nWinning reachability since we require that the production cell reaches depot in at most 11 time units." << std::endl;
+    // std::cout << "\nLosing safety since we require that the production cell never drops a plate and never visits the table location." << std::endl;
 
-    const std::string arenaPath = "../../TARZAN/benchmarks_games/models/production_cell/arena/production_cell.txt";
+    const std::string arenaPath = "../../../TARZAN/benchmarks_games/models/production_cell/arena/production_cell.txt";
     const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath);
 
-    const std::string formulaPath = "../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/reachability1.txt";
+    const std::string formulaPath = "../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/safety1.txt";
     const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
 
     region::RTSArena rts(arena, phi, false);
