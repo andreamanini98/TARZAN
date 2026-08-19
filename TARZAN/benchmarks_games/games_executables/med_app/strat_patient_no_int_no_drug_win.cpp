@@ -7,8 +7,8 @@ int main()
 {
     // Tbot can always complete a patient procedure without raising interrupts or making the drug expire.
 
-    constexpr std::string arenaName = "med_app.txt";
-    constexpr std::string formulaName = "safety1.txt";
+    const std::string arenaName = "med_app.txt";
+    const std::string formulaName = "safety1.txt";
 
     const std::string formulaPath = "../../../TARZAN/benchmarks_games/models/med_app/winning_conditions/" + formulaName;
     const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);

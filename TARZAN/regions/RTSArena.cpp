@@ -390,11 +390,14 @@ void printToProcessSpecs(const std::vector<RegionPtr>& toProcess) {
         }
     }
     
-    std::cout << "[TARZAN MPI PROFILING] INPUT 'toProcess' -\n"
-              << "  DATO: Numero di elementi: " << toProcess.size() << "\n"
-              << "  DATO: Dimensione media elemento: " << (toProcess.empty() ? 0 : totalBytes / toProcess.size()) << " bytes\n"
-              << "  DATO: Dimensione totale in memoria: " << totalBytes << " bytes (" 
-              << (double)totalBytes / 1024.0 / 1024.0 << " MB)\n" << std::endl;
+    std::cout << "{\n"
+              << "  type: toProcess,\n"
+              << "  elements: " << toProcess.size() << ",\n"
+              << "  avg_size: " << (toProcess.empty() ? 0 : totalBytes / toProcess.size()) << " bytes,\n"
+              << "  total_memory: " << totalBytes << " bytes (" 
+              << (double)totalBytes / 1024.0 / 1024.0 << " MB),\n"
+              << "}"
+              << std::endl;
 }
 
 // Funzione Helper per calcolare e stampare la dimensione reale di un regionSet (come setG o intersectionSet)
@@ -412,11 +415,14 @@ void printRegionSetSpecs(const std::string& setName, const regionSet& rSet) {
     
     totalBytes += bucketOverhead;
 
-    std::cout << "[TARZAN MPI PROFILING] INPUT '" << setName << "' -\n"
-              << "  DATO: Numero di elementi: " << rSet.size() << "\n"
-              << "  DATO: Dimensione media elemento (incluso overhead set): " << (rSet.empty() ? 0 : totalBytes / rSet.size()) << " bytes\n"
-              << "  DATO: Dimensione totale in memoria: " << totalBytes << " bytes (" 
-              << (double)totalBytes / 1024.0 / 1024.0 << " MB)\n" << std::endl;
+    std::cout << "{\n"
+      << "  type: " << setName << ",\n"
+      << "  elements: " << rSet.size() << ",\n"
+      << "  avg_size: " << (rSet.empty() ? 0 : totalBytes / rSet.size()) << " bytes,\n"
+      << "  total_memory: " << totalBytes << " bytes (" 
+      << (double)totalBytes / 1024.0 / 1024.0 << " MB),\n"
+      << "}"
+      << std::endl;
 }
 
 
@@ -432,7 +438,7 @@ void region::RTSArena::piFilter(const regionSet &setG,
 #if DEBUG_MEMORY
     static unsigned long long callCounter = 0;
     callCounter++;
-    std::cout << "CHIAMATA piFilter #" << callCounter << "\n";
+    std::cout << callCounter << " : ";
     
     // printToProcessSpecs(toProcess);
     printRegionSetSpecs("setG", setG);
@@ -1000,86 +1006,6 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
 
 inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae)
 {
-
-  if (formulae.empty())
-    throw std::logic_error("Formulae vector is empty!");
-
-  const int formulaeSize = static_cast<int>(formulae.size());
-
-  // Storage for valid region sets. At position i, the vector will contain the regions specified by formulae[i].
-#ifdef _OPENMP
-  std::vector<regionSet> formulaRegionSets(formulaeSize);
-#else
-  std::vector<regionSet> formulaRegionSets{};
-#endif
-
-#pragma omp parallel for schedule(dynamic) default(none) shared(formulaRegionSets, formulaeSize, formulae)
-  for (int i = 0; i < formulaeSize; i++)
-  {
-    const std::vector<regionSet> formulaRegions = getRegionsFromGeneralCLTLocFormula(formulae[i]);
-
-    if (formulaRegions.size() != 1)
-      throw std::logic_error("Wrong size of unary formula!");
-
-#ifdef _OPENMP
-    formulaRegionSets[i] = formulaRegions.at(0);
-#else
-    formulaRegionSets.push_back(formulaRegions.at(0));
-#endif
-  }
-
-  // Defining the starting set of states used during computation (it corresponds to the set in the back of formulaRegionSets).
-  regionSet setG = std::move(formulaRegionSets.back());
-  std::vector<RegionPtr> toProcess{};
-
-  for (const auto &region: setG)
-    toProcess.push_back(&region);
-
-  int currentIteration = 0;
-  const int totalStartingRegions = static_cast<int>(setG.size());
-
-  for (int i = formulaeSize - 1; i > 0; i--) 
-  {
-    regionSet currentStepSet = setG; 
-    bool changed = true;
-
-    while (changed) {
-      size_t sizeBefore = currentStepSet.size();
-
-      regionSet predecessors{};
-      piFilter(currentStepSet, toProcess, predecessors, {}, false, false, false);
-
-      const regionSet &targetFormula = formulaRegionSets[i - 1];
-      std::erase_if(predecessors, [&targetFormula](const auto &reg) { 
-          return !targetFormula.contains(reg); 
-          });
-
-      currentStepSet.merge(predecessors);
-
-      if (currentStepSet.size() == sizeBefore) changed = false;
-
-      toProcess.clear();
-      toProcess.reserve(setG.size());
-
-      for (const auto &region : currentStepSet) toProcess.push_back(&region);
-    }
-
-    setG = std::move(currentStepSet);
-    currentIteration++;
-  }
-
-  const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
-
-  std::cout << "Total iterations:       " << currentIteration << std::endl;
-  std::cout << "Total starting regions: " << totalStartingRegions << std::endl;
-  std::cout << "Total stored regions:   " << setG.size() << std::endl;
-  std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
-
-  return reachable;
-}
-
-inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae)
-{
     if (formulae.empty())
         throw std::logic_error("Formulae vector is empty!");
 
@@ -1106,6 +1032,13 @@ inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vec
         formulaRegionSets.push_back(formulaRegions.at(0));
 #endif
     }
+
+    // Starting the timer for measuring computation.
+#ifdef _OPENMP
+    const auto start = omp_get_wtime();
+#else
+    const auto start = std::chrono::high_resolution_clock::now();
+#endif
 
     // Defining the starting set of states used during computation (it corresponds to the set in the back of formulaRegionSets).
     regionSet setG = std::move(formulaRegionSets.back());
@@ -1141,6 +1074,16 @@ inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vec
         setG = std::move(currentStepSet);
         currentIteration++;
     }
+
+#ifdef _OPENMP
+    const auto end = omp_get_wtime();
+    const auto duration = end - start;
+    std::cout << "Total time:              " << duration * 1000000 << " microseconds" << std::endl;
+#else
+    const auto end = std::chrono::high_resolution_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    std::cout << "Total time:              " << duration << " microseconds" << std::endl;
+#endif
 
     const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
 
@@ -1181,6 +1124,13 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
         formulaRegionSets.push_back(formulaRegions.at(0));
 #endif
     }
+
+    // Starting the timer for measuring computation.
+#ifdef _OPENMP
+    const auto start = omp_get_wtime();
+#else
+    const auto start = std::chrono::high_resolution_clock::now();
+#endif
 
     // Defining the starting set of states used during computation (it corresponds to the set in the back of formulaRegionSets).
     regionSet setG = std::move(formulaRegionSets.back());
@@ -1295,6 +1245,16 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
                 toProcess.push_back(&region);
         }
     }
+
+#ifdef _OPENMP
+    const auto end = omp_get_wtime();
+    const auto duration = end - start;
+    std::cout << "Total time:              " << duration * 1000000 << " microseconds" << std::endl;
+#else
+    const auto end = std::chrono::high_resolution_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    std::cout << "Total time:              " << duration << " microseconds" << std::endl;
+#endif
 
     const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
 

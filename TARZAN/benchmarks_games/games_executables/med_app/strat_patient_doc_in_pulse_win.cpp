@@ -7,8 +7,8 @@ int main()
 {
     // Tbot can complete a single patient procedure by calling the doctor during pulse measurement.
 
-    constexpr std::string arenaName = "med_app.txt";
-    constexpr std::string formulaName = "and_next0.txt";
+    const std::string arenaName = "med_app.txt";
+    const std::string formulaName = "and_next0.txt";
 
     const std::string formulaPath = "../../../TARZAN/benchmarks_games/models/med_app/winning_conditions/" + formulaName;
     const cltloc::ast::conjunctionOfFormulae phi = TARZAN::parseConjunctionOfFormulae(formulaPath);

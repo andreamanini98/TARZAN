@@ -48,3 +48,6 @@ compile_commands.json
 CLAUDE.md
 
 out.txt
+
+graphs-test
+test_script.sh
