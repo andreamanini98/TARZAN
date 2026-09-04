@@ -22,6 +22,9 @@ namespace region
 
         std::unique_ptr<StrategyGraph> strategyGraph{};
 
+        // TODO: this is only a quick fix for the correction of the safety strategy synthesis algorithm as shown in the paper.
+        bool collectStatesInSafety;
+
 
         /**
          * @brief Initializes some fields of RTSArena.
@@ -30,6 +33,9 @@ namespace region
          */
         void initRTSArena(const timed_automaton::ast::timedArena &arena)
         {
+            // TODO: this is only a quick fix for the correction of the safety strategy synthesis algorithm as shown in the paper.
+            collectStatesInSafety = false;
+
             clocksIndices = arena.getClocksIndices();
             locationsToInt = arena.mapLocationsToInt();
             intToLocations = arena.mapIntToLocations();
@@ -293,10 +299,8 @@ namespace region
          *
          * @param formulae the conjunction of formulae to solve.
          * @return true if the controller wins, false otherwise.
-         */        
+         */
         [[nodiscard]] inline bool solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae);
-
-
 
 
     public:

@@ -363,7 +363,15 @@ inline void region::RTSArena::collectLegalRegionByPiStrategy(const Region &sourc
 #pragma omp critical
         {
             if (collectStrategyTransition)
-                strategyGraph->addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
+            {
+                // TODO: this is only a quick fix for the correction of the safety strategy synthesis algorithm as shown in the paper.
+                if (collectStatesInSafety)
+                {
+                    if (setG.contains(sourceRegion))
+                        strategyGraph->addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
+                } else
+                    strategyGraph->addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
+            }
         }
         threadLocalRegions[omp_get_thread_num()].push_back(sourceRegion);
 #else
@@ -709,7 +717,12 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
 
     // If the strategy graph must be computed, here we perform one last piFilter application to compute the strategy transitions.
     if (computeStrategyGraph)
+    {
+        // TODO: this is only a quick fix for the correction of the safety strategy synthesis algorithm as shown in the paper.
+        collectStatesInSafety = true;
         piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
+        collectStatesInSafety = false;
+    }
 
     // Ending the timer for measuring computation.
 #ifdef _OPENMP
