@@ -301,8 +301,9 @@ std::vector<networkOfTA::NetworkRegion> networkOfTA::NetworkRegion::getImmediate
 
                     std::vector<std::pair<int, const transition*>> enabledForThisTA;
 
+                    // Receiver guards are evaluated on the variables before the sender's update.
                     region::Region tmpRegJ = regions[regIdx_j].clone();
-                    tmpRegJ.set_variables(senderSuccessors[0].getVariables());
+                    tmpRegJ.set_variables(networkVariables);
 
                     for (const auto& transition_j : transitions[regIdx_j].get())
                     {
