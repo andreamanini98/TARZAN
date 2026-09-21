@@ -147,23 +147,29 @@ std::vector<regionSet> region::RTSArena::getRegionsFromGeneralCLTLocFormula(cons
 }
 
 
-inline bool region::RTSArena::skipRegion(const Region &reg, const regionSet &setG, const regionSet &intersectionSet, const bool skipPredecessorsInSetG) const
+bool region::RTSArena::violatesInvariant(const Region &reg) const
+{
+    // For a predecessor to be valid, it must satisfy the invariants.
+    if (!invariants.empty())
+        if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
+            return !isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices);
+
+    return false;
+}
+
+
+bool region::RTSArena::skipSourceRegion(const Region &reg,
+                                        const regionSet &setG,
+                                        const regionSet *intersectionSet,
+                                        const bool skipPredecessorsInSetG)
 {
     // If skipPredecessorsInSetG is true and the predecessor is already in setG, skip it.
     if (skipPredecessorsInSetG && setG.contains(reg))
         return true;
 
     // If a region does not belong to the intersection set, we do not insert it into filteredRegions.
-    if (!intersectionSet.empty() && !intersectionSet.contains(reg))
+    if (intersectionSet != nullptr && !intersectionSet->empty() && !intersectionSet->contains(reg))
         return true;
-
-    // For a predecessor to be valid, it must satisfy the invariants.
-    if (!invariants.empty())
-    {
-        if (const auto it = invariants.find(reg.getLocation()); it != invariants.end())
-            if (!isInvariantSatisfied(it->second, reg.getClockValuation(), clocksIndices))
-                return true;
-    }
 
     return false;
 }
@@ -264,7 +270,7 @@ inline bool region::RTSArena::piEnvironment(const Region &reg,
             bool checkOutTransitions = true;
 
             if (checkAllSuccessorsInvariants)
-                checkOutTransitions = !skipRegion(oldDelaySucc, {}, {}, false);
+                checkOutTransitions = !violatesInvariant(oldDelaySucc);
 
             if (checkOutTransitions)
                 everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
@@ -276,7 +282,7 @@ inline bool region::RTSArena::piEnvironment(const Region &reg,
 
                 // If the invariants are not satisfied, we simply go on with the next delay successor.
                 if (checkAllSuccessorsInvariants)
-                    checkOutTransitions = !skipRegion(oldDelaySucc, {}, {}, false);
+                    checkOutTransitions = !violatesInvariant(oldDelaySucc);
 
                 if (checkOutTransitions)
                 {
@@ -297,7 +303,7 @@ inline bool region::RTSArena::piEnvironment(const Region &reg,
                 bool checkOutTransitions = true;
 
                 if (checkAllSuccessorsInvariants)
-                    checkOutTransitions = !skipRegion(oldDelaySucc, {}, {}, false);
+                    checkOutTransitions = !violatesInvariant(oldDelaySucc);
 
                 if (checkOutTransitions)
                     everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
@@ -386,7 +392,7 @@ inline void region::RTSArena::collectLegalRegionByPiStrategy(const Region &sourc
 void region::RTSArena::piFilter(const regionSet &setG,
                                 const std::vector<RegionPtr> &toProcess,
                                 regionSet &filteredRegions,
-                                const regionSet &intersectionSet,
+                                const regionSet *intersectionSet,
                                 bool skipPredecessorsInSetG,
                                 bool checkAllSuccessorsInvariants,
                                 const bool skipIfSourceIsInSetG)
@@ -452,8 +458,8 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                     const Region regUnderAnalysis = delayPredecessorsToProcess.front();
                     delayPredecessorsToProcess.pop();
 
-                    // Check whether a region that is the source of a move must be skipped.
-                    if (skipRegion(regUnderAnalysis, setG, intersectionSet, skipPredecessorsInSetG))
+                    // Only invariant violations stop the backward walk.
+                    if (violatesInvariant(regUnderAnalysis))
                         continue;
 
                     const std::vector<Region> delayPreds = regUnderAnalysis.getImmediateDelayPredecessors();
@@ -469,8 +475,9 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                         delayPredecessorsToProcess.push(delayPred);
 
                     // If a delay predecessor has at least one incoming discrete transition (it has at least one discrete predecessor), then it can be the
-                    // source of a move, hence we may collect it in filteredRegions.
-                    if (regUnderAnalysis.hasAtLeastOneDiscretePredecessor(inTransitions[regUnderAnalysis.getLocation()], clocksIndices))
+                    // source of a move; hence we may collect it in filteredRegions.
+                    if (regUnderAnalysis.hasAtLeastOneDiscretePredecessor(inTransitions[regUnderAnalysis.getLocation()], clocksIndices)
+                        && !skipSourceRegion(regUnderAnalysis, setG, intersectionSet, skipPredecessorsInSetG))
                     {
                         if (computeStrategyGraph)
                         {
@@ -491,6 +498,9 @@ shared(inTransitions, outTransitions, clocksIndices, locationsToInt, maxConstant
                 // Checking the case in which a region with no delay predecessors is either initial or has an incoming discrete transition (has a discrete predecessor).
                 for (const auto &regStillToProcess: regionsStillToProcess)
                 {
+                    if (skipSourceRegion(regStillToProcess, setG, intersectionSet, skipPredecessorsInSetG))
+                        continue;
+
                     const bool isRegionInitial = std::ranges::find(initialRegions, regStillToProcess) != initialRegions.end();
                     // ReSharper disable once CppTooWideScopeInitStatement
                     const bool hasDiscPreds = regStillToProcess.hasAtLeastOneDiscretePredecessor(inTransitions[regStillToProcess.getLocation()], clocksIndices);
@@ -547,7 +557,7 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
     {
         currentIteration++;
 
-        piFilter(setG, toProcess, filteredRegions, setPhi, true, true, true);
+        piFilter(setG, toProcess, filteredRegions, &setPhi, true, true, true);
 
         if (filteredRegions.empty())
             break;
@@ -618,7 +628,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
     {
         currentIteration++;
 
-        piFilter(setG, toProcess, filteredRegions, setPhi, true, true, true);
+        piFilter(setG, toProcess, filteredRegions, &setPhi, true, true, true);
 
         if (filteredRegions.empty())
             break;
@@ -640,7 +650,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
     filteredRegions.clear();
 
     // In this case, we remove the constraints over the intersection set setPhi and put skipPredecessorsInSetG to false.
-    piFilter(setG, toProcess, filteredRegions, {}, false, true, true);
+    piFilter(setG, toProcess, filteredRegions, nullptr, false, true, true);
     setG.merge(filteredRegions);
 
     // Ending the timer for measuring computation.
@@ -698,7 +708,7 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
 
         const size_t oldSetGSize = setG.size();
 
-        piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
+        piFilter(setG, toProcess, filteredRegions, nullptr, false, true, false);
 
         // Computing the intersection between regions returned by piFilter and setG.
         std::erase_if(setG, [&filteredRegions](const auto &region) { return !filteredRegions.contains(region); });
@@ -720,7 +730,7 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
     {
         // TODO: this is only a quick fix for the correction of the safety strategy synthesis algorithm as shown in the paper.
         collectStatesInSafety = true;
-        piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
+        piFilter(setG, toProcess, filteredRegions, nullptr, false, true, false);
         collectStatesInSafety = false;
     }
 
@@ -953,7 +963,7 @@ inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vec
             const regionSet &targetFormula = formulaRegionSets[i - 1];
 
             regionSet predecessors{};
-            piFilter(currentStepSet, toProcess, predecessors, targetFormula, true, false, false);
+            piFilter(currentStepSet, toProcess, predecessors, &targetFormula, true, false, false);
 
             currentStepSet.merge(predecessors);
 
@@ -1057,7 +1067,7 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
                 strategyGraph->addNewStrategyTransitionMapToBack();
 
             // Here we put skipPredecessorsInSetG and skipIfSourceIsInSetG to false, since we may need to traverse cycles in the conjunction of next.
-            piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
+            piFilter(setG, toProcess, filteredRegions, nullptr, false, true, false);
 
             // SetG must be equal to the result of pi, we must not accumulate regions in setG during the repeated application of pi.
             setG = std::move(filteredRegions);
@@ -1103,7 +1113,7 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
             strategyGraph->addNewStrategyTransitionMapToBack();
 
         // Here we put skipPredecessorsInSetG and skipIfSourceIsInSetG to false, since we may need to traverse cycles in the conjunction of next.
-        piFilter(setG, toProcess, filteredRegions, {}, false, true, false);
+        piFilter(setG, toProcess, filteredRegions, nullptr, false, true, false);
 
         // SetG must be equal to the result of pi, we must not accumulate regions in setG during the repeated application of pi.
         setG = std::move(filteredRegions);

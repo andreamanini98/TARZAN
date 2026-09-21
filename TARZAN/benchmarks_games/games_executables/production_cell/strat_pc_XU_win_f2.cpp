@@ -20,6 +20,4 @@ int main()
     rts.strategyGraphToDot("../../../output/strategy_graphs/g1.dot", phi);
 
     return 0;
-
-    return 0;
 }

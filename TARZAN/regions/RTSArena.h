@@ -81,7 +81,16 @@ namespace region
 
 
         /**
-         * @brief Used to determine whether piFilter must ignore a region.
+         * @brief Used to determine whether piFilter must ignore a region that does not satisfy an invariant while waiting during a delay.
+         *
+         * @param reg the region to check.
+         * @return true if the region must be ignored, false otherwise.
+         */
+        [[nodiscard]] inline bool violatesInvariant(const Region &reg) const;
+
+
+        /**
+         * @brief Used to determine whether piFilter must ignore a region that is the source of a move.
          *
          * @param reg the region to check.
          * @param setG set of goal regions.
@@ -89,7 +98,10 @@ namespace region
          * @param skipPredecessorsInSetG if true, a predecessor already contained in setG is automatically considered valid.
          * @return true if the region must be ignored, false otherwise.
          */
-        [[nodiscard]] inline bool skipRegion(const Region &reg, const regionSet &setG, const regionSet &intersectionSet, bool skipPredecessorsInSetG) const;
+        [[nodiscard]] static inline bool skipSourceRegion(const Region &reg,
+                                                          const regionSet &setG,
+                                                          const regionSet *intersectionSet,
+                                                          bool skipPredecessorsInSetG);
 
 
         /**
@@ -390,7 +402,7 @@ namespace region
         void piFilter(const regionSet &setG,
                       const std::vector<RegionPtr> &toProcess,
                       regionSet &filteredRegions,
-                      const regionSet &intersectionSet,
+                      const regionSet *intersectionSet,
                       bool skipPredecessorsInSetG,
                       bool checkAllSuccessorsInvariants,
                       bool skipIfSourceIsInSetG);
