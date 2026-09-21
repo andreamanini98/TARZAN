@@ -244,28 +244,54 @@ inline void region::RTSArena::everyOutTransitionIsInSetG(const Region &reg,
 }
 
 
-inline bool region::RTSArena::piEnvironment(const Region &reg,
-                                            const regionSet &setG,
-                                            const absl::flat_hash_map<std::string, bool> &validActions,
-                                            const bool checkAllSuccessorsInvariants) const
+inline bool region::RTSArena::piEnvironmentForAction(const Region &reg,
+                                                     const regionSet &setG,
+                                                     const std::string &actionName,
+                                                     const bool checkAllSuccessorsInvariants) const
 {
-    // For every action, we check whether the sequence of delay successors satisfies the condition over the same action.
-    for (const auto &[actionName, isValid]: validActions)
+    // Needed to ensure that at least one discrete successor is computed, otherwise the game blocks.
+    bool atLeastOneDiscreteSuccessor = false;
+    bool isRegionValid = true;
+
+    Region oldDelaySucc = reg;
+    // ReSharper disable once CppTooWideScopeInitStatement
+    Region newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
+
+    // Check immediate fixpoint case.
+    if (oldDelaySucc == newDelaySucc)
     {
-        // The action must be valid, otherwise we skip it.
-        if (!isValid)
-            continue;
+        bool checkOutTransitions = true;
 
-        // Needed to ensure that at least one discrete successor is computed, otherwise the game blocks.
-        bool atLeastOneDiscreteSuccessor = false;
-        bool isRegionValid = true;
+        if (checkAllSuccessorsInvariants)
+            checkOutTransitions = !violatesInvariant(oldDelaySucc);
 
-        Region oldDelaySucc = reg;
-        // ReSharper disable once CppTooWideScopeInitStatement
-        Region newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
+        if (checkOutTransitions)
+            everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
+    } else
+    {
+        while (oldDelaySucc != newDelaySucc)
+        {
+            bool checkOutTransitions = true;
 
-        // Check immediate fixpoint case.
-        if (oldDelaySucc == newDelaySucc)
+            // If the invariants are not satisfied, we simply go on with the next delay successor.
+            if (checkAllSuccessorsInvariants)
+                checkOutTransitions = !violatesInvariant(oldDelaySucc);
+
+            if (checkOutTransitions)
+            {
+                everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
+
+                // If the region is not valid, by the pi_e condition we can stop checking the sequence of delay successors.
+                if (!isRegionValid)
+                    break;
+            }
+
+            oldDelaySucc = newDelaySucc;
+            newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
+        }
+
+        // The if is needed to skip the computation of everyOutTransitionIsInSetG if isRegionValid is already false.
+        if (isRegionValid)
         {
             bool checkOutTransitions = true;
 
@@ -274,45 +300,21 @@ inline bool region::RTSArena::piEnvironment(const Region &reg,
 
             if (checkOutTransitions)
                 everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
-        } else
-        {
-            while (oldDelaySucc != newDelaySucc)
-            {
-                bool checkOutTransitions = true;
-
-                // If the invariants are not satisfied, we simply go on with the next delay successor.
-                if (checkAllSuccessorsInvariants)
-                    checkOutTransitions = !violatesInvariant(oldDelaySucc);
-
-                if (checkOutTransitions)
-                {
-                    everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
-
-                    // If the region is not valid, by the pi_e condition we can stop checking the sequence of delay successors and try the next action.
-                    if (!isRegionValid)
-                        break;
-                }
-
-                oldDelaySucc = newDelaySucc;
-                newDelaySucc = oldDelaySucc.getImmediateDelaySuccessor(maxConstants);
-            }
-
-            // The if is needed to skip the computation of everyOutTransitionIsInSetG if isRegionValid is already false.
-            if (isRegionValid)
-            {
-                bool checkOutTransitions = true;
-
-                if (checkAllSuccessorsInvariants)
-                    checkOutTransitions = !violatesInvariant(oldDelaySucc);
-
-                if (checkOutTransitions)
-                    everyOutTransitionIsInSetG(oldDelaySucc, setG, actionName, isRegionValid, atLeastOneDiscreteSuccessor);
-            }
         }
-
-        if (atLeastOneDiscreteSuccessor && isRegionValid)
-            return true;
     }
+
+    return atLeastOneDiscreteSuccessor && isRegionValid;
+}
+
+
+inline bool region::RTSArena::piEnvironment(const Region &reg,
+                                            const regionSet &setG,
+                                            const absl::flat_hash_map<std::string, bool> &validActions,
+                                            const bool checkAllSuccessorsInvariants) const
+{
+    for (const auto &[actionName, isValid]: validActions)
+        if (isValid && piEnvironmentForAction(reg, setG, actionName, checkAllSuccessorsInvariants))
+            return true;
 
     return false;
 }
@@ -355,37 +357,47 @@ inline void region::RTSArena::collectLegalRegionByPiStrategy(const Region &sourc
                                                              const bool checkAllSuccessorsInvariants,
                                                              const bool skipIfSourceIsInSetG)
 {
-    // ReSharper disable once CppTooWideScopeInitStatement
     const bool isCurrentPlayerController = locationsToPlayers.at(sourceRegion.getLocation()) == CONTROLLER;
 
-    if (isCurrentPlayerController ? piController(validActions) : piEnvironment(sourceRegion, setG, validActions, checkAllSuccessorsInvariants))
-    {
-        bool collectStrategyTransition = true;
+    // (1) Is the REGION winning? Some action suffices (solving is unchanged).
+    const bool regionIsWinning = isCurrentPlayerController
+                                     ? piController(validActions)
+                                     : piEnvironment(sourceRegion, setG, validActions, checkAllSuccessorsInvariants);
 
-        if (skipIfSourceIsInSetG)
-            collectStrategyTransition = !setG.contains(sourceRegion);
+    if (!regionIsWinning)
+        return;
+
+    // (2) Is THIS EDGE winning? Its own action must guarantee setG (as mu in the paper).
+    const std::string &act = arenaTransition.action.first;
+    const auto it = validActions.find(act);
+    const bool actValidAtReg = it != validActions.end() && it->second;
+
+    const bool edgeIsWinning = isCurrentPlayerController
+                                   ? actValidAtReg
+                                   : actValidAtReg && piEnvironmentForAction(sourceRegion, setG, act, checkAllSuccessorsInvariants);
+
+    // (3) Which edges to record.
+    bool collectStrategyTransition = edgeIsWinning;
+
+    if (skipIfSourceIsInSetG)
+        collectStrategyTransition = collectStrategyTransition && !setG.contains(sourceRegion);
+
+    // Safety synthesis: only edges whose source is in setG (Algorithm 5).
+    if (collectStatesInSafety)
+        collectStrategyTransition = collectStrategyTransition && setG.contains(sourceRegion);
+
 #ifdef _OPENMP
-        // TODO: It may be beneficial to adopt the same technique for work splitting and merging results as done for threadLocalRegions instead of using critical.
 #pragma omp critical
-        {
-            if (collectStrategyTransition)
-            {
-                // TODO: this is only a quick fix for the correction of the safety strategy synthesis algorithm as shown in the paper.
-                if (collectStatesInSafety)
-                {
-                    if (setG.contains(sourceRegion))
-                        strategyGraph->addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
-                } else
-                    strategyGraph->addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
-            }
-        }
-        threadLocalRegions[omp_get_thread_num()].push_back(sourceRegion);
-#else
+    {
         if (collectStrategyTransition)
             strategyGraph->addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
-        threadLocalRegions[0].push_back(sourceRegion);
-#endif
     }
+    threadLocalRegions[omp_get_thread_num()].push_back(sourceRegion);
+#else
+    if (collectStrategyTransition)
+        strategyGraph->addStrategyTransition(sourceRegion, arenaTransition, targetRegion, cv);
+    threadLocalRegions[0].push_back(sourceRegion);
+#endif
 }
 
 
@@ -600,6 +612,7 @@ bool region::RTSArena::timedReachability(regionSet &setG, std::vector<RegionPtr>
 }
 
 
+// TODO: this may need adaptation according to the new paper idea on how to solve this (the new layer idea).
 bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter)
 {
     // Starting the timer for measuring computation.

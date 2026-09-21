@@ -147,6 +147,22 @@ namespace region
 
 
         /**
+         * @brief Determines whether an environment region satisfies the pi_e condition for a SINGLE action.
+         *
+         * @param reg the region over which the pi_e condition must be evaluated.
+         * @param setG set of goal regions.
+         * @param actionName the action chosen by the controller.
+         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants.
+         * @return true if, for every delay successor of reg, every transition labeled actionName leads into setG
+         *         (and at least one such transition is enabled), false otherwise.
+         */
+        [[nodiscard]] inline bool piEnvironmentForAction(const Region &reg,
+                                                         const regionSet &setG,
+                                                         const std::string &actionName,
+                                                         bool checkAllSuccessorsInvariants) const;
+
+
+        /**
          * @brief Determines whether an environment region satisfies the pi_e condition as detailed in our paper.
          *
          * @param reg the region over which the pi_e condition must be evaluated.
