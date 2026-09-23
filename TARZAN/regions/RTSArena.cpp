@@ -19,7 +19,7 @@
 #include "tbb/enumerable_thread_specific.h"
 #endif
 
-#define DEBUG_MEMORY 1
+#define DEBUG_MEMORY 0
 
 // #define RTSARENA_DEBUG
 #define THROW_NESTEDCLTLOC_EXCEPTION
@@ -441,7 +441,7 @@ void region::RTSArena::piFilter(const regionSet &setG,
     std::cout << callCounter << " : ";
     
     // printToProcessSpecs(toProcess);
-    printRegionSetSpecs("setG", setG);
+       printRegionSetSpecs("setG", setG);
     // printRegionSetSpecs("intersectionSet", intersectionSet);
 #endif
 
@@ -476,7 +476,7 @@ constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
     
     // Usign a threshold here is just degrading the performance
     const bool multi_thread = true;
-    const size_t BATCH_SIZE = (multi_thread) ? 2 : totalRegions;
+    const size_t BATCH_SIZE = (multi_thread) ? 1 : totalRegions;
     const size_t numThreads = (multi_thread) ? oneapi::tbb::info::default_concurrency() : 1;
     const size_t estimatedSize = (totalRegions / numThreads) * 2;
 
