@@ -22,6 +22,9 @@ namespace region
 
         std::unique_ptr<StrategyGraph> strategyGraph{};
 
+        // TODO: this is only a quick fix for the correction of the safety strategy synthesis algorithm as shown in the paper.
+        bool collectStatesInSafety;
+
 
         /**
          * @brief Initializes some fields of RTSArena.
@@ -30,6 +33,9 @@ namespace region
          */
         void initRTSArena(const timed_automaton::ast::timedArena &arena)
         {
+            // TODO: this is only a quick fix for the correction of the safety strategy synthesis algorithm as shown in the paper.
+            collectStatesInSafety = false;
+
             clocksIndices = arena.getClocksIndices();
             locationsToInt = arena.mapLocationsToInt();
             intToLocations = arena.mapIntToLocations();
@@ -75,7 +81,16 @@ namespace region
 
 
         /**
-         * @brief Used to determine whether piFilter must ignore a region.
+         * @brief Used to determine whether piFilter must ignore a region that does not satisfy an invariant while waiting during a delay.
+         *
+         * @param reg the region to check.
+         * @return true if the region must be ignored, false otherwise.
+         */
+        [[nodiscard]] inline bool violatesInvariant(const Region &reg) const;
+
+
+        /**
+         * @brief Used to determine whether piFilter must ignore a region that is the source of a move.
          *
          * @param reg the region to check.
          * @param setG set of goal regions.
@@ -83,7 +98,10 @@ namespace region
          * @param skipPredecessorsInSetG if true, a predecessor already contained in setG is automatically considered valid.
          * @return true if the region must be ignored, false otherwise.
          */
-        [[nodiscard]] inline bool skipRegion(const Region &reg, const regionSet &setG, const regionSet &intersectionSet, bool skipPredecessorsInSetG) const;
+        [[nodiscard]] static inline bool skipSourceRegion(const Region &reg,
+                                                          const regionSet &setG,
+                                                          const regionSet *intersectionSet,
+                                                          bool skipPredecessorsInSetG);
 
 
         /**
@@ -126,6 +144,22 @@ namespace region
                                                const std::string &action,
                                                bool &isRegionValid,
                                                bool &atLeastOneDiscreteSuccessor) const;
+
+
+        /**
+         * @brief Determines whether an environment region satisfies the pi_e condition for a SINGLE action.
+         *
+         * @param reg the region over which the pi_e condition must be evaluated.
+         * @param setG set of goal regions.
+         * @param actionName the action chosen by the controller.
+         * @param checkAllSuccessorsInvariants if true, all delay successors of environment regions must additionally satisfy invariants.
+         * @return true if, for every delay successor of reg, every transition labeled actionName leads into setG
+         *         (and at least one such transition is enabled), false otherwise.
+         */
+        [[nodiscard]] inline bool piEnvironmentForAction(const Region &reg,
+                                                         const regionSet &setG,
+                                                         const std::string &actionName,
+                                                         bool checkAllSuccessorsInvariants) const;
 
 
         /**
@@ -293,10 +327,8 @@ namespace region
          *
          * @param formulae the conjunction of formulae to solve.
          * @return true if the controller wins, false otherwise.
-         */        
+         */
         [[nodiscard]] inline bool solveGameWithNestedUntilConjunction(const std::vector<cltloc::ast::generalCLTLocFormula> &formulae);
-
-
 
 
     public:
@@ -386,7 +418,7 @@ namespace region
         void piFilter(const regionSet &setG,
                       const std::vector<RegionPtr> &toProcess,
                       regionSet &filteredRegions,
-                      const regionSet &intersectionSet,
+                      const regionSet *intersectionSet,
                       bool skipPredecessorsInSetG,
                       bool checkAllSuccessorsInvariants,
                       bool skipIfSourceIsInSetG);
