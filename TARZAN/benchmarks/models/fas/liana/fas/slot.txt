@@ -1,0 +1,37 @@
+create automaton slot
+{
+    clocks
+    {
+        slotTimer, absTime;
+    }
+
+    actions
+    {
+        cycleReset, slotTimerReset;
+    }
+
+    integers
+    {
+        TR1Channel, channelLZ, channelCALL, channelALARM;
+    }
+
+    locations
+    {
+        S0 <ini: F, urg: T>,
+        S1 <ini: F, inv: [(slotTimer, <=, 25)]>,
+        S2 <ini: F, inv: [(slotTimer, <=, 25)]>,
+        S3 <ini: T, inv: [(slotTimer, <=, 25)]>;
+    }
+
+    transitions
+    {
+        (S1, cycleReset??, [], [absTime], [TR1Channel = channelLZ], S0),
+        (S0, slotTimerReset!!, [], [slotTimer], S3),
+        (S1, slotTimerReset!!, [(slotTimer, >=, 25), (absTime, <, 9450)], [slotTimer], [TR1Channel = channelLZ], S3),
+        (S2, slotTimerReset!!, [(slotTimer, >=, 25)], [slotTimer], [TR1Channel = channelCALL], S1),
+        (S3, slotTimerReset!!, [(slotTimer, >=, 25)], [slotTimer], [TR1Channel = channelALARM], S2),
+        (S0, cycleReset??, [], [absTime], S0),
+        (S2, cycleReset??, [], [absTime], S2),
+        (S3, cycleReset??, [], [absTime], S3);
+    }
+}

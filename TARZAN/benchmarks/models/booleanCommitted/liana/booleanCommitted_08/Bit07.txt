@@ -1,0 +1,37 @@
+create automaton Bit07
+{
+    clocks
+    {
+        x;
+    }
+
+    actions
+    {
+        tau;
+    }
+
+    integers
+    {
+        ctr07, parity;
+    }
+
+    locations
+    {
+        s0 <ini: T>,
+        c0 <ini: F, com: T>,
+        d0 <ini: F, com: T>,
+        s1 <ini: F>,
+        c1 <ini: F, com: T>,
+        d1 <ini: F, com: T>;
+    }
+
+    transitions
+    {
+        (s0, tau, [(x, ==, 7)], [x], c0),
+        (c0, tau, [], [], [ctr07 = 1 - ctr07], d0),
+        (d0, tau, [], [], [parity = 1 - parity], s1),
+        (s1, tau, [(x, ==, 7)], [x], c1),
+        (c1, tau, [], [], [ctr07 = 1 - ctr07], d1),
+        (d1, tau, [], [], [parity = 1 - parity], s0);
+    }
+}

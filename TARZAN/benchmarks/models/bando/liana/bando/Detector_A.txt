@@ -1,0 +1,50 @@
+create automaton Detector_A
+{
+    clocks
+    {
+    }
+
+    actions
+    {
+        tau, A_check;
+    }
+
+    integers
+    {
+        A_err, A_res, A_S1, A_S2, A_Pf, A_Pn;
+    }
+
+    locations
+    {
+        calc_res <ini: F, com: T>,
+        ex1_S1 <ini: F, com: T>,
+        ex1_S2 <ini: F, com: T>,
+        ex_Pf <ini: F, com: T>,
+        ex_Pn <ini: F, com: T>,
+        ex_S1 <ini: F, com: T>,
+        ex_S2 <ini: F, com: T>,
+        wait_call <ini: T>;
+    }
+
+    transitions
+    {
+        (calc_res, tau, [], A_err == 0, [], [A_res = 0], wait_call),
+        (calc_res, tau, [], A_err > 0 && A_err <= 3, [], [A_res = 1], wait_call),
+        (calc_res, tau, [], A_err > 3, [], [A_res = 2], wait_call),
+        (ex1_S1, tau, [], A_S1 == 1, [], calc_res),
+        (ex1_S1, tau, [], A_S1 == 0, [], ex1_S2),
+        (ex1_S2, tau, [], A_S2 == 1, [], calc_res),
+        (ex1_S2, tau, [], A_S2 == 0, [], wait_call),
+        (ex_Pf, tau, [], A_Pf == 0, [], ex1_S1),
+        (ex_Pf, tau, [], A_Pf == 1, [], ex_S1),
+        (ex_Pn, tau, [], A_Pn == 0, [], ex1_S1),
+        (ex_Pn, tau, [], A_Pn == 1, [], ex_S2),
+        (ex_S1, tau, [], A_S1 == 1, [], ex_Pn),
+        (ex_S1, tau, [], A_S1 == 0 && A_err > 3, [], ex_Pn),
+        (ex_S1, tau, [], A_S1 == 0 && A_err <= 3, [], [A_err = A_err + 1], ex_Pn),
+        (ex_S2, tau, [], A_S2 == 1, [], ex1_S1),
+        (ex_S2, tau, [], A_S2 == 0 && A_err <= 3, [], [A_err = A_err + 1], wait_call),
+        (ex_S2, tau, [], A_S2 == 0 && A_err > 3, [], wait_call),
+        (wait_call, A_check?, [], [], [A_res = 0], ex_Pf);
+    }
+}

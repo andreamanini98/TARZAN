@@ -1,0 +1,118 @@
+// Auto-generated XTA model for 6 committed keys
+
+int gate;
+
+process key01() {
+    clock x;
+    state
+        q0,
+        q1,
+        C,
+        done;
+    commit
+        C;
+    init
+        q0;
+    trans
+        q0 -> q1 { guard x == 1; assign x = 0; },
+        q1 -> C { guard x == 1; assign x = 0; },
+        C -> done { assign gate = gate + 1; };
+}
+
+process key02() {
+    clock x;
+    state
+        q0,
+        q1,
+        C,
+        done;
+    commit
+        C;
+    init
+        q0;
+    trans
+        q0 -> q1 { guard x == 2; assign x = 0; },
+        q1 -> C { guard x == 2; assign x = 0; },
+        C -> done { assign gate = gate + 1; };
+}
+
+process key03() {
+    clock x;
+    state
+        q0,
+        q1,
+        C,
+        done;
+    commit
+        C;
+    init
+        q0;
+    trans
+        q0 -> q1 { guard x == 3; assign x = 0; },
+        q1 -> C { guard x == 3; assign x = 0; },
+        C -> done { assign gate = gate + 1; };
+}
+
+process key04() {
+    clock x;
+    state
+        q0,
+        q1,
+        C,
+        done;
+    commit
+        C;
+    init
+        q0;
+    trans
+        q0 -> q1 { guard x == 4; assign x = 0; },
+        q1 -> C { guard x == 4; assign x = 0; },
+        C -> done { assign gate = gate + 1; };
+}
+
+process key05() {
+    clock x;
+    state
+        q0,
+        q1,
+        C,
+        done;
+    commit
+        C;
+    init
+        q0;
+    trans
+        q0 -> q1 { guard x == 5; assign x = 0; },
+        q1 -> C { guard x == 5; assign x = 0; },
+        C -> done { assign gate = gate + 1; };
+}
+
+process key06() {
+    clock x;
+    state
+        q0,
+        q1,
+        C,
+        done;
+    commit
+        C;
+    init
+        q0;
+    trans
+        q0 -> q1 { guard x == 6; assign x = 0; },
+        q1 -> C { guard x == 6; assign x = 0; },
+        C -> done { assign gate = gate + 1; };
+}
+
+process unlocker() {
+    clock y;
+    state
+        u0,
+        goal;
+    init
+        u0;
+    trans
+        u0 -> goal { guard y == 12 && gate == 6; };
+}
+
+system key01, key02, key03, key04, key05, key06, unlocker;

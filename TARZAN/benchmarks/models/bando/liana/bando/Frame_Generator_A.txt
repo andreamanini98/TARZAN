@@ -1,0 +1,38 @@
+create automaton Frame_Generator_A
+{
+    clocks
+    {
+    }
+
+    actions
+    {
+        tau, A_new_Pn, A_reset, A_frame;
+    }
+
+    integers
+    {
+        A_Pn, A_eof, A_start, A_stop, A_T4, A_msg, A_no;
+    }
+
+    locations
+    {
+        first <ini: F>,
+        last <ini: F>,
+        msg <ini: F>,
+        set_msg <ini: F, com: T>,
+        start <ini: T>;
+    }
+
+    transitions
+    {
+        (first, A_new_Pn?, [], [], [A_Pn = 0], msg),
+        (last, A_new_Pn?, [], [], [A_Pn = 1, A_eof = 1, A_start = 0], start),
+        (msg, A_new_Pn?, [], A_T4 == 1 && A_msg == 0, [], [A_Pn = 0, A_stop = 1], last),
+        (msg, A_new_Pn?, [], A_msg > 0, [], [A_Pn = 1, A_msg = A_msg - 1], msg),
+        (msg, A_new_Pn?, [], A_T4 == 0 && A_msg == 0, [], [A_no = A_no + 1, A_Pn = 0, A_start = 1], set_msg),
+        (msg, A_reset?, [], [], start),
+        (set_msg, tau, [], A_no < 20, [], [A_msg = 2], msg),
+        (set_msg, tau, [], A_no > 16 && A_no <= 20, [], [A_msg = 8, A_T4 = 1], msg),
+        (start, A_frame?, [], [], [A_no = 1, A_msg = 10, A_eof = 0, A_stop = 0, A_T4 = 0], first);
+    }
+}

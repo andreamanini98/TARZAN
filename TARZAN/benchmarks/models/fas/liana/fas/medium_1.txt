@@ -1,0 +1,37 @@
+create automaton medium_1
+{
+    clocks
+    {
+    }
+
+    actions
+    {
+        tau, RX_0_1, RX_1_1, RX_2_1, RX_3_1, RX_4_1, TX_0_1, TX_1_1, TX_2_1, TX_3_1, TX_4_1;
+    }
+
+    integers
+    {
+        medium_1_currentMsg, gBlockedChannel, gOffSensor, gSensorID;
+    }
+
+    locations
+    {
+        transmit <ini: F, urg: T>,
+        idle <ini: T>;
+    }
+
+    transitions
+    {
+        (transmit, tau, [], gBlockedChannel == 1 || gOffSensor == gSensorID, [], idle),
+        (transmit, RX_0_1!!, [], (gBlockedChannel < 1 || gBlockedChannel > 1) && (gOffSensor < gSensorID || gOffSensor > gSensorID) && medium_1_currentMsg == 0, [], idle),
+        (transmit, RX_1_1!!, [], (gBlockedChannel < 1 || gBlockedChannel > 1) && (gOffSensor < gSensorID || gOffSensor > gSensorID) && medium_1_currentMsg == 1, [], idle),
+        (transmit, RX_2_1!!, [], (gBlockedChannel < 1 || gBlockedChannel > 1) && (gOffSensor < gSensorID || gOffSensor > gSensorID) && medium_1_currentMsg == 2, [], idle),
+        (transmit, RX_3_1!!, [], (gBlockedChannel < 1 || gBlockedChannel > 1) && (gOffSensor < gSensorID || gOffSensor > gSensorID) && medium_1_currentMsg == 3, [], idle),
+        (transmit, RX_4_1!!, [], (gBlockedChannel < 1 || gBlockedChannel > 1) && (gOffSensor < gSensorID || gOffSensor > gSensorID) && medium_1_currentMsg == 4, [], idle),
+        (idle, TX_0_1?, [], [], [medium_1_currentMsg = 0], transmit),
+        (idle, TX_1_1?, [], [], [medium_1_currentMsg = 1], transmit),
+        (idle, TX_2_1?, [], [], [medium_1_currentMsg = 2], transmit),
+        (idle, TX_3_1?, [], [], [medium_1_currentMsg = 3], transmit),
+        (idle, TX_4_1?, [], [], [medium_1_currentMsg = 4], transmit);
+    }
+}

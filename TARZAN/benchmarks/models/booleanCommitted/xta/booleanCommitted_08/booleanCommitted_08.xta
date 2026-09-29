@@ -1,0 +1,115 @@
+int parity, ctr01, ctr02, ctr03, ctr04, ctr05, ctr06, ctr07, ctr08;
+
+process Bit01() {
+  clock x;
+  state s0, c0, d0, s1, c1, d1;
+  commit c0, d0, c1, d1;
+  init s0;
+  trans
+    s0 -> c0 { guard x == 1; assign x = 0; },
+    c0 -> d0 { assign ctr01 = 1 - ctr01; },
+    d0 -> s1 { assign parity = 1 - parity; },
+    s1 -> c1 { guard x == 1; assign x = 0; },
+    c1 -> d1 { assign ctr01 = 1 - ctr01; },
+    d1 -> s0 { assign parity = 1 - parity; };
+}
+
+process Bit02() {
+  clock x;
+  state s0, c0, d0, s1, c1, d1;
+  commit c0, d0, c1, d1;
+  init s0;
+  trans
+    s0 -> c0 { guard x == 2; assign x = 0; },
+    c0 -> d0 { assign ctr02 = 1 - ctr02; },
+    d0 -> s1 { assign parity = 1 - parity; },
+    s1 -> c1 { guard x == 2; assign x = 0; },
+    c1 -> d1 { assign ctr02 = 1 - ctr02; },
+    d1 -> s0 { assign parity = 1 - parity; };
+}
+
+process Bit03() {
+  clock x;
+  state s0, c0, d0, s1, c1, d1;
+  commit c0, d0, c1, d1;
+  init s0;
+  trans
+    s0 -> c0 { guard x == 3; assign x = 0; },
+    c0 -> d0 { assign ctr03 = 1 - ctr03; },
+    d0 -> s1 { assign parity = 1 - parity; },
+    s1 -> c1 { guard x == 3; assign x = 0; },
+    c1 -> d1 { assign ctr03 = 1 - ctr03; },
+    d1 -> s0 { assign parity = 1 - parity; };
+}
+
+process Bit04() {
+  clock x;
+  state s0, c0, d0, s1, c1, d1;
+  commit c0, d0, c1, d1;
+  init s0;
+  trans
+    s0 -> c0 { guard x == 4; assign x = 0; },
+    c0 -> d0 { assign ctr04 = 1 - ctr04; },
+    d0 -> s1 { assign parity = 1 - parity; },
+    s1 -> c1 { guard x == 4; assign x = 0; },
+    c1 -> d1 { assign ctr04 = 1 - ctr04; },
+    d1 -> s0 { assign parity = 1 - parity; };
+}
+
+process Bit05() {
+  clock x;
+  state s0, c0, d0, s1, c1, d1;
+  commit c0, d0, c1, d1;
+  init s0;
+  trans
+    s0 -> c0 { guard x == 5; assign x = 0; },
+    c0 -> d0 { assign ctr05 = 1 - ctr05; },
+    d0 -> s1 { assign parity = 1 - parity; },
+    s1 -> c1 { guard x == 5; assign x = 0; },
+    c1 -> d1 { assign ctr05 = 1 - ctr05; },
+    d1 -> s0 { assign parity = 1 - parity; };
+}
+
+process Bit06() {
+  clock x;
+  state s0, c0, d0, s1, c1, d1;
+  commit c0, d0, c1, d1;
+  init s0;
+  trans
+    s0 -> c0 { guard x == 6; assign x = 0; },
+    c0 -> d0 { assign ctr06 = 1 - ctr06; },
+    d0 -> s1 { assign parity = 1 - parity; },
+    s1 -> c1 { guard x == 6; assign x = 0; },
+    c1 -> d1 { assign ctr06 = 1 - ctr06; },
+    d1 -> s0 { assign parity = 1 - parity; };
+}
+
+process Bit07() {
+  clock x;
+  state s0, c0, d0, s1, c1, d1;
+  commit c0, d0, c1, d1;
+  init s0;
+  trans
+    s0 -> c0 { guard x == 7; assign x = 0; },
+    c0 -> d0 { assign ctr07 = 1 - ctr07; },
+    d0 -> s1 { assign parity = 1 - parity; },
+    s1 -> c1 { guard x == 7; assign x = 0; },
+    c1 -> d1 { assign ctr07 = 1 - ctr07; },
+    d1 -> s0 { assign parity = 1 - parity; };
+}
+
+process Bit08() {
+  clock x;
+  state s0, c0, d0, s1, c1, d1;
+  commit c0, d0, c1, d1;
+  init s0;
+  trans
+    s0 -> c0 { guard x == 8; assign x = 0; },
+    c0 -> d0 { assign ctr08 = 1 - ctr08; },
+    d0 -> s1 { assign parity = 1 - parity; },
+    s1 -> c1 { guard x == 8; assign x = 0; },
+    c1 -> d1 { assign ctr08 = 1 - ctr08; },
+    d1 -> s0 { assign parity = 1 - parity; };
+}
+
+system Bit01, Bit02, Bit03, Bit04, Bit05, Bit06, Bit07, Bit08;

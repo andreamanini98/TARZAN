@@ -1,0 +1,33 @@
+create automaton Bit06
+{
+    clocks
+    {
+        x;
+    }
+
+    actions
+    {
+        tau, flip;
+    }
+
+    integers
+    {
+        ctr06;
+    }
+
+    locations
+    {
+        s0 <ini: T>,
+        c0 <ini: F, com: T>,
+        s1 <ini: F>,
+        c1 <ini: F, com: T>;
+    }
+
+    transitions
+    {
+        (s0, tau, [(x, ==, 6)], [x], c0),
+        (c0, flip!!, [], [], [ctr06 = 1 - ctr06], s1),
+        (s1, tau, [(x, ==, 6)], [x], c1),
+        (c1, flip!!, [], [], [ctr06 = 1 - ctr06], s0);
+    }
+}

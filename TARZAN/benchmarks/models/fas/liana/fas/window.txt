@@ -1,0 +1,30 @@
+create automaton window
+{
+    clocks
+    {
+        windowTimer;
+    }
+
+    actions
+    {
+        tau, windowTimerReset;
+    }
+
+    integers
+    {
+        gCurrentWindow;
+    }
+
+    locations
+    {
+        S0 <ini: F, urg: T>,
+        S1 <ini: T, inv: [(windowTimer, <=, 75)]>;
+    }
+
+    transitions
+    {
+        (S0, tau, [], gCurrentWindow < 125, [], [gCurrentWindow = gCurrentWindow + 1], S1),
+        (S0, tau, [], gCurrentWindow == 125, [], [gCurrentWindow = 0], S1),
+        (S1, windowTimerReset!!, [(windowTimer, >=, 75)], [windowTimer], S0);
+    }
+}

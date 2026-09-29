@@ -1,0 +1,30 @@
+create automaton Ticker
+{
+    clocks
+    {
+        p;
+    }
+
+    actions
+    {
+        tau, tick;
+    }
+
+    integers
+    {
+        d1;
+    }
+
+    locations
+    {
+        go <ini: T, urg: T>,
+        wait <ini: F, inv: [(p, <=, 1)]>;
+    }
+
+    transitions
+    {
+        (go, tick!, [], d1 < 7, [], go),
+        (go, tick!, [], d1 == 7, [p], wait),
+        (wait, tau, [(p, ==, 1)], [], go);
+    }
+}

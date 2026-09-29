@@ -1,0 +1,48 @@
+create automaton blocker
+{
+    clocks
+    {
+        x;
+    }
+
+    actions
+    {
+        tau;
+    }
+
+    integers
+    {
+        gBlockedChannel;
+    }
+
+    locations
+    {
+        BLOCKED <ini: F>,
+        INIT_BLOCKED <ini: F>,
+        FREE <ini: F, inv: [(x, <=, 64)]>,
+        S0 <ini: T, urg: T>;
+    }
+
+    transitions
+    {
+        (INIT_BLOCKED, tau, [], [x], [gBlockedChannel = 0 - 1], FREE),
+        (BLOCKED, tau, [(x, >=, 64)], [x], [gBlockedChannel = 0], BLOCKED),
+        (BLOCKED, tau, [(x, >=, 64)], [x], [gBlockedChannel = 1], BLOCKED),
+        (BLOCKED, tau, [(x, >=, 64)], [x], [gBlockedChannel = 2], BLOCKED),
+        (BLOCKED, tau, [(x, >=, 64)], [x], [gBlockedChannel = 3], BLOCKED),
+        (BLOCKED, tau, [(x, >=, 64)], [x], [gBlockedChannel = 0 - 1], FREE),
+        (FREE, tau, [], [x], [gBlockedChannel = 0], BLOCKED),
+        (FREE, tau, [], [x], [gBlockedChannel = 1], BLOCKED),
+        (FREE, tau, [], [x], [gBlockedChannel = 2], BLOCKED),
+        (FREE, tau, [], [x], [gBlockedChannel = 3], BLOCKED),
+        (INIT_BLOCKED, tau, [], [x], [gBlockedChannel = 0], BLOCKED),
+        (INIT_BLOCKED, tau, [], [x], [gBlockedChannel = 1], BLOCKED),
+        (INIT_BLOCKED, tau, [], [x], [gBlockedChannel = 2], BLOCKED),
+        (INIT_BLOCKED, tau, [], [x], [gBlockedChannel = 3], BLOCKED),
+        (S0, tau, [], [], [gBlockedChannel = 0], INIT_BLOCKED),
+        (S0, tau, [], [], [gBlockedChannel = 1], INIT_BLOCKED),
+        (S0, tau, [], [], [gBlockedChannel = 2], INIT_BLOCKED),
+        (S0, tau, [], [], [gBlockedChannel = 3], INIT_BLOCKED),
+        (S0, tau, [], [x], [gBlockedChannel = 0 - 1], FREE);
+    }
+}

@@ -1,0 +1,33 @@
+create automaton Bit05
+{
+    clocks
+    {
+        x;
+    }
+
+    actions
+    {
+        tau, flip;
+    }
+
+    integers
+    {
+        ctr05;
+    }
+
+    locations
+    {
+        s0 <ini: T>,
+        c0 <ini: F, com: T>,
+        s1 <ini: F>,
+        c1 <ini: F, com: T>;
+    }
+
+    transitions
+    {
+        (s0, tau, [(x, ==, 5)], [x], c0),
+        (c0, flip!!, [], [], [ctr05 = 1 - ctr05], s1),
+        (s1, tau, [(x, ==, 5)], [x], c1),
+        (c1, flip!!, [], [], [ctr05 = 1 - ctr05], s0);
+    }
+}

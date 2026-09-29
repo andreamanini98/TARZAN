@@ -1,0 +1,69 @@
+create automaton sensor_1
+{
+    clocks
+    {
+        absTime;
+    }
+
+    actions
+    {
+        tau, cycleReset, RX_1_0, RX_1_1, RX_1_2, RX_1_3, TX_0_0, TX_0_1, TX_0_2, TX_0_3;
+    }
+
+    integers
+    {
+        gSensorID, channelLZ, channelCALL, channelALARM;
+    }
+
+    locations
+    {
+        slot_end <ini: F, inv: [(absTime, <=, 150)]>,
+        third_try <ini: F, inv: [(absTime, <=, 137)]>,
+        S0 <ini: F, inv: [(absTime, <=, 125)]>,
+        second_try <ini: F, inv: [(absTime, <=, 112)]>,
+        window_end <ini: F, inv: [(absTime, <=, 9450)]>,
+        S1 <ini: F, inv: [(absTime, <=, 100)]>,
+        first_try <ini: F, inv: [(absTime, <=, 87)]>,
+        idle <ini: T, inv: [(absTime, <=, 79)]>;
+    }
+
+    transitions
+    {
+        (slot_end, cycleReset??, [], [absTime], idle),
+        (window_end, cycleReset??, [], [absTime], idle),
+        (slot_end, tau, [(absTime, >=, 150)], [], window_end),
+        (slot_end, RX_1_0??, [], channelCALL == 0, [], window_end),
+        (slot_end, RX_1_1??, [], channelCALL == 1, [], window_end),
+        (slot_end, RX_1_2??, [], channelCALL == 2, [], window_end),
+        (slot_end, RX_1_3??, [], channelCALL == 3, [], window_end),
+        (third_try, TX_0_0!, [(absTime, >=, 129)], channelCALL == 0, [], [gSensorID = 1], slot_end),
+        (third_try, TX_0_1!, [(absTime, >=, 129)], channelCALL == 1, [], [gSensorID = 1], slot_end),
+        (third_try, TX_0_2!, [(absTime, >=, 129)], channelCALL == 2, [], [gSensorID = 1], slot_end),
+        (third_try, TX_0_3!, [(absTime, >=, 129)], channelCALL == 3, [], [gSensorID = 1], slot_end),
+        (S0, tau, [(absTime, >=, 125)], [], third_try),
+        (S0, RX_1_0??, [], channelALARM == 0, [], window_end),
+        (S0, RX_1_1??, [], channelALARM == 1, [], window_end),
+        (S0, RX_1_2??, [], channelALARM == 2, [], window_end),
+        (S0, RX_1_3??, [], channelALARM == 3, [], window_end),
+        (second_try, TX_0_0!, [(absTime, >=, 104)], channelALARM == 0, [], [gSensorID = 1], S0),
+        (second_try, TX_0_1!, [(absTime, >=, 104)], channelALARM == 1, [], [gSensorID = 1], S0),
+        (second_try, TX_0_2!, [(absTime, >=, 104)], channelALARM == 2, [], [gSensorID = 1], S0),
+        (second_try, TX_0_3!, [(absTime, >=, 104)], channelALARM == 3, [], [gSensorID = 1], S0),
+        (S1, tau, [(absTime, >=, 100)], [], second_try),
+        (S1, RX_1_0??, [], channelLZ == 0, [], window_end),
+        (S1, RX_1_1??, [], channelLZ == 1, [], window_end),
+        (S1, RX_1_2??, [], channelLZ == 2, [], window_end),
+        (S1, RX_1_3??, [], channelLZ == 3, [], window_end),
+        (first_try, TX_0_0!, [], channelLZ == 0, [], [gSensorID = 1], S1),
+        (first_try, TX_0_1!, [], channelLZ == 1, [], [gSensorID = 1], S1),
+        (first_try, TX_0_2!, [], channelLZ == 2, [], [gSensorID = 1], S1),
+        (first_try, TX_0_3!, [], channelLZ == 3, [], [gSensorID = 1], S1),
+        (idle, tau, [(absTime, >=, 79)], [], first_try),
+        (third_try, cycleReset??, [], [absTime], third_try),
+        (S0, cycleReset??, [], [absTime], S0),
+        (second_try, cycleReset??, [], [absTime], second_try),
+        (S1, cycleReset??, [], [absTime], S1),
+        (first_try, cycleReset??, [], [absTime], first_try),
+        (idle, cycleReset??, [], [absTime], idle);
+    }
+}

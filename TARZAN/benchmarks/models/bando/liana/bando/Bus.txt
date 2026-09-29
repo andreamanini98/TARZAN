@@ -1,0 +1,30 @@
+create automaton Bus
+{
+    clocks
+    {
+    }
+
+    actions
+    {
+        tau, one, zero;
+    }
+
+    integers
+    {
+        A_Pn, B_Pn;
+    }
+
+    locations
+    {
+        active <ini: F>,
+        initialize <ini: T, com: T>;
+    }
+
+    transitions
+    {
+        (active, one!, [], A_Pn == 1 && B_Pn == 1, [], active),
+        (active, zero!, [], B_Pn == 0, [], active),
+        (active, zero!, [], A_Pn == 0, [], active),
+        (initialize, tau, [], [], [A_Pn = 1, B_Pn = 1], active);
+    }
+}

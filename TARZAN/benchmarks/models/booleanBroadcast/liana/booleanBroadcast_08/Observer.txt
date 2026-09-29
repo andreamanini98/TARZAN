@@ -1,0 +1,26 @@
+create automaton Observer
+{
+    clocks
+    {
+    }
+
+    actions
+    {
+        flip;
+    }
+
+    integers
+    {
+        parity;
+    }
+
+    locations
+    {
+        watch <ini: T>;
+    }
+
+    transitions
+    {
+        (watch, flip??, [], [], [parity = 1 - parity], watch);
+    }
+}

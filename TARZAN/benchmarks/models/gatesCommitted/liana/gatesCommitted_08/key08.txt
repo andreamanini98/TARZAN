@@ -1,0 +1,17 @@
+create automaton key08
+{
+    clocks { x; }
+    actions { a; }
+    integers { gate; }
+    locations {
+        q0   <ini: T>,
+        q1   <ini: F>,
+        C    <ini: F, com: T>,
+        done <ini: F>;
+    }
+    transitions {
+        (q0, a, [(x, ==, 8)], [x], q1),
+        (q1, a, [(x, ==, 8)], [x], C),
+        (C, a, [], [], [gate = gate + 1], done);
+    }
+}

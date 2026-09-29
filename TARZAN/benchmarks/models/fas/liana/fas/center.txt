@@ -1,0 +1,39 @@
+create automaton center
+{
+    clocks
+    {
+    }
+
+    actions
+    {
+        tau, errorDetected, LZReceived_0, windowTimerReset;
+    }
+
+    integers
+    {
+        center_window, missedLZ_0, missedLZ_1, gCurrentWindow;
+    }
+
+    locations
+    {
+        ERROR <ini: F, urg: T>,
+        S0 <ini: F, urg: T>,
+        S1 <ini: F>,
+        S2 <ini: T>;
+    }
+
+    transitions
+    {
+        (ERROR, tau, [], center_window == 0, [], [missedLZ_0 = 0], S2),
+        (ERROR, tau, [], center_window == 1, [], [missedLZ_1 = 0], S2),
+        (S0, errorDetected!!, [], center_window == 0 && missedLZ_0 >= 2, [], ERROR),
+        (S0, errorDetected!!, [], center_window == 1 && missedLZ_1 >= 2, [], ERROR),
+        (S1, LZReceived_0?, [], [], S1),
+        (S0, tau, [], center_window == 0 && missedLZ_0 < 2, [], S2),
+        (S0, tau, [], center_window == 1 && missedLZ_1 < 2, [], S2),
+        (S2, windowTimerReset??, [], gCurrentWindow == 0, [], [missedLZ_0 = missedLZ_0 + 1, center_window = 0], S0),
+        (S2, windowTimerReset??, [], gCurrentWindow == 1, [], [missedLZ_1 = missedLZ_1 + 1, center_window = 1], S0),
+        (S1, windowTimerReset??, [], [], S2),
+        (S2, LZReceived_0?, [], [], S1);
+    }
+}

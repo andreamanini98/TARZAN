@@ -1,0 +1,28 @@
+create automaton Observer_A
+{
+    clocks
+    {
+    }
+
+    actions
+    {
+        A_observe;
+    }
+
+    integers
+    {
+        A_Pf, A_Pn, A_S1, A_S2, A_diff;
+    }
+
+    locations
+    {
+        compare <ini: T>;
+    }
+
+    transitions
+    {
+        (compare, A_observe?, [], A_Pf == A_S1 && A_Pn == A_S2, [], compare),
+        (compare, A_observe?, [], A_Pn == 1 && A_S2 == 0, [], [A_diff = 1], compare),
+        (compare, A_observe?, [], A_Pf == 1 && A_S1 == 0, [], [A_diff = 1], compare);
+    }
+}

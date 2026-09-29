@@ -1,0 +1,77 @@
+create automaton Sender_B
+{
+    clocks
+    {
+        B_c;
+    }
+
+    actions
+    {
+        tau, B_check, B_observe, B_reset, B_new_Pn, B_frame, one, zero;
+    }
+
+    integers
+    {
+        B_Pf, B_Pn, B_S1, B_S2, B_start, B_stop, B_eof, B_err, B_res, B_diff, A_start;
+    }
+
+    locations
+    {
+        call_check <ini: F, com: T>,
+        call_observe <ini: F, com: T>,
+        check_eof <ini: F, com: T>,
+        end_jam <ini: F>,
+        ex_jam <ini: F, inv: [(B_c, <=, 781)]>,
+        ex_silence1 <ini: F, inv: [(B_c, <=, 2343)]>,
+        ex_silence2 <ini: F, inv: [(B_c, <=, 781)]>,
+        ex_start <ini: F, com: T>,
+        goto_idle <ini: F, com: T>,
+        hold <ini: F, inv: [(B_c, <=, 28116)]>,
+        idle <ini: F, inv: [(B_c, <=, 781)]>,
+        jam <ini: F, inv: [(B_c, <=, 25000)]>,
+        nPf <ini: F, com: T>,
+        newPn <ini: F, inv: [(B_c, <=, 40)]>,
+        other_started <ini: F, inv: [(B_c, <=, 3124)]>,
+        sample <ini: F, inv: [(B_c, <=, 781)]>,
+        start <ini: T>,
+        stop <ini: F>,
+        transmit <ini: F, inv: [(B_c, <=, 781)]>,
+        until_silence <ini: F, inv: [(B_c, <=, 781)]>;
+    }
+
+    transitions
+    {
+        (call_check, tau, [], B_stop == 1, [B_c], [B_res = 0], ex_jam),
+        (call_check, B_check!, [], B_stop == 0, [B_c], ex_jam),
+        (call_observe, tau, [], B_stop == 1, [], call_check),
+        (call_observe, B_observe!, [], B_stop == 0, [], call_check),
+        (check_eof, zero?, [], B_eof == 0, [B_c], [B_S1 = 0], newPn),
+        (check_eof, one?, [], B_eof == 0, [B_c], [B_S1 = 1], newPn),
+        (check_eof, tau, [], B_eof == 1, [B_c], stop),
+        (ex_jam, B_reset!, [(B_c, ==, 781)], B_res == 1, [B_c], [B_Pn = 0], jam),
+        (ex_jam, tau, [(B_c, ==, 781)], B_res == 0, [], nPf),
+        (ex_jam, B_reset!, [(B_c, ==, 781)], B_res == 2, [B_c], [B_Pn = 1, B_start = 0], until_silence),
+        (ex_silence1, one?, [(B_c, ==, 2343)], [B_c], ex_silence2),
+        (ex_silence1, zero?, [(B_c, ==, 2343)], [], goto_idle),
+        (ex_silence2, zero?, [(B_c, ==, 781)], [], goto_idle),
+        (ex_silence2, one?, [(B_c, ==, 781)], [B_c], transmit),
+        (ex_start, tau, [], A_start == 0, [B_c], ex_silence1),
+        (ex_start, tau, [], A_start == 1, [B_c], other_started),
+        (goto_idle, tau, [], [B_c], idle),
+        (hold, tau, [(B_c, ==, 28116)], [], [B_res = 0], end_jam),
+        (idle, tau, [(B_c, ==, 781)], [], ex_start),
+        (jam, tau, [(B_c, ==, 25000)], [B_c], [B_Pn = 1, B_start = 0, B_res = 0], end_jam),
+        (nPf, tau, [], B_Pn == 1, [], [B_Pf = 1], check_eof),
+        (nPf, tau, [], B_Pn == 0, [], [B_Pf = 0], check_eof),
+        (newPn, B_new_Pn!, [(B_c, ==, 40)], B_err == 0, [], sample),
+        (newPn, tau, [(B_c, ==, 40)], B_err > 0, [], [B_Pn = 1], sample),
+        (other_started, tau, [(B_c, ==, 3124)], A_start == 0, [B_c], ex_silence1),
+        (other_started, tau, [(B_c, ==, 3124)], A_start == 1, [B_c], other_started),
+        (sample, zero?, [(B_c, ==, 781)], [], [B_S2 = 0], call_observe),
+        (sample, one?, [(B_c, ==, 781)], [], [B_S2 = 1], call_observe),
+        (start, tau, [], [B_c], idle),
+        (transmit, B_frame!, [(B_c, ==, 781)], [], [B_err = 0, B_diff = 0, B_Pf = 1], check_eof),
+        (until_silence, one?, [(B_c, ==, 781)], [B_c], hold),
+        (until_silence, zero?, [(B_c, ==, 781)], [B_c], until_silence);
+    }
+}

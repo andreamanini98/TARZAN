@@ -1,0 +1,33 @@
+create automaton master
+{
+    clocks
+    {
+        absTime;
+    }
+
+    actions
+    {
+        cycleReset;
+    }
+
+    integers
+    {
+        channelLZ, channelCALL, channelREPLZ, channelALARM;
+    }
+
+    locations
+    {
+        c3 <ini: F, inv: [(absTime, <=, 9450)]>,
+        c1 <ini: F, inv: [(absTime, <=, 9450)]>,
+        c2 <ini: F, inv: [(absTime, <=, 9450)]>,
+        c0 <ini: T, inv: [(absTime, <=, 9450)]>;
+    }
+
+    transitions
+    {
+        (c3, cycleReset!!, [(absTime, >=, 9450)], [absTime], [channelLZ = 0, channelCALL = 1, channelREPLZ = 2, channelALARM = 3], c0),
+        (c2, cycleReset!!, [(absTime, >=, 9450)], [absTime], [channelLZ = 3, channelCALL = 0, channelREPLZ = 1, channelALARM = 2], c3),
+        (c1, cycleReset!!, [(absTime, >=, 9450)], [absTime], [channelLZ = 2, channelCALL = 3, channelREPLZ = 0, channelALARM = 1], c2),
+        (c0, cycleReset!!, [(absTime, >=, 9450)], [absTime], [channelLZ = 1, channelCALL = 2, channelREPLZ = 3, channelALARM = 0], c1);
+    }
+}

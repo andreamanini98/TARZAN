@@ -1,0 +1,129 @@
+chan tick, bank;
+int d1, d2, d3, d4;
+
+process Ticker() {
+clock p;
+state go, wait { p <= 1 };
+urgent go;
+init go;
+trans
+    go -> go { guard d1 < 6; sync tick!; },
+    go -> wait { guard d1 == 6; sync tick!; assign p = 0; },
+    wait -> go { guard p == 1; };
+}
+
+process Counter() {
+state idle, C1, C2, C3, C4, CB;
+commit C1, C2, C3, C4, CB;
+init idle;
+trans
+    idle -> C1 { sync tick?; },
+    C1 -> CB { guard d1 < 6; assign d1 = d1 + 1; },
+    C1 -> C2 { guard d1 == 6; assign d1 = 0; },
+    C2 -> CB { guard d2 < 9; assign d2 = d2 + 1; },
+    C2 -> C3 { guard d2 == 9; assign d2 = 0; },
+    C3 -> CB { guard d3 < 9; assign d3 = d3 + 1; },
+    C3 -> C4 { guard d3 == 9; assign d3 = 0; },
+    C4 -> CB { guard d4 < 9; assign d4 = d4 + 1; },
+    C4 -> CB { guard d4 == 9; assign d4 = 0; },
+    CB -> idle { sync bank!; };
+}
+
+process Bank() {
+clock k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28, k29, k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40, k41, k42, k43, k44, k45, k46, k47, k48, k49, k50, k51, k52, k53, k54, k55, k56, k57, k58, k59, k60, k61, k62, k63, k64, k65, k66, k67, k68, k69, k70, k71, k72, k73, k74, k75, k76, k77, k78, k79, k80, k81, k82, k83, k84, k85, k86, k87, k88, k89, k90;
+state s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s25, s26, s27, s28, s29, s30, s31, s32, s33, s34, s35, s36, s37, s38, s39, s40, s41, s42, s43, s44, s45, s46, s47, s48, s49, s50, s51, s52, s53, s54, s55, s56, s57, s58, s59, s60, s61, s62, s63, s64, s65, s66, s67, s68, s69, s70, s71, s72, s73, s74, s75, s76, s77, s78, s79, s80, s81, s82, s83, s84, s85, s86, s87, s88, s89, s90;
+init s1;
+trans
+    s1 -> s2 { sync bank?; assign k1 = 0; },
+    s2 -> s3 { sync bank?; assign k2 = 0; },
+    s3 -> s4 { sync bank?; assign k3 = 0; },
+    s4 -> s5 { sync bank?; assign k4 = 0; },
+    s5 -> s6 { sync bank?; assign k5 = 0; },
+    s6 -> s7 { sync bank?; assign k6 = 0; },
+    s7 -> s8 { sync bank?; assign k7 = 0; },
+    s8 -> s9 { sync bank?; assign k8 = 0; },
+    s9 -> s10 { sync bank?; assign k9 = 0; },
+    s10 -> s11 { sync bank?; assign k10 = 0; },
+    s11 -> s12 { sync bank?; assign k11 = 0; },
+    s12 -> s13 { sync bank?; assign k12 = 0; },
+    s13 -> s14 { sync bank?; assign k13 = 0; },
+    s14 -> s15 { sync bank?; assign k14 = 0; },
+    s15 -> s16 { sync bank?; assign k15 = 0; },
+    s16 -> s17 { sync bank?; assign k16 = 0; },
+    s17 -> s18 { sync bank?; assign k17 = 0; },
+    s18 -> s19 { sync bank?; assign k18 = 0; },
+    s19 -> s20 { sync bank?; assign k19 = 0; },
+    s20 -> s21 { sync bank?; assign k20 = 0; },
+    s21 -> s22 { sync bank?; assign k21 = 0; },
+    s22 -> s23 { sync bank?; assign k22 = 0; },
+    s23 -> s24 { sync bank?; assign k23 = 0; },
+    s24 -> s25 { sync bank?; assign k24 = 0; },
+    s25 -> s26 { sync bank?; assign k25 = 0; },
+    s26 -> s27 { sync bank?; assign k26 = 0; },
+    s27 -> s28 { sync bank?; assign k27 = 0; },
+    s28 -> s29 { sync bank?; assign k28 = 0; },
+    s29 -> s30 { sync bank?; assign k29 = 0; },
+    s30 -> s31 { sync bank?; assign k30 = 0; },
+    s31 -> s32 { sync bank?; assign k31 = 0; },
+    s32 -> s33 { sync bank?; assign k32 = 0; },
+    s33 -> s34 { sync bank?; assign k33 = 0; },
+    s34 -> s35 { sync bank?; assign k34 = 0; },
+    s35 -> s36 { sync bank?; assign k35 = 0; },
+    s36 -> s37 { sync bank?; assign k36 = 0; },
+    s37 -> s38 { sync bank?; assign k37 = 0; },
+    s38 -> s39 { sync bank?; assign k38 = 0; },
+    s39 -> s40 { sync bank?; assign k39 = 0; },
+    s40 -> s41 { sync bank?; assign k40 = 0; },
+    s41 -> s42 { sync bank?; assign k41 = 0; },
+    s42 -> s43 { sync bank?; assign k42 = 0; },
+    s43 -> s44 { sync bank?; assign k43 = 0; },
+    s44 -> s45 { sync bank?; assign k44 = 0; },
+    s45 -> s46 { sync bank?; assign k45 = 0; },
+    s46 -> s47 { sync bank?; assign k46 = 0; },
+    s47 -> s48 { sync bank?; assign k47 = 0; },
+    s48 -> s49 { sync bank?; assign k48 = 0; },
+    s49 -> s50 { sync bank?; assign k49 = 0; },
+    s50 -> s51 { sync bank?; assign k50 = 0; },
+    s51 -> s52 { sync bank?; assign k51 = 0; },
+    s52 -> s53 { sync bank?; assign k52 = 0; },
+    s53 -> s54 { sync bank?; assign k53 = 0; },
+    s54 -> s55 { sync bank?; assign k54 = 0; },
+    s55 -> s56 { sync bank?; assign k55 = 0; },
+    s56 -> s57 { sync bank?; assign k56 = 0; },
+    s57 -> s58 { sync bank?; assign k57 = 0; },
+    s58 -> s59 { sync bank?; assign k58 = 0; },
+    s59 -> s60 { sync bank?; assign k59 = 0; },
+    s60 -> s61 { sync bank?; assign k60 = 0; },
+    s61 -> s62 { sync bank?; assign k61 = 0; },
+    s62 -> s63 { sync bank?; assign k62 = 0; },
+    s63 -> s64 { sync bank?; assign k63 = 0; },
+    s64 -> s65 { sync bank?; assign k64 = 0; },
+    s65 -> s66 { sync bank?; assign k65 = 0; },
+    s66 -> s67 { sync bank?; assign k66 = 0; },
+    s67 -> s68 { sync bank?; assign k67 = 0; },
+    s68 -> s69 { sync bank?; assign k68 = 0; },
+    s69 -> s70 { sync bank?; assign k69 = 0; },
+    s70 -> s71 { sync bank?; assign k70 = 0; },
+    s71 -> s72 { sync bank?; assign k71 = 0; },
+    s72 -> s73 { sync bank?; assign k72 = 0; },
+    s73 -> s74 { sync bank?; assign k73 = 0; },
+    s74 -> s75 { sync bank?; assign k74 = 0; },
+    s75 -> s76 { sync bank?; assign k75 = 0; },
+    s76 -> s77 { sync bank?; assign k76 = 0; },
+    s77 -> s78 { sync bank?; assign k77 = 0; },
+    s78 -> s79 { sync bank?; assign k78 = 0; },
+    s79 -> s80 { sync bank?; assign k79 = 0; },
+    s80 -> s81 { sync bank?; assign k80 = 0; },
+    s81 -> s82 { sync bank?; assign k81 = 0; },
+    s82 -> s83 { sync bank?; assign k82 = 0; },
+    s83 -> s84 { sync bank?; assign k83 = 0; },
+    s84 -> s85 { sync bank?; assign k84 = 0; },
+    s85 -> s86 { sync bank?; assign k85 = 0; },
+    s86 -> s87 { sync bank?; assign k86 = 0; },
+    s87 -> s88 { sync bank?; assign k87 = 0; },
+    s88 -> s89 { sync bank?; assign k88 = 0; },
+    s89 -> s90 { sync bank?; assign k89 = 0; },
+    s90 -> s1 { sync bank?; assign k90 = 0; };
+}
+
+system Ticker, Counter, Bank;

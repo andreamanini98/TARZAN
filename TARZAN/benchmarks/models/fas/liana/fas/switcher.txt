@@ -1,0 +1,32 @@
+create automaton switcher
+{
+    clocks
+    {
+        timer;
+    }
+
+    actions
+    {
+        tau, errorDetected;
+    }
+
+    integers
+    {
+        gOffSensor;
+    }
+
+    locations
+    {
+        DETECTION <ini: F, urg: T>,
+        SHUTDOWN <ini: F>,
+        S0 <ini: T>;
+    }
+
+    transitions
+    {
+        (DETECTION, tau, [], [timer], SHUTDOWN),
+        (SHUTDOWN, errorDetected??, [], [], DETECTION),
+        (S0, tau, [], [timer], [gOffSensor = 0], SHUTDOWN),
+        (S0, tau, [], [timer], [gOffSensor = 1], SHUTDOWN);
+    }
+}

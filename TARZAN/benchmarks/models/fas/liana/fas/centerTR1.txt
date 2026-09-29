@@ -1,0 +1,38 @@
+create automaton centerTR1
+{
+    clocks
+    {
+        counter;
+    }
+
+    actions
+    {
+        TX_1_0, TX_1_1, TX_1_2, TX_1_3, LZReceived_0, RX_0_0, RX_0_1, RX_0_2, RX_0_3;
+    }
+
+    integers
+    {
+        centerTR1_channel, TR1Channel, gSensorID, missedLZ_0, missedLZ_1;
+    }
+
+    locations
+    {
+        S0 <ini: F, inv: [(counter, <=, 8)]>,
+        S1 <ini: F, urg: T>,
+        S2 <ini: T>;
+    }
+
+    transitions
+    {
+        (S0, TX_1_0!, [], centerTR1_channel == 0, [], S2),
+        (S0, TX_1_1!, [], centerTR1_channel == 1, [], S2),
+        (S0, TX_1_2!, [], centerTR1_channel == 2, [], S2),
+        (S0, TX_1_3!, [], centerTR1_channel == 3, [], S2),
+        (S1, LZReceived_0!, [], gSensorID == 0, [], [missedLZ_0 = 0], S0),
+        (S1, LZReceived_0!, [], gSensorID == 1, [], [missedLZ_1 = 0], S0),
+        (S2, RX_0_0??, [], TR1Channel == 0, [counter], [centerTR1_channel = TR1Channel], S1),
+        (S2, RX_0_1??, [], TR1Channel == 1, [counter], [centerTR1_channel = TR1Channel], S1),
+        (S2, RX_0_2??, [], TR1Channel == 2, [counter], [centerTR1_channel = TR1Channel], S1),
+        (S2, RX_0_3??, [], TR1Channel == 3, [counter], [centerTR1_channel = TR1Channel], S1);
+    }
+}

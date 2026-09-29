@@ -25,6 +25,26 @@ done
 # ---
 
 
+# bando
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/bando/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
+for ((key=0; key<num_dirs; key++)); do
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/bando" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/bando" "${folder_name}" "${TIMEOUT}" "${key}"
+done
+
+
+# ---
+
+
 # boolean
 
 subdirs=()
@@ -39,6 +59,46 @@ for ((key=0; key<num_dirs; key++)); do
     folder_name=$(basename "$current_dir")
 
     ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/boolean" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/boolean" "${folder_name}" "${TIMEOUT}" "${key}"
+done
+
+
+# ---
+
+
+# booleanBroadcast
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/booleanBroadcast/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
+for ((key=0; key<num_dirs; key++)); do
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/booleanBroadcast" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/booleanBroadcast" "${folder_name}" "${TIMEOUT}" "${key}"
+done
+
+
+# ---
+
+
+# booleanCommitted
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/booleanCommitted/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
+for ((key=0; key<num_dirs; key++)); do
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/booleanCommitted" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/booleanCommitted" "${folder_name}" "${TIMEOUT}" "${key}"
 done
 
 
@@ -85,9 +145,69 @@ done
 # ---
 
 
+# clockbankBroadcast
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/clockbankBroadcast/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
+for ((key=0; key<num_dirs; key++)); do
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/clockbankBroadcast" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/clockbankBroadcast" "${folder_name}" "${TIMEOUT}" "${key}"
+done
+
+
+# ---
+
+
+# clockbankCommitted
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/clockbankCommitted/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
+for ((key=0; key<num_dirs; key++)); do
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/clockbankCommitted" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/clockbankCommitted" "${folder_name}" "${TIMEOUT}" "${key}"
+done
+
+
+# ---
+
+
 # exSITH
 
 ./helpers/sh_single_ta.sh "${EXECUTABLES_PATH}/exSITH" "${BENCHMARKS_PATH}/exSITH/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/exSITH" "exSITH" "${TIMEOUT}"
+
+# ---
+
+
+# fas
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/fas/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
+for ((key=0; key<num_dirs; key++)); do
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/fas" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/fas" "${folder_name}" "${TIMEOUT}" "${key}"
+done
+
 
 # ---
 
@@ -106,6 +226,26 @@ for ((key=0; key<num_dirs; key++)); do
     folder_name=$(basename "$current_dir")
 
     ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/fischer" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/fischer" "${folder_name}" "${TIMEOUT}" "${key}"
+done
+
+
+# ---
+
+
+# flipflop
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/flipflop/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
+for ((key=0; key<num_dirs; key++)); do
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/flipflop" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/flipflop" "${folder_name}" "${TIMEOUT}" "${key}"
 done
 
 
@@ -134,6 +274,26 @@ for ((key=0; key<num_dirs; key++)); do
     folder_name=$(basename "$current_dir")
 
     ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/gates" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/gates" "${folder_name}" "${TIMEOUT}" "${key}"
+done
+
+
+# ---
+
+
+# gatesCommitted
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/gatesCommitted/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
+for ((key=0; key<num_dirs; key++)); do
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/gatesCommitted" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/gatesCommitted" "${folder_name}" "${TIMEOUT}" "${key}"
 done
 
 

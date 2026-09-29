@@ -1,0 +1,27 @@
+create automaton Init
+{
+    clocks
+    {
+    }
+
+    actions
+    {
+        init;
+    }
+
+    integers
+    {
+        gBlockedChannel, gOffSensor, channelALARM, channelCALL, channelREPLZ;
+    }
+
+    locations
+    {
+        Start <ini: T, com: T>,
+        Done <ini: F>;
+    }
+
+    transitions
+    {
+        (Start, init, [], [], [gBlockedChannel = 0 - 1, gOffSensor = 0 - 1, channelALARM = 3, channelCALL = 1, channelREPLZ = 2], Done);
+    }
+}

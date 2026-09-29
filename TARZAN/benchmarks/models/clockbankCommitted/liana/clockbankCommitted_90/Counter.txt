@@ -1,0 +1,40 @@
+create automaton Counter
+{
+    clocks
+    {
+    }
+
+    actions
+    {
+        tau, tick, bank;
+    }
+
+    integers
+    {
+        d1, d2, d3, d4;
+    }
+
+    locations
+    {
+        idle <ini: T>,
+        C1 <ini: F, com: T>,
+        C2 <ini: F, com: T>,
+        C3 <ini: F, com: T>,
+        C4 <ini: F, com: T>,
+        CB <ini: F, com: T>;
+    }
+
+    transitions
+    {
+        (idle, tick?, [], [], C1),
+        (C1, tau, [], d1 < 6, [], [d1 = d1 + 1], CB),
+        (C1, tau, [], d1 == 6, [], [d1 = 0], C2),
+        (C2, tau, [], d2 < 9, [], [d2 = d2 + 1], CB),
+        (C2, tau, [], d2 == 9, [], [d2 = 0], C3),
+        (C3, tau, [], d3 < 9, [], [d3 = d3 + 1], CB),
+        (C3, tau, [], d3 == 9, [], [d3 = 0], C4),
+        (C4, tau, [], d4 < 9, [], [d4 = d4 + 1], CB),
+        (C4, tau, [], d4 == 9, [], [d4 = 0], CB),
+        (CB, bank!, [], [], idle);
+    }
+}
