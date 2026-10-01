@@ -1,0 +1,204 @@
+<style type="text/css">
+#T_6fc9b table {
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  width: 100%;
+}
+#T_6fc9b th {
+  background-color: #263238;
+  color: white;
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #455a64;
+}
+#T_6fc9b td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #cfd8dc;
+}
+#T_6fc9b caption {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+#T_6fc9b_row0_col2, #T_6fc9b_row5_col2, #T_6fc9b_row6_col3, #T_6fc9b_row7_col3, #T_6fc9b_row8_col2, #T_6fc9b_row13_col1, #T_6fc9b_row14_col3, #T_6fc9b_row15_col3 {
+  background-color: rgba(46, 125, 50, 0.25);
+  color: black;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_6fc9b_row1_col0 {
+  background-color: rgba(46, 125, 50, 0.27);
+  color: black;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_6fc9b_row2_col2 {
+  background-color: rgba(46, 125, 50, 0.65);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_6fc9b_row3_col2 {
+  background-color: rgba(46, 125, 50, 0.76);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_6fc9b_row4_col2 {
+  background-color: rgba(46, 125, 50, 0.60);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_6fc9b_row9_col2 {
+  background-color: rgba(46, 125, 50, 0.31);
+  color: black;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_6fc9b_row10_col2 {
+  background-color: rgba(46, 125, 50, 0.59);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_6fc9b_row11_col2 {
+  background-color: rgba(46, 125, 50, 0.81);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_6fc9b_row12_col2 {
+  background-color: rgba(46, 125, 50, 0.57);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+</style>
+<table id="T_6fc9b">
+  <caption>Benchmark TARZAN (Tempi medi in ms — Verde più scuro = Vittoria più netta)</caption>
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_6fc9b_level0_col0" class="col_heading level0 col0" >seq</th>
+      <th id="T_6fc9b_level0_col1" class="col_heading level0 col1" >omp</th>
+      <th id="T_6fc9b_level0_col2" class="col_heading level0 col2" >tbb</th>
+      <th id="T_6fc9b_level0_col3" class="col_heading level0 col3" >omp_dynamic</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_6fc9b_level0_row0" class="row_heading level0 row0" >drug_always_expire_lose</th>
+      <td id="T_6fc9b_row0_col0" class="data row0 col0" >491.58 ms</td>
+      <td id="T_6fc9b_row0_col1" class="data row0 col1" >200.72 ms</td>
+      <td id="T_6fc9b_row0_col2" class="data row0 col2" >185.28 ms</td>
+      <td id="T_6fc9b_row0_col3" class="data row0 col3" >197.84 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row1" class="row_heading level0 row1" >int_unreachable_lose</th>
+      <td id="T_6fc9b_row1_col0" class="data row1 col0" >3.79 ms</td>
+      <td id="T_6fc9b_row1_col1" class="data row1 col1" >7.43 ms</td>
+      <td id="T_6fc9b_row1_col2" class="data row1 col2" >4.62 ms</td>
+      <td id="T_6fc9b_row1_col3" class="data row1 col3" >9.69 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row2" class="row_heading level0 row2" >patient_doc_after_three_int_lose</th>
+      <td id="T_6fc9b_row2_col0" class="data row2 col0" >1279.79 ms</td>
+      <td id="T_6fc9b_row2_col1" class="data row2 col1" >468.46 ms</td>
+      <td id="T_6fc9b_row2_col2" class="data row2 col2" >265.20 ms</td>
+      <td id="T_6fc9b_row2_col3" class="data row2 col3" >465.58 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row3" class="row_heading level0 row3" >patient_doc_after_three_int_time_win</th>
+      <td id="T_6fc9b_row3_col0" class="data row3 col0" >111511.88 ms</td>
+      <td id="T_6fc9b_row3_col1" class="data row3 col1" >33463.81 ms</td>
+      <td id="T_6fc9b_row3_col2" class="data row3 col2" >16255.27 ms</td>
+      <td id="T_6fc9b_row3_col3" class="data row3 col3" >32903.84 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row4" class="row_heading level0 row4" >patient_doc_in_pulse_win</th>
+      <td id="T_6fc9b_row4_col0" class="data row4 col0" >620.04 ms</td>
+      <td id="T_6fc9b_row4_col1" class="data row4 col1" >517.24 ms</td>
+      <td id="T_6fc9b_row4_col2" class="data row4 col2" >308.97 ms</td>
+      <td id="T_6fc9b_row4_col3" class="data row4 col3" >522.59 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row5" class="row_heading level0 row5" >patient_no_int_no_drug_win</th>
+      <td id="T_6fc9b_row5_col0" class="data row5 col0" >553.91 ms</td>
+      <td id="T_6fc9b_row5_col1" class="data row5 col1" >160.75 ms</td>
+      <td id="T_6fc9b_row5_col2" class="data row5 col2" >152.69 ms</td>
+      <td id="T_6fc9b_row5_col3" class="data row5 col3" >158.55 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row6" class="row_heading level0 row6" >single_patient_time_win</th>
+      <td id="T_6fc9b_row6_col0" class="data row6 col0" >215562.86 ms</td>
+      <td id="T_6fc9b_row6_col1" class="data row6 col1" >55444.64 ms</td>
+      <td id="T_6fc9b_row6_col2" class="data row6 col2" >44282.12 ms</td>
+      <td id="T_6fc9b_row6_col3" class="data row6 col3" >40104.10 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row7" class="row_heading level0 row7" >single_patient_win</th>
+      <td id="T_6fc9b_row7_col0" class="data row7 col0" >1553.39 ms</td>
+      <td id="T_6fc9b_row7_col1" class="data row7 col1" >413.83 ms</td>
+      <td id="T_6fc9b_row7_col2" class="data row7 col2" >392.31 ms</td>
+      <td id="T_6fc9b_row7_col3" class="data row7 col3" >384.05 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row8" class="row_heading level0 row8" >strat_drug_always_expire_lose</th>
+      <td id="T_6fc9b_row8_col0" class="data row8 col0" >260.09 ms</td>
+      <td id="T_6fc9b_row8_col1" class="data row8 col1" >197.96 ms</td>
+      <td id="T_6fc9b_row8_col2" class="data row8 col2" >185.11 ms</td>
+      <td id="T_6fc9b_row8_col3" class="data row8 col3" >200.51 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row9" class="row_heading level0 row9" >strat_int_unreachable_lose</th>
+      <td id="T_6fc9b_row9_col0" class="data row9 col0" >4.36 ms</td>
+      <td id="T_6fc9b_row9_col1" class="data row9 col1" >7.66 ms</td>
+      <td id="T_6fc9b_row9_col2" class="data row9 col2" >3.46 ms</td>
+      <td id="T_6fc9b_row9_col3" class="data row9 col3" >8.90 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row10" class="row_heading level0 row10" >strat_patient_doc_after_three_int_lose</th>
+      <td id="T_6fc9b_row10_col0" class="data row10 col0" >804.52 ms</td>
+      <td id="T_6fc9b_row10_col1" class="data row10 col1" >712.08 ms</td>
+      <td id="T_6fc9b_row10_col2" class="data row10 col2" >430.37 ms</td>
+      <td id="T_6fc9b_row10_col3" class="data row10 col3" >742.87 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row11" class="row_heading level0 row11" >strat_patient_doc_after_three_int_time_win</th>
+      <td id="T_6fc9b_row11_col0" class="data row11 col0" >173756.72 ms</td>
+      <td id="T_6fc9b_row11_col1" class="data row11 col1" >67337.09 ms</td>
+      <td id="T_6fc9b_row11_col2" class="data row11 col2" >30716.32 ms</td>
+      <td id="T_6fc9b_row11_col3" class="data row11 col3" >67260.89 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row12" class="row_heading level0 row12" >strat_patient_doc_in_pulse_win</th>
+      <td id="T_6fc9b_row12_col0" class="data row12 col0" >991.22 ms</td>
+      <td id="T_6fc9b_row12_col1" class="data row12 col1" >795.50 ms</td>
+      <td id="T_6fc9b_row12_col2" class="data row12 col2" >491.34 ms</td>
+      <td id="T_6fc9b_row12_col3" class="data row12 col3" >799.56 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row13" class="row_heading level0 row13" >strat_patient_no_int_no_drug_win</th>
+      <td id="T_6fc9b_row13_col0" class="data row13 col0" >975.86 ms</td>
+      <td id="T_6fc9b_row13_col1" class="data row13 col1" >262.77 ms</td>
+      <td id="T_6fc9b_row13_col2" class="data row13 col2" >262.84 ms</td>
+      <td id="T_6fc9b_row13_col3" class="data row13 col3" >267.69 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row14" class="row_heading level0 row14" >strat_single_patient_time_win</th>
+      <td id="T_6fc9b_row14_col0" class="data row14 col0" >321832.61 ms</td>
+      <td id="T_6fc9b_row14_col1" class="data row14 col1" >83289.44 ms</td>
+      <td id="T_6fc9b_row14_col2" class="data row14 col2" >65385.41 ms</td>
+      <td id="T_6fc9b_row14_col3" class="data row14 col3" >60130.22 ms</td>
+    </tr>
+    <tr>
+      <th id="T_6fc9b_level0_row15" class="row_heading level0 row15" >strat_single_patient_win</th>
+      <td id="T_6fc9b_row15_col0" class="data row15 col0" >1612.60 ms</td>
+      <td id="T_6fc9b_row15_col1" class="data row15 col1" >508.10 ms</td>
+      <td id="T_6fc9b_row15_col2" class="data row15 col2" >476.87 ms</td>
+      <td id="T_6fc9b_row15_col3" class="data row15 col3" >471.85 ms</td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,103 @@
+=== ITERATION 1 / 1 ===
+vtune: Collection started. To stop the collection, either press CTRL-C or enter from another console window: vtune -r /home/andrea/projects/TARZAN/output_logs/strat_patient_doc_after_three_int_time_win/vtune_strat_patient_doc_after_three_int_time_win_omp_vtune_run_iter_1 -command stop.
+Mode:          OpenMP
+Total time:              6.79833e+07 microseconds
+Total iterations:       27
+Total starting regions: 74966
+Total stored regions:   1
+VICTORY
+Total time including region generation: 6.85612e+07 microseconds
+vtune: Collection stopped.
+vtune: Using result path `/home/andrea/projects/TARZAN/output_logs/strat_patient_doc_after_three_int_time_win/vtune_strat_patient_doc_after_three_int_time_win_omp_vtune_run_iter_1'
+vtune: Executing actions  0 %                                                  vtune: Executing actions  0 % Finalizing results                               vtune: Executing actions  0 % Finalizing the result                            vtune: Executing actions  0 % Clearing the database                            vtune: Executing actions  7 % Clearing the database                            vtune: Executing actions  7 % Loading raw data to the database                 vtune: Executing actions  7 % Loading 'systemcollector-102165-sbro.sc' file    vtune: Executing actions 12 % Loading 'systemcollector-102165-sbro.sc' file    vtune: Executing actions 12 % Loading '102165-102175.0.trace' file             vtune: Executing actions 12 % Loading 'userapicollector-102175-ffb60afe.trace' vtune: Executing actions 12 % Converting API Events to Waits                   vtune: Executing actions 12 % Updating precomputed scalar metrics              vtune: Executing actions 14 % Updating precomputed scalar metrics              vtune: Executing actions 14 % Processing profile metrics and debug information vtune: Executing actions 19 % Processing profile metrics and debug information vtune: Executing actions 19 % Setting data model parameters                    vtune: Executing actions 19 % Resolving module symbols                         vtune: Executing actions 19 % Resolving information for `strat_patient_doc_aftevtune: Executing actions 19 % Resolving information for `ld-linux-x86-64.so.2' vtune: Executing actions 19 % Resolving information for `libittnotify_collectorvtune: Executing actions 19 % Resolving information for `libomp.so'            vtune: Executing actions 19 % Resolving information for `libm.so.6'            
+vtune: Warning: Cannot locate debugging information for file `/lib64/ld-linux-x86-64.so.2'.
+vtune: Warning: Cannot locate debugging information for file `/opt/intel/oneapi/vtune/2026.2/lib64/runtime/libittnotify_collector.so'.
+vtune: Executing actions 19 % Resolving information for `libc.so.6'            
+vtune: Warning: Cannot locate debugging information for file `/usr/lib/libm.so.6'.
+vtune: Executing actions 19 % Resolving information for `libstdc++.so.6'       
+vtune: Warning: Cannot locate debugging information for file `/usr/lib/libomp.so'.
+vtune: Warning: Cannot locate debugging information for file `/usr/lib/libc.so.6'.
+vtune: Executing actions 19 % Resolving information for dangling locations     
+vtune: Warning: Cannot locate debugging information for file `/usr/lib/libstdc++.so.6'.
+vtune: Warning: Cannot locate debugging information for file `/home/andrea/projects/TARZAN/executables/games_executables/med_app/strat_patient_doc_after_three_int_time_win_omp'.
+vtune: Executing actions 20 % Resolving information for dangling locations     vtune: Executing actions 20 % Resolving information for `libtpsstool.so'       
+vtune: Warning: Cannot locate debugging information for file `/opt/intel/oneapi/vtune/2026.2/lib64/libtpsstool.so'.
+vtune: Executing actions 21 % Resolving information for `libtpsstool.so'       vtune: Executing actions 22 % Resolving information for `libtpsstool.so'       vtune: Executing actions 22 % Resolving bottom user stack information          vtune: Executing actions 23 % Resolving bottom user stack information          vtune: Executing actions 23 % Resolving sync object name information           vtune: Executing actions 24 % Resolving sync object name information           vtune: Executing actions 24 % Resolving thread name information                vtune: Executing actions 24 % Resolving call target names for dynamic code     vtune: Executing actions 25 % Resolving call target names for dynamic code     vtune: Executing actions 25 % Resolving interrupt name information             vtune: Executing actions 26 % Resolving interrupt name information             vtune: Executing actions 26 % Processing profile metrics and debug information vtune: Executing actions 28 % Processing profile metrics and debug information vtune: Executing actions 30 % Processing profile metrics and debug information vtune: Executing actions 31 % Processing profile metrics and debug information vtune: Executing actions 32 % Processing profile metrics and debug information vtune: Executing actions 33 % Processing profile metrics and debug information vtune: Executing actions 34 % Processing profile metrics and debug information vtune: Executing actions 35 % Processing profile metrics and debug information vtune: Executing actions 35 % Setting data model parameters                    vtune: Executing actions 35 % Precomputing frequently used data                vtune: Executing actions 35 % Precomputing frequently used data                vtune: Executing actions 36 % Precomputing frequently used data                vtune: Executing actions 37 % Precomputing frequently used data                vtune: Executing actions 38 % Precomputing frequently used data                vtune: Executing actions 39 % Precomputing frequently used data                vtune: Executing actions 40 % Precomputing frequently used data                vtune: Executing actions 41 % Precomputing frequently used data                vtune: Executing actions 41 % Updating precomputed scalar metrics              vtune: Executing actions 42 % Updating precomputed scalar metrics              vtune: Executing actions 42 % Discarding redundant overtime data               vtune: Executing actions 44 % Discarding redundant overtime data               vtune: Executing actions 44 % Saving the result                                vtune: Executing actions 46 % Saving the result                                vtune: Executing actions 48 % Saving the result                                vtune: Executing actions 50 % Saving the result                                vtune: Executing actions 50 % Generating a report                              vtune: Executing actions 50 % Setting data model parameters                    vtune: Executing actions 75 % Setting data model parameters                    vtune: Executing actions 75 % Generating a report                              Elapsed Time: 70.582s
+    Paused Time: 0s
+Effective CPU Utilization: 26.8% (5.363 out of 20 logical CPUs)
+ | The metric value is low, which may signal a poor logical CPU cores
+ | utilization caused by load imbalance, threading runtime overhead, contended
+ | synchronization, or thread/process underutilization. Explore sub-metrics to
+ | estimate the efficiency of MPI and OpenMP parallelism or run the Locks and
+ | Waits analysis to identify parallel bottlenecks for other parallel runtimes.
+ |
+    OpenMP Analysis. Collection Time: 70.582
+        Serial Time (outside parallel regions): 46.904s (66.5%)
+         | Serial Time of your application is high. It directly impacts
+         | application Elapsed Time and scalability. Explore options for
+         | parallelization, algorithm or microarchitecture tuning of the serial
+         | part of the application.
+         |
+
+            Top Serial Hotspots (outside parallel regions)
+            Function                                                                                                                                                                                                                          Module                                          Serial CPU Time
+            --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  ----------------------------------------------  ---------------
+            std::deque<boost::dynamic_bitset<unsigned long, std::allocator<unsigned long>>, std::allocator<boost::dynamic_bitset<unsigned long, std::allocator<unsigned long>>>>::deque                                                       strat_patient_doc_after_three_int_time_win_omp           6.621s
+            std::deque<boost::dynamic_bitset<unsigned long, std::allocator<unsigned long>>, std::allocator<boost::dynamic_bitset<unsigned long, std::allocator<unsigned long>>>>::operator=.isra.0                                            strat_patient_doc_after_three_int_time_win_omp           4.680s
+            operator new                                                                                                                                                                                                                      libstdc++.so.6                                           4.380s
+            std::deque<boost::dynamic_bitset<unsigned long, std::allocator<unsigned long>>, std::allocator<boost::dynamic_bitset<unsigned long, std::allocator<unsigned long>>>>::~deque                                                      strat_patient_doc_after_three_int_time_win_omp           3.830s
+            _ZSt14__copy_move_a1ILb0EPN5boost14dynamic_bitsetImSaImEEES3_EN9__gnu_cxx11__enable_ifIXsrSt27__is_any_random_access_iterIT0_DTcl26__iter_concept_or_categoryIS8_EEEE7__valueESt15_Deque_iteratorIT1_RSC_PSC_EE6__typeES8_S8_SF_  strat_patient_doc_after_three_int_time_win_omp           3.210s
+            [Others]                                                                                                                                                                                                                          N/A                                                     23.919s
+        Parallel Region Time: 23.678s (33.5%)
+            Estimated Ideal Time: 21.942s (31.1%)
+            OpenMP Potential Gain: 1.736s (2.5%)
+    Total Thread Count: 20
+        Thread Oversubscription: 0s (0.0% of CPU Time)
+    Wait Time with poor CPU Utilization: 924.510s (100.0% of Wait Time)
+
+        Top Waiting Objects
+        Sync Object                                               Wait Time with poor CPU Utilization  (% from Object Wait Time)(%)  Wait Count
+        --------------------------------------------------------  -----------------------------------  ----------------------------  ----------
+        Condition Variable                                                                   437.251s                        100.0%         230
+        Condition Variable 0x0931b471                                                        437.041s                        100.0%         212
+        Condition Variable 0x63bb485a                                                         48.506s                        100.0%          44
+        Condition Variable 0x84f8ded0                                                          1.711s                         99.0%          35
+        Stream ../../../output/strategy_graphs/g1.dot 0xbd4c2083                               0.000s                        100.0%           1
+        [Others]                                                                               0.000s                        100.0%           2
+    Spin and Overhead Time: 87.974s (18.9% of CPU Time)
+     | A significant portion of CPU time is spent in synchronization or
+     | threading overhead. Consider increasing task granularity or the scope of
+     | data synchronization.
+     |
+
+        Top Functions with Spin or Overhead Time
+        Function             Module     Spin and Overhead Time  (% from CPU Time)(%)
+        -------------------  ---------  ----------------------  --------------------
+        GOMP_critical_start  libomp.so                 87.824s                 18.8%
+        GOMP_critical_end    libomp.so                  0.120s                  0.0%
+        GOMP_parallel        libomp.so                  0.010s                  0.0%
+        func@0xb0860         libomp.so                  0.010s                  0.0%
+        [OpenMP dispatcher]  libomp.so                  0.010s                  0.0%
+Collection and Platform Info
+    Application Command Line: ./strat_patient_doc_after_three_int_time_win_omp 
+    Operating System: 7.2.6-arch2-1 DISTRIB_ID="Arch" DISTRIB_RELEASE="rolling" DISTRIB_DESCRIPTION="Arch Linux"
+    Computer Name: sbro
+    Result Size: 24.2 MB 
+    Collection start time: 17:11:01 25/09/2026 UTC
+    Collection stop time: 17:12:12 25/09/2026 UTC
+    Collector Type: User-mode sampling and tracing
+    CPU
+        Name: Intel(R) microarchitecture code named Raptorlake-P
+        Frequency: 2.995 GHz
+        Logical CPU Count: 20
+        Cache Allocation Technology
+            Level 2 capability: not detected
+            Level 3 capability: not detected
+
+If you want to skip descriptions of detected performance issues in the report,
+enter: vtune -report summary -report-knob show-issues=false -r <my_result_dir>.
+Alternatively, you may view the report in the csv format: vtune -report
+<report_name> -format=csv.
+vtune: Executing actions 100 % Generating a report                             vtune: Executing actions 100 % done                                            
+[EXIT CODE]: 0
+
