@@ -33,7 +33,7 @@ create arena production_cell
         (press,   takePlate_d, [(x, >=, 3), (x, <=, 5)], [x], robot_d),
         (robot_d, toDepot,     [(x, <, 3)],              [x], fall_d),
         (robot_d, toDepot,     [(x, >=, 4)],             [x], fall_d),
-        (fall_d,  restore_d,   [(x, >, 1), (x, <=, 5)],  [],  feed),
+        (fall_d,  restore_d,   [(x, >, 1), (x, <, 2)],  [],  feed),
         (robot_d, toDepot,     [(x, >=, 3), (x, <=, 6)], [x], depot),
         (depot,   newPlate,    [],                       [x], feed);
     }
