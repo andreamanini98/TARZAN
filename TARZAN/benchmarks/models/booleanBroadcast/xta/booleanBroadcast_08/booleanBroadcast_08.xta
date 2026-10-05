@@ -1,107 +1,215 @@
+int ctr01, ctr03, ctr02, ctr06, ctr07, ctr05, ctr04, ctr08, parity;
 broadcast chan flip;
-int parity, ctr01, ctr02, ctr03, ctr04, ctr05, ctr06, ctr07, ctr08;
 
 process Bit01() {
   clock x;
-  state s0, c0, s1, c1;
+  state
+    s0, c0, s1, c1;
   commit c0, c1;
   init s0;
   trans
-    s0 -> c0 { guard x == 1; assign x = 0; },
-    c0 -> s1 { sync flip!; assign ctr01 = 1 - ctr01; },
-    s1 -> c1 { guard x == 1; assign x = 0; },
-    c1 -> s0 { sync flip!; assign ctr01 = 1 - ctr01; };
-}
-
-process Bit02() {
-  clock x;
-  state s0, c0, s1, c1;
-  commit c0, c1;
-  init s0;
-  trans
-    s0 -> c0 { guard x == 2; assign x = 0; },
-    c0 -> s1 { sync flip!; assign ctr02 = 1 - ctr02; },
-    s1 -> c1 { guard x == 2; assign x = 0; },
-    c1 -> s0 { sync flip!; assign ctr02 = 1 - ctr02; };
+    s0 -> c0 {
+      guard x == 1;
+      assign x = 0;
+    },
+    c0 -> s1 {
+      sync flip!;
+      assign ctr01 = 1 - ctr01;
+    },
+    s1 -> c1 {
+      guard x == 1;
+      assign x = 0;
+    },
+    c1 -> s0 {
+      sync flip!;
+      assign ctr01 = 1 - ctr01;
+    };
 }
 
 process Bit03() {
   clock x;
-  state s0, c0, s1, c1;
+  state
+    s0, c0, s1, c1;
   commit c0, c1;
   init s0;
   trans
-    s0 -> c0 { guard x == 3; assign x = 0; },
-    c0 -> s1 { sync flip!; assign ctr03 = 1 - ctr03; },
-    s1 -> c1 { guard x == 3; assign x = 0; },
-    c1 -> s0 { sync flip!; assign ctr03 = 1 - ctr03; };
+    s0 -> c0 {
+      guard x == 3;
+      assign x = 0;
+    },
+    c0 -> s1 {
+      sync flip!;
+      assign ctr03 = 1 - ctr03;
+    },
+    s1 -> c1 {
+      guard x == 3;
+      assign x = 0;
+    },
+    c1 -> s0 {
+      sync flip!;
+      assign ctr03 = 1 - ctr03;
+    };
 }
 
-process Bit04() {
+process Bit02() {
   clock x;
-  state s0, c0, s1, c1;
+  state
+    s0, c0, s1, c1;
   commit c0, c1;
   init s0;
   trans
-    s0 -> c0 { guard x == 4; assign x = 0; },
-    c0 -> s1 { sync flip!; assign ctr04 = 1 - ctr04; },
-    s1 -> c1 { guard x == 4; assign x = 0; },
-    c1 -> s0 { sync flip!; assign ctr04 = 1 - ctr04; };
-}
-
-process Bit05() {
-  clock x;
-  state s0, c0, s1, c1;
-  commit c0, c1;
-  init s0;
-  trans
-    s0 -> c0 { guard x == 5; assign x = 0; },
-    c0 -> s1 { sync flip!; assign ctr05 = 1 - ctr05; },
-    s1 -> c1 { guard x == 5; assign x = 0; },
-    c1 -> s0 { sync flip!; assign ctr05 = 1 - ctr05; };
+    s0 -> c0 {
+      guard x == 2;
+      assign x = 0;
+    },
+    c0 -> s1 {
+      sync flip!;
+      assign ctr02 = 1 - ctr02;
+    },
+    s1 -> c1 {
+      guard x == 2;
+      assign x = 0;
+    },
+    c1 -> s0 {
+      sync flip!;
+      assign ctr02 = 1 - ctr02;
+    };
 }
 
 process Bit06() {
   clock x;
-  state s0, c0, s1, c1;
+  state
+    s0, c0, s1, c1;
   commit c0, c1;
   init s0;
   trans
-    s0 -> c0 { guard x == 6; assign x = 0; },
-    c0 -> s1 { sync flip!; assign ctr06 = 1 - ctr06; },
-    s1 -> c1 { guard x == 6; assign x = 0; },
-    c1 -> s0 { sync flip!; assign ctr06 = 1 - ctr06; };
+    s0 -> c0 {
+      guard x == 6;
+      assign x = 0;
+    },
+    c0 -> s1 {
+      sync flip!;
+      assign ctr06 = 1 - ctr06;
+    },
+    s1 -> c1 {
+      guard x == 6;
+      assign x = 0;
+    },
+    c1 -> s0 {
+      sync flip!;
+      assign ctr06 = 1 - ctr06;
+    };
 }
 
 process Bit07() {
   clock x;
-  state s0, c0, s1, c1;
+  state
+    s0, c0, s1, c1;
   commit c0, c1;
   init s0;
   trans
-    s0 -> c0 { guard x == 7; assign x = 0; },
-    c0 -> s1 { sync flip!; assign ctr07 = 1 - ctr07; },
-    s1 -> c1 { guard x == 7; assign x = 0; },
-    c1 -> s0 { sync flip!; assign ctr07 = 1 - ctr07; };
+    s0 -> c0 {
+      guard x == 7;
+      assign x = 0;
+    },
+    c0 -> s1 {
+      sync flip!;
+      assign ctr07 = 1 - ctr07;
+    },
+    s1 -> c1 {
+      guard x == 7;
+      assign x = 0;
+    },
+    c1 -> s0 {
+      sync flip!;
+      assign ctr07 = 1 - ctr07;
+    };
+}
+
+process Bit05() {
+  clock x;
+  state
+    s0, c0, s1, c1;
+  commit c0, c1;
+  init s0;
+  trans
+    s0 -> c0 {
+      guard x == 5;
+      assign x = 0;
+    },
+    c0 -> s1 {
+      sync flip!;
+      assign ctr05 = 1 - ctr05;
+    },
+    s1 -> c1 {
+      guard x == 5;
+      assign x = 0;
+    },
+    c1 -> s0 {
+      sync flip!;
+      assign ctr05 = 1 - ctr05;
+    };
+}
+
+process Bit04() {
+  clock x;
+  state
+    s0, c0, s1, c1;
+  commit c0, c1;
+  init s0;
+  trans
+    s0 -> c0 {
+      guard x == 4;
+      assign x = 0;
+    },
+    c0 -> s1 {
+      sync flip!;
+      assign ctr04 = 1 - ctr04;
+    },
+    s1 -> c1 {
+      guard x == 4;
+      assign x = 0;
+    },
+    c1 -> s0 {
+      sync flip!;
+      assign ctr04 = 1 - ctr04;
+    };
 }
 
 process Bit08() {
   clock x;
-  state s0, c0, s1, c1;
+  state
+    s0, c0, s1, c1;
   commit c0, c1;
   init s0;
   trans
-    s0 -> c0 { guard x == 8; assign x = 0; },
-    c0 -> s1 { sync flip!; assign ctr08 = 1 - ctr08; },
-    s1 -> c1 { guard x == 8; assign x = 0; },
-    c1 -> s0 { sync flip!; assign ctr08 = 1 - ctr08; };
+    s0 -> c0 {
+      guard x == 8;
+      assign x = 0;
+    },
+    c0 -> s1 {
+      sync flip!;
+      assign ctr08 = 1 - ctr08;
+    },
+    s1 -> c1 {
+      guard x == 8;
+      assign x = 0;
+    },
+    c1 -> s0 {
+      sync flip!;
+      assign ctr08 = 1 - ctr08;
+    };
 }
 
 process Observer() {
-  state watch;
+  state
+    watch;
   init watch;
   trans
-    watch -> watch { sync flip?; assign parity = 1 - parity; };
+    watch -> watch {
+      sync flip?;
+      assign parity = 1 - parity;
+    };
 }
 
-system Bit01, Bit02, Bit03, Bit04, Bit05, Bit06, Bit07, Bit08, Observer;
+system Bit01, Bit03, Bit02, Bit06, Bit07, Bit05, Bit04, Bit08, Observer;

@@ -1,178 +1,636 @@
-broadcast chan tick;
 int d1, d2, d3, d4;
-
-process Ticker() {
-clock p;
-state go, wait { p <= 1 };
-urgent go;
-init go;
-trans
-    go -> go { guard d1 < 9; sync tick!; },
-    go -> wait { guard d1 == 9; sync tick!; assign p = 0; },
-    wait -> go { guard p == 1; };
-}
+broadcast chan tick;
 
 process Counter() {
-state idle, C1, C2, C3, C4;
-commit C1, C2, C3, C4;
-init idle;
-trans
-    idle -> C1 { sync tick?; },
-    C1 -> idle { guard d1 < 9; assign d1 = d1 + 1; },
-    C1 -> C2 { guard d1 == 9; assign d1 = 0; },
-    C2 -> idle { guard d2 < 9; assign d2 = d2 + 1; },
-    C2 -> C3 { guard d2 == 9; assign d2 = 0; },
-    C3 -> idle { guard d3 < 9; assign d3 = d3 + 1; },
-    C3 -> C4 { guard d3 == 9; assign d3 = 0; },
-    C4 -> idle { guard d4 < 9; assign d4 = d4 + 1; },
-    C4 -> idle { guard d4 == 9; assign d4 = 0; };
+  state
+    idle, C1, C2, C3, C4;
+  commit C1, C2, C3, C4;
+  init idle;
+  trans
+    idle -> C1 {
+      sync tick?;
+    },
+    C1 -> idle {
+      guard d1 < 9;
+      assign d1 = d1 + 1;
+    },
+    C1 -> C2 {
+      guard d1 == 9;
+      assign d1 = 0;
+    },
+    C2 -> idle {
+      guard d2 < 9;
+      assign d2 = d2 + 1;
+    },
+    C2 -> C3 {
+      guard d2 == 9;
+      assign d2 = 0;
+    },
+    C3 -> idle {
+      guard d3 < 9;
+      assign d3 = d3 + 1;
+    },
+    C3 -> C4 {
+      guard d3 == 9;
+      assign d3 = 0;
+    },
+    C4 -> idle {
+      guard d4 < 9;
+      assign d4 = d4 + 1;
+    },
+    C4 -> idle {
+      guard d4 == 9;
+      assign d4 = 0;
+    };
+}
+
+process Ticker() {
+  clock p;
+  state
+    go, wait { p <= 1 };
+  urgent go;
+  init go;
+  trans
+    go -> go {
+      guard d1 < 9;
+      sync tick!;
+    },
+    go -> wait {
+      guard d1 == 9;
+      sync tick!;
+      assign p = 0;
+    },
+    wait -> go {
+      guard p == 1;
+    };
 }
 
 process Bank() {
-clock k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28, k29, k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40, k41, k42, k43, k44, k45, k46, k47, k48, k49, k50, k51, k52, k53, k54, k55, k56, k57, k58, k59, k60, k61, k62, k63, k64, k65, k66, k67, k68, k69, k70, k71, k72, k73, k74, k75, k76, k77, k78, k79, k80, k81, k82, k83, k84, k85, k86, k87, k88, k89, k90, k91, k92, k93, k94, k95, k96, k97, k98, k99, k100, k101, k102, k103, k104, k105, k106, k107, k108, k109, k110, k111, k112, k113, k114, k115, k116, k117, k118, k119, k120, k121, k122, k123, k124, k125, k126, k127, k128, k129, k130, k131, k132, k133, k134, k135, k136, k137, k138, k139, k140;
-state s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s25, s26, s27, s28, s29, s30, s31, s32, s33, s34, s35, s36, s37, s38, s39, s40, s41, s42, s43, s44, s45, s46, s47, s48, s49, s50, s51, s52, s53, s54, s55, s56, s57, s58, s59, s60, s61, s62, s63, s64, s65, s66, s67, s68, s69, s70, s71, s72, s73, s74, s75, s76, s77, s78, s79, s80, s81, s82, s83, s84, s85, s86, s87, s88, s89, s90, s91, s92, s93, s94, s95, s96, s97, s98, s99, s100, s101, s102, s103, s104, s105, s106, s107, s108, s109, s110, s111, s112, s113, s114, s115, s116, s117, s118, s119, s120, s121, s122, s123, s124, s125, s126, s127, s128, s129, s130, s131, s132, s133, s134, s135, s136, s137, s138, s139, s140;
-init s1;
-trans
-    s1 -> s2 { sync tick?; assign k1 = 0; },
-    s2 -> s3 { sync tick?; assign k2 = 0; },
-    s3 -> s4 { sync tick?; assign k3 = 0; },
-    s4 -> s5 { sync tick?; assign k4 = 0; },
-    s5 -> s6 { sync tick?; assign k5 = 0; },
-    s6 -> s7 { sync tick?; assign k6 = 0; },
-    s7 -> s8 { sync tick?; assign k7 = 0; },
-    s8 -> s9 { sync tick?; assign k8 = 0; },
-    s9 -> s10 { sync tick?; assign k9 = 0; },
-    s10 -> s11 { sync tick?; assign k10 = 0; },
-    s11 -> s12 { sync tick?; assign k11 = 0; },
-    s12 -> s13 { sync tick?; assign k12 = 0; },
-    s13 -> s14 { sync tick?; assign k13 = 0; },
-    s14 -> s15 { sync tick?; assign k14 = 0; },
-    s15 -> s16 { sync tick?; assign k15 = 0; },
-    s16 -> s17 { sync tick?; assign k16 = 0; },
-    s17 -> s18 { sync tick?; assign k17 = 0; },
-    s18 -> s19 { sync tick?; assign k18 = 0; },
-    s19 -> s20 { sync tick?; assign k19 = 0; },
-    s20 -> s21 { sync tick?; assign k20 = 0; },
-    s21 -> s22 { sync tick?; assign k21 = 0; },
-    s22 -> s23 { sync tick?; assign k22 = 0; },
-    s23 -> s24 { sync tick?; assign k23 = 0; },
-    s24 -> s25 { sync tick?; assign k24 = 0; },
-    s25 -> s26 { sync tick?; assign k25 = 0; },
-    s26 -> s27 { sync tick?; assign k26 = 0; },
-    s27 -> s28 { sync tick?; assign k27 = 0; },
-    s28 -> s29 { sync tick?; assign k28 = 0; },
-    s29 -> s30 { sync tick?; assign k29 = 0; },
-    s30 -> s31 { sync tick?; assign k30 = 0; },
-    s31 -> s32 { sync tick?; assign k31 = 0; },
-    s32 -> s33 { sync tick?; assign k32 = 0; },
-    s33 -> s34 { sync tick?; assign k33 = 0; },
-    s34 -> s35 { sync tick?; assign k34 = 0; },
-    s35 -> s36 { sync tick?; assign k35 = 0; },
-    s36 -> s37 { sync tick?; assign k36 = 0; },
-    s37 -> s38 { sync tick?; assign k37 = 0; },
-    s38 -> s39 { sync tick?; assign k38 = 0; },
-    s39 -> s40 { sync tick?; assign k39 = 0; },
-    s40 -> s41 { sync tick?; assign k40 = 0; },
-    s41 -> s42 { sync tick?; assign k41 = 0; },
-    s42 -> s43 { sync tick?; assign k42 = 0; },
-    s43 -> s44 { sync tick?; assign k43 = 0; },
-    s44 -> s45 { sync tick?; assign k44 = 0; },
-    s45 -> s46 { sync tick?; assign k45 = 0; },
-    s46 -> s47 { sync tick?; assign k46 = 0; },
-    s47 -> s48 { sync tick?; assign k47 = 0; },
-    s48 -> s49 { sync tick?; assign k48 = 0; },
-    s49 -> s50 { sync tick?; assign k49 = 0; },
-    s50 -> s51 { sync tick?; assign k50 = 0; },
-    s51 -> s52 { sync tick?; assign k51 = 0; },
-    s52 -> s53 { sync tick?; assign k52 = 0; },
-    s53 -> s54 { sync tick?; assign k53 = 0; },
-    s54 -> s55 { sync tick?; assign k54 = 0; },
-    s55 -> s56 { sync tick?; assign k55 = 0; },
-    s56 -> s57 { sync tick?; assign k56 = 0; },
-    s57 -> s58 { sync tick?; assign k57 = 0; },
-    s58 -> s59 { sync tick?; assign k58 = 0; },
-    s59 -> s60 { sync tick?; assign k59 = 0; },
-    s60 -> s61 { sync tick?; assign k60 = 0; },
-    s61 -> s62 { sync tick?; assign k61 = 0; },
-    s62 -> s63 { sync tick?; assign k62 = 0; },
-    s63 -> s64 { sync tick?; assign k63 = 0; },
-    s64 -> s65 { sync tick?; assign k64 = 0; },
-    s65 -> s66 { sync tick?; assign k65 = 0; },
-    s66 -> s67 { sync tick?; assign k66 = 0; },
-    s67 -> s68 { sync tick?; assign k67 = 0; },
-    s68 -> s69 { sync tick?; assign k68 = 0; },
-    s69 -> s70 { sync tick?; assign k69 = 0; },
-    s70 -> s71 { sync tick?; assign k70 = 0; },
-    s71 -> s72 { sync tick?; assign k71 = 0; },
-    s72 -> s73 { sync tick?; assign k72 = 0; },
-    s73 -> s74 { sync tick?; assign k73 = 0; },
-    s74 -> s75 { sync tick?; assign k74 = 0; },
-    s75 -> s76 { sync tick?; assign k75 = 0; },
-    s76 -> s77 { sync tick?; assign k76 = 0; },
-    s77 -> s78 { sync tick?; assign k77 = 0; },
-    s78 -> s79 { sync tick?; assign k78 = 0; },
-    s79 -> s80 { sync tick?; assign k79 = 0; },
-    s80 -> s81 { sync tick?; assign k80 = 0; },
-    s81 -> s82 { sync tick?; assign k81 = 0; },
-    s82 -> s83 { sync tick?; assign k82 = 0; },
-    s83 -> s84 { sync tick?; assign k83 = 0; },
-    s84 -> s85 { sync tick?; assign k84 = 0; },
-    s85 -> s86 { sync tick?; assign k85 = 0; },
-    s86 -> s87 { sync tick?; assign k86 = 0; },
-    s87 -> s88 { sync tick?; assign k87 = 0; },
-    s88 -> s89 { sync tick?; assign k88 = 0; },
-    s89 -> s90 { sync tick?; assign k89 = 0; },
-    s90 -> s91 { sync tick?; assign k90 = 0; },
-    s91 -> s92 { sync tick?; assign k91 = 0; },
-    s92 -> s93 { sync tick?; assign k92 = 0; },
-    s93 -> s94 { sync tick?; assign k93 = 0; },
-    s94 -> s95 { sync tick?; assign k94 = 0; },
-    s95 -> s96 { sync tick?; assign k95 = 0; },
-    s96 -> s97 { sync tick?; assign k96 = 0; },
-    s97 -> s98 { sync tick?; assign k97 = 0; },
-    s98 -> s99 { sync tick?; assign k98 = 0; },
-    s99 -> s100 { sync tick?; assign k99 = 0; },
-    s100 -> s101 { sync tick?; assign k100 = 0; },
-    s101 -> s102 { sync tick?; assign k101 = 0; },
-    s102 -> s103 { sync tick?; assign k102 = 0; },
-    s103 -> s104 { sync tick?; assign k103 = 0; },
-    s104 -> s105 { sync tick?; assign k104 = 0; },
-    s105 -> s106 { sync tick?; assign k105 = 0; },
-    s106 -> s107 { sync tick?; assign k106 = 0; },
-    s107 -> s108 { sync tick?; assign k107 = 0; },
-    s108 -> s109 { sync tick?; assign k108 = 0; },
-    s109 -> s110 { sync tick?; assign k109 = 0; },
-    s110 -> s111 { sync tick?; assign k110 = 0; },
-    s111 -> s112 { sync tick?; assign k111 = 0; },
-    s112 -> s113 { sync tick?; assign k112 = 0; },
-    s113 -> s114 { sync tick?; assign k113 = 0; },
-    s114 -> s115 { sync tick?; assign k114 = 0; },
-    s115 -> s116 { sync tick?; assign k115 = 0; },
-    s116 -> s117 { sync tick?; assign k116 = 0; },
-    s117 -> s118 { sync tick?; assign k117 = 0; },
-    s118 -> s119 { sync tick?; assign k118 = 0; },
-    s119 -> s120 { sync tick?; assign k119 = 0; },
-    s120 -> s121 { sync tick?; assign k120 = 0; },
-    s121 -> s122 { sync tick?; assign k121 = 0; },
-    s122 -> s123 { sync tick?; assign k122 = 0; },
-    s123 -> s124 { sync tick?; assign k123 = 0; },
-    s124 -> s125 { sync tick?; assign k124 = 0; },
-    s125 -> s126 { sync tick?; assign k125 = 0; },
-    s126 -> s127 { sync tick?; assign k126 = 0; },
-    s127 -> s128 { sync tick?; assign k127 = 0; },
-    s128 -> s129 { sync tick?; assign k128 = 0; },
-    s129 -> s130 { sync tick?; assign k129 = 0; },
-    s130 -> s131 { sync tick?; assign k130 = 0; },
-    s131 -> s132 { sync tick?; assign k131 = 0; },
-    s132 -> s133 { sync tick?; assign k132 = 0; },
-    s133 -> s134 { sync tick?; assign k133 = 0; },
-    s134 -> s135 { sync tick?; assign k134 = 0; },
-    s135 -> s136 { sync tick?; assign k135 = 0; },
-    s136 -> s137 { sync tick?; assign k136 = 0; },
-    s137 -> s138 { sync tick?; assign k137 = 0; },
-    s138 -> s139 { sync tick?; assign k138 = 0; },
-    s139 -> s140 { sync tick?; assign k139 = 0; },
-    s140 -> s1 { sync tick?; assign k140 = 0; };
+  clock k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28, k29, k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40, k41, k42, k43, k44, k45, k46, k47, k48, k49, k50, k51, k52, k53, k54, k55, k56, k57, k58, k59, k60, k61, k62, k63, k64, k65, k66, k67, k68, k69, k70, k71, k72, k73, k74, k75, k76, k77, k78, k79, k80, k81, k82, k83, k84, k85, k86, k87, k88, k89, k90, k91, k92, k93, k94, k95, k96, k97, k98, k99, k100, k101, k102, k103, k104, k105, k106, k107, k108, k109, k110, k111, k112, k113, k114, k115, k116, k117, k118, k119, k120, k121, k122, k123, k124, k125, k126, k127, k128, k129, k130, k131, k132, k133, k134, k135, k136, k137, k138, k139, k140;
+  state
+    s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s25, s26, s27, s28, s29, s30, s31, s32, s33, s34, s35, s36, s37, s38, s39, s40, s41, s42, s43, s44, s45, s46, s47, s48, s49, s50, s51, s52, s53, s54, s55, s56, s57, s58, s59, s60, s61, s62, s63, s64, s65, s66, s67, s68, s69, s70, s71, s72, s73, s74, s75, s76, s77, s78, s79, s80, s81, s82, s83, s84, s85, s86, s87, s88, s89, s90, s91, s92, s93, s94, s95, s96, s97, s98, s99, s100, s101, s102, s103, s104, s105, s106, s107, s108, s109, s110, s111, s112, s113, s114, s115, s116, s117, s118, s119, s120, s121, s122, s123, s124, s125, s126, s127, s128, s129, s130, s131, s132, s133, s134, s135, s136, s137, s138, s139, s140;
+  init s1;
+  trans
+    s1 -> s2 {
+      sync tick?;
+      assign k1 = 0;
+    },
+    s2 -> s3 {
+      sync tick?;
+      assign k2 = 0;
+    },
+    s3 -> s4 {
+      sync tick?;
+      assign k3 = 0;
+    },
+    s4 -> s5 {
+      sync tick?;
+      assign k4 = 0;
+    },
+    s5 -> s6 {
+      sync tick?;
+      assign k5 = 0;
+    },
+    s6 -> s7 {
+      sync tick?;
+      assign k6 = 0;
+    },
+    s7 -> s8 {
+      sync tick?;
+      assign k7 = 0;
+    },
+    s8 -> s9 {
+      sync tick?;
+      assign k8 = 0;
+    },
+    s9 -> s10 {
+      sync tick?;
+      assign k9 = 0;
+    },
+    s10 -> s11 {
+      sync tick?;
+      assign k10 = 0;
+    },
+    s11 -> s12 {
+      sync tick?;
+      assign k11 = 0;
+    },
+    s12 -> s13 {
+      sync tick?;
+      assign k12 = 0;
+    },
+    s13 -> s14 {
+      sync tick?;
+      assign k13 = 0;
+    },
+    s14 -> s15 {
+      sync tick?;
+      assign k14 = 0;
+    },
+    s15 -> s16 {
+      sync tick?;
+      assign k15 = 0;
+    },
+    s16 -> s17 {
+      sync tick?;
+      assign k16 = 0;
+    },
+    s17 -> s18 {
+      sync tick?;
+      assign k17 = 0;
+    },
+    s18 -> s19 {
+      sync tick?;
+      assign k18 = 0;
+    },
+    s19 -> s20 {
+      sync tick?;
+      assign k19 = 0;
+    },
+    s20 -> s21 {
+      sync tick?;
+      assign k20 = 0;
+    },
+    s21 -> s22 {
+      sync tick?;
+      assign k21 = 0;
+    },
+    s22 -> s23 {
+      sync tick?;
+      assign k22 = 0;
+    },
+    s23 -> s24 {
+      sync tick?;
+      assign k23 = 0;
+    },
+    s24 -> s25 {
+      sync tick?;
+      assign k24 = 0;
+    },
+    s25 -> s26 {
+      sync tick?;
+      assign k25 = 0;
+    },
+    s26 -> s27 {
+      sync tick?;
+      assign k26 = 0;
+    },
+    s27 -> s28 {
+      sync tick?;
+      assign k27 = 0;
+    },
+    s28 -> s29 {
+      sync tick?;
+      assign k28 = 0;
+    },
+    s29 -> s30 {
+      sync tick?;
+      assign k29 = 0;
+    },
+    s30 -> s31 {
+      sync tick?;
+      assign k30 = 0;
+    },
+    s31 -> s32 {
+      sync tick?;
+      assign k31 = 0;
+    },
+    s32 -> s33 {
+      sync tick?;
+      assign k32 = 0;
+    },
+    s33 -> s34 {
+      sync tick?;
+      assign k33 = 0;
+    },
+    s34 -> s35 {
+      sync tick?;
+      assign k34 = 0;
+    },
+    s35 -> s36 {
+      sync tick?;
+      assign k35 = 0;
+    },
+    s36 -> s37 {
+      sync tick?;
+      assign k36 = 0;
+    },
+    s37 -> s38 {
+      sync tick?;
+      assign k37 = 0;
+    },
+    s38 -> s39 {
+      sync tick?;
+      assign k38 = 0;
+    },
+    s39 -> s40 {
+      sync tick?;
+      assign k39 = 0;
+    },
+    s40 -> s41 {
+      sync tick?;
+      assign k40 = 0;
+    },
+    s41 -> s42 {
+      sync tick?;
+      assign k41 = 0;
+    },
+    s42 -> s43 {
+      sync tick?;
+      assign k42 = 0;
+    },
+    s43 -> s44 {
+      sync tick?;
+      assign k43 = 0;
+    },
+    s44 -> s45 {
+      sync tick?;
+      assign k44 = 0;
+    },
+    s45 -> s46 {
+      sync tick?;
+      assign k45 = 0;
+    },
+    s46 -> s47 {
+      sync tick?;
+      assign k46 = 0;
+    },
+    s47 -> s48 {
+      sync tick?;
+      assign k47 = 0;
+    },
+    s48 -> s49 {
+      sync tick?;
+      assign k48 = 0;
+    },
+    s49 -> s50 {
+      sync tick?;
+      assign k49 = 0;
+    },
+    s50 -> s51 {
+      sync tick?;
+      assign k50 = 0;
+    },
+    s51 -> s52 {
+      sync tick?;
+      assign k51 = 0;
+    },
+    s52 -> s53 {
+      sync tick?;
+      assign k52 = 0;
+    },
+    s53 -> s54 {
+      sync tick?;
+      assign k53 = 0;
+    },
+    s54 -> s55 {
+      sync tick?;
+      assign k54 = 0;
+    },
+    s55 -> s56 {
+      sync tick?;
+      assign k55 = 0;
+    },
+    s56 -> s57 {
+      sync tick?;
+      assign k56 = 0;
+    },
+    s57 -> s58 {
+      sync tick?;
+      assign k57 = 0;
+    },
+    s58 -> s59 {
+      sync tick?;
+      assign k58 = 0;
+    },
+    s59 -> s60 {
+      sync tick?;
+      assign k59 = 0;
+    },
+    s60 -> s61 {
+      sync tick?;
+      assign k60 = 0;
+    },
+    s61 -> s62 {
+      sync tick?;
+      assign k61 = 0;
+    },
+    s62 -> s63 {
+      sync tick?;
+      assign k62 = 0;
+    },
+    s63 -> s64 {
+      sync tick?;
+      assign k63 = 0;
+    },
+    s64 -> s65 {
+      sync tick?;
+      assign k64 = 0;
+    },
+    s65 -> s66 {
+      sync tick?;
+      assign k65 = 0;
+    },
+    s66 -> s67 {
+      sync tick?;
+      assign k66 = 0;
+    },
+    s67 -> s68 {
+      sync tick?;
+      assign k67 = 0;
+    },
+    s68 -> s69 {
+      sync tick?;
+      assign k68 = 0;
+    },
+    s69 -> s70 {
+      sync tick?;
+      assign k69 = 0;
+    },
+    s70 -> s71 {
+      sync tick?;
+      assign k70 = 0;
+    },
+    s71 -> s72 {
+      sync tick?;
+      assign k71 = 0;
+    },
+    s72 -> s73 {
+      sync tick?;
+      assign k72 = 0;
+    },
+    s73 -> s74 {
+      sync tick?;
+      assign k73 = 0;
+    },
+    s74 -> s75 {
+      sync tick?;
+      assign k74 = 0;
+    },
+    s75 -> s76 {
+      sync tick?;
+      assign k75 = 0;
+    },
+    s76 -> s77 {
+      sync tick?;
+      assign k76 = 0;
+    },
+    s77 -> s78 {
+      sync tick?;
+      assign k77 = 0;
+    },
+    s78 -> s79 {
+      sync tick?;
+      assign k78 = 0;
+    },
+    s79 -> s80 {
+      sync tick?;
+      assign k79 = 0;
+    },
+    s80 -> s81 {
+      sync tick?;
+      assign k80 = 0;
+    },
+    s81 -> s82 {
+      sync tick?;
+      assign k81 = 0;
+    },
+    s82 -> s83 {
+      sync tick?;
+      assign k82 = 0;
+    },
+    s83 -> s84 {
+      sync tick?;
+      assign k83 = 0;
+    },
+    s84 -> s85 {
+      sync tick?;
+      assign k84 = 0;
+    },
+    s85 -> s86 {
+      sync tick?;
+      assign k85 = 0;
+    },
+    s86 -> s87 {
+      sync tick?;
+      assign k86 = 0;
+    },
+    s87 -> s88 {
+      sync tick?;
+      assign k87 = 0;
+    },
+    s88 -> s89 {
+      sync tick?;
+      assign k88 = 0;
+    },
+    s89 -> s90 {
+      sync tick?;
+      assign k89 = 0;
+    },
+    s90 -> s91 {
+      sync tick?;
+      assign k90 = 0;
+    },
+    s91 -> s92 {
+      sync tick?;
+      assign k91 = 0;
+    },
+    s92 -> s93 {
+      sync tick?;
+      assign k92 = 0;
+    },
+    s93 -> s94 {
+      sync tick?;
+      assign k93 = 0;
+    },
+    s94 -> s95 {
+      sync tick?;
+      assign k94 = 0;
+    },
+    s95 -> s96 {
+      sync tick?;
+      assign k95 = 0;
+    },
+    s96 -> s97 {
+      sync tick?;
+      assign k96 = 0;
+    },
+    s97 -> s98 {
+      sync tick?;
+      assign k97 = 0;
+    },
+    s98 -> s99 {
+      sync tick?;
+      assign k98 = 0;
+    },
+    s99 -> s100 {
+      sync tick?;
+      assign k99 = 0;
+    },
+    s100 -> s101 {
+      sync tick?;
+      assign k100 = 0;
+    },
+    s101 -> s102 {
+      sync tick?;
+      assign k101 = 0;
+    },
+    s102 -> s103 {
+      sync tick?;
+      assign k102 = 0;
+    },
+    s103 -> s104 {
+      sync tick?;
+      assign k103 = 0;
+    },
+    s104 -> s105 {
+      sync tick?;
+      assign k104 = 0;
+    },
+    s105 -> s106 {
+      sync tick?;
+      assign k105 = 0;
+    },
+    s106 -> s107 {
+      sync tick?;
+      assign k106 = 0;
+    },
+    s107 -> s108 {
+      sync tick?;
+      assign k107 = 0;
+    },
+    s108 -> s109 {
+      sync tick?;
+      assign k108 = 0;
+    },
+    s109 -> s110 {
+      sync tick?;
+      assign k109 = 0;
+    },
+    s110 -> s111 {
+      sync tick?;
+      assign k110 = 0;
+    },
+    s111 -> s112 {
+      sync tick?;
+      assign k111 = 0;
+    },
+    s112 -> s113 {
+      sync tick?;
+      assign k112 = 0;
+    },
+    s113 -> s114 {
+      sync tick?;
+      assign k113 = 0;
+    },
+    s114 -> s115 {
+      sync tick?;
+      assign k114 = 0;
+    },
+    s115 -> s116 {
+      sync tick?;
+      assign k115 = 0;
+    },
+    s116 -> s117 {
+      sync tick?;
+      assign k116 = 0;
+    },
+    s117 -> s118 {
+      sync tick?;
+      assign k117 = 0;
+    },
+    s118 -> s119 {
+      sync tick?;
+      assign k118 = 0;
+    },
+    s119 -> s120 {
+      sync tick?;
+      assign k119 = 0;
+    },
+    s120 -> s121 {
+      sync tick?;
+      assign k120 = 0;
+    },
+    s121 -> s122 {
+      sync tick?;
+      assign k121 = 0;
+    },
+    s122 -> s123 {
+      sync tick?;
+      assign k122 = 0;
+    },
+    s123 -> s124 {
+      sync tick?;
+      assign k123 = 0;
+    },
+    s124 -> s125 {
+      sync tick?;
+      assign k124 = 0;
+    },
+    s125 -> s126 {
+      sync tick?;
+      assign k125 = 0;
+    },
+    s126 -> s127 {
+      sync tick?;
+      assign k126 = 0;
+    },
+    s127 -> s128 {
+      sync tick?;
+      assign k127 = 0;
+    },
+    s128 -> s129 {
+      sync tick?;
+      assign k128 = 0;
+    },
+    s129 -> s130 {
+      sync tick?;
+      assign k129 = 0;
+    },
+    s130 -> s131 {
+      sync tick?;
+      assign k130 = 0;
+    },
+    s131 -> s132 {
+      sync tick?;
+      assign k131 = 0;
+    },
+    s132 -> s133 {
+      sync tick?;
+      assign k132 = 0;
+    },
+    s133 -> s134 {
+      sync tick?;
+      assign k133 = 0;
+    },
+    s134 -> s135 {
+      sync tick?;
+      assign k134 = 0;
+    },
+    s135 -> s136 {
+      sync tick?;
+      assign k135 = 0;
+    },
+    s136 -> s137 {
+      sync tick?;
+      assign k136 = 0;
+    },
+    s137 -> s138 {
+      sync tick?;
+      assign k137 = 0;
+    },
+    s138 -> s139 {
+      sync tick?;
+      assign k138 = 0;
+    },
+    s139 -> s140 {
+      sync tick?;
+      assign k139 = 0;
+    },
+    s140 -> s1 {
+      sync tick?;
+      assign k140 = 0;
+    };
 }
 
-system Ticker, Counter, Bank;
+system Counter, Ticker, Bank;

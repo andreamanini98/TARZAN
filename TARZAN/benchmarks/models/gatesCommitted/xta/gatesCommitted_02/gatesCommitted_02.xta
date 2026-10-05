@@ -1,50 +1,54 @@
-// Auto-generated XTA model for 2 committed keys
-
 int gate;
 
-process key01() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 1; assign x = 0; },
-        q1 -> C { guard x == 1; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
+process unlocker() {
+  clock y;
+  state
+    u0, goal;
+  init u0;
+  trans
+    u0 -> goal {
+      guard y == 4 && gate == 2;
+    };
 }
 
 process key02() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 2; assign x = 0; },
-        q1 -> C { guard x == 2; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 2;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 2;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
 }
 
-process unlocker() {
-    clock y;
-    state
-        u0,
-        goal;
-    init
-        u0;
-    trans
-        u0 -> goal { guard y == 4 && gate == 2; };
+process key01() {
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 1;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 1;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
 }
 
-system key01, key02, unlocker;
+system unlocker, key02, key01;

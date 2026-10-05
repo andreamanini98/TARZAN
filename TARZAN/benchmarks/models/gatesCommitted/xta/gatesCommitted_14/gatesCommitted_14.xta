@@ -1,254 +1,294 @@
-// Auto-generated XTA model for 14 committed keys
-
 int gate;
 
-process key01() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 1; assign x = 0; },
-        q1 -> C { guard x == 1; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
-}
-
-process key02() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 2; assign x = 0; },
-        q1 -> C { guard x == 2; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
-}
-
-process key03() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 3; assign x = 0; },
-        q1 -> C { guard x == 3; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
-}
-
-process key04() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 4; assign x = 0; },
-        q1 -> C { guard x == 4; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
-}
-
-process key05() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 5; assign x = 0; },
-        q1 -> C { guard x == 5; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
-}
-
-process key06() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 6; assign x = 0; },
-        q1 -> C { guard x == 6; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
-}
-
-process key07() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 7; assign x = 0; },
-        q1 -> C { guard x == 7; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
-}
-
 process key08() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 8; assign x = 0; },
-        q1 -> C { guard x == 8; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 8;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 8;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
 }
 
 process key09() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 9; assign x = 0; },
-        q1 -> C { guard x == 9; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
-}
-
-process key10() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 10; assign x = 0; },
-        q1 -> C { guard x == 10; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
-}
-
-process key11() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 11; assign x = 0; },
-        q1 -> C { guard x == 11; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
-}
-
-process key12() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 12; assign x = 0; },
-        q1 -> C { guard x == 12; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
-}
-
-process key13() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 13; assign x = 0; },
-        q1 -> C { guard x == 13; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
-}
-
-process key14() {
-    clock x;
-    state
-        q0,
-        q1,
-        C,
-        done;
-    commit
-        C;
-    init
-        q0;
-    trans
-        q0 -> q1 { guard x == 14; assign x = 0; },
-        q1 -> C { guard x == 14; assign x = 0; },
-        C -> done { assign gate = gate + 1; };
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 9;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 9;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
 }
 
 process unlocker() {
-    clock y;
-    state
-        u0,
-        goal;
-    init
-        u0;
-    trans
-        u0 -> goal { guard y == 28 && gate == 14; };
+  clock y;
+  state
+    u0, goal;
+  init u0;
+  trans
+    u0 -> goal {
+      guard y == 28 && gate == 14;
+    };
 }
 
-system key01, key02, key03, key04, key05, key06, key07, key08, key09, key10, key11, key12, key13, key14, unlocker;
+process key10() {
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 10;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 10;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
+}
+
+process key04() {
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 4;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 4;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
+}
+
+process key05() {
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 5;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 5;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
+}
+
+process key11() {
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 11;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 11;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
+}
+
+process key07() {
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 7;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 7;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
+}
+
+process key13() {
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 13;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 13;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
+}
+
+process key12() {
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 12;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 12;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
+}
+
+process key06() {
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 6;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 6;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
+}
+
+process key02() {
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 2;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 2;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
+}
+
+process key03() {
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 3;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 3;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
+}
+
+process key01() {
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 1;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 1;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
+}
+
+process key14() {
+  clock x;
+  state
+    q0, q1, C, done;
+  commit C;
+  init q0;
+  trans
+    q0 -> q1 {
+      guard x == 14;
+      assign x = 0;
+    },
+    q1 -> C {
+      guard x == 14;
+      assign x = 0;
+    },
+    C -> done {
+      assign gate = gate + 1;
+    };
+}
+
+system key08, key09, unlocker, key10, key04, key05, key11, key07, key13, key12, key06, key02, key03, key01, key14;
