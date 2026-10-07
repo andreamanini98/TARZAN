@@ -252,6 +252,26 @@ done
 # ---
 
 
+# flipflopPunctual
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/flipflopPunctual/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
+for ((key=0; key<num_dirs; key++)); do
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/flipflopPunctual" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/flipflopPunctual" "${folder_name}" "${TIMEOUT}" "${key}"
+done
+
+
+# ---
+
+
 # flower
 
 ./helpers/sh_single_ta.sh "${EXECUTABLES_PATH}/flower" "${BENCHMARKS_PATH}/flower/liana" "${TOTAL_RUNS}" "${OUTPUT_PATH}/flower" "flower" "${TIMEOUT}"

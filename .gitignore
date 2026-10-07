@@ -3,6 +3,7 @@
 .idea/
 
 # Created directories.
+/output_1/
 /output/
 /.vscode/
 /debug/

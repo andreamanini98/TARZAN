@@ -1,0 +1,48 @@
+create automaton g2
+{
+    clocks
+    {
+        ckG2;
+    }
+
+    actions
+    {
+        ckDown, qG1Down, ckUp, qG1Up, qG2Up, qG2Down;
+    }
+
+    locations
+    {
+        G2001 <ini: F>,
+        G2000 <ini: F, inv: [(ckG2, <=, 19)]>,
+        G2011 <ini: F>,
+        G2010 <ini: F, inv: [(ckG2, <=, 19)]>,
+        G2101 <ini: T>,
+        G2100 <ini: F, inv: [(ckG2, <=, 19)]>,
+        G2111 <ini: F, inv: [(ckG2, <=, 19)]>,
+        G2110 <ini: F>;
+    }
+
+    transitions
+    {
+        (G2010, ckDown??, [], [ckG2], G2000),
+        (G2111, qG1Down??, [], [], G2011),
+        (G2101, qG1Down??, [], [], G2001),
+        (G2110, ckDown??, [], [ckG2], G2100),
+        (G2000, ckUp??, [], [ckG2], G2010),
+        (G2000, qG1Up??, [], [ckG2], G2100),
+        (G2100, ckUp??, [], [], G2110),
+        (G2100, qG2Up!!, [(ckG2, >=, 19)], [], G2101),
+        (G2001, ckUp??, [], [], G2011),
+        (G2100, qG1Down??, [], [ckG2], G2000),
+        (G2011, ckDown??, [], [], G2001),
+        (G2010, qG1Up??, [], [], G2110),
+        (G2010, qG2Up!!, [(ckG2, >=, 19)], [], G2011),
+        (G2000, qG2Up!!, [(ckG2, >=, 19)], [], G2001),
+        (G2110, qG1Down??, [], [ckG2], G2010),
+        (G2111, ckDown??, [], [], G2101),
+        (G2001, qG1Up??, [], [], G2101),
+        (G2101, ckUp??, [], [ckG2], G2111),
+        (G2111, qG2Down!!, [(ckG2, >=, 19)], [], G2110),
+        (G2011, qG1Up??, [], [ckG2], G2111);
+    }
+}

@@ -1,0 +1,29 @@
+create automaton input
+{
+    clocks
+    {
+        s;
+    }
+
+    actions
+    {
+        dDown, ckUp, dUp, ckDown;
+    }
+
+    locations
+    {
+        Input0 <ini: T, inv: [(s, <=, 19)]>,
+        Input1 <ini: F, inv: [(s, <=, 20)]>,
+        Input2 <ini: F, inv: [(s, <=, 26)]>,
+        Input3 <ini: F, inv: [(s, <=, 60)]>,
+        Input4 <ini: F, inv: [(s, <=, 0)]>;
+    }
+
+    transitions
+    {
+        (Input2, dDown!!, [(s, ==, 26)], [], Input3),
+        (Input1, ckUp!!, [(s, ==, 20)], [], Input2),
+        (Input0, dUp!!, [(s, ==, 19)], [], Input1),
+        (Input3, ckDown!!, [(s, ==, 60)], [s], Input4);
+    }
+}

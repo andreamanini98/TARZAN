@@ -9,10 +9,10 @@
  * @param path the path to the directory containing all benchmark subdirectories.
  * @param benchmarkKey a string used to retrieve the necessary auxiliary data for the benchmark at hand.
  */
-inline void testFlipflop(const std::string &path, const std::string &benchmarkKey)
+inline void testFlipflopPunctual(const std::string &path, const std::string &benchmarkKey)
 {
-    // The clock bound of the query: the benchmark passes 0, which keeps the default of 30.
-    const int bound = (benchmarkKey.empty() || benchmarkKey == "0") ? 30 : std::stoi(benchmarkKey);
+    // The goal is located by automaton name, so the instance sizes need not form a progression.
+    (void) benchmarkKey;
 
     const std::vector<timed_automaton::ast::timedAutomaton> automata = TARZAN::parseTimedAutomataFromFolder(path);
     const networkOfTA::RTSNetwork net(automata);
@@ -26,7 +26,7 @@ inline void testFlipflop(const std::string &path, const std::string &benchmarkKe
         if (automata[i].name == "input")
         {
             goal[i] = locationsToInt[i].at("Input3");
-            clockGoal[i].push_back({ "s", LE, bound });
+            clockGoal[i].push_back({ "s", LE, 30 });
         }
 
     const std::vector<timed_automaton::ast::clockConstraint> intGoal = { { "qLevel", EQ, 1 } };
@@ -48,7 +48,7 @@ int main(const int argc, char *argv[])
     const std::string benchmarkKey = argv[2];
 
     // Query: E<> ( input.Input3 && qLevel == 1 && input.s <= 30 )
-    testFlipflop(path, benchmarkKey);
+    testFlipflopPunctual(path, benchmarkKey);
 
     return 0;
 }

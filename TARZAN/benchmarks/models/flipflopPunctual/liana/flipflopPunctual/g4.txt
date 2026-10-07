@@ -1,0 +1,35 @@
+create automaton g4
+{
+    clocks
+    {
+        ckG4;
+    }
+
+    actions
+    {
+        qUp, qG3Up, qG3Down, qDown;
+    }
+
+    integers
+    {
+        qLevel;
+    }
+
+    locations
+    {
+        G401 <ini: F>,
+        G411 <ini: F, inv: [(ckG4, <=, 7)]>,
+        G410 <ini: T>,
+        G400 <ini: F, inv: [(ckG4, <=, 7)]>;
+    }
+
+    transitions
+    {
+        (G400, qUp!!, [(ckG4, >=, 7)], [], [qLevel = 1], G401),
+        (G401, qG3Up!!, [], [ckG4], G411),
+        (G411, qG3Down??, [], [], G401),
+        (G400, qG3Up!!, [], [], G410),
+        (G410, qG3Down??, [], [ckG4], G400),
+        (G411, qDown!!, [(ckG4, >=, 7)], [], [qLevel = 0], G410);
+    }
+}
