@@ -407,7 +407,6 @@ inline void region::RTSArena::collectLegalRegionByPiStrategy(const Region &sourc
   if (collectStatesInSafety)
     collectStrategyTransition = collectStrategyTransition && setG.contains(sourceRegion);
 
-  // GESTIONE CORRETTA E SICURA DEI LOCK PER TBB E OPENMP
 #if defined(_TBB)
   if (collectStrategyTransition)
   {
@@ -474,7 +473,6 @@ void printRegionSetSpecs(const std::string& setName, const regionSet& rSet) {
     << "}"
     << std::endl;
 }
-
 
 void region::RTSArena::piFilter(const regionSet &setG,
     const std::vector<RegionPtr> &toProcess,
@@ -567,7 +565,7 @@ void region::RTSArena::piFilter(const regionSet &setG,
   // ==============================================================================
   // MODO TBB
   // ==============================================================================
-#if defined(_TBB)
+#if defined(_TBB) 
   oneapi::tbb::enumerable_thread_specific<std::vector<Region>> threadLocalRegions;
 
   oneapi::tbb::parallel_for(
@@ -577,8 +575,8 @@ void region::RTSArena::piFilter(const regionSet &setG,
       std::vector<Region>& currThreadLocRegions = threadLocalRegions.local();
 
       for (size_t i = range.begin(); i != range.end(); ++i) {
-      const Region &currentRegion = *toProcess[i];
-      processRegionLogic(currentRegion, currThreadLocRegions);
+
+      processRegionLogic(*toProcess[i], currThreadLocRegions);
       }
       }, oneapi::tbb::auto_partitioner());
 
@@ -600,7 +598,7 @@ void region::RTSArena::piFilter(const regionSet &setG,
     vec.reserve(estimatedSize);
   }
 
-#pragma omp parallel for if(totalRegions >= parallelThreshold) schedule(static) default(shared)
+#pragma omp parallel for if(totalRegions >= parallelThreshold) schedule(dynamic) default(shared)
   for (int i = 0; i < static_cast<int>(totalRegions); i++)
   {
     std::vector<Region>& currThreadLocRegions = threadLocalRegions[omp_get_thread_num()];

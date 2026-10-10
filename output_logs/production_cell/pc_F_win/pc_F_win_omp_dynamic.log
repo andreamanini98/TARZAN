@@ -1,0 +1,120 @@
+=== ITERATION 1 / 10 ===
+Mode:          OpenMP
+Total time:              8264.06 microseconds
+Total iterations:        7
+Total starting regions:  440
+Total regions in setPhi: 0
+Total stored regions:    491
+VICTORY
+Total time including region generation: 9424.92 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 2 / 10 ===
+Mode:          OpenMP
+Total time:              8177.04 microseconds
+Total iterations:        7
+Total starting regions:  440
+Total regions in setPhi: 0
+Total stored regions:    491
+VICTORY
+Total time including region generation: 9243.97 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 3 / 10 ===
+Mode:          OpenMP
+Total time:              9318.83 microseconds
+Total iterations:        7
+Total starting regions:  440
+Total regions in setPhi: 0
+Total stored regions:    491
+VICTORY
+Total time including region generation: 10340 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 4 / 10 ===
+Mode:          OpenMP
+Total time:              9242.06 microseconds
+Total iterations:        7
+Total starting regions:  440
+Total regions in setPhi: 0
+Total stored regions:    491
+VICTORY
+Total time including region generation: 25268.1 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 5 / 10 ===
+Mode:          OpenMP
+Total time:              7534.98 microseconds
+Total iterations:        7
+Total starting regions:  440
+Total regions in setPhi: 0
+Total stored regions:    491
+VICTORY
+Total time including region generation: 8362.05 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 6 / 10 ===
+Mode:          OpenMP
+Total time:              8099.08 microseconds
+Total iterations:        7
+Total starting regions:  440
+Total regions in setPhi: 0
+Total stored regions:    491
+VICTORY
+Total time including region generation: 8899.21 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 7 / 10 ===
+Mode:          OpenMP
+Total time:              9054.9 microseconds
+Total iterations:        7
+Total starting regions:  440
+Total regions in setPhi: 0
+Total stored regions:    491
+VICTORY
+Total time including region generation: 10165.9 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 8 / 10 ===
+Mode:          OpenMP
+Total time:              8870.84 microseconds
+Total iterations:        7
+Total starting regions:  440
+Total regions in setPhi: 0
+Total stored regions:    491
+VICTORY
+Total time including region generation: 9876.97 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 9 / 10 ===
+Mode:          OpenMP
+Total time:              9170.06 microseconds
+Total iterations:        7
+Total starting regions:  440
+Total regions in setPhi: 0
+Total stored regions:    491
+VICTORY
+Total time including region generation: 25503.9 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 10 / 10 ===
+Mode:          OpenMP
+Total time:              7378.1 microseconds
+Total iterations:        7
+Total starting regions:  440
+Total regions in setPhi: 0
+Total stored regions:    491
+VICTORY
+Total time including region generation: 8172.99 microseconds
+-----
+[EXIT CODE]: 0
+

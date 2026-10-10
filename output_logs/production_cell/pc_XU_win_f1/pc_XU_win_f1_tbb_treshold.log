@@ -1,0 +1,120 @@
+=== ITERATION 1 / 10 ===
+Mode:          TBB
+Total time:              39578 microseconds
+Total iterations:        11
+Total starting regions:  214
+Total regions in setPhi: 8512
+Total stored regions:    641
+VICTORY
+Total time including region generation: 55797.8 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 2 / 10 ===
+Mode:          TBB
+Total time:              40877.8 microseconds
+Total iterations:        11
+Total starting regions:  214
+Total regions in setPhi: 8512
+Total stored regions:    641
+VICTORY
+Total time including region generation: 60628.2 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 3 / 10 ===
+Mode:          TBB
+Total time:              41219.9 microseconds
+Total iterations:        11
+Total starting regions:  214
+Total regions in setPhi: 8512
+Total stored regions:    641
+VICTORY
+Total time including region generation: 58233 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 4 / 10 ===
+Mode:          TBB
+Total time:              40791 microseconds
+Total iterations:        11
+Total starting regions:  214
+Total regions in setPhi: 8512
+Total stored regions:    641
+VICTORY
+Total time including region generation: 60431 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 5 / 10 ===
+Mode:          TBB
+Total time:              42330 microseconds
+Total iterations:        11
+Total starting regions:  214
+Total regions in setPhi: 8512
+Total stored regions:    641
+VICTORY
+Total time including region generation: 59938.9 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 6 / 10 ===
+Mode:          TBB
+Total time:              41569 microseconds
+Total iterations:        11
+Total starting regions:  214
+Total regions in setPhi: 8512
+Total stored regions:    641
+VICTORY
+Total time including region generation: 57629.1 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 7 / 10 ===
+Mode:          TBB
+Total time:              39936.8 microseconds
+Total iterations:        11
+Total starting regions:  214
+Total regions in setPhi: 8512
+Total stored regions:    641
+VICTORY
+Total time including region generation: 60496.1 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 8 / 10 ===
+Mode:          TBB
+Total time:              40797 microseconds
+Total iterations:        11
+Total starting regions:  214
+Total regions in setPhi: 8512
+Total stored regions:    641
+VICTORY
+Total time including region generation: 57786 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 9 / 10 ===
+Mode:          TBB
+Total time:              41347 microseconds
+Total iterations:        11
+Total starting regions:  214
+Total regions in setPhi: 8512
+Total stored regions:    641
+VICTORY
+Total time including region generation: 59638 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 10 / 10 ===
+Mode:          TBB
+Total time:              40607 microseconds
+Total iterations:        11
+Total starting regions:  214
+Total regions in setPhi: 8512
+Total stored regions:    641
+VICTORY
+Total time including region generation: 59008.1 microseconds
+-----
+[EXIT CODE]: 0
+

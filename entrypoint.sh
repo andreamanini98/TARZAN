@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# Valori di default
+# Default values
 REPEATS=1
 SLEEP_TIME=0
 MIN_SLEEP=-1
@@ -19,7 +19,7 @@ USE_VTUNE=false
 CLEAN_MODE=false
 EXTRA_ARGS=()
 
-# Variabile globale per tracciare la durata dell'ultima esecuzione
+# Global variable to track duration of last run
 LAST_RUN_DURATION=0
 
 show_help() {
@@ -40,7 +40,7 @@ show_help() {
     echo "  -s, --sleep SEC     Fixed sleep time in seconds (default: 0)"
     echo "  --min-sleep SEC     Lower bound for dynamic cooldown based on run time"
     echo "  --max-sleep SEC     Upper bound for dynamic cooldown based on run time"
-    echo "  -f, --file-output [EXT] Save outputs to 'output_logs/<base_name>/<log_name>.[EXT]'"
+    echo "  -f, --file-output [EXT] Save outputs to 'output_logs/<model_name>/<base_name>/<log_name>.[EXT]'"
     echo "  -t, --tag STR      Append a tag to log name (e.g., 'dynamic' -> _omp_dynamic.log)"
     echo "  -i, --ignore-errors Continue batch execution on exception/crash"
     echo "  -k, --skip-existing Skip tests that already have an output log"
@@ -52,11 +52,11 @@ show_help() {
     echo "================================================================="
 }
 
-# Prepara la cartella principale dei log
+# Base output logs directory
 ROOT_DIR="$(pwd)"
 OUTPUT_LOG_DIR="$ROOT_DIR/$LOG_DIR_NAME"
 
-# Parsing completo degli argomenti
+# Argument parsing
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --clean)
@@ -113,7 +113,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         -k|--skip-existing)
             SKIP_EXISTING=true
-            FILE_OUTPUT=true # Abilita automaticamente l'output su file per la verifica
+            FILE_OUTPUT=true # Automatically enables file output for checking
             if [[ -n "$2" && "$2" != -* && ! -e "$2" ]]; then
                 FILE_EXT="$2"
                 shift 2
@@ -140,7 +140,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# LOGICA --clean
+# CLEAN LOGIC
 if [ "$CLEAN_MODE" = true ]; then
     echo "================================================================="
     echo "[CLEAN] Searching for Intel VTune directories in: $OUTPUT_LOG_DIR"
@@ -151,7 +151,6 @@ if [ "$CLEAN_MODE" = true ]; then
         exit 0
     fi
 
-    # Trova sia cartelle visibili (vtune_*) che nascoste (.vtune_*)
     mapfile -t VTUNE_DIRS < <(find "$OUTPUT_LOG_DIR" -type d \( -name "vtune_*" -o -name ".vtune_*" \))
 
     if [ ${#VTUNE_DIRS[@]} -eq 0 ]; then
@@ -176,6 +175,13 @@ if [ -z "$TARGET" ]; then
     echo "[ERROR] Target file or directory is missing."
     show_help
     exit 1
+fi
+
+# Extract Model Name automatically from target directory or file path
+if [ -d "$TARGET" ]; then
+    MODEL_NAME="$(basename "$TARGET")"
+else
+    MODEL_NAME="$(basename "$(dirname "$TARGET")")"
 fi
 
 calculate_sleep() {
@@ -204,7 +210,7 @@ run_single_binary() {
     local dir_name="$(dirname "$input_path")"
     local base_name="$(basename "$input_path")"
 
-    # Strip dei suffissi base
+    # Strip base suffixes
     base_name="${base_name%_seq}"
     base_name="${base_name%_omp}"
     base_name="${base_name%_tbb}"
@@ -212,7 +218,7 @@ run_single_binary() {
     local exec_name="${base_name}${SUFFIX}"
     local log_name="${exec_name}"
 
-    # Applica il Tag
+    # Apply tag if present
     if [ -n "$LOG_TAG" ]; then
         if [[ "$LOG_TAG" != _* ]]; then
             log_name="${log_name}_${LOG_TAG}"
@@ -221,8 +227,8 @@ run_single_binary() {
         fi
     fi
 
-    # Configura la nuova struttura a cartelle per test
-    local test_out_dir="$OUTPUT_LOG_DIR/$base_name"
+    # Subfolder structure: output_logs/<MODEL_NAME>/<TEST_NAME>/
+    local test_out_dir="$OUTPUT_LOG_DIR/$MODEL_NAME/$base_name"
     if [ "$FILE_OUTPUT" = true ] || [ "$USE_VTUNE" = true ]; then
         mkdir -p "$test_out_dir"
     fi
@@ -230,7 +236,7 @@ run_single_binary() {
     local log_file_path="$test_out_dir/${log_name}.${FILE_EXT}"
     local old_dir="$(pwd)"
 
-    # CONTROLLO -k / --skip-existing
+    # SKIP EXISTING CHECK (-k)
     if [ "$SKIP_EXISTING" = true ] && [ -s "$log_file_path" ]; then
         echo "================================================================="
         echo "[SKIP] Test '$log_name' already has output log at:"
@@ -254,6 +260,7 @@ run_single_binary() {
     fi
 
     echo "================================================================="
+    echo "[RUN] Model Name:    $MODEL_NAME"
     echo "[RUN] Executable:    $exec_name"
     echo "[RUN] Directory:     $(pwd)"
     echo "[RUN] Mode:          $MODE"
@@ -275,13 +282,13 @@ run_single_binary() {
 
     for (( i=1; i<=REPEATS; i++ )); do
         echo "-----------------------------------------------------------------"
-        echo "[BENCHMARK] Iteration $i of $REPEATS for $exec_name"
+        echo "[BENCHMARK] Iteration $i of $REPEATS for $exec_name ($MODEL_NAME)"
         echo "-----------------------------------------------------------------"
 
         local exit_code=0
         local start_time=$SECONDS
 
-        # Costruisce il comando di esecuzione
+        # Build command
         local cmd=("./$exec_name" "$@")
         if [ "$USE_VTUNE" = true ]; then
             local vtune_dir="$test_out_dir/vtune_${log_name}_iter_${i}"
@@ -289,7 +296,7 @@ run_single_binary() {
             cmd=(vtune -collect threading -result-dir "$vtune_dir" -- "${cmd[@]}")
         fi
 
-        # Esecuzione
+        # Execution
         set +e
         if [ "$FILE_OUTPUT" = true ]; then
             {
@@ -304,7 +311,7 @@ run_single_binary() {
             exit_code=$?
         fi
 
-        # Calcolo durata
+        # Calculate duration
         local end_time=$SECONDS
         LAST_RUN_DURATION=$((end_time - start_time))
 
@@ -320,7 +327,7 @@ run_single_binary() {
             echo "[WARNING] $exec_name exited with status $exit_code (Ignored)"
         fi
 
-        # Cooldown tra le iterazioni
+        # Cooldown between repeats
         if [ $i -lt $REPEATS ]; then
             sleep_to_do=$(calculate_sleep "$LAST_RUN_DURATION")
             if [ "$sleep_to_do" -gt 0 ]; then
@@ -334,13 +341,13 @@ run_single_binary() {
     return 0
 }
 
-# --- LOGICA PRINCIPALE ---
+# --- MAIN LOGIC ---
 
 if [ -f "$TARGET" ] || [ -f "${TARGET}_seq" ] || [ -f "${TARGET}_omp" ] || [ -f "${TARGET}_tbb" ]; then
     run_single_binary "$TARGET" "${EXTRA_ARGS[@]}"
 
 elif [ -d "$TARGET" ]; then
-    echo "[INFO] Starting batch folder execution on: $TARGET"
+    echo "[INFO] Starting batch folder execution on model '$MODEL_NAME': $TARGET"
     echo "-----------------------------------------------------------------"
 
     mapfile -t TARGET_EXECS < <(find "$TARGET" -maxdepth 1 -type f -executable | sed -E 's/_(seq|omp|tbb)$//' | sort -u)
@@ -371,9 +378,9 @@ elif [ -d "$TARGET" ]; then
             fi
         fi
     done
-    echo "[SUCCESS] Batch folder benchmark completed."
+    echo "[SUCCESS] Batch folder benchmark completed for model '$MODEL_NAME'."
     if [ "$FILE_OUTPUT" = true ]; then
-        echo "[INFO] All logs and VTune reports are stored in: $OUTPUT_LOG_DIR"
+        echo "[INFO] All logs and VTune reports are stored in: $OUTPUT_LOG_DIR/$MODEL_NAME"
     fi
 
 else

@@ -1,0 +1,110 @@
+=== ITERATION 1 / 10 ===
+Mode:          TBB
+Total time:             1901.15 microseconds
+Total iterations:       6
+Total starting regions: 150
+Total stored regions:   0
+LOSE
+Total time including region generation: 2271.89 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 2 / 10 ===
+Mode:          TBB
+Total time:             1274.82 microseconds
+Total iterations:       6
+Total starting regions: 150
+Total stored regions:   0
+LOSE
+Total time including region generation: 1522.06 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 3 / 10 ===
+Mode:          TBB
+Total time:             1553.06 microseconds
+Total iterations:       6
+Total starting regions: 150
+Total stored regions:   0
+LOSE
+Total time including region generation: 1887.8 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 4 / 10 ===
+Mode:          TBB
+Total time:             1801.01 microseconds
+Total iterations:       6
+Total starting regions: 150
+Total stored regions:   0
+LOSE
+Total time including region generation: 2156.97 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 5 / 10 ===
+Mode:          TBB
+Total time:             1796.01 microseconds
+Total iterations:       6
+Total starting regions: 150
+Total stored regions:   0
+LOSE
+Total time including region generation: 2137.18 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 6 / 10 ===
+Mode:          TBB
+Total time:             1810.07 microseconds
+Total iterations:       6
+Total starting regions: 150
+Total stored regions:   0
+LOSE
+Total time including region generation: 2167.94 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 7 / 10 ===
+Mode:          TBB
+Total time:             1840.11 microseconds
+Total iterations:       6
+Total starting regions: 150
+Total stored regions:   0
+LOSE
+Total time including region generation: 2195.12 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 8 / 10 ===
+Mode:          TBB
+Total time:             1818.9 microseconds
+Total iterations:       6
+Total starting regions: 150
+Total stored regions:   0
+LOSE
+Total time including region generation: 19835 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 9 / 10 ===
+Mode:          TBB
+Total time:             1555.92 microseconds
+Total iterations:       6
+Total starting regions: 150
+Total stored regions:   0
+LOSE
+Total time including region generation: 1897.81 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 10 / 10 ===
+Mode:          TBB
+Total time:             1811.03 microseconds
+Total iterations:       6
+Total starting regions: 150
+Total stored regions:   0
+LOSE
+Total time including region generation: 2161.98 microseconds
+----- 
+[EXIT CODE]: 0
+

@@ -1,17 +1,16 @@
 import os
+import sys
 import re
 import numpy as np
 import pandas as pd
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
-
-LOG_DIR = os.path.join(PROJECT_ROOT, "output_logs")
-HTML_OUTPUT = os.path.join(PROJECT_ROOT, "benchmark_summary.html")
+BASE_LOG_DIR = os.path.join(PROJECT_ROOT, "output_logs")
 
 def parse_log_file(filepath):
     times = []
-    # Espressione regolare per catturare interi, decimali e notazione scientifica (es. 6.44863e+07)
+    # Regular expression to capture integers, floats, and scientific notation (e.g., 6.44863e+07)
     pattern = re.compile(r"Total time including region generation:\s*([0-9\.eE\+\-]+)\s*microseconds")
     
     with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
@@ -23,7 +22,7 @@ def parse_log_file(filepath):
     if not times:
         return None
     
-    # Calcola il tempo medio in MILLISECONDI (ms)
+    # Calculate average time in MILLISECONDS (ms)
     mean_time_ms = np.mean(times) / 1000.0
     return round(mean_time_ms, 2)
 
@@ -31,19 +30,19 @@ def collect_benchmark_data(log_dir):
     data = {}
     
     if not os.path.exists(log_dir):
-        print(f"[ERROR] Directory dei log non trovata: '{log_dir}'")
+        print(f"[ERROR] Log directory not found: '{log_dir}'")
         return None
 
-    # Prefissi di modalità conosciuti
+    # Known mode prefixes
     known_modes = ["seq", "omp", "tbb"]
 
-    # Esplorazione ricorsiva per supportare la struttura a sottocartelle
+    # Recursive search restricted to the model subfolder
     for root, dirs, files in os.walk(log_dir):
-        # Ignora le cartelle nascoste (come .vtune_...) per velocizzare la ricerca
+        # Ignore hidden directories (such as .vtune_...) to speed up search
         dirs[:] = [d for d in dirs if not d.startswith('.')]
         
         for filename in files:
-            # Ignora i file che non sono log/txt o che sono report di VTune
+            # Ignore non-log/txt files or VTune run reports
             if not (filename.endswith(".log") or filename.endswith(".txt")):
                 continue
             if filename.endswith("vtune_run.log"):
@@ -55,9 +54,9 @@ def collect_benchmark_data(log_dir):
             mode_found = None
             test_name = None
             
-            # Cerca corrispondenze con i prefissi base o varianti taggate (es. _omp_dynamic)
+            # Match base modes or tagged variants (e.g., _omp_dynamic)
             for m in known_modes:
-                # Cerca pattern tipo: _omp oppure _omp_QUALSIASI_TAG
+                # Pattern like: _omp or _omp_ANY_TAG
                 pattern = re.compile(rf"^(.*)_({m}(?:_[\w\-]+)?)$")
                 match = pattern.match(base_name)
                 if match:
@@ -75,29 +74,28 @@ def collect_benchmark_data(log_dir):
     if not data:
         return None
 
-    # Costruiamo il DataFrame usando i test come righe e le modalità (inclusi i tag) come colonne
+    # Build DataFrame with test names as rows and execution modes as columns
     df = pd.DataFrame(data)
     
-    # Ordiniamo le colonne: prima le modalità standard (seq, omp, tbb), poi i vari tag
+    # Order columns: standard modes first (seq, omp, tbb), followed by tagged modes
     standard_cols = [c for c in ["seq", "omp", "tbb"] if c in df.columns]
     tagged_cols = sorted([c for c in df.columns if c not in standard_cols])
     ordered_cols = standard_cols + tagged_cols
     df = df[ordered_cols]
 
-    # Ordinamento alfabetico rigoroso (case-insensitive) delle righe (i Test)
+    # Strict case-insensitive alphabetical sorting of rows (Tests)
     df.sort_index(key=lambda x: x.str.lower(), inplace=True)
 
     return df
 
-def print_terminal_summary(df):
+def print_terminal_summary(df, model_name):
     """
-    Stampa una tabella formattata e dinamica nel terminale.
+    Prints a formatted, dynamic summary table in the terminal.
     """
     cols = list(df.columns)
     
-    # Calcolo dinamicamente le larghezze delle colonne
     col_widths = {col: max(len(col) + 5, 12) for col in cols}
-    header_str = f"{'TEST NAME':<40} | " + " | ".join([f"{col.upper() + ' (ms)':<{col_widths[col]}}" for col in cols]) + " | WINNER   | SPEEDUP "
+    header_str = f"{'TEST NAME (' + model_name.upper() + ')':<40} | " + " | ".join([f"{col.upper() + ' (ms)':<{col_widths[col]}}" for col in cols]) + " | WINNER   | SPEEDUP "
     
     divider_len = len(header_str) + 5
     print("\n" + "=" * divider_len)
@@ -114,13 +112,13 @@ def print_terminal_summary(df):
             
         row_str += " | ".join(vals_str)
         
-        # Determina il vincitore
+        # Determine the winner
         valid_vals = row.dropna()
         if len(valid_vals) > 0:
             winner = valid_vals.idxmin().upper()
             best_time = valid_vals.min()
             
-            # Calcola lo speedup rispetto a SEQ (se disponibile), altrimenti rispetto al peggiore
+            # Calculate speedup relative to SEQ (if available), otherwise relative to worst mode
             if 'seq' in valid_vals and winner != 'SEQ':
                 speedup = f"{row['seq'] / best_time:.2f}x"
             else:
@@ -167,20 +165,32 @@ def generate_color_gradient(df):
     return styles
 
 def main():
-    df = collect_benchmark_data(LOG_DIR)
+    if len(sys.argv) < 2:
+        print("[ERROR] You must specify the model folder name as an argument.")
+        print("Example usage: python scripts/parse_benchmark.py med_app")
+        sys.exit(1)
+
+    model_name = sys.argv[1].strip("/")
+    target_log_dir = os.path.join(BASE_LOG_DIR, model_name)
+    html_output_path = os.path.join(target_log_dir, "benchmark_summary.html")
+
+    print(f"[INFO] Analyzing benchmark data for model: '{model_name}'")
+    print(f"[INFO] Target log directory: '{target_log_dir}'")
+
+    df = collect_benchmark_data(target_log_dir)
     
     if df is None or df.empty:
-        print("[WARNING] Nessun dato estratto dai file di log.")
+        print(f"[WARNING] No valid log data found in '{target_log_dir}'.")
         return
 
-    # 1. Output Testuale a Tabella Leggibile
-    print_terminal_summary(df)
+    # 1. Readable Terminal Output
+    print_terminal_summary(df, model_name)
 
-    # 2. Output HTML
+    # 2. Styled HTML Report
     try:
         styled_df = df.style.apply(generate_color_gradient, axis=None)\
                             .format("{:.2f} ms", na_rep="-")\
-                            .set_caption("Benchmark TARZAN (Tempi medi in ms — Verde più scuro = Vittoria più netta)")\
+                            .set_caption(f"TARZAN Benchmark Report - Model: {model_name} (Average Execution Time in ms — Darker Green = Greater Margin)")\
                             .set_table_styles([
                                 {'selector': 'table', 'props': [('border-collapse', 'collapse'), ('font-family', 'Arial, sans-serif'), ('width', '100%')]},
                                 {'selector': 'th', 'props': [('background-color', '#263238'), ('color', 'white'), ('padding', '12px'), ('text-align', 'center'), ('border', '1px solid #455a64')]},
@@ -188,11 +198,11 @@ def main():
                                 {'selector': 'caption', 'props': [('font-size', '16px'), ('font-weight', 'bold'), ('margin-bottom', '12px')]}
                             ])
 
-        styled_df.to_html(HTML_OUTPUT)
-        print(f"[SUCCESS] Report HTML generato in: '{HTML_OUTPUT}'")
-    except AttributeError as e:
-        print("\n[WARNING] Generazione HTML fallita.")
-        print("Per visualizzare il report HTML a colori, installa jinja2 eseguendo:")
+        styled_df.to_html(html_output_path)
+        print(f"[SUCCESS] HTML report successfully saved to: '{html_output_path}'")
+    except AttributeError:
+        print("\n[WARNING] Failed to generate HTML report.")
+        print("To generate styled HTML reports, please install jinja2 using:")
         print("pip install jinja2")
 
 if __name__ == "__main__":

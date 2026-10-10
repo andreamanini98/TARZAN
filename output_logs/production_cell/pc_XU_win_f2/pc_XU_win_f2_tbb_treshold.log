@@ -1,0 +1,70 @@
+=== ITERATION 1 / 10 ===
+Attempted to open: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Failed to open file: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+./entrypoint.sh: line 206: 338303 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 2 / 10 ===
+Attempted to open: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Failed to open file: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+./entrypoint.sh: line 206: 338318 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 3 / 10 ===
+Attempted to open: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Failed to open file: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+./entrypoint.sh: line 206: 338334 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 4 / 10 ===
+Attempted to open: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Failed to open file: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+./entrypoint.sh: line 206: 338358 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 5 / 10 ===
+Attempted to open: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Failed to open file: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+./entrypoint.sh: line 206: 338376 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 6 / 10 ===
+Attempted to open: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Failed to open file: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+./entrypoint.sh: line 206: 338394 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 7 / 10 ===
+Attempted to open: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Failed to open file: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+./entrypoint.sh: line 206: 338410 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 8 / 10 ===
+Attempted to open: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Failed to open file: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+./entrypoint.sh: line 206: 338426 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 9 / 10 ===
+Attempted to open: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Failed to open file: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+./entrypoint.sh: line 206: 338449 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 10 / 10 ===
+Attempted to open: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Failed to open file: ../../../TARZAN/benchmarks_games/models/production_cell/winning_conditions/until3.txt
+./entrypoint.sh: line 206: 338465 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+

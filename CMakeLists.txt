@@ -10,6 +10,9 @@ project(${ProjectId}
         DESCRIPTION "TARZAN: Timed Automata Region and Zone library for real-time systems ANalysis"
         LANGUAGES CXX)
 
+# Vim dep
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Use modern C++20.
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
