@@ -25,3 +25,46 @@ int main()
 
     return 0;
 }
+
+/*(NEXT
+  (
+    (
+      [press],[(y, >, 0), (y, <=, 16)]
+        ||
+      [feed, table, robot_p, fall_p, robot_d, fall_d],[(y, >, 0)]
+    )
+      UNTIL
+    (
+      [depot],[(y, >=, 25), (y, <=, 30)]
+    )
+  )
+)*/
+
+// An equivalent formulation would be
+
+/*(NEXT
+  (
+    (
+      [feed, table, robot_p, fall_p, robot_d, fall_d, press],[(y, >, 0), (y, <=, 16)]
+        ||
+      [feed, table, robot_p, fall_p, robot_d, fall_d],[(y, >, 0)]
+    )
+      UNTIL
+    (
+      [depot],[(y, >=, 25), (y, <=, 30)]
+    )
+  )
+)*/
+
+// Formula derived as:
+
+/*depot = A
+y > 0 = B
+press = C
+y <= 10 = D
+
+!A && B && (C => D)
+
+!A && B && (!C || D)
+
+(!A && B && !C) || (!A && B && D)*/
