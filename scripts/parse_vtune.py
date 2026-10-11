@@ -1,12 +1,11 @@
 import os
+import sys
 import re
 import pandas as pd
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
-
-LOG_DIR = os.path.join(PROJECT_ROOT, "output_logs")
-HTML_OUTPUT = os.path.join(PROJECT_ROOT, "vtune_summary.html")
+BASE_LOG_DIR = os.path.join(PROJECT_ROOT, "output_logs")
 
 def parse_vtune_log(filepath):
     """
@@ -54,7 +53,7 @@ def parse_vtune_log(filepath):
 
 def collect_vtune_data(log_dir):
     """
-    Explores the directories to find VTune logs and builds the DataFrame sorted alphabetically.
+    Explores the model directory to find VTune logs and builds the DataFrame.
     """
     if not os.path.exists(log_dir):
         print(f"[ERROR] Directory '{log_dir}' not found.")
@@ -70,63 +69,134 @@ def collect_vtune_data(log_dir):
             filepath = os.path.join(root, filename)
             
             base = filename.replace("_vtune_run.log", "")
-            mode = "unknown"
+            mode = "UNKNOWN"
             test_name = base
             
-            for m in ["_seq", "_omp", "_tbb"]:
-                if base.endswith(m):
-                    mode = m.replace("_", "")
-                    test_name = base[:-len(m)]
+            # Identify mode (handles base modes and tagged variants like _omp_dynamic)
+            known_modes = ["seq", "omp", "tbb"]
+            for m in known_modes:
+                pattern = re.compile(rf"^(.*)_({m}(?:_[\w\-]+)?)$")
+                match = pattern.match(base)
+                if match:
+                    test_name = match.group(1)
+                    mode = match.group(2).upper()
                     break
             
             metrics = parse_vtune_log(filepath)
             metrics["Test Name"] = test_name
-            metrics["Mode"] = mode.upper()
+            metrics["Mode"] = mode
             rows.append(metrics)
             
     df = pd.DataFrame(rows)
     if not df.empty:
         cols = ["Test Name", "Mode", "Total Time (ms)", "CPU Util (%)", "CPUs Active", "Threads", "Wait Time (s)", "Spin Time (s)"]
         df = df[cols]
-        # Ordinamento Alfabetico rigoroso su 'Test Name' (e secondariamente su 'Mode')
         df.sort_values(by=["Test Name", "Mode"], key=lambda col: col.str.lower(), inplace=True)
         df.reset_index(drop=True, inplace=True)
         
     return df
 
-def generate_custom_html_style(df):
+def generate_custom_html_report(df, model_name, output_filepath):
     """
-    Generates inline CSS colors manually without requiring matplotlib.
+    Generates an HTML report containing a separate table for each test,
+    sorted alphabetically, with a winner banner at the top of each test section.
     """
-    styles = pd.DataFrame('', index=df.index, columns=df.columns)
-    
-    max_wait = df["Wait Time (s)"].max() if "Wait Time (s)" in df and not df["Wait Time (s)"].empty else 1.0
-    
-    for idx in df.index:
-        # 1. CPU Utilization (Higher is better -> Green, Lower -> Red)
-        cpu = df.loc[idx, "CPU Util (%)"]
-        if pd.notna(cpu):
-            ratio = min(1.0, max(0.0, cpu / 100.0))
-            red = int(255 * (1 - ratio))
-            green = int(200 * ratio)
-            styles.loc[idx, "CPU Util (%)"] = f"background-color: rgba({red}, {green}, 50, 0.35); font-weight: bold;"
+    html_lines = [
+        "<!DOCTYPE html>",
+        "<html>",
+        "<head>",
+        f"<title>VTune Profiling Report - {model_name}</title>",
+        "<style>",
+        "body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f8; color: #333; }",
+        "h1 { text-align: center; color: #263238; margin-bottom: 30px; }",
+        ".test-card { background: white; padding: 20px; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid #cfd8dc; }",
+        ".test-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #263238; padding-bottom: 10px; margin-bottom: 15px; }",
+        ".test-title { font-size: 20px; font-weight: bold; color: #263238; }",
+        ".winner-badge { background-color: #2e7d32; color: white; padding: 6px 14px; font-weight: bold; border-radius: 20px; font-size: 14px; }",
+        "table { width: 100%; border-collapse: collapse; margin-top: 10px; }",
+        "th { background-color: #263238; color: white; padding: 10px; text-align: center; border: 1px solid #455a64; }",
+        "td { padding: 8px; text-align: center; border: 1px solid #cfd8dc; color: black; }",
+        ".best-row { background-color: rgba(46, 125, 50, 0.15); font-weight: bold; }",
+        "</style>",
+        "</head>",
+        "<body>",
+        f"<h1>VTune Profiling Analysis - Model: <span style='color: #00838f;'>{model_name}</span></h1>"
+    ]
 
-        # 2. Wait Time (Lower is better -> Green, Higher -> Red)
-        wait = df.loc[idx, "Wait Time (s)"]
-        if pd.notna(wait) and max_wait > 0:
-            ratio = min(1.0, max(0.0, wait / max_wait))
-            red = int(255 * ratio)
-            green = int(200 * (1 - ratio))
-            styles.loc[idx, "Wait Time (s)"] = f"background-color: rgba({red}, {green}, 50, 0.35); font-weight: bold;"
+    grouped = df.groupby("Test Name")
+    sorted_test_names = sorted(grouped.groups.keys(), key=lambda x: x.lower())
 
-    return styles
+    for test_name in sorted_test_names:
+        group_df = grouped.get_group(test_name).copy()
+        
+        # Determine the winner (lowest Total Time)
+        valid_times = group_df.dropna(subset=["Total Time (ms)"])
+        if not valid_times.empty:
+            winner_row = valid_times.loc[valid_times["Total Time (ms)"].idxmin()]
+            winner_mode = winner_row["Mode"]
+            winner_time = f"{winner_row['Total Time (ms)']:.2f} ms"
+            winner_text = f"🏆 WINNER: {winner_mode} ({winner_time})"
+        else:
+            winner_mode = None
+            winner_text = "WINNER: N/A"
+
+        html_lines.append('<div class="test-card">')
+        html_lines.append('<div class="test-header">')
+        html_lines.append(f'<div class="test-title">TEST: {test_name}</div>')
+        html_lines.append(f'<div class="winner-badge">{winner_text}</div>')
+        html_lines.append('</div>')
+
+        html_lines.append('<table>')
+        html_lines.append('<thead><tr>')
+        html_lines.append('<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>')
+        html_lines.append('</tr></thead>')
+        html_lines.append('<tbody>')
+
+        for _, row in group_df.iterrows():
+            is_winner = (row["Mode"] == winner_mode)
+            row_class = ' class="best-row"' if is_winner else ''
+            
+            total_time = f"{row['Total Time (ms)']:.2f}" if pd.notna(row['Total Time (ms)']) else "-"
+            cpu_util = f"{row['CPU Util (%)']:.1f}%" if pd.notna(row['CPU Util (%)']) else "-"
+            cpus_act = f"{row['CPUs Active']:.2f}" if pd.notna(row['CPUs Active']) else "-"
+            threads = f"{row['Threads']:.0f}" if pd.notna(row['Threads']) else "-"
+            wait_time = f"{row['Wait Time (s)']:.3f}" if pd.notna(row['Wait Time (s)']) else "-"
+            spin_time = f"{row['Spin Time (s)']:.3f}" if pd.notna(row['Spin Time (s)']) else "-"
+
+            html_lines.append(f'<tr{row_class}>')
+            html_lines.append(f'<td><strong>{row["Mode"]}</strong></td>')
+            html_lines.append(f'<td>{total_time}</td>')
+            html_lines.append(f'<td>{cpu_util}</td>')
+            html_lines.append(f'<td>{cpus_act}</td>')
+            html_lines.append(f'<td>{threads}</td>')
+            html_lines.append(f'<td>{wait_time}</td>')
+            html_lines.append(f'<td>{spin_time}</td>')
+            html_lines.append('</tr>')
+
+        html_lines.append('</tbody>')
+        html_lines.append('</table>')
+        html_lines.append('</div>')
+
+    html_lines.append('</body></html>')
+
+    with open(output_filepath, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(html_lines))
 
 def main():
-    print("Searching for VTune files...")
-    df = collect_vtune_data(LOG_DIR)
+    if len(sys.argv) < 2:
+        print("[ERROR] You must specify the model folder name as an argument.")
+        print("Example usage: python scripts/parse_vtune.py med_app")
+        sys.exit(1)
+
+    model_name = sys.argv[1].strip("/")
+    target_log_dir = os.path.join(BASE_LOG_DIR, model_name)
+    html_output_path = os.path.join(target_log_dir, "vtune_summary.html")
+
+    print(f"[INFO] Searching VTune files for model: '{model_name}' inside '{target_log_dir}'...")
+    df = collect_vtune_data(target_log_dir)
     
     if df.empty:
-        print("[WARNING] No '*_vtune_run.log' files found with valid data.")
+        print(f"[WARNING] No '*_vtune_run.log' files found in '{target_log_dir}'.")
         return
 
     # Compact terminal output
@@ -134,31 +204,8 @@ def main():
     print(df.to_string(index=False))
     print("=================================================================\n")
 
-    # Pure HTML/CSS output generation
-    try:
-        format_dict = {
-            "Total Time (ms)": "{:.2f}",
-            "CPU Util (%)": "{:.1f}%",
-            "CPUs Active": "{:.2f}",
-            "Threads": "{:.0f}",
-            "Wait Time (s)": "{:.3f}",
-            "Spin Time (s)": "{:.3f}"
-        }
-
-        styled_df = df.style.apply(generate_custom_html_style, axis=None)\
-                            .format(format_dict, na_rep="-")\
-                            .set_caption("VTune Profiling Report - Threading Efficiency and Load Balancing Analysis")\
-                            .set_table_styles([
-                                {'selector': 'table', 'props': [('border-collapse', 'collapse'), ('font-family', 'Arial, sans-serif'), ('width', '100%')]},
-                                {'selector': 'th', 'props': [('background-color', '#263238'), ('color', 'white'), ('padding', '10px'), ('text-align', 'center'), ('border', '1px solid #455a64')]},
-                                {'selector': 'td', 'props': [('padding', '8px'), ('text-align', 'center'), ('border', '1px solid #cfd8dc'), ('color', 'black')]},
-                                {'selector': 'caption', 'props': [('font-size', '18px'), ('font-weight', 'bold'), ('margin-bottom', '15px')]}
-                            ])
-
-        styled_df.to_html(HTML_OUTPUT)
-        print(f"[SUCCESS] HTML VTune report generated at: '{HTML_OUTPUT}'")
-    except AttributeError:
-        print("[WARNING] Cannot generate HTML. Please check Jinja2 installation.")
+    generate_custom_html_report(df, model_name, html_output_path)
+    print(f"[SUCCESS] HTML VTune report generated at: '{html_output_path}'")
 
 if __name__ == "__main__":
     main()

@@ -33,7 +33,6 @@ static std::mutex strategyGraphMutex;
 
 #define PRINT_MODE() std::printf("Mode:          " MODE_STR)\
 
-#define DEBUG_MEMORY 0
 
 // #define RTSARENA_DEBUG
 #define THROW_NESTEDCLTLOC_EXCEPTION
@@ -43,6 +42,44 @@ static std::mutex strategyGraphMutex;
 
 // Total number of iterations performed by fixed point algorithms.
 #define MAX_ITERATIONS 10000
+
+#define CSV_FILENAME "pi_analysis.csv"
+
+#define DEBUG_MEMORY 1
+#ifdef DEBUG_MEMORY
+#include <atomic>
+struct BatchMetrics {
+  unsigned long long step;
+  size_t total_regions;
+  size_t to_process_bytes;
+  size_t setG_bytes;
+  size_t disc_preds;
+  size_t delay_preds;
+  size_t queue_cycles;
+  long long duration_us;
+};
+
+// Vettore globale salvato in RAM (con un reserve iniziale nel main)
+inline std::vector<BatchMetrics> metrics_log;
+#endif
+
+void dumpMetricsToCSV(const std::string& filename) {
+#ifdef DEBUG_MEMORY
+  std::ofstream file(filename);
+  file << "Step,TotalRegions,ToProcessBytes,SetGBytes,DiscPreds,DelayPreds,QueueCycles,DurationUs\n";
+  for (const auto& m : metrics_log) {
+    file << m.step << ","
+         << m.total_regions << ","
+         << m.to_process_bytes << ","
+         << m.setG_bytes << ","
+         << m.disc_preds << ","
+         << m.delay_preds << ","
+         << m.queue_cycles << ","
+         << m.duration_us << "\n";
+  }
+  std::cout << "[SUCCESS] Metrics dump saved to " << filename << std::endl;
+#endif // DEBUG_MEMORY
+}
 
 
 std::unordered_map<int, std::string> region::RTSArena::getIndicesToClocksMap() const
@@ -429,49 +466,25 @@ inline void region::RTSArena::collectLegalRegionByPiStrategy(const Region &sourc
   currThreadLocRegions.push_back(sourceRegion);
 }
 
-// Funzione Helper per calcolare e stampare la dimensione reale di un vettore di RegionPtr (come toProcess)
-void printToProcessSpecs(const std::vector<RegionPtr>& toProcess) {
+// Restituisce i byte effettivi del vettore toProcess
+size_t getToProcessBytes(const std::vector<RegionPtr>& toProcess) {
   size_t totalBytes = 0;
   for (const auto& ptr : toProcess) {
     if (ptr) {
-      // Sfrutta la tua funzione membro per ottenere i byte effettivi dell'oggetto puntato
       totalBytes += ptr->printSizeInBytes(false); 
     }
   }
-
-  std::cout << "{\n"
-    << "  type: toProcess,\n"
-    << "  elements: " << toProcess.size() << ",\n"
-    << "  avg_size: " << (toProcess.empty() ? 0 : totalBytes / toProcess.size()) << " bytes,\n"
-    << "  total_memory: " << totalBytes << " bytes (" 
-    << (double)totalBytes / 1024.0 / 1024.0 << " MB),\n"
-    << "}"
-    << std::endl;
+  return totalBytes;
 }
 
-// Funzione Helper per calcolare e stampare la dimensione reale di un regionSet (come setG o intersectionSet)
-void printRegionSetSpecs(const std::string& setName, const regionSet& rSet) {
-  size_t totalBytes = 0;
-
-  // Un unordered_set ha un overhead fisso per i bucket (circa 8 byte a puntatore di bucket)
-  size_t bucketOverhead = rSet.bucket_count() * sizeof(void*);
-
+// Restituisce i byte effettivi di un regionSet
+size_t getRegionSetBytes(const regionSet& rSet) {
+  size_t totalBytes = rSet.bucket_count() * sizeof(void*);
   for (const auto& region : rSet) {
     totalBytes += region.printSizeInBytes(false);
-    // Ogni nodo di un std::unordered_set introduce un overhead di link (tipicamente 1 o 2 puntatori, ~16 byte)
     totalBytes += 2 * sizeof(void*); 
   }
-
-  totalBytes += bucketOverhead;
-
-  std::cout << "{\n"
-    << "  type: " << setName << ",\n"
-    << "  elements: " << rSet.size() << ",\n"
-    << "  avg_size: " << (rSet.empty() ? 0 : totalBytes / rSet.size()) << " bytes,\n"
-    << "  total_memory: " << totalBytes << " bytes (" 
-    << (double)totalBytes / 1024.0 / 1024.0 << " MB),\n"
-    << "}"
-    << std::endl;
+  return totalBytes;
 }
 
 void region::RTSArena::piFilter(const regionSet &setG,
@@ -486,14 +499,18 @@ void region::RTSArena::piFilter(const regionSet &setG,
   constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
   const size_t totalRegions = toProcess.size();
 
-#if DEBUG_MEMORY
+#ifdef DEBUG_MEMORY
+  // Azzeriamo i contatori atomici per il batch corrente
+  static std::atomic<size_t> batch_disc_preds{0};
+  static std::atomic<size_t> batch_delay_preds{0};
+  static std::atomic<size_t> batch_queue_cycles{0};
+
+  batch_disc_preds.store(0, std::memory_order_relaxed);
+  batch_delay_preds.store(0, std::memory_order_relaxed);
+  batch_queue_cycles.store(0, std::memory_order_relaxed);
+
   static unsigned long long callCounter = 0;
   callCounter++;
-  std::cout << callCounter << " : ";
-
-  // printToProcessSpecs(toProcess);
-  printRegionSetSpecs("setG", setG);
-  // printRegionSetSpecs("intersectionSet", intersectionSet);
 #endif
 
   if (totalRegions == 0) return;
@@ -506,6 +523,11 @@ void region::RTSArena::piFilter(const regionSet &setG,
     {
       const std::vector<Region> discPreds = currentRegion.getImmediateDiscretePredecessors({ currTrans }, clocksIndices, locationsToInt, maxConstants);
 
+#ifdef DEBUG_MEMORY
+      // DUMP 1: Quanti predecessori discreti sono stati generati?
+      batch_disc_preds.fetch_add(discPreds.size(), std::memory_order_relaxed);
+#endif // DEBUG_MEMORY
+
       for (const auto &reg: discPreds)
       {
         const absl::flat_hash_map<std::string, bool> &validActions = computeValidActions(reg, setG);
@@ -515,6 +537,12 @@ void region::RTSArena::piFilter(const regionSet &setG,
 
         while (!delayPredecessorsToProcess.empty())
         {
+
+#ifdef DEBUG_MEMORY
+          // DUMP 2: Quanto è profonda la ricerca (quanti cicli while facciamo)?
+          batch_queue_cycles.fetch_add(1, std::memory_order_relaxed);
+#endif // DEBUG_MEMORY
+
           const Region regUnderAnalysis = delayPredecessorsToProcess.front();
           delayPredecessorsToProcess.pop();
 
@@ -522,6 +550,11 @@ void region::RTSArena::piFilter(const regionSet &setG,
             continue;
 
           const std::vector<Region> delayPreds = regUnderAnalysis.getImmediateDelayPredecessors();
+
+#ifdef DEBUG_MEMORY
+          // DUMP 3: Quanti delay predecessors?
+          batch_delay_preds.fetch_add(delayPreds.size(), std::memory_order_relaxed);
+#endif // DEBUG_MEMORY
 
           if (delayPreds.empty())
           {
@@ -561,6 +594,10 @@ void region::RTSArena::piFilter(const regionSet &setG,
       }
     }
   };
+
+#ifdef DEBUG_MEMORY
+  auto start_time = std::chrono::high_resolution_clock::now();
+#endif // DEBUG_MEMORY
 
   // ==============================================================================
   // MODO TBB
@@ -626,6 +663,27 @@ void region::RTSArena::piFilter(const regionSet &setG,
 
   mergeResults(threadLocalRegions, filteredRegions);
 #endif
+
+#ifdef DEBUG_MEMORY
+  auto end_time = std::chrono::high_resolution_clock::now();
+  long long duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
+
+  // Calcolo reale dei byte
+  size_t totalBytes_toProcess = getToProcessBytes(toProcess);
+  size_t totalBytes_setG = getRegionSetBytes(setG);
+
+  // Salva in RAM (istantaneo)
+  metrics_log.push_back({
+    callCounter,                           // Usiamo callCounter come step
+    totalRegions, 
+    totalBytes_toProcess, 
+    totalBytes_setG,
+    batch_disc_preds.load(std::memory_order_relaxed), 
+    batch_delay_preds.load(std::memory_order_relaxed), 
+    batch_queue_cycles.load(std::memory_order_relaxed), 
+    duration                               // Correzione qui!
+  });
+#endif // DEBUG_MEMORY
 }
 
 bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter)
@@ -680,6 +738,8 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
   const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
   std::cout << "Total time:              " << duration << " microseconds" << std::endl;
 #endif
+
+  dumpMetricsToCSV(CSV_FILENAME);
 
   const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
 
@@ -766,6 +826,8 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
   std::cout << "Total time:              " << duration << " microseconds" << std::endl;
 #endif
 
+  dumpMetricsToCSV(CSV_FILENAME);
+
   const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
 
   std::cout << "Total iterations:        " << currentIteration << std::endl;
@@ -847,6 +909,8 @@ bool region::RTSArena::timedSafety(regionSet &setG, std::vector<RegionPtr> &toPr
   const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
   std::cout << "Total time:             " << duration << " microseconds" << std::endl;
 #endif
+
+  dumpMetricsToCSV(CSV_FILENAME);
 
   const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
 
@@ -1015,6 +1079,8 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
   std::cout << "Total time including region generation: " << duration << " microseconds" << std::endl;
 #endif
 
+  dumpMetricsToCSV(CSV_FILENAME);
+
   return result;
 }
 
@@ -1098,6 +1164,8 @@ inline bool region::RTSArena::solveGameWithNestedUntilConjunction(const std::vec
   const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
   std::cout << "Total time:              " << duration << " microseconds" << std::endl;
 #endif
+
+  dumpMetricsToCSV(CSV_FILENAME);
 
   const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
 
@@ -1270,6 +1338,8 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
   std::cout << "Total time:              " << duration << " microseconds" << std::endl;
 #endif
 
+  dumpMetricsToCSV(CSV_FILENAME);
+
   const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
 
   std::cout << "Total iterations:       " << currentIteration << std::endl;
@@ -1322,6 +1392,8 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::conjunctionOfForm
   const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
   std::cout << "Total time including region generation: " << duration << " microseconds" << std::endl;
 #endif
+
+  dumpMetricsToCSV(CSV_FILENAME);
 
   return result;
 }

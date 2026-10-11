@@ -1,0 +1,4 @@
+Step,TotalRegions,ToProcessBytes,SetGBytes,DiscPreds,DelayPreds,QueueCycles,DurationUs
+1,180,49008,53432,88,540,628,818
+2,14,3768,5536,88,540,628,247
+3,14,3768,5536,88,540,628,232

@@ -30,21 +30,21 @@ show_help() {
     echo "       $0 --clean"
     echo ""
     echo "Modes:"
-    echo "  --seq               Runs Sequential version (No OpenMP, No TBB)"
-    echo "  --omp               Runs OpenMP version"
-    echo "  --tbb               Runs TBB + OpenMP version"
-    echo "  --clean             Deletes all VTune analysis folders from output_logs/ and exits"
+    echo "  --seq                Runs Sequential version (No OpenMP, No TBB)"
+    echo "  --omp                Runs OpenMP version"
+    echo "  --tbb                Runs TBB + OpenMP version"
+    echo "  --clean              Deletes all VTune analysis folders from output_logs/ and exits"
     echo ""
     echo "Benchmark Options:"
-    echo "  -r, --repeats NUM   Number of times to repeat each test (default: 1)"
-    echo "  -s, --sleep SEC     Fixed sleep time in seconds (default: 0)"
-    echo "  --min-sleep SEC     Lower bound for dynamic cooldown based on run time"
-    echo "  --max-sleep SEC     Upper bound for dynamic cooldown based on run time"
+    echo "  -r, --repeats NUM    Number of times to repeat each test (default: 1)"
+    echo "  -s, --sleep SEC      Fixed sleep time in seconds (default: 0)"
+    echo "  --min-sleep SEC      Lower bound for dynamic cooldown based on run time"
+    echo "  --max-sleep SEC      Upper bound for dynamic cooldown based on run time"
     echo "  -f, --file-output [EXT] Save outputs to 'output_logs/<model_name>/<base_name>/<log_name>.[EXT]'"
-    echo "  -t, --tag STR      Append a tag to log name (e.g., 'dynamic' -> _omp_dynamic.log)"
+    echo "  -t, --tag STR        Append a tag to log name (e.g., 'dynamic' -> _omp_dynamic.log)"
     echo "  -i, --ignore-errors Continue batch execution on exception/crash"
     echo "  -k, --skip-existing Skip tests that already have an output log"
-    echo "  --vtune             Run executable with Intel VTune Profiler (Threading Analysis)"
+    echo "  --vtune              Run executable with Intel VTune Profiler (Threading Analysis)"
     echo ""
     echo "Examples:"
     echo "  $0 --omp executables/games_executables/med_app -r 5 --min-sleep 5 --max-sleep 60 -f -t dynamic -k --vtune"
@@ -229,9 +229,7 @@ run_single_binary() {
 
     # Subfolder structure: output_logs/<MODEL_NAME>/<TEST_NAME>/
     local test_out_dir="$OUTPUT_LOG_DIR/$MODEL_NAME/$base_name"
-    if [ "$FILE_OUTPUT" = true ] || [ "$USE_VTUNE" = true ]; then
-        mkdir -p "$test_out_dir"
-    fi
+    mkdir -p "$test_out_dir"
 
     local log_file_path="$test_out_dir/${log_name}.${FILE_EXT}"
     local old_dir="$(pwd)"
@@ -309,6 +307,13 @@ run_single_binary() {
         else
             "${cmd[@]}"
             exit_code=$?
+        fi
+
+        # Se esiste il dump delle metriche (pi_analysis.csv), rinominalo e spostalo nella cartella del log
+        if [ -f "pi_analysis.csv" ]; then
+            local target_csv_path="$test_out_dir/metrics_${log_name}.csv"
+            mv "pi_analysis.csv" "$target_csv_path"
+            echo "[DUMP] Metrics saved to: $target_csv_path"
         fi
 
         # Calculate duration

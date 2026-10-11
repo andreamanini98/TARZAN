@@ -1,0 +1,21 @@
+Questo grafico è la "pistola fumante" che giustifica in modo inequivocabile la scelta di Intel TBB rispetto a OpenMP. Incrociando i tre riquadri, emerge una narrazione tecnica perfetta del perché OpenMP crolla e TBB trionfa.
+
+Ecco come devi spiegare questi dati:
+
+Il collasso per Load Imbalance (Step 13 e 16): Nel primo riquadro, notiamo che agli step 13 e 16 il tempo di esecuzione di OpenMP (linea blu) esplode, raggiungendo quasi 1.8×10 
+7
+  µs (18 secondi) allo step 13. Per quello stesso identico step, TBB (linea arancione) chiude l'elaborazione in circa 0.3×10 
+7
+  µs (3 secondi), risultando 6 volte più veloce.   
+JPG
++ 1
+
+La causa dell'esplosione (Il Loop Interno): Guardando il secondo riquadro in corrispondenza degli step 13 e 16, vediamo due enormi "montagne rosse". Queste indicano che la quasi totalità del carico di lavoro è composta dai Generated DelayPreds (oltre 2 milioni allo step 13), generati dinamicamente all'interno del ciclo while nella lambda. Poiché il calcolo di questi predecessori ritardati è asimmetrico, OpenMP affida un intero ramo pesante a un singolo thread che rimane bloccato per 18 secondi, mentre gli altri thread sono inattivi. TBB, al contrario, utilizza il work-stealing per smembrare questa montagna rossa e distribuirla in tempo reale sui 39 thread disponibili, piallando il picco di esecuzione.   
+JPG
++ 1
+
+L'irrilevanza della Memoria in Ingresso (La prova contro le soglie): Il terzo riquadro smentisce l'ipotesi che la dimensione iniziale del batch sia il problema. Allo step 1, abbiamo un picco immenso di memoria in ingresso (oltre 2.0×10 
+7
+  byte), ma il tempo di esecuzione (primo grafico) rimane relativamente basso. Al contrario, allo step 13 la memoria in ingresso (ToProcess Memory) è rasente allo zero. Questo dimostra che cercare di applicare una soglia sequenziale (threshold) basata sulle dimensioni iniziali del vettore toProcess è inutile: un batch con pochissime regioni (e pochissima memoria) può nascondere un'esplosione combinatoria interna di milioni di stati, richiedendo tutta la potenza adattiva di TBB.   
+JPG
++ 1
