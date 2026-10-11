@@ -1,0 +1,35 @@
+create arena AutoclaveSterilizationSystem {
+  clocks { x, p; }
+  actions {
+    seal,
+      steam_ready,
+      discharge,
+      recovery_purge,
+      stabilize,
+      ventilate,
+      release,
+      stay;
+  }
+  locations {
+    idle <player:c,<ini:T,inv:[(x,<=,2)]>>,
+         pressurization <player:e,<inv:[(x,<=,3)]>>,
+         sterilization <player:e,<inv:[(x,<=,5)]>>,
+         recovery <player:c,<inv:[(x,<=,5)]>>,
+         degassing <player:c,<inv:[(x,<=,3)]>>,
+         drying <player:c,<inv:[(x,<=,3)]>>,
+         biological_test <player:c,<inv:[(x,<=,2)]>>,
+         sterile_unload <player:c,<>>;
+  }
+  transitions {
+    (idle,seal,[(x,<=,2)],[x,p],pressurization),
+      (pressurization,steam_ready,[(x,>=,2),(x,<=,3)],[x],sterilization),
+      (sterilization,discharge,[(x,<=,3)],[x],drying),
+      (sterilization,discharge,[(x,>=,2),(x,<=,5)],[x],degassing),
+      (sterilization,discharge,[(x,>=,3),(x,<=,5),(p,<=,7)],[x],recovery),
+      (recovery,recovery_purge,[(x,>=,2),(x,<=,4),(p,>=,8)],[x],pressurization),
+      (degassing,stabilize,[(x,==,2)],[x],drying),
+      (drying,ventilate,[(x,>=,1),(x,<=,3)],[x],biological_test),
+      (biological_test,release,[(x,>=,1),(x,<=,2)],[],sterile_unload),
+      (sterile_unload,stay,[],[],sterile_unload);
+  }
+}

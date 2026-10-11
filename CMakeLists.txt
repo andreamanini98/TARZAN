@@ -275,6 +275,12 @@ build_executables(GAMES_EXECUTABLES_PROD "${CMAKE_CURRENT_SOURCE_DIR}/executable
 file(GLOB GAMES_EXECUTABLES_MED ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks_games/games_executables/med_app/*.cpp)
 build_executables(GAMES_EXECUTABLES_MED "${CMAKE_CURRENT_SOURCE_DIR}/executables/games_executables/med_app" FALSE)
 
+file(GLOB GAMES_EXECUTABLES_MED ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks_games/games_executables/synth_reactor/*.cpp)
+build_executables(GAMES_EXECUTABLES_MED "${CMAKE_CURRENT_SOURCE_DIR}/executables/games_executables/synth_reactor" FALSE)
+
+file(GLOB GAMES_EXECUTABLES_MED ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks_games/games_executables/autoclave_sterilization_system/*.cpp)
+build_executables(GAMES_EXECUTABLES_MED "${CMAKE_CURRENT_SOURCE_DIR}/executables/games_executables/autoclave_sterilization_system" FALSE)
+
 # Permissions per scripts
 execute_process(COMMAND chmod 777 ${CMAKE_CURRENT_SOURCE_DIR}/install_library.sh)
 

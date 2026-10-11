@@ -1,0 +1,1 @@
+(BOX ([standby,charging,synthesis,polishing,product],[] || [quench,neutralize,scrubber],[(y,<=,9)]))

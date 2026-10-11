@@ -1,0 +1,1 @@
+(DIAMOND ([product],[(z,<=,20)]))

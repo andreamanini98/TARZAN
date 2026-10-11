@@ -1,0 +1,110 @@
+=== ITERATION 1 / 10 ===
+Mode:          Sequential.
+Total time:             47665 microseconds
+Total iterations:       3
+Total starting regions: 1516
+Total stored regions:   379
+VICTORY
+Total time including region generation: 52867 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 2 / 10 ===
+Mode:          Sequential.
+Total time:             47478 microseconds
+Total iterations:       3
+Total starting regions: 1516
+Total stored regions:   379
+VICTORY
+Total time including region generation: 52637 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 3 / 10 ===
+Mode:          Sequential.
+Total time:             43900 microseconds
+Total iterations:       3
+Total starting regions: 1516
+Total stored regions:   379
+VICTORY
+Total time including region generation: 49007 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 4 / 10 ===
+Mode:          Sequential.
+Total time:             47152 microseconds
+Total iterations:       3
+Total starting regions: 1516
+Total stored regions:   379
+VICTORY
+Total time including region generation: 52225 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 5 / 10 ===
+Mode:          Sequential.
+Total time:             42025 microseconds
+Total iterations:       3
+Total starting regions: 1516
+Total stored regions:   379
+VICTORY
+Total time including region generation: 45235 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 6 / 10 ===
+Mode:          Sequential.
+Total time:             42400 microseconds
+Total iterations:       3
+Total starting regions: 1516
+Total stored regions:   379
+VICTORY
+Total time including region generation: 47005 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 7 / 10 ===
+Mode:          Sequential.
+Total time:             40232 microseconds
+Total iterations:       3
+Total starting regions: 1516
+Total stored regions:   379
+VICTORY
+Total time including region generation: 43594 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 8 / 10 ===
+Mode:          Sequential.
+Total time:             46876 microseconds
+Total iterations:       3
+Total starting regions: 1516
+Total stored regions:   379
+VICTORY
+Total time including region generation: 51823 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 9 / 10 ===
+Mode:          Sequential.
+Total time:             40521 microseconds
+Total iterations:       3
+Total starting regions: 1516
+Total stored regions:   379
+VICTORY
+Total time including region generation: 43949 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 10 / 10 ===
+Mode:          Sequential.
+Total time:             41619 microseconds
+Total iterations:       3
+Total starting regions: 1516
+Total stored regions:   379
+VICTORY
+Total time including region generation: 44805 microseconds
+-----
+[EXIT CODE]: 0
+

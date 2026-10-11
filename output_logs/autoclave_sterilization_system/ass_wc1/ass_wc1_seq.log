@@ -1,0 +1,120 @@
+=== ITERATION 1 / 10 ===
+Mode:          Sequential.
+Total time:              166740 microseconds
+Total iterations:        10
+Total starting regions:  726
+Total regions in setPhi: 0
+Total stored regions:    876
+VICTORY
+Total time including region generation: 168460 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 2 / 10 ===
+Mode:          Sequential.
+Total time:              165106 microseconds
+Total iterations:        10
+Total starting regions:  726
+Total regions in setPhi: 0
+Total stored regions:    876
+VICTORY
+Total time including region generation: 166280 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 3 / 10 ===
+Mode:          Sequential.
+Total time:              155095 microseconds
+Total iterations:        10
+Total starting regions:  726
+Total regions in setPhi: 0
+Total stored regions:    876
+VICTORY
+Total time including region generation: 156722 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 4 / 10 ===
+Mode:          Sequential.
+Total time:              160587 microseconds
+Total iterations:        10
+Total starting regions:  726
+Total regions in setPhi: 0
+Total stored regions:    876
+VICTORY
+Total time including region generation: 161842 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 5 / 10 ===
+Mode:          Sequential.
+Total time:              158314 microseconds
+Total iterations:        10
+Total starting regions:  726
+Total regions in setPhi: 0
+Total stored regions:    876
+VICTORY
+Total time including region generation: 159416 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 6 / 10 ===
+Mode:          Sequential.
+Total time:              156368 microseconds
+Total iterations:        10
+Total starting regions:  726
+Total regions in setPhi: 0
+Total stored regions:    876
+VICTORY
+Total time including region generation: 157990 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 7 / 10 ===
+Mode:          Sequential.
+Total time:              161465 microseconds
+Total iterations:        10
+Total starting regions:  726
+Total regions in setPhi: 0
+Total stored regions:    876
+VICTORY
+Total time including region generation: 162547 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 8 / 10 ===
+Mode:          Sequential.
+Total time:              154130 microseconds
+Total iterations:        10
+Total starting regions:  726
+Total regions in setPhi: 0
+Total stored regions:    876
+VICTORY
+Total time including region generation: 155216 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 9 / 10 ===
+Mode:          Sequential.
+Total time:              160884 microseconds
+Total iterations:        10
+Total starting regions:  726
+Total regions in setPhi: 0
+Total stored regions:    876
+VICTORY
+Total time including region generation: 161996 microseconds
+-----
+[EXIT CODE]: 0
+
+=== ITERATION 10 / 10 ===
+Mode:          Sequential.
+Total time:              169709 microseconds
+Total iterations:        10
+Total starting regions:  726
+Total regions in setPhi: 0
+Total stored regions:    876
+VICTORY
+Total time including region generation: 170833 microseconds
+-----
+[EXIT CODE]: 0
+

@@ -45,8 +45,8 @@ static std::mutex strategyGraphMutex;
 
 #define CSV_FILENAME "pi_analysis.csv"
 
-#define DEBUG_MEMORY 1
-#ifdef DEBUG_MEMORY
+#define DEBUG_MEMORY 0
+#if DEBUG_MEMORY
 #include <atomic>
 struct BatchMetrics {
   unsigned long long step;
@@ -64,7 +64,7 @@ inline std::vector<BatchMetrics> metrics_log;
 #endif
 
 void dumpMetricsToCSV(const std::string& filename) {
-#ifdef DEBUG_MEMORY
+#if DEBUG_MEMORY
   std::ofstream file(filename);
   file << "Step,TotalRegions,ToProcessBytes,SetGBytes,DiscPreds,DelayPreds,QueueCycles,DurationUs\n";
   for (const auto& m : metrics_log) {
@@ -499,7 +499,7 @@ void region::RTSArena::piFilter(const regionSet &setG,
   constexpr size_t parallelThreshold = PARALLEL_THRESHOLD;
   const size_t totalRegions = toProcess.size();
 
-#ifdef DEBUG_MEMORY
+#if DEBUG_MEMORY
   // Azzeriamo i contatori atomici per il batch corrente
   static std::atomic<size_t> batch_disc_preds{0};
   static std::atomic<size_t> batch_delay_preds{0};
@@ -523,7 +523,7 @@ void region::RTSArena::piFilter(const regionSet &setG,
     {
       const std::vector<Region> discPreds = currentRegion.getImmediateDiscretePredecessors({ currTrans }, clocksIndices, locationsToInt, maxConstants);
 
-#ifdef DEBUG_MEMORY
+#if DEBUG_MEMORY
       // DUMP 1: Quanti predecessori discreti sono stati generati?
       batch_disc_preds.fetch_add(discPreds.size(), std::memory_order_relaxed);
 #endif // DEBUG_MEMORY
@@ -538,7 +538,7 @@ void region::RTSArena::piFilter(const regionSet &setG,
         while (!delayPredecessorsToProcess.empty())
         {
 
-#ifdef DEBUG_MEMORY
+#if DEBUG_MEMORY
           // DUMP 2: Quanto è profonda la ricerca (quanti cicli while facciamo)?
           batch_queue_cycles.fetch_add(1, std::memory_order_relaxed);
 #endif // DEBUG_MEMORY
@@ -551,7 +551,7 @@ void region::RTSArena::piFilter(const regionSet &setG,
 
           const std::vector<Region> delayPreds = regUnderAnalysis.getImmediateDelayPredecessors();
 
-#ifdef DEBUG_MEMORY
+#if DEBUG_MEMORY
           // DUMP 3: Quanti delay predecessors?
           batch_delay_preds.fetch_add(delayPreds.size(), std::memory_order_relaxed);
 #endif // DEBUG_MEMORY
@@ -595,7 +595,7 @@ void region::RTSArena::piFilter(const regionSet &setG,
     }
   };
 
-#ifdef DEBUG_MEMORY
+#if DEBUG_MEMORY
   auto start_time = std::chrono::high_resolution_clock::now();
 #endif // DEBUG_MEMORY
 
@@ -664,7 +664,7 @@ void region::RTSArena::piFilter(const regionSet &setG,
   mergeResults(threadLocalRegions, filteredRegions);
 #endif
 
-#ifdef DEBUG_MEMORY
+#if DEBUG_MEMORY
   auto end_time = std::chrono::high_resolution_clock::now();
   long long duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
 

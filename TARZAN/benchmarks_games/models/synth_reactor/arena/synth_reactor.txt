@@ -1,0 +1,42 @@
+create arena SynthReactor
+{
+  clocks
+  {
+    x, y, z;
+  }
+  actions
+  {
+    start,
+      inject,
+      evacuate,
+      purge,
+      drain,
+      wash,
+      discharge,
+      stay;
+  }
+  locations
+  {
+    standby <player:c,<ini:T,inv:[(x,<=,3)]>>,
+            charging <player:c,<inv:[(x,<=,4)]>>,
+            synthesis <player:e,<inv:[(x,<=,6)]>>,
+            quench <player:c,<inv:[(x,<=,5)]>>,
+            neutralize <player:e,<inv:[(x,<=,5)]>>,
+            scrubber <player:c,<inv:[(x,<=,3)]>>,
+            polishing <player:c,<inv:[(x,<=,4)]>>,
+            product <player:c,<>>;
+  }
+  transitions
+  {
+    (standby,start,[(x,<=,3)],[x,z],charging),
+      (charging,inject,[(x,>=,2),(x,<=,4)],[x],synthesis),
+      (synthesis,evacuate,[(x,<=,4)],[x],polishing),
+      (synthesis,evacuate,[(x,>=,3),(x,<=,6)],[x,y],quench),
+      (quench,purge,[(x,>=,2),(x,<=,4)],[x],neutralize),
+      (neutralize,drain,[(x,<=,3)],[x],polishing),
+      (neutralize,drain,[(x,>=,2),(x,<=,5)],[x],scrubber),
+      (scrubber,wash,[(x,>=,1),(x,<=,3)],[x],polishing),
+      (polishing,discharge,[(x,>=,2),(x,<=,4)],[],product),
+      (product,stay,[],[],product);
+  }
+}
