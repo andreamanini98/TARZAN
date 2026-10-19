@@ -194,8 +194,8 @@ inline absl::flat_hash_map<std::string, bool> region::RTSArena::computeValidActi
     {
         const std::vector<Region> discreteSuccessors = reg.getImmediateDiscreteSuccessors({ outTrans }, clocksIndices, locationsToInt);
 
-        // Skip transitions that don't produce valid successors.
-        if (discreteSuccessors.empty())
+        // Skip transitions that don't produce valid successors (a successor violating the target invariant means the transition is disabled).
+        if (discreteSuccessors.empty() || violatesInvariant(discreteSuccessors[0]))
             continue;
 
         // We consider only the first element of discreteSuccessors since we are computing it over a single transition.
@@ -230,15 +230,18 @@ inline void region::RTSArena::everyOutTransitionIsInSetG(const Region &reg,
         if (outTrans.action.first != action)
             continue;
 
-        // ReSharper disable once CppTooWideScopeInitStatement
         const std::vector<Region> discreteSuccessors = reg.getImmediateDiscreteSuccessors({ outTrans }, clocksIndices, locationsToInt);
+
+        // A transition whose discrete successor violates the target invariant is disabled.
+        // ReSharper disable once CppTooWideScopeInitStatement
+        const bool isEnabled = !discreteSuccessors.empty() && !violatesInvariant(discreteSuccessors[0]);
 
         // We modify atLeastOneDiscreteSuccessor only if false; if true, it must not be modified again.
         if (!atLeastOneDiscreteSuccessor)
-            atLeastOneDiscreteSuccessor = !discreteSuccessors.empty();
+            atLeastOneDiscreteSuccessor = isEnabled;
 
         // If at least one discrete successor is not in setG, the region is invalid.
-        if (!discreteSuccessors.empty() && !setG.contains(discreteSuccessors[0]))
+        if (isEnabled && !setG.contains(discreteSuccessors[0]))
             isRegionValid = false;
     }
 }
@@ -612,7 +615,6 @@ bool region::RTSArena::timedReachability(regionSet &setG, std::vector<RegionPtr>
 }
 
 
-// TODO: this may need adaptation according to the new paper idea on how to solve this (the new layer idea).
 bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter)
 {
     // Starting the timer for measuring computation.
@@ -664,7 +666,7 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
 
     // In this case, we remove the constraints over the intersection set setPhi and put skipPredecessorsInSetG to false.
     piFilter(setG, toProcess, filteredRegions, nullptr, false, true, true);
-    setG.merge(filteredRegions);
+    //setG.merge(filteredRegions);
 
     // Ending the timer for measuring computation.
 #ifdef _OPENMP
@@ -677,7 +679,9 @@ bool region::RTSArena::timedNextReachability(const regionSet &setPhi, regionSet 
     std::cout << "Total time:              " << duration << " microseconds" << std::endl;
 #endif
 
-    const bool reachable = std::ranges::any_of(initialRegions, [&setG](const auto &region) { return setG.contains(region); });
+    // Using filteredRegions to make this compliant with the new paper change.
+    // A careful implementation would need a vector to allow for multiple applications of the next operator.
+    const bool reachable = std::ranges::any_of(initialRegions, [&filteredRegions](const auto &region) { return filteredRegions.contains(region); });
 
     std::cout << "Total iterations:        " << currentIteration << std::endl;
     std::cout << "Total starting regions:  " << totalStartingRegions << std::endl;
