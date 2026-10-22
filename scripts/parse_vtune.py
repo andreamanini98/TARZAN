@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import argparse
 import pandas as pd
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -72,7 +73,6 @@ def collect_vtune_data(log_dir):
             mode = "UNKNOWN"
             test_name = base
             
-            # Identify mode (handles base modes and tagged variants like _omp_dynamic)
             known_modes = ["seq", "omp", "tbb"]
             for m in known_modes:
                 pattern = re.compile(rf"^(.*)_({m}(?:_[\w\-]+)?)$")
@@ -98,8 +98,7 @@ def collect_vtune_data(log_dir):
 
 def generate_custom_html_report(df, model_name, output_filepath):
     """
-    Generates an HTML report containing a separate table for each test,
-    sorted alphabetically, with a winner banner at the top of each test section.
+    Generates an HTML report containing a separate table for each test.
     """
     html_lines = [
         "<!DOCTYPE html>",
@@ -129,7 +128,6 @@ def generate_custom_html_report(df, model_name, output_filepath):
     for test_name in sorted_test_names:
         group_df = grouped.get_group(test_name).copy()
         
-        # Determine the winner (lowest Total Time)
         valid_times = group_df.dropna(subset=["Total Time (ms)"])
         if not valid_times.empty:
             winner_row = valid_times.loc[valid_times["Total Time (ms)"].idxmin()]
@@ -181,31 +179,159 @@ def generate_custom_html_report(df, model_name, output_filepath):
 
     with open(output_filepath, 'w', encoding='utf-8') as f:
         f.write('\n'.join(html_lines))
+        
+    print(f"[SUCCESS] HTML VTune report saved to: '{output_filepath}'")
+
+def generate_latex_report(df, model_name, output_filepath):
+    """
+    Generates a clean, compact LaTeX table report using booktabs.
+    """
+    model_escaped = model_name.replace("_", "\\_")
+    
+    latex_lines = [
+        "\\begin{table}[htbp]",
+        "\\centering",
+        f"\\caption{{VTune Profiling Analysis - Model: \\texttt{{{model_escaped}}}}}",
+        f"\\label{{tab:vtune_{model_name.lower().replace('-', '_')}}}",
+        "\\resizebox{\\textwidth}{!}{%",
+        "\\begin{tabular}{llrrrrrr}",
+        "\\toprule",
+        "\\textbf{Test Name} & \\textbf{Mode} & \\textbf{Time (ms)} & \\textbf{CPU Util (\\%)} & \\textbf{CPUs Active} & \\textbf{Threads} & \\textbf{Wait (s)} & \\textbf{Spin (s)} \\\\"
+    ]
+
+    grouped = df.groupby("Test Name")
+    sorted_test_names = sorted(grouped.groups.keys(), key=lambda x: x.lower())
+
+    for t_idx, test_name in enumerate(sorted_test_names):
+        group_df = grouped.get_group(test_name).copy()
+        test_escaped = f"\\texttt{{{test_name.replace('_', '\\_')}}}"
+        
+        valid_times = group_df.dropna(subset=["Total Time (ms)"])
+        winner_mode = valid_times.loc[valid_times["Total Time (ms)"].idxmin()]["Mode"] if not valid_times.empty else None
+
+        latex_lines.append("\\midrule")
+        
+        for r_idx, (_, row) in enumerate(group_df.iterrows()):
+            is_winner = (row["Mode"] == winner_mode)
+            
+            mode_str = f"\\textbf{{{row['Mode']}}}" if is_winner else row['Mode']
+            time_val = f"{row['Total Time (ms)']:.2f}" if pd.notna(row['Total Time (ms)']) else "-"
+            if is_winner and time_val != "-":
+                time_val = f"\\textbf{{{time_val}}}"
+
+            cpu_val = f"{row['CPU Util (%)']:.1f}" if pd.notna(row['CPU Util (%)']) else "-"
+            act_val = f"{row['CPUs Active']:.2f}" if pd.notna(row['CPUs Active']) else "-"
+            th_val = f"{row['Threads']:.0f}" if pd.notna(row['Threads']) else "-"
+            wait_val = f"{row['Wait Time (s)']:.3f}" if pd.notna(row['Wait Time (s)']) else "-"
+            spin_val = f"{row['Spin Time (s)']:.3f}" if pd.notna(row['Spin Time (s)']) else "-"
+
+            test_col = test_escaped if r_idx == 0 else ""
+            
+            row_str = f"{test_col} & {mode_str} & {time_val} & {cpu_val} & {act_val} & {th_val} & {wait_val} & {spin_val} \\\\"
+            latex_lines.append(row_str)
+
+    latex_lines.extend([
+        "\\bottomrule",
+        "\\end{tabular}%",
+        "}",
+        "\\end{table}"
+    ])
+
+    with open(output_filepath, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(latex_lines))
+
+    print(f"[SUCCESS] LaTeX VTune report saved to: '{output_filepath}'")
 
 def main():
-    if len(sys.argv) < 2:
-        print("[ERROR] You must specify the model folder name as an argument.")
-        print("Example usage: python scripts/parse_vtune.py med_app")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description="TARZAN VTune Profiling Log Parser & Report Generator",
+        formatter_class=argparse.RawTextHelpFormatter,
+        epilog="""Examples:
+  python scripts/parse_vtune.py med_app
+  python scripts/parse_vtune.py med_app -t patient_doc_after_three_int_time_win single_patient_time_win
+  python scripts/parse_vtune.py production_cell -m OMP TBB -f latex -o vtune_prod_cell
+  python scripts/parse_vtune.py med_app -t single_patient_win -f both -o custom_vtune_summary
+"""
+    )
 
-    model_name = sys.argv[1].strip("/")
+    parser.add_argument(
+        "model", 
+        type=str, 
+        help="Target model folder name inside 'output_logs' (e.g., med_app, production_cell)."
+    )
+
+    parser.add_argument(
+        "-t", "--tests",
+        nargs="+",
+        default=None,
+        help="Filter specific test names (e.g., -t pc_F_win pc_G_lose). If omitted, all tests are included."
+    )
+
+    parser.add_argument(
+        "-m", "--modes",
+        nargs="+",
+        default=None,
+        help="Filter specific execution modes (e.g., -m SEQ OMP TBB OMP_DYNAMIC). Case-insensitive."
+    )
+
+    parser.add_argument(
+        "-f", "--format", 
+        choices=["html", "latex", "both"], 
+        default="html", 
+        help="Select output report format: 'html', 'latex', or 'both' (default: html)."
+    )
+
+    parser.add_argument(
+        "-o", "--output",
+        type=str,
+        default=None,
+        help="Custom output filename base (default: vtune_summary)."
+    )
+
+    args = parser.parse_args()
+
+    model_name = args.model.strip("/")
     target_log_dir = os.path.join(BASE_LOG_DIR, model_name)
-    html_output_path = os.path.join(target_log_dir, "vtune_summary.html")
 
     print(f"[INFO] Searching VTune files for model: '{model_name}' inside '{target_log_dir}'...")
     df = collect_vtune_data(target_log_dir)
-    
+
     if df.empty:
         print(f"[WARNING] No '*_vtune_run.log' files found in '{target_log_dir}'.")
         return
 
-    # Compact terminal output
+    # 1. Filter by Test Names if requested
+    if args.tests:
+        test_pattern = [t.lower() for t in args.tests]
+        df = df[df["Test Name"].str.lower().isin(test_pattern)]
+        if df.empty:
+            print(f"[ERROR] None of the requested tests {args.tests} were found in log data.")
+            sys.exit(1)
+
+    # 2. Filter by Modes if requested
+    if args.modes:
+        mode_pattern = [m.upper() for m in args.modes]
+        df = df[df["Mode"].str.upper().isin(mode_pattern)]
+        if df.empty:
+            print(f"[ERROR] None of the requested modes {args.modes} were found in log data.")
+            sys.exit(1)
+
+    # Print terminal output summary
     print("\n========================= VTUNE SUMMARY =========================")
     print(df.to_string(index=False))
     print("=================================================================\n")
 
-    generate_custom_html_report(df, model_name, html_output_path)
-    print(f"[SUCCESS] HTML VTune report generated at: '{html_output_path}'")
+    # Determine base output filename
+    base_out_name = os.path.splitext(args.output)[0] if args.output else "vtune_summary"
+
+    # Export requested file format(s)
+    if args.format in ["html", "both"]:
+        html_path = os.path.join(target_log_dir, f"{base_out_name}.html")
+        generate_custom_html_report(df, model_name, html_path)
+
+    if args.format in ["latex", "both"]:
+        latex_path = os.path.join(target_log_dir, f"{base_out_name}.tex")
+        generate_latex_report(df, model_name, latex_path)
 
 if __name__ == "__main__":
     main()

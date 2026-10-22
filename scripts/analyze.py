@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import argparse
 import numpy as np
 import pandas as pd
 
@@ -9,8 +10,11 @@ PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
 BASE_LOG_DIR = os.path.join(PROJECT_ROOT, "output_logs")
 
 def parse_log_file(filepath):
+    """
+    Parses a log file to extract execution times in microseconds 
+    and calculates the average duration in milliseconds.
+    """
     times = []
-    # Regular expression to capture integers, floats, and scientific notation (e.g., 6.44863e+07)
     pattern = re.compile(r"Total time including region generation:\s*([0-9\.eE\+\-]+)\s*microseconds")
     
     with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
@@ -22,27 +26,26 @@ def parse_log_file(filepath):
     if not times:
         return None
     
-    # Calculate average time in MILLISECONDS (ms)
     mean_time_ms = np.mean(times) / 1000.0
     return round(mean_time_ms, 2)
 
 def collect_benchmark_data(log_dir):
+    """
+    Recursively scans the log directory for execution logs, aggregates 
+    metrics per test and execution mode, and returns a Pandas DataFrame.
+    """
     data = {}
     
     if not os.path.exists(log_dir):
         print(f"[ERROR] Log directory not found: '{log_dir}'")
         return None
 
-    # Known mode prefixes
     known_modes = ["seq", "omp", "tbb"]
 
-    # Recursive search restricted to the model subfolder
     for root, dirs, files in os.walk(log_dir):
-        # Ignore hidden directories (such as .vtune_...) to speed up search
         dirs[:] = [d for d in dirs if not d.startswith('.')]
         
         for filename in files:
-            # Ignore non-log/txt files or VTune run reports
             if not (filename.endswith(".log") or filename.endswith(".txt")):
                 continue
             if filename.endswith("vtune_run.log"):
@@ -54,9 +57,7 @@ def collect_benchmark_data(log_dir):
             mode_found = None
             test_name = None
             
-            # Match base modes or tagged variants (e.g., _omp_dynamic)
             for m in known_modes:
-                # Pattern like: _omp or _omp_ANY_TAG
                 pattern = re.compile(rf"^(.*)_({m}(?:_[\w\-]+)?)$")
                 match = pattern.match(base_name)
                 if match:
@@ -74,26 +75,21 @@ def collect_benchmark_data(log_dir):
     if not data:
         return None
 
-    # Build DataFrame with test names as rows and execution modes as columns
     df = pd.DataFrame(data)
     
-    # Order columns: standard modes first (seq, omp, tbb), followed by tagged modes
     standard_cols = [c for c in ["seq", "omp", "tbb"] if c in df.columns]
     tagged_cols = sorted([c for c in df.columns if c not in standard_cols])
     ordered_cols = standard_cols + tagged_cols
     df = df[ordered_cols]
 
-    # Strict case-insensitive alphabetical sorting of rows (Tests)
     df.sort_index(key=lambda x: x.str.lower(), inplace=True)
-
     return df
 
 def print_terminal_summary(df, model_name):
     """
-    Prints a formatted, dynamic summary table in the terminal.
+    Prints a formatted summary table to the terminal.
     """
     cols = list(df.columns)
-    
     col_widths = {col: max(len(col) + 5, 12) for col in cols}
     header_str = f"{'TEST NAME (' + model_name.upper() + ')':<40} | " + " | ".join([f"{col.upper() + ' (ms)':<{col_widths[col]}}" for col in cols]) + " | WINNER   | SPEEDUP "
     
@@ -112,13 +108,11 @@ def print_terminal_summary(df, model_name):
             
         row_str += " | ".join(vals_str)
         
-        # Determine the winner
         valid_vals = row.dropna()
         if len(valid_vals) > 0:
             winner = valid_vals.idxmin().upper()
             best_time = valid_vals.min()
             
-            # Calculate speedup relative to SEQ (if available), otherwise relative to worst mode
             if 'seq' in valid_vals and winner != 'SEQ':
                 speedup = f"{row['seq'] / best_time:.2f}x"
             else:
@@ -134,6 +128,9 @@ def print_terminal_summary(df, model_name):
     print("=" * divider_len + "\n")
 
 def generate_color_gradient(df):
+    """
+    Generates CSS styles highlighting winning cells with a green color gradient.
+    """
     styles = pd.DataFrame('', index=df.index, columns=df.columns)
     
     for row_idx in df.index:
@@ -164,29 +161,10 @@ def generate_color_gradient(df):
         
     return styles
 
-def main():
-    if len(sys.argv) < 2:
-        print("[ERROR] You must specify the model folder name as an argument.")
-        print("Example usage: python scripts/parse_benchmark.py med_app")
-        sys.exit(1)
-
-    model_name = sys.argv[1].strip("/")
-    target_log_dir = os.path.join(BASE_LOG_DIR, model_name)
-    html_output_path = os.path.join(target_log_dir, "benchmark_summary.html")
-
-    print(f"[INFO] Analyzing benchmark data for model: '{model_name}'")
-    print(f"[INFO] Target log directory: '{target_log_dir}'")
-
-    df = collect_benchmark_data(target_log_dir)
-    
-    if df is None or df.empty:
-        print(f"[WARNING] No valid log data found in '{target_log_dir}'.")
-        return
-
-    # 1. Readable Terminal Output
-    print_terminal_summary(df, model_name)
-
-    # 2. Styled HTML Report
+def export_html_report(df, model_name, output_path):
+    """
+    Generates and saves a styled HTML report.
+    """
     try:
         styled_df = df.style.apply(generate_color_gradient, axis=None)\
                             .format("{:.2f} ms", na_rep="-")\
@@ -198,12 +176,151 @@ def main():
                                 {'selector': 'caption', 'props': [('font-size', '16px'), ('font-weight', 'bold'), ('margin-bottom', '12px')]}
                             ])
 
-        styled_df.to_html(html_output_path)
-        print(f"[SUCCESS] HTML report successfully saved to: '{html_output_path}'")
+        styled_df.to_html(output_path)
+        print(f"[SUCCESS] HTML report successfully saved to: '{output_path}'")
     except AttributeError:
         print("\n[WARNING] Failed to generate HTML report.")
-        print("To generate styled HTML reports, please install jinja2 using:")
-        print("pip install jinja2")
+        print("Please install jinja2 using: pip install jinja2")
+
+def export_latex_report(df, model_name, output_path):
+    """
+    Generates and saves a publication-ready LaTeX table report using booktabs format.
+    """
+    formatted_df = pd.DataFrame(index=df.index, columns=df.columns)
+    
+    for row_idx in df.index:
+        row_vals = df.loc[row_idx]
+        valid_vals = row_vals.dropna()
+        best_col = valid_vals.idxmin() if not valid_vals.empty else None
+        
+        for col in df.columns:
+            val = row_vals[col]
+            if pd.isna(val):
+                formatted_df.loc[row_idx, col] = "-"
+            elif col == best_col:
+                formatted_df.loc[row_idx, col] = f"\\textbf{{{val:.2f}}}"
+            else:
+                formatted_df.loc[row_idx, col] = f"{val:.2f}"
+
+    escaped_index = [f"\\texttt{{{idx.replace('_', '\\_')}}}" for idx in formatted_df.index]
+    escaped_cols = [col.replace('_', '\\_') for col in formatted_df.columns]
+    
+    col_spec = "l" + "r" * len(df.columns)
+    model_escaped = model_name.replace('_', '\\_')
+    
+    latex_lines = [
+        "\\begin{table}[htbp]",
+        "\\centering",
+        f"\\caption{{TARZAN Benchmark Report - Model: \\texttt{{{model_escaped}}} (Average Execution Time in ms)}}",
+        f"\\label{{tab:{model_name.lower().replace('-', '_')}_benchmark}}",
+        f"\\begin{{tabular}}{{{col_spec}}}",
+        "\\toprule",
+        "\\textbf{Test / Mode} & " + " & ".join([f"\\textbf{{{c}}}" for c in escaped_cols]) + " \\\\",
+        "\\midrule"
+    ]
+    
+    for idx_str, (_, row) in zip(escaped_index, formatted_df.iterrows()):
+        row_str = f"{idx_str} & " + " & ".join([str(v) for v in row.values]) + " \\\\"
+        latex_lines.append(row_str)
+        
+    latex_lines.extend([
+        "\\bottomrule",
+        "\\end{tabular}",
+        "\\end{table}"
+    ])
+    
+    latex_code = "\n".join(latex_lines)
+    
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(latex_code)
+        
+    print(f"[SUCCESS] LaTeX report successfully saved to: '{output_path}'")
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="TARZAN Benchmark Log Parser & Report Generator",
+        formatter_class=argparse.RawTextHelpFormatter,
+        epilog="""Examples:
+  python scripts/parse_benchmark.py med_app
+  python scripts/parse_benchmark.py production_cell --cols seq omp tbb --format html
+  python scripts/parse_benchmark.py autoclave_sterilization_system -f latex -o my_report
+  python scripts/parse_benchmark.py med_app -c seq tbb omp_dynamic -f both -o med_app_summary
+"""
+    )
+    
+    parser.add_argument(
+        "model", 
+        type=str, 
+        help="Target model folder name inside 'output_logs' (e.g., med_app, production_cell)."
+    )
+    
+    parser.add_argument(
+        "-c", "--cols", "--columns",
+        nargs="+", 
+        default=None,
+        help="Specify column modes to include (e.g., seq omp tbb tbb_treshold50). If omitted, all detected modes are included."
+    )
+    
+    parser.add_argument(
+        "-f", "--format", 
+        choices=["html", "latex", "both"], 
+        default="html", 
+        help="Select output report format: 'html', 'latex', or 'both' (default: html)."
+    )
+
+    parser.add_argument(
+        "-o", "--output",
+        type=str,
+        default=None,
+        help="Custom output filename or base name (default: benchmark_summary)."
+    )
+
+    args = parser.parse_args()
+
+    model_name = args.model.strip("/")
+    target_log_dir = os.path.join(BASE_LOG_DIR, model_name)
+
+    print(f"[INFO] Analyzing benchmark data for model: '{model_name}'")
+    print(f"[INFO] Target log directory: '{target_log_dir}'")
+
+    df = collect_benchmark_data(target_log_dir)
+    
+    if df is None or df.empty:
+        print(f"[WARNING] No valid log data found in '{target_log_dir}'.")
+        return
+
+    # Filter columns if requested
+    if args.cols:
+        requested_cols = [c for c in args.cols if c in df.columns]
+        missing_cols = [c for c in args.cols if c not in df.columns]
+        
+        if missing_cols:
+            print(f"[WARNING] The following requested columns were not found in data: {missing_cols}")
+            print(f"[INFO] Available columns are: {list(df.columns)}")
+            
+        if not requested_cols:
+            print("[ERROR] None of the requested columns were found in the dataset.")
+            sys.exit(1)
+            
+        df = df[requested_cols]
+
+    # Print terminal output summary
+    print_terminal_summary(df, model_name)
+
+    # Determine base output filename
+    if args.output:
+        base_out_name = os.path.splitext(args.output)[0]
+    else:
+        base_out_name = "benchmark_summary"
+
+    # Export requested file format(s)
+    if args.format in ["html", "both"]:
+        html_path = os.path.join(target_log_dir, f"{base_out_name}.html")
+        export_html_report(df, model_name, html_path)
+        
+    if args.format in ["latex", "both"]:
+        latex_path = os.path.join(target_log_dir, f"{base_out_name}.tex")
+        export_latex_report(df, model_name, latex_path)
 
 if __name__ == "__main__":
     main()
