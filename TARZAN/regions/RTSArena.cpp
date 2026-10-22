@@ -524,7 +524,6 @@ void region::RTSArena::piFilter(const regionSet &setG,
       const std::vector<Region> discPreds = currentRegion.getImmediateDiscretePredecessors({ currTrans }, clocksIndices, locationsToInt, maxConstants);
 
 #if DEBUG_MEMORY
-      // DUMP 1: Quanti predecessori discreti sono stati generati?
       batch_disc_preds.fetch_add(discPreds.size(), std::memory_order_relaxed);
 #endif // DEBUG_MEMORY
 
@@ -539,7 +538,6 @@ void region::RTSArena::piFilter(const regionSet &setG,
         {
 
 #if DEBUG_MEMORY
-          // DUMP 2: Quanto è profonda la ricerca (quanti cicli while facciamo)?
           batch_queue_cycles.fetch_add(1, std::memory_order_relaxed);
 #endif // DEBUG_MEMORY
 
@@ -552,7 +550,6 @@ void region::RTSArena::piFilter(const regionSet &setG,
           const std::vector<Region> delayPreds = regUnderAnalysis.getImmediateDelayPredecessors();
 
 #if DEBUG_MEMORY
-          // DUMP 3: Quanti delay predecessors?
           batch_delay_preds.fetch_add(delayPreds.size(), std::memory_order_relaxed);
 #endif // DEBUG_MEMORY
 

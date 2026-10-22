@@ -1,0 +1,11 @@
+=== ITERATION 1 / 1 ===
+Mode:          OpenMP
+Total time:              1.17434e+08 microseconds
+Total iterations:        18
+Total starting regions:  73254
+Total regions in setPhi: 2037400
+Total stored regions:    171012
+VICTORY
+Total time including region generation: 1.25037e+08 microseconds
+[EXIT CODE]: 0
+
