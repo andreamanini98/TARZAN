@@ -1,805 +1,1736 @@
-// Auto-generated broadcast medicalWorkflow model with 70 patients
-
-broadcast chan patientArrival;
-chan checkID, medicalCheck;
 int docReady, nurseReady;
+chan medicalCheck, checkID;
+broadcast chan patientArrival;
 
-process Doctor() {
-    clock x;
-    state Prepaired { x <= 25 }, GoToPatient, Idle;
-    init Idle;
-    trans
-        Prepaired -> Idle { sync medicalCheck!; assign docReady = 1; },
-        GoToPatient -> Prepaired { guard x >= 1; assign x = 0; },
-        Idle -> GoToPatient { sync patientArrival?; assign x = 0, docReady = 0; };
-}
-
-process Init() {
-    state Start, Done;
-    commit Start;
-    init Start;
-    trans
-        Start -> Done { assign docReady = 1, nurseReady = 1; };
-}
-
-process Nurse() {
-    clock x;
-    state atPatient { x <= 5 }, GoToPatient, Idle;
-    init Idle;
-    trans
-        atPatient -> Idle { assign nurseReady = 1; },
-        GoToPatient -> atPatient { guard x >= 2; sync checkID!; assign x = 0; },
-        Idle -> GoToPatient { sync patientArrival?; assign x = 0, nurseReady = 0; };
-}
-
-process Patient001() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient002() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient003() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient004() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient005() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient006() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient007() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient008() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient009() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient010() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient011() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient012() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient013() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient014() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient015() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient016() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient017() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient018() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient019() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient020() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient021() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient022() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient023() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient024() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient025() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient026() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient027() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient028() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient029() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient030() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient031() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient032() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient033() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient034() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient035() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient036() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient037() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient038() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient039() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient040() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient041() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient042() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient043() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient044() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient045() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient046() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
+process Patient053() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
 }
 
 process Patient047() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
 }
 
-process Patient048() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient049() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient050() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient051() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
+process Patient046() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
 }
 
 process Patient052() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
 }
 
-process Patient053() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
+process Doctor() {
+  clock x;
+  state
+    Prepaired { x <= 25 }, GoToPatient, Idle;
+  init Idle;
+  trans
+    Prepaired -> Idle {
+      sync medicalCheck!;
+      assign docReady = 1;
+    },
+    GoToPatient -> Prepaired {
+      guard x >= 1;
+      assign x = 0;
+    },
+    Idle -> GoToPatient {
+      sync patientArrival?;
+      assign x = 0, docReady = 0;
+    };
 }
 
-process Patient054() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
+process Patient044() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient050() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient051() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient045() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient041() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
 }
 
 process Patient055() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient056() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient057() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient058() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient059() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient060() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient061() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient062() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient063() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient064() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient065() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient066() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient067() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
-}
-
-process Patient068() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
 }
 
 process Patient069() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient068() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient054() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient040() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient056() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient042() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient043() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient057() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient018() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient030() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient024() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient025() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient031() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient019() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient027() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient033() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Init() {
+  state
+    Start, Done;
+  commit Start;
+  init Start;
+  trans
+    Start -> Done {
+      assign docReady = 1, nurseReady = 1;
+    };
+}
+
+process Patient032() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient026() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient022() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient036() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient037() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient023() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient035() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient021() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient009() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient008() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient020() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient034() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient039() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient011() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient005() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient004() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient010() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient038() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient006() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient012() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient013() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient007() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient003() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient017() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient016() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient002() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient014() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient028() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient029() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient001() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient015() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient066() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient067() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient059() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient065() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
 }
 
 process Patient070() {
-    clock x, patientFlow;
-    state Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
-    init Ready;
-    trans
-        WaitingMedicalCheck -> Done { sync medicalCheck?; },
-        Waiting -> WaitingMedicalCheck { sync checkID?; assign x = 0; },
-        Ready -> Waiting { guard patientFlow >= 9 && docReady == 1 && nurseReady == 1; sync patientArrival!; assign x = 0, patientFlow = 0; },
-        Ready -> Ready { sync patientArrival?; assign patientFlow = 0; };
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
 }
 
-system Doctor, Init, Nurse, Patient001, Patient002, Patient003, Patient004, Patient005, Patient006, Patient007, Patient008, Patient009, Patient010, Patient011, Patient012, Patient013, Patient014, Patient015, Patient016, Patient017, Patient018, Patient019, Patient020, Patient021, Patient022, Patient023, Patient024, Patient025, Patient026, Patient027, Patient028, Patient029, Patient030, Patient031, Patient032, Patient033, Patient034, Patient035, Patient036, Patient037, Patient038, Patient039, Patient040, Patient041, Patient042, Patient043, Patient044, Patient045, Patient046, Patient047, Patient048, Patient049, Patient050, Patient051, Patient052, Patient053, Patient054, Patient055, Patient056, Patient057, Patient058, Patient059, Patient060, Patient061, Patient062, Patient063, Patient064, Patient065, Patient066, Patient067, Patient068, Patient069, Patient070;
+process Patient064() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient058() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Nurse() {
+  clock x;
+  state
+    atPatient { x <= 5 }, GoToPatient, Idle;
+  init Idle;
+  trans
+    atPatient -> Idle {
+      assign nurseReady = 1;
+    },
+    GoToPatient -> atPatient {
+      guard x >= 2;
+      sync checkID!;
+      assign x = 0;
+    },
+    Idle -> GoToPatient {
+      sync patientArrival?;
+      assign x = 0, nurseReady = 0;
+    };
+}
+
+process Patient060() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient048() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient049() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient061() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient063() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+process Patient062() {
+  clock x, patientFlow;
+  state
+    Done, WaitingMedicalCheck { x <= 9 }, Waiting { x <= 9 }, Ready { patientFlow <= 9 };
+  init Ready;
+  trans
+    WaitingMedicalCheck -> Done {
+      sync medicalCheck?;
+    },
+    Waiting -> WaitingMedicalCheck {
+      sync checkID?;
+      assign x = 0;
+    },
+    Ready -> Waiting {
+      guard patientFlow >= 9 && docReady == 1 && nurseReady == 1;
+      sync patientArrival!;
+      assign x = 0, patientFlow = 0;
+    },
+    Ready -> Ready {
+      sync patientArrival?;
+      assign patientFlow = 0;
+    };
+}
+
+system Patient053, Patient047, Patient046, Patient052, Doctor, Patient044, Patient050, Patient051, Patient045, Patient041, Patient055, Patient069, Patient068, Patient054, Patient040, Patient056, Patient042, Patient043, Patient057, Patient018, Patient030, Patient024, Patient025, Patient031, Patient019, Patient027, Patient033, Init, Patient032, Patient026, Patient022, Patient036, Patient037, Patient023, Patient035, Patient021, Patient009, Patient008, Patient020, Patient034, Patient039, Patient011, Patient005, Patient004, Patient010, Patient038, Patient006, Patient012, Patient013, Patient007, Patient003, Patient017, Patient016, Patient002, Patient014, Patient028, Patient029, Patient001, Patient015, Patient066, Patient067, Patient059, Patient065, Patient070, Patient064, Patient058, Nurse, Patient060, Patient048, Patient049, Patient061, Patient063, Patient062;
