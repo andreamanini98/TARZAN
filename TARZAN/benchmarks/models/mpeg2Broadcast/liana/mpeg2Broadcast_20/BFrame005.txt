@@ -1,0 +1,26 @@
+create automaton BFrame005
+{
+    clocks { x; }
+    actions { tau, ibx, bstart; }
+    integers { ib005, mvb005, B005, berror005; }
+    locations {
+        Bout <ini: F>,
+        id2  <ini: F>,
+        id3  <ini: F>,
+        id4  <ini: F>,
+        id5  <ini: F>,
+        id6  <ini: F>,
+        id7  <ini: F>,
+        id8  <ini: T>;
+    }
+    transitions {
+        (id8, ibx??, [], [], [ib005 = 1], id8),
+        (id2, tau, [(x, <=, 0)], [], Bout),
+        (id3, tau, [(x, >=, 189), (x, <=, 454)], mvb005 == 1, [x], [mvb005 = 0], id2),
+        (id4, tau, [(x, ==, 521)], [x], id3),
+        (id5, tau, [(x, <=, 0)], berror005 == 1, [x], [berror005 = 0], id4),
+        (id6, tau, [(x, ==, 48)], [x], id5),
+        (id7, tau, [(x, >=, 2399), (x, <=, 2422)], ib005 == 1 && B005 == 1, [x], [mvb005 = 1, ib005 = 0, B005 = 0], id6),
+        (id8, bstart??, [], [x], [B005 = 1, berror005 = 1], id7);
+    }
+}

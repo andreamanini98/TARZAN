@@ -1,0 +1,16 @@
+create automaton Doctor
+{
+    clocks { x; }
+    actions { tau, medicalCheck, patientArrival; }
+    integers { docReady; }
+    locations {
+        Prepaired   <ini: F, inv: [(x, <=, 25)]>,
+        GoToPatient <ini: F>,
+        Idle        <ini: T>;
+    }
+    transitions {
+        (Prepaired, medicalCheck!, [], [], [docReady = 1], Idle),
+        (GoToPatient, tau, [(x, >=, 1)], [x], Prepaired),
+        (Idle, patientArrival??, [], [x], [docReady = 0], GoToPatient);
+    }
+}

@@ -1,0 +1,16 @@
+create automaton Ifinish
+{
+    clocks { x; }
+    actions { tau, dctq1; }
+    locations {
+        Iout <ini: F>,
+        id14 <ini: F>,
+        id15 <ini: F>,
+        id16 <ini: T>;
+    }
+    transitions {
+        (id14, tau, [(x, <=, 0)], [], Iout),
+        (id15, tau, [(x, >=, 298), (x, <=, 358)], [x], id14),
+        (id16, dctq1?, [], [x], id15);
+    }
+}

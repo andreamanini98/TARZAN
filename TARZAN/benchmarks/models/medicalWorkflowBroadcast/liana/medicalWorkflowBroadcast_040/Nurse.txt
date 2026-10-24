@@ -1,0 +1,16 @@
+create automaton Nurse
+{
+    clocks { x; }
+    actions { tau, checkID, patientArrival; }
+    integers { nurseReady; }
+    locations {
+        atPatient   <ini: F, inv: [(x, <=, 5)]>,
+        GoToPatient <ini: F>,
+        Idle        <ini: T>;
+    }
+    transitions {
+        (atPatient, tau, [], [], [nurseReady = 1], Idle),
+        (GoToPatient, checkID!, [(x, >=, 2)], [x], atPatient),
+        (Idle, patientArrival??, [], [x], [nurseReady = 0], GoToPatient);
+    }
+}

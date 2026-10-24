@@ -1,0 +1,17 @@
+create automaton Pfinish
+{
+    clocks { x; }
+    actions { tau, dctq; }
+    integers { mvp; }
+    locations {
+        Pout <ini: F>,
+        id10 <ini: F>,
+        id11 <ini: F>,
+        id12 <ini: T>;
+    }
+    transitions {
+        (id10, tau, [(x, <=, 0)], [], Pout),
+        (id11, tau, [(x, >=, 378), (x, <=, 389)], mvp == 1, [x], [mvp = 0], id10),
+        (id12, dctq?, [], [x], id11);
+    }
+}

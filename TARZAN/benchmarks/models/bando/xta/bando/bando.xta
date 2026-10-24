@@ -590,4 +590,4 @@ process Sender_A() {
     };
 }
 
-system Frame_Generator_B, Frame_Generator_A, Detector_A, Observer_B, Detector_B, Bus, Observer_A, Sender_B, Sender_A;
+system Sender_A, Frame_Generator_B, Frame_Generator_A, Detector_A, Observer_B, Detector_B, Bus, Observer_A, Sender_B;

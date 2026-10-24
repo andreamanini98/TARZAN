@@ -1,0 +1,18 @@
+create automaton Patient094
+{
+    clocks { x, patientFlow; }
+    actions { medicalCheck, checkID, patientArrival; }
+    integers { docReady, nurseReady; }
+    locations {
+        Done                <ini: F>,
+        WaitingMedicalCheck <ini: F, inv: [(x, <=, 9)]>,
+        Waiting             <ini: F, inv: [(x, <=, 9)]>,
+        Ready               <ini: T, inv: [(patientFlow, <=, 9)]>;
+    }
+    transitions {
+        (WaitingMedicalCheck, medicalCheck?, [], [], Done),
+        (Waiting, checkID?, [], [x], WaitingMedicalCheck),
+        (Ready, patientArrival!!, [(patientFlow, >=, 9)], docReady == 1 && nurseReady == 1, [x, patientFlow], Waiting),
+        (Ready, patientArrival??, [], [patientFlow], Ready);
+    }
+}

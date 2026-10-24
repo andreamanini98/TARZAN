@@ -1,0 +1,11 @@
+create automaton Time
+{
+    clocks { x; }
+    actions { never; }
+    locations {
+        id0 <ini: T, inv: [(x, <=, 6673)]>;
+    }
+    transitions {
+        (id0, never, [], 1 < 0, [], id0);
+    }
+}

@@ -1,0 +1,29 @@
+create automaton IandPframes
+{
+    clocks { x; }
+    actions { tau, bstart, dctq, ibx, dctq1; }
+    integers { perror, P, mvp; }
+    locations {
+        id17 <ini: F>,
+        id18 <ini: F>,
+        id19 <ini: F>,
+        id20 <ini: F>,
+        id21 <ini: F>,
+        id22 <ini: F>,
+        id23 <ini: F>,
+        id24 <ini: F>,
+        id25 <ini: F>,
+        I    <ini: T>;
+    }
+    transitions {
+        (id18, bstart!!, [(x, <=, 0)], [], id17),
+        (id19, tau, [(x, ==, 515)], [x], id18),
+        (id20, dctq!, [(x, ==, 521)], [x], id19),
+        (id21, tau, [(x, <=, 0)], perror == 1, [x], [perror = 0], id20),
+        (id22, tau, [(x, ==, 32)], [x], id21),
+        (id23, tau, [(x, >=, 1180), (x, <=, 1181)], P == 1, [x], [mvp = 1, P = 0], id22),
+        (id24, ibx!!, [(x, <=, 0)], [x], [perror = 1, P = 1], id23),
+        (id25, tau, [(x, ==, 673)], [x], id24),
+        (I, dctq1!, [(x, ==, 595)], [x], id25);
+    }
+}

@@ -382,6 +382,26 @@ done
 # ---
 
 
+# medicalWorkflowBroadcast
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/medicalWorkflowBroadcast/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
+for ((key=0; key<num_dirs; key++)); do
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/medicalWorkflowBroadcast" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/medicalWorkflowBroadcast" "${folder_name}" "${TIMEOUT}" "${key}"
+done
+
+
+# ---
+
+
 # mpeg2
 
 subdirs=()
@@ -396,6 +416,26 @@ for ((key=0; key<num_dirs; key++)); do
     folder_name=$(basename "$current_dir")
 
     ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/mpeg2" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/mpeg2" "${folder_name}" "${TIMEOUT}" "${key}"
+done
+
+
+# ---
+
+
+# mpeg2Broadcast
+
+subdirs=()
+while IFS= read -r dir; do
+    subdirs+=("$dir")
+done < <(find "${BENCHMARKS_PATH}/mpeg2Broadcast/liana" -mindepth 1 -maxdepth 1 -type d | sort)
+
+num_dirs=${#subdirs[@]}
+
+for ((key=0; key<num_dirs; key++)); do
+    current_dir="${subdirs[$key]}"
+    folder_name=$(basename "$current_dir")
+
+    ./helpers/sh_network_ta.sh "${EXECUTABLES_PATH}/mpeg2Broadcast" "${current_dir}" "${TOTAL_RUNS}" "${OUTPUT_PATH}/mpeg2Broadcast" "${folder_name}" "${TIMEOUT}" "${key}"
 done
 
 

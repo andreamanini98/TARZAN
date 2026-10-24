@@ -1,0 +1,13 @@
+create automaton Init
+{
+    clocks { }
+    actions { init; }
+    integers { docReady, nurseReady; }
+    locations {
+        Start <ini: T, com: T>,
+        Done  <ini: F>;
+    }
+    transitions {
+        (Start, init, [], [], [docReady = 1, nurseReady = 1], Done);
+    }
+}
