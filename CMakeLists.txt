@@ -67,7 +67,7 @@ if (ENABLE_OPENMP)
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         if (APPLE)
             # --- CONFIGURAZIONE ORIGINALE PER macOS / HOMEBREW ---
-            message(STATUS "OpenMP: Rilevato macOS, utilizzo i percorsi Homebrew.")
+            message(STATUS "OpenMP: Detected macOS, utilizing Homebrew paths.")
             set(LIBOMP_INCLUDE_DIR /opt/homebrew/opt/libomp/include)                                   
             set(LIBOMP_LIB_DIR /opt/homebrew/opt/libomp/lib)                                                        
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp")
@@ -77,7 +77,7 @@ if (ENABLE_OPENMP)
             link_directories(${LIBOMP_LIB_DIR})
         else ()
             # --- CONFIGURAZIONE UNIVERSALE PER LINUX (E ALTRI OS) ---
-            message(STATUS "OpenMP: Rilevato Linux/altro OS, utilizzo la configurazione nativa.")
+            message(STATUS "OpenMP: Detected Linux/another OS, utilizing the native configuration.")
             
             find_package(OpenMP REQUIRED)
             if (OpenMP_CXX_FOUND)
@@ -108,7 +108,7 @@ include(FetchContent)
 
 if (APPLE)
     # --- CONFIGURAZIONE PER macOS ---
-    message(STATUS "Abseil: Rilevato macOS.")
+    message(STATUS "Abseil: Detected macOS.")
     FetchContent_Declare(
         abseil-cpp
         GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
@@ -118,7 +118,7 @@ if (APPLE)
     FetchContent_MakeAvailable(abseil-cpp)
 else ()
     # --- CONFIGURAZIONE PER LINUX (E ALTRI OS) ---
-    message(STATUS "Abseil: Rilevato Linux/altro OS, utilizzo find_package di sistema.")
+    message(STATUS "Abseil: Detected Linux/another OS, utilizing system procedure \"find_package\" .")
 
     find_package(absl REQUIRED)
 endif ()

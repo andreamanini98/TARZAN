@@ -575,10 +575,114 @@ bool region::RTSArena::timedReachability(const regionSet &setPhi, regionSet &set
     return reachable;
 }
 
+bool region::RTSArena::timedForwardReachability(const regionSet &setPhi, const regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter)
+{
+    // Starting the timer for measuring computation.
+#ifdef _OPENMP
+    const auto start = omp_get_wtime();
+#else
+    const auto start = std::chrono::high_resolution_clock::now();
+#endif
+
+    int currentIteration = 0;
+    const int totalStartingRegions = static_cast<int>(setG.size());
+
+    regionSet validSuccessors{};
+    regionSet filteredRegions{};
+    const regionSet initialRegionsSet{};
+    regionSet setC{};
+    regionSet setW{};
+
+    if (computeStrategyGraph)
+    {
+        // Setting the target regions of the strategy graph to match the initial regions.
+        strategyGraph->setHeads(initialRegions);
+
+        // Setting the target regions of the strategy graph to match setG.
+        strategyGraph->setTargetRegions(setG);
+    }
+
+    setC = regionSetIntersection(initialRegionsSet, setPhi);
+    setW = regionSetIntersection(initialRegionsSet, setG);
+
+    while (currentIteration < maxIter)
+    {
+        currentIteration++;
+
+        validSuccessors = gammaOperator(setC, toProcess, setPhi, true);
+
+        if (validSuccessors.empty())
+            break;
+
+        setC.merge(validSuccessors);
+        //setW.merge(validSuccessors);
+
+        while (!filteredRegions.empty())
+        {
+            piFilter(setW, toProcess, filteredRegions, setC, true, true, true);
+            setW.merge(filteredRegions);
+
+            toProcess.clear();
+            for (const auto &region: setW)
+                toProcess.push_back(&region);
+
+            filteredRegions.clear();
+        }
+
+        toProcess.clear();
+        for (const auto &region: setC)
+            toProcess.push_back(&region);
+
+        validSuccessors.clear();
+    }
+
+    // Ending the timer for measuring computation.
+#ifdef _OPENMP
+    const auto end = omp_get_wtime();
+    const auto duration = end - start;
+    std::cout << "Total time:              " << duration * 1000000 << " microseconds" << std::endl;
+#else
+    const auto end = std::chrono::high_resolution_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    std::cout << "Total time:              " << duration << " microseconds" << std::endl;
+#endif
+
+    const bool reachable = std::ranges::any_of(initialRegions, [&setW](const auto &region) { return setW.contains(region); });
+
+    std::cout << "Total iterations:        " << currentIteration << std::endl;
+    std::cout << "Total starting regions:  " << totalStartingRegions << std::endl;
+    std::cout << "Total regions in setPhi: " << setPhi.size() << std::endl;
+    std::cout << "Total stored regions:    " << setG.size() << std::endl;
+    std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
+
+    return reachable;
+}
+
+regionSet regionSetIntersection(const regionSet &firstSet, const regionSet &secondSet)
+{
+    regionSet resultSet{};
+
+    for (const auto &region: firstSet)
+    {
+        if (secondSet.contains(region))
+        {
+            regionSet z{region};
+            resultSet.merge(z);
+        }
+    }
+
+    return resultSet;
+}
+
 
 bool region::RTSArena::timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter)
 {
     return timedReachability({}, setG, toProcess, maxIter);
+}
+
+bool region::RTSArena::timedForwardReachability(const regionSet &setG, std::vector<RegionPtr> &toProcess, const int maxIter)
+{
+    return timedForwardReachability({}, setG, toProcess, maxIter);
 }
 
 
@@ -768,6 +872,25 @@ inline bool region::RTSArena::solveGameWithDiamondFormula(const cltloc::ast::una
     return timedReachability(setG, toProcess, MAX_ITERATIONS);
 }
 
+inline bool region::RTSArena::solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula, const std::string &reachabilityApproach)
+{
+    std::vector<regionSet> startingRegions = getRegionsFromGeneralCLTLocFormula(unaryFormula.rightFormula);
+
+    if (startingRegions.size() != 1)
+        throw std::logic_error("Wrong size of unary formula.");
+
+    regionSet &setG = startingRegions[0];
+
+    std::vector<RegionPtr> toProcess{};
+    toProcess.reserve(setG.size());
+    for (const auto &region: setG)
+        toProcess.push_back(&region);
+
+    if (reachabilityApproach == "FORWARD")
+        return timedReachability(setG, toProcess, MAX_ITERATIONS);
+    else
+        return timedForwardReachability(setG, toProcess, MAX_ITERATIONS);
+}
 
 inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula)
 {
@@ -786,6 +909,28 @@ inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binar
         toProcess.push_back(&region);
 
     return timedReachability(setPhi, setG, toProcess, MAX_ITERATIONS);
+}
+
+inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula, const std::string &reachabilityApproach)
+{
+    const std::vector<regionSet> leftRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.leftFormula);
+    std::vector<regionSet> rightRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.rightFormula);
+
+    if (leftRegions.size() != 1 || rightRegions.size() != 1)
+        throw std::logic_error("Wrong size of binary formula.");
+
+    const regionSet &setPhi = leftRegions[0];
+    regionSet &setG = rightRegions[0];
+
+    std::vector<RegionPtr> toProcess{};
+    toProcess.reserve(setG.size());
+    for (const auto &region: setG)
+        toProcess.push_back(&region);
+
+    if (reachabilityApproach == "FORWARD")
+        return timedReachability(setPhi, setG, toProcess, MAX_ITERATIONS);
+    else
+        return timedForwardReachability(setPhi, setG, toProcess, MAX_ITERATIONS);
 }
 
 
@@ -866,6 +1011,72 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
             {
                 case UNTIL:
                     return solveGameWithUntilFormula(binaryFormula);
+
+                default:
+                    throw std::logic_error("Invalid binary CLTLoc operator.");
+            }
+            // ---
+        } else
+            throw std::logic_error("Unhandled formula type in solveTimedCLTLocGame.");
+    }, formula.value);
+
+    // Ending the timer for measuring computation.
+#ifdef _OPENMP
+    const auto end = omp_get_wtime();
+    const auto duration = end - start;
+    std::cout << "Total time including region generation: " << duration * 1000000 << " microseconds" << std::endl;
+#else
+    const auto end = std::chrono::high_resolution_clock::now();
+    const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    std::cout << "Total time including region generation: " << duration << " microseconds" << std::endl;
+#endif
+
+    return result;
+}
+
+bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula, const std::string &reachabilityApproach)
+{
+    // Starting the timer for measuring computation.
+#ifdef _OPENMP
+    const auto start = omp_get_wtime();
+#else
+    const auto start = std::chrono::high_resolution_clock::now();
+#endif
+
+    const bool result = boost::apply_visitor([this, reachabilityApproach]<typename T0>(T0 const &val) -> bool
+    {
+        using T = std::decay_t<T0>;
+
+        if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::pureCLTLocFormula>>)
+        {
+            // Pure formula: currently unhandled.
+            throw std::logic_error("Pure formulae are not currently supported when solving Timed CLTLoc Games.");
+            // ---
+        } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::unaryCLTLocFormula>>)
+        {
+            // Unary formula.
+            switch (const auto &unaryFormula = val.get(); unaryFormula.op)
+            {
+                case BOX:
+                    return solveGameWithBoxFormula(unaryFormula);
+
+                case DIAMOND:
+                    return solveGameWithDiamondFormula(unaryFormula, reachabilityApproach);
+
+                case NEXT:
+                    return solveGameWithNextFormula(unaryFormula.rightFormula);
+
+                default:
+                    throw std::logic_error("Invalid unary CLTLoc operator.");
+            }
+            // ---
+        } else if constexpr (std::is_same_v<T, boost::spirit::x3::forward_ast<cltloc::ast::binaryCLTLocFormula>>)
+        {
+            // Binary formula.
+            switch (const auto &binaryFormula = val.get(); binaryFormula.op)
+            {
+                case UNTIL:
+                    return solveGameWithUntilFormula(binaryFormula, reachabilityApproach);
 
                 default:
                     throw std::logic_error("Invalid binary CLTLoc operator.");

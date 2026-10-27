@@ -26,4 +26,7 @@ inline std::ostream &operator<<(std::ostream &os, const ssee se)
     return os << ssee_to_string(se);
 }
 
+// A new enumeration to specify the will to explore the state-space in a forward or backward approach.
+enum exploration_approach {FORWARD, BACKWARD};
+
 #endif //TARZAN_STATE_SPACE_EXPLORATION_ENUM_H

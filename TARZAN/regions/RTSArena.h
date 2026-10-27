@@ -222,6 +222,19 @@ namespace region
 
 
         /**
+         * @brief Solves a game where the formula is: DIAMOND phi.
+         * In this version, one can choose the exploration approach between FORWARD and BACKWARD.
+         *
+         * @param unaryFormula the formula to solve.
+         * @param reachabilityApproach the exploration approach to adopt.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @throws std::logic_error if the formula has the wrong size.
+         */
+        [[nodiscard]] inline bool solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula, const std::string &reachabilityApproach);
+
+
+        /**
          * @brief Solves a game where the formula is: phi UNTIL psi.
          *
          * @param binaryFormula the formula to solve.
@@ -230,6 +243,18 @@ namespace region
          * @throws std::logic_error if the formula has the wrong size.
          */
         [[nodiscard]] inline bool solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula);
+
+
+        /**
+         * @brief Solves a game where the formula is: phi UNTIL psi.
+         * In this version, one can choose the exploration approach between FORWARD and BACKWARD.
+         * @param binaryFormula the formula to solve.
+         * @param reachabilityApproach the exploration approach to adopt.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @throws std::logic_error if the formula has the wrong size.
+         */
+        [[nodiscard]] inline bool solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula, const std::string &reachabilityApproach);
 
 
         /**
@@ -391,6 +416,23 @@ namespace region
                       bool checkAllSuccessorsInvariants,
                       bool skipIfSourceIsInSetG);
 
+        /**
+         * @brief Computes the discrete successors which are reachable in a single step of a given set of state regions.
+         *
+         * @param setC set of state regions to be reached.
+         * @param toProcess vector of pointers to regions in setC that must be processed.
+         * @param intersectionSet for a region to be valid, it must also belong to intersectionSet (i.e. setPhi).
+         * @param skipIfSourceIsInSetC if true, the strategy transition having sourceRegion (see collectLegalRegionByPiStrategy) as a source is not inserted into
+         *                             the strategy graph. Useful to ensure the absence of cycles in the strategy graph (e.g., when computing next until winning conditions).
+         *
+         * @warning toProcess is a vector, since we may use OpenMP parallelization.
+         */
+
+        regionSet gammaOperator(const regionSet &setC,
+                      const std::vector<RegionPtr> &toProcess,
+                      const regionSet &intersectionSet,
+                      bool skipIfSourceIsInSetC);
+
 
         /**
          * @brief Determines whether the controller wins in a timed reachability game where the winning condition is: DIAMOND phi.
@@ -403,6 +445,19 @@ namespace region
          * @warning The function updates setG and toProcess.
          */
         [[nodiscard]] bool timedReachability(regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter);
+
+        /**
+         * @brief Determines whether the controller wins in a timed reachability game where the winning condition is: DIAMOND phi.
+         * In this version, the Forward Reachability approach is applied.
+         *
+         * @param setG set of goal regions.
+         * @param toProcess vector of pointers to regions in setG that must be processed.
+         * @param maxIter the maximum number of iterations to perform; if reached, terminate even if the fixpoint has not been reached.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @warning The function updates toProcess.
+         */
+        [[nodiscard]] bool timedForwardReachability(const regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter);
 
 
         /**
@@ -417,6 +472,30 @@ namespace region
          * @warning The function updates setG and toProcess.
          */
         [[nodiscard]] bool timedReachability(const regionSet &setPhi, regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter);
+
+        /**
+         * @brief Determines whether the controller wins in a timed reachability game where the winning condition is: phi UNTIL psi.
+         * In this version, the Forward Reachability approach is applied.
+         *
+         * @param setPhi for regions to be valid, they must also be contained in this set.
+         * @param setG set of goal regions.
+         * @param toProcess vector of pointers to regions in setG that must be processed.
+         * @param maxIter the maximum number of iterations to perform; if reached, terminate even if the fixpoint has not been reached.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @warning The function updates toProcess.
+         */
+        [[nodiscard]] bool timedForwardReachability(const regionSet &setPhi, const regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter);
+
+
+        /**
+         * @brief Determines the intersection between two set variables.
+         *
+         * @param firstSet is the first set of the intersection operation.
+         * @param secondSet is the second set of the intersection operation.
+         * @return the intersection between the two sets.
+         */
+        [[nodiscard]] regionSet regionSetIntersection(const regionSet &firstSet, const regionSet &secondSet);
 
 
         /**
@@ -459,6 +538,23 @@ namespace region
          * @throws std::logic_error if an unhandled formula type is encountered, or a pure formula is given as the parameter value.
          */
         [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula);
+
+
+        /**
+         * @brief Determines whether the controller wins a Timed CLTLoc Game given the general CLTLoc formula
+         * and also the choice of exploration approach, between FORWARD and BACKWARD.
+         *
+         * Currently, it only detects the nature of the given formula without recursion.
+         * The only allowed recursion is of formulae like NEXT (phi UNTIL psi).
+         * Supported formulae are: BOX phi, DIAMOND phi, phi UNTIL psi, NEXT (phi UNTIL psi).
+         *
+         * @param formula the general CLTLoc formula to process.
+         * @param reachabilityApproach the exploration approach to adopt.
+         * @return true if the controller wins, false otherwise.
+         *
+         * @throws std::logic_error if an unhandled formula type is encountered, or a pure formula is given as the parameter value.
+         */
+        [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula, const std::string &reachabilityApproach);
 
 
         /**
