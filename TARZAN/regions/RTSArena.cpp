@@ -662,12 +662,15 @@ regionSet regionSetIntersection(const regionSet &firstSet, const regionSet &seco
 {
     regionSet resultSet{};
 
-    for (const auto &region: firstSet)
-    {
-        if (secondSet.contains(region))
+
+    if (!firstSet.empty() && !secondSet.empty()){
+        for (const auto &region: firstSet)
         {
-            regionSet z{region};
-            resultSet.merge(z);
+            if (secondSet.contains(region))
+            {
+                regionSet z{region};
+                resultSet.merge(z);
+            }
         }
     }
 
