@@ -241,7 +241,7 @@ namespace region
          *
          * @throws std::logic_error if the formula has the wrong size.
          */
-        [[nodiscard]] inline bool solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula, const std::string &reachabilityApproach);
+        [[nodiscard]] inline bool solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula, const exploration_approach &reachabilityApproach);
 
 
         /**
@@ -264,7 +264,7 @@ namespace region
          *
          * @throws std::logic_error if the formula has the wrong size.
          */
-        [[nodiscard]] inline bool solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula, const std::string &reachabilityApproach);
+        [[nodiscard]] inline bool solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula, const exploration_approach &reachabilityApproach);
 
 
         /**
@@ -436,10 +436,7 @@ namespace region
          * @warning toProcess is a vector, since we may use OpenMP parallelization.
          */
 
-        regionSet gammaOperator(const regionSet &setC, const std::vector<RegionPtr> &toProcess);
-                      //const regionSet &intersectionSet1,
-                      //bool skipIfSourceIsInSetC);
-                      //const regionSet &intersectionSet2);
+        regionSet gammaOperator(const regionSet &setC, const std::vector<RegionPtr> &toProcess) const;
 
 
         /**
@@ -575,7 +572,7 @@ namespace region
          *
          * @throws std::logic_error if an unhandled formula type is encountered, or a pure formula is given as the parameter value.
          */
-        [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula, const std::string &reachabilityApproach);
+        [[nodiscard]] bool solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula, const exploration_approach &reachabilityApproach);
 
 
         /**

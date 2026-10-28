@@ -716,8 +716,7 @@ regionSet regionSetIntersection(const regionSet &firstSet, const regionSet &seco
         {
             if (secondSet.contains(region))
             {
-                regionSet z{region};
-                resultSet.merge(z);
+                resultSet.insert(region);
             }
         }
     }
@@ -725,7 +724,7 @@ regionSet regionSetIntersection(const regionSet &firstSet, const regionSet &seco
     return resultSet;
 }
 
-regionSet region::RTSArena::gammaOperator(const regionSet &setC, const std::vector<RegionPtr> &toProcess)
+regionSet region::RTSArena::gammaOperator(const regionSet &setC, const std::vector<RegionPtr> &toProcess) const
 {
     regionSet validSuccessors{};
 
@@ -981,7 +980,7 @@ inline bool region::RTSArena::solveGameWithDiamondFormula(const cltloc::ast::una
     return timedReachability(setG, toProcess, MAX_ITERATIONS);
 }
 
-inline bool region::RTSArena::solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula, const std::string &reachabilityApproach)
+inline bool region::RTSArena::solveGameWithDiamondFormula(const cltloc::ast::unaryCLTLocFormula &unaryFormula, const exploration_approach &reachabilityApproach)
 {
     std::vector<regionSet> startingRegions = getRegionsFromGeneralCLTLocFormula(unaryFormula.rightFormula);
 
@@ -995,7 +994,7 @@ inline bool region::RTSArena::solveGameWithDiamondFormula(const cltloc::ast::una
     for (const auto &region: setG)
         toProcess.push_back(&region);
 
-    if (reachabilityApproach == "FORWARD")
+    if (reachabilityApproach == FORWARD)
         return timedReachability(setG, toProcess, MAX_ITERATIONS);
     else
         return timedForwardReachability(setG, toProcess, MAX_ITERATIONS);
@@ -1020,7 +1019,7 @@ inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binar
     return timedReachability(setPhi, setG, toProcess, MAX_ITERATIONS);
 }
 
-inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula, const std::string &reachabilityApproach)
+inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula, const exploration_approach &reachabilityApproach)
 {
     const std::vector<regionSet> leftRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.leftFormula);
     std::vector<regionSet> rightRegions = getRegionsFromGeneralCLTLocFormula(binaryFormula.rightFormula);
@@ -1036,7 +1035,7 @@ inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binar
     for (const auto &region: setG)
         toProcess.push_back(&region);
 
-    if (reachabilityApproach == "FORWARD")
+    if (reachabilityApproach == FORWARD)
         return timedReachability(setPhi, setG, toProcess, MAX_ITERATIONS);
     else
         return timedForwardReachability(setPhi, setG, toProcess, MAX_ITERATIONS);
@@ -1143,7 +1142,7 @@ bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocForm
     return result;
 }
 
-bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula, const std::string &reachabilityApproach)
+bool region::RTSArena::solveTimedCLTLocGame(const cltloc::ast::generalCLTLocFormula &formula, const exploration_approach &reachabilityApproach)
 {
     // Starting the timer for measuring computation.
 #ifdef _OPENMP
