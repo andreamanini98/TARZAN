@@ -589,7 +589,17 @@ bool region::RTSArena::timedForwardReachability(const regionSet &setPhi, const r
 
     regionSet validSuccessors{};
     regionSet filteredRegions{};
-    const regionSet initialRegionsSet{};
+    regionSet initialRegionsSet{};
+
+    std::ranges::for_each(initialRegions
+                          ,
+                          [&initialRegionsSet](const region::Region &region)
+                          {
+                              initialRegionsSet.merge(regionSet{region});
+                              //initialRegionsSet.insert(region);
+                          }
+    );
+
     regionSet setC{};
     regionSet setW{};
 
@@ -614,7 +624,7 @@ bool region::RTSArena::timedForwardReachability(const regionSet &setPhi, const r
         if (validSuccessors.empty())
             break;
 
-        setC.merge(validSuccessors);
+        //setC.merge(validSuccessors);
         //setW.merge(validSuccessors);
 
         while (!filteredRegions.empty())
