@@ -619,17 +619,21 @@ bool region::RTSArena::timedForwardReachability(const regionSet &setPhi, const r
     {
         currentIteration++;
 
-        validSuccessors = gammaOperator(setC, toProcess, setPhi, true);
+        validSuccessors = gammaOperator(setC, toProcess);
 
         if (validSuccessors.empty())
             break;
 
-        //setC.merge(validSuccessors);
-        //setW.merge(validSuccessors);
+        setC.merge(regionSetIntersection(validSuccessors, setPhi));
+        setW.merge(regionSetIntersection(validSuccessors, setG));
 
         while (!filteredRegions.empty())
         {
             piFilter(setW, toProcess, filteredRegions, setC, true, true, true);
+
+            if (filteredRegions.empty())
+                continue;
+
             setW.merge(filteredRegions);
 
             toProcess.clear();
@@ -685,6 +689,14 @@ regionSet regionSetIntersection(const regionSet &firstSet, const regionSet &seco
     }
 
     return resultSet;
+}
+
+regionSet gammaOperator(const regionSet &setC, const std::vector<RegionPtr> &toProcess)
+{
+    for (const auto &regionToProcess: toProcess)
+    {
+
+    }
 }
 
 

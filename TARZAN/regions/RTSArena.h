@@ -417,21 +417,19 @@ namespace region
                       bool skipIfSourceIsInSetG);
 
         /**
-         * @brief Computes the discrete successors which are reachable in a single step of a given set of state regions.
+         * @brief Computes the discrete successors which are reachable in a single step of a given set of state regions
+         * as described in the paper.
          *
          * @param setC set of state regions to be reached.
          * @param toProcess vector of pointers to regions in setC that must be processed.
-         * @param intersectionSet for a region to be valid, it must also belong to intersectionSet (i.e. setPhi).
-         * @param skipIfSourceIsInSetC if true, the strategy transition having sourceRegion (see collectLegalRegionByPiStrategy) as a source is not inserted into
-         *                             the strategy graph. Useful to ensure the absence of cycles in the strategy graph (e.g., when computing next until winning conditions).
          *
          * @warning toProcess is a vector, since we may use OpenMP parallelization.
          */
 
-        regionSet gammaOperator(const regionSet &setC,
-                      const std::vector<RegionPtr> &toProcess,
-                      const regionSet &intersectionSet,
-                      bool skipIfSourceIsInSetC);
+        regionSet gammaOperator(const regionSet &setC, const std::vector<RegionPtr> &toProcess);
+                      //const regionSet &intersectionSet1,
+                      //bool skipIfSourceIsInSetC);
+                      //const regionSet &intersectionSet2);
 
 
         /**
