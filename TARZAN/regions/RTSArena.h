@@ -87,6 +87,16 @@ namespace region
 
 
         /**
+         * @brief Used to determine whether gammaOperator must ignore a state region.
+         *
+         * @param reg the region to check.
+         * @param setC set of goal regions.
+         * @return true if the region must be ignored, false otherwise.
+         */
+        [[nodiscard]] inline bool regionToBeSkipped(const Region &reg, const regionSet &setC) const;
+
+
+        /**
          * @brief Used to merge results before returning regions in piFilter.
          *
          * @param threadLocalRegions a vector containing the regions to be merged.
@@ -480,10 +490,23 @@ namespace region
          * @param toProcess vector of pointers to regions in setG that must be processed.
          * @param maxIter the maximum number of iterations to perform; if reached, terminate even if the fixpoint has not been reached.
          * @return true if the controller wins, false otherwise.
+         */
+        [[nodiscard]] bool timedForwardReachability(const regionSet &setPhi, const regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter);
+
+
+        /**
+         * @brief Determines whether the controller wins in a Timed CLTLoc Game with the winning condition as phi UNTIL psi.
+         * The calling function is `timedForwardReachability()`.
+         *
+         * @param setPhi for regions to be valid, they must also be contained in this set.
+         * @param setG set of goal regions.
+         * @param toProcess vector of pointers to regions in setG that must be processed.
+         * @param maxIter the maximum number of iterations to perform; if reached, terminate even if the fixpoint has not been reached.
+         * @return true if the controller wins, false otherwise.
          *
          * @warning The function updates toProcess.
          */
-        [[nodiscard]] bool timedForwardReachability(const regionSet &setPhi, const regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter);
+        [[nodiscard]] bool forwardReachabilityForTCGs(const regionSet &setPhi, const regionSet &setG, std::vector<RegionPtr> &toProcess, int maxIter);
 
 
         /**
