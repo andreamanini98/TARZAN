@@ -15,7 +15,7 @@
 #define THROW_NESTEDCLTLOC_EXCEPTION
 
 // Threshold for enabling parallel execution (derived from manual experiments).
-#define PARALLEL_THRESHOLD 400
+#define PARALLEL_THRESHOLD 0
 
 // Total number of iterations performed by fixed point algorithms.
 #define MAX_ITERATIONS 10000
