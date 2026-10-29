@@ -608,18 +608,17 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
 #endif
 
     int currentIteration = 0;
-    const int totalStartingRegions = static_cast<int>(setG.size());
 
     regionSet validSuccessors{};
     regionSet filteredRegions{};
     regionSet initialRegionsSet{};
 
+    // Mapping each initial region to an element of the initial regions set
     std::ranges::for_each(initialRegions
                           ,
-                          [&initialRegionsSet](const region::Region &region)
+                          [&initialRegionsSet](const Region &region)
                           {
                               initialRegionsSet.merge(regionSet{region});
-                              //initialRegionsSet.insert(region);
                           }
     );
 
@@ -627,6 +626,8 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
     regionSet setW{};
     regionSet setCbar{};
     regionSet setWbar{};
+
+    const int totalStartingRegions = static_cast<int>(initialRegionsSet.size());
 
     if (computeStrategyGraph)
     {
@@ -637,10 +638,17 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
         strategyGraph->setTargetRegions(setG);
     }
 
+    //Initializing set variables C and W
     setC = regionSetIntersection(initialRegionsSet, setPhi);
     setW = regionSetIntersection(initialRegionsSet, setG);
 
+    // Applying the victory check to detect any winning initial region earlier
     bool alreadyReachable = std::ranges::any_of(initialRegions, [&setW](const auto &region) { return setW.contains(region); });
+
+    // Initializing toProcess with the initial regions of setC
+    toProcess.reserve(setC.size());
+    for (const auto &region: setC)
+        toProcess.push_back(&region);
 
     while (currentIteration < maxIter && setCbar != setC && !alreadyReachable)
     {
@@ -656,10 +664,12 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
         setC.merge(regionSetIntersection(validSuccessors, setPhi));
         setW.merge(regionSetIntersection(validSuccessors, setG));
 
+        // If setW is empty, the result of pi(W) is empty as well by definition
         if (!setW.empty())
         {
             do
             {
+                // Retrieving all the controllable predecessors of setW which are also reachable
                 piFilter(setW, toProcess, filteredRegions, setC, true, true, true);
 
                 if (filteredRegions.empty())
@@ -682,6 +692,7 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
 
         validSuccessors.clear();
 
+        // Applying the victory check to detect any winning initial region earlier
         alreadyReachable = std::ranges::any_of(initialRegions, [&setW](const auto &region) { return setW.contains(region); });
     }
 
@@ -696,12 +707,13 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
     std::cout << "Total time:              " << duration << " microseconds" << std::endl;
 #endif
 
+    // Applying the victory check
     const bool reachable = std::ranges::any_of(initialRegions, [&setW](const auto &region) { return setW.contains(region); });
 
     std::cout << "Total iterations:        " << currentIteration << std::endl;
     std::cout << "Total starting regions:  " << totalStartingRegions << std::endl;
     std::cout << "Total regions in setPhi: " << setPhi.size() << std::endl;
-    std::cout << "Total stored regions:    " << setG.size() << std::endl;
+    std::cout << "Total stored regions (setW + setC):    " << setW.size() + setC.size() << std::endl;
     std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
 
     return reachable;
@@ -990,14 +1002,18 @@ inline bool region::RTSArena::solveGameWithDiamondFormula(const cltloc::ast::una
     regionSet &setG = startingRegions[0];
 
     std::vector<RegionPtr> toProcess{};
-    toProcess.reserve(setG.size());
-    for (const auto &region: setG)
-        toProcess.push_back(&region);
 
-    if (reachabilityApproach == FORWARD)
+    if (reachabilityApproach != FORWARD){
+        toProcess.reserve(setG.size());
+        for (const auto &region: setG)
+            toProcess.push_back(&region);
+
         return timedReachability(setG, toProcess, MAX_ITERATIONS);
+    }
     else
+    {
         return timedForwardReachability(setG, toProcess, MAX_ITERATIONS);
+    }
 }
 
 inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binaryCLTLocFormula &binaryFormula)
@@ -1031,14 +1047,18 @@ inline bool region::RTSArena::solveGameWithUntilFormula(const cltloc::ast::binar
     regionSet &setG = rightRegions[0];
 
     std::vector<RegionPtr> toProcess{};
-    toProcess.reserve(setG.size());
-    for (const auto &region: setG)
-        toProcess.push_back(&region);
 
-    if (reachabilityApproach == FORWARD)
+    if (reachabilityApproach != FORWARD){
+        toProcess.reserve(setG.size());
+        for (const auto &region: setG)
+            toProcess.push_back(&region);
+
         return timedReachability(setPhi, setG, toProcess, MAX_ITERATIONS);
+    }
     else
+    {
         return timedForwardReachability(setPhi, setG, toProcess, MAX_ITERATIONS);
+    }
 }
 
 
