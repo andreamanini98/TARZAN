@@ -727,6 +727,8 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
     std::cout << "Total iterations:        " << currentIteration << std::endl;
     std::cout << "Total starting regions:  " << totalStartingRegions << std::endl;
     std::cout << "Total regions in setPhi: " << setPhi.size() << std::endl;
+    std::cout << "Total stored regions (setC):    " << setC.size() << std::endl;
+    std::cout << "Total stored regions (setW):    " << setW.size() << std::endl;
     std::cout << "Total stored regions (setW + setC):    " << setW.size() + setC.size() << std::endl;
     std::cout << (reachable ? "VICTORY" : "LOSE") << std::endl;
 
@@ -750,64 +752,6 @@ regionSet region::RTSArena::regionSetIntersection(const regionSet &firstSet, con
     return resultSet;
 }
 
-/*regionSet region::RTSArena::gammaOperator(const regionSet &setC, const std::vector<RegionPtr> &toProcess) const
-{
-    regionSet validSuccessors{};
-
-    for (const auto &regionToProcess: toProcess)
-    {
-        // Getting the current region and analyzing its outcoming transitions.
-        const Region &currentRegion = *regionToProcess;
-
-        const std::vector<transition> &currTransitions = outTransitions[currentRegion.getLocation()];
-
-        // Initializing the Boolean flag used to detect the last region to process
-        bool lastReg = false;
-
-        // Iterating transition by transition to scan all their actions
-        for (const auto &currTrans: currTransitions)
-        {
-            // Collecting every discrete successor to be later compared with all states in setC.
-            const std::vector<Region> discSuccs = currentRegion.getImmediateDiscreteSuccessors({ currTrans }, clocksIndices, locationsToInt, false);
-
-            // Processing each discrete successor, checking also if its delay successor can be inserted in setC.
-            for (const auto &reg: discSuccs)
-            {
-                // Since a region may have multiple delay successors, a deque to process each delay successor is created.
-                // Since reg itself must be processed as well, it is added to delaySuccessorsToProcess.
-                std::queue<Region> delaySuccessorsToProcess{};
-                delaySuccessorsToProcess.push(reg);
-
-                // Processing each delay successor according to the definition of the gamma operator as given in the paper.
-                while (!delaySuccessorsToProcess.empty())
-                {
-                    const Region stateReg = delaySuccessorsToProcess.front();
-                    delaySuccessorsToProcess.pop();
-
-                    // Checking whether a region that is the destination of a move must be skipped or not.
-                    if (regionToBeSkipped(stateReg, setC))
-                        continue;
-
-                    validSuccessors.insert(stateReg);
-
-                    const Region delaySucc = stateReg.getImmediateDelaySuccessor(maxConstants);
-
-                    if (!lastReg)
-                    {
-                        delaySuccessorsToProcess.push(delaySucc);
-                    }
-
-                    // If an unbounded region has been reached, it must be detected. If not, this loop runs indefinitely.
-                    if (delaySucc.getBounded().empty() && delaySucc.getX0().none())
-                        lastReg = true;
-                }
-            }
-        }
-    }
-
-    return validSuccessors;
-}*/
-
 regionSet region::RTSArena::gammaOperator(const regionSet &setC, const std::vector<RegionPtr> &toProcess) const
 {
     regionSet validSuccessors{};
@@ -830,11 +774,16 @@ regionSet region::RTSArena::gammaOperator(const regionSet &setC, const std::vect
             std::queue<Region> delaySuccessorsToProcess{};
             delaySuccessorsToProcess.push(currentRegion);
 
+            lastReg = false;
+
             // Processing each delay successor according to the definition of the gamma operator as given in the paper.
             while (!delaySuccessorsToProcess.empty())
             {
                 const Region stateReg = delaySuccessorsToProcess.front();
                 delaySuccessorsToProcess.pop();
+
+                if (!regionToBeSkipped(stateReg, setC))
+                    validSuccessors.insert(stateReg);
 
                 // Collecting every discrete successor to be later compared with all states in setC.
                 const std::vector<Region> discSuccs = stateReg.getImmediateDiscreteSuccessors({ currTrans }, clocksIndices, locationsToInt, false);
