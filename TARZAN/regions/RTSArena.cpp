@@ -639,7 +639,11 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
     }
 
     //Initializing set variables C and W
-    setC = regionSetIntersection(initialRegionsSet, setPhi);
+    if (setPhi.empty())
+        setC = initialRegionsSet;
+    else
+        setC = regionSetIntersection(initialRegionsSet, setPhi);
+
     setW = regionSetIntersection(initialRegionsSet, setG);
 
     // Applying the victory check to detect any winning initial region earlier
@@ -661,7 +665,15 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
         if (validSuccessors.empty())
             break;
 
-        setC.merge(regionSetIntersection(validSuccessors, setPhi));
+        if (setPhi.empty())
+            //setC.merge(validSuccessors);
+            setC.insert(validSuccessors.begin(),validSuccessors.end());
+        else{
+            regionSet reachableSuccessors = regionSetIntersection(validSuccessors, setPhi);
+            //setC.merge(regionSetIntersection(validSuccessors, setPhi));
+            setC.insert(reachableSuccessors.begin(),reachableSuccessors.end());
+        }
+
         setW.merge(regionSetIntersection(validSuccessors, setG));
 
         // If setW is empty, the result of pi(W) is empty as well by definition
@@ -669,6 +681,12 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
         {
             do
             {
+                setWbar = setW;
+
+                toProcess.clear();
+                for (const auto &region: setW)
+                    toProcess.push_back(&region);
+
                 // Retrieving all the controllable predecessors of setW which are also reachable
                 piFilter(setW, toProcess, filteredRegions, setC, true, true, true);
 
@@ -677,13 +695,9 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
 
                 setW.merge(filteredRegions);
 
-                toProcess.clear();
-                for (const auto &region: setW)
-                    toProcess.push_back(&region);
-
                 filteredRegions.clear();
 
-            }while (!filteredRegions.empty());
+            }while (setW != setWbar);
         }
 
         toProcess.clear();
@@ -719,7 +733,7 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
     return reachable;
 }
 
-regionSet regionSetIntersection(const regionSet &firstSet, const regionSet &secondSet)
+regionSet region::RTSArena::regionSetIntersection(const regionSet &firstSet, const regionSet &secondSet)
 {
     regionSet resultSet{};
 
@@ -736,7 +750,7 @@ regionSet regionSetIntersection(const regionSet &firstSet, const regionSet &seco
     return resultSet;
 }
 
-regionSet region::RTSArena::gammaOperator(const regionSet &setC, const std::vector<RegionPtr> &toProcess) const
+/*regionSet region::RTSArena::gammaOperator(const regionSet &setC, const std::vector<RegionPtr> &toProcess) const
 {
     regionSet validSuccessors{};
 
@@ -787,6 +801,64 @@ regionSet region::RTSArena::gammaOperator(const regionSet &setC, const std::vect
                     if (delaySucc.getBounded().empty() && delaySucc.getX0().none())
                         lastReg = true;
                 }
+            }
+        }
+    }
+
+    return validSuccessors;
+}*/
+
+regionSet region::RTSArena::gammaOperator(const regionSet &setC, const std::vector<RegionPtr> &toProcess) const
+{
+    regionSet validSuccessors{};
+
+    for (const auto &regionToProcess: toProcess)
+    {
+        // Getting the current region and analyzing its outcoming transitions.
+        const Region &currentRegion = *regionToProcess;
+
+        const std::vector<transition> &currTransitions = outTransitions[currentRegion.getLocation()];
+
+        // Initializing the Boolean flag used to detect the last region to process
+        bool lastReg = false;
+
+        // Iterating transition by transition to scan all their actions
+        for (const auto &currTrans: currTransitions)
+        {
+            // Since a region may have multiple delay successors, a deque to process each delay successor is created.
+            // Since reg itself must be processed as well, it is added to delaySuccessorsToProcess.
+            std::queue<Region> delaySuccessorsToProcess{};
+            delaySuccessorsToProcess.push(currentRegion);
+
+            // Processing each delay successor according to the definition of the gamma operator as given in the paper.
+            while (!delaySuccessorsToProcess.empty())
+            {
+                const Region stateReg = delaySuccessorsToProcess.front();
+                delaySuccessorsToProcess.pop();
+
+                // Collecting every discrete successor to be later compared with all states in setC.
+                const std::vector<Region> discSuccs = stateReg.getImmediateDiscreteSuccessors({ currTrans }, clocksIndices, locationsToInt, false);
+
+                // Processing each discrete successor, checking also if its delay successor can be inserted in setC.
+                for (const auto &reg: discSuccs)
+                {
+                    // Checking whether a region that is the destination of a move must be skipped or not.
+                    if (regionToBeSkipped(reg, setC))
+                        continue;
+
+                    validSuccessors.insert(reg);
+                }
+
+                const Region delaySucc = stateReg.getImmediateDelaySuccessor(maxConstants);
+
+                if (!lastReg)
+                {
+                    delaySuccessorsToProcess.push(delaySucc);
+                }
+
+                // If an unbounded region has been reached, it must be detected. If not, this loop runs indefinitely.
+                if (delaySucc.getBounded().empty() && delaySucc.getX0().none())
+                    lastReg = true;
             }
         }
     }

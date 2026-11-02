@@ -513,7 +513,7 @@ namespace region
          * @param secondSet is the second set of the intersection operation.
          * @return the intersection between the two sets.
          */
-        [[nodiscard]] regionSet regionSetIntersection(const regionSet &firstSet, const regionSet &secondSet);
+        static regionSet regionSetIntersection(const regionSet &firstSet, const regionSet &secondSet);
 
 
         /**

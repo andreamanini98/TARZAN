@@ -387,6 +387,25 @@ if (GAMES_EXECUTABLES)
 endif ()
 
 
+# Collect all .cpp files from games_executables/production_cell_hybrid directory.
+file(GLOB GAMES_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks_games/games_executables/production_cell_hybrid/*.cpp)
+
+# Create games executables in executables/games_executables/production_cell_hybrid subdirectory.
+if (GAMES_EXECUTABLES)
+    foreach (source IN LISTS GAMES_EXECUTABLES)
+        get_filename_component(executable_name ${source} NAME_WE)
+        add_executable(${executable_name} ${source})
+
+        # Targeting the source with libraries.
+        target_link_libraries(${executable_name} PRIVATE TARZAN)
+
+        # Set output directory to executables/games_executable/production_cell_hybrid.
+        set_target_properties(${executable_name} PROPERTIES
+                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/games_executables/production_cell_hybrid)
+    endforeach ()
+endif ()
+
+
 # Add permissions to the install_library.sh script.
 execute_process(COMMAND chmod 777 ${CMAKE_CURRENT_SOURCE_DIR}/install_library.sh)
 
