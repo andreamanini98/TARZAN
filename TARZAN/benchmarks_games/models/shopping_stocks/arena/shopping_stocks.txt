@@ -1,0 +1,46 @@
+create arena shopping_stocks
+{
+    clocks
+    {
+        x, y;
+    }
+
+    actions
+    {
+        switch_on, move, start, finish, restart, wait, resume, complete, rest;
+    }
+
+    locations
+    {
+        wake_up    <player: c, <ini: T>>,
+        active   <player: c, <ini: F>>,
+        moving_i <player: c, <ini: F>>,
+        refilling  <player: c, <ini: F>>,
+        finishing   <player: c, <ini: F>>,
+        stopping <player: c, <ini: F>>,
+        moving  <player: e, <ini: F>>,
+        waiting   <player: e, <ini: F>>,
+        stuck   <player: c, <ini: F>>,
+        completed   <player: c, <ini: F>>,
+        sleep   <player: e, <ini: F>>;
+    }
+
+    transitions
+    {
+        (wake_up,   switch_on,   [],                            [x], active),
+        (active,    move,        [],                            [x], moving_i),
+        (moving_i,  start,       [(x, ==, 3)],                  [], refilling),
+        (refilling, finish,      [(x, >, 10), (x, <, 40)],      [], finishing),
+        (refilling, finish,      [(x, >=, 30)],                 [x], stopping),
+        (finishing, complete,    [(x, >=, 40), (x, <=, 50)],    [x], completed),
+        (stopping,  move,        [(x, <, 20)],                  [], moving),
+        (stopping,  move,        [(x, >, 30)],                  [], moving),
+        (stopping,  wait,        [(x, >=, 25), (x, <=, 40)],    [], waiting),
+        (moving,    restart,     [(x, >=, 15), (x, <=, 50)],    [], refilling),
+        (waiting,   resume,      [(x, >=, 40)],                 [], finishing),
+        (waiting,   resume,      [(x, >=, 40)],                 [], stuck),
+        (stuck,     resume,      [(x, >=, 10)],                 [x], stuck),
+        (completed, rest,        [(x, ==, 60)],                 [], sleep),
+        (sleep,     switch_on,   [],                            [x], active);
+    }
+}

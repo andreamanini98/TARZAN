@@ -1,0 +1,1 @@
+(([wake_up, active, moving_i, refilling, finishing, stopping, moving, waiting], []) UNTIL ([completed], [(y, <=, 45)]))
