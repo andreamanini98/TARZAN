@@ -666,11 +666,9 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
             break;
 
         if (setPhi.empty())
-            //setC.merge(validSuccessors);
             setC.insert(validSuccessors.begin(),validSuccessors.end());
         else{
             regionSet reachableSuccessors = regionSetIntersection(validSuccessors, setPhi);
-            //setC.merge(regionSetIntersection(validSuccessors, setPhi));
             setC.insert(reachableSuccessors.begin(),reachableSuccessors.end());
         }
 
