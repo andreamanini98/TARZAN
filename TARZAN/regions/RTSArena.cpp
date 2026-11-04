@@ -1732,6 +1732,20 @@ void region::RTSArena::strategyGraphToDot(const std::string &path, const cltloc:
 }
 
 
+void region::RTSArena::strategyGraphToDot(const std::string &path, const cltloc::ast::generalCLTLocFormula &formula, const exploration_approach &reachabilityApproach)
+{
+    if (!computeStrategyGraph)
+        throw CannotSynthesizeStrategiesException("The parameter 'computeStrategyGraph' is set to false!");
+
+    const auto &indicesToClocks = getIndicesToClocksMap();
+
+    if (solveTimedCLTLocGame(formula, reachabilityApproach))
+        return strategyGraph->to_dot(path, indicesToClocks, intToLocations, locationsToPlayers);
+
+    throw std::runtime_error("No winning controller strategy exists, hence the strategy graph cannot be computed!");
+}
+
+
 void region::RTSArena::strategyGraphToDot(const std::string &path, const cltloc::ast::conjunctionOfFormulae &conjunction)
 {
     if (!computeStrategyGraph)

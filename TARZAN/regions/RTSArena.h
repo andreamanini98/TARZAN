@@ -627,6 +627,19 @@ namespace region
 
         /**
          * @brief Prints an entire strategy graph to .dot format.
+         * In this case, it is also possible to specify the exploration approach for the given TCG.
+         *
+         * @param path the path in which the .dot file will be generated. The path must end with file_name.dot to properly save such a file.
+         * @param formula the general CLTLoc formula to process.
+         *
+         * @throws std::runtime_error if a winning controller strategy does not exist (hence, the strategy graph cannot be saved to file).
+         * @throws CannotSynthesizeStrategiesException if strategies cannot be synthesized.
+         */
+        void strategyGraphToDot(const std::string &path, const cltloc::ast::generalCLTLocFormula &formula, const exploration_approach &reachabilityApproach);
+
+
+        /**
+         * @brief Prints an entire strategy graph to .dot format.
          *
          * @param path the path in which the .dot file will be generated. The path must end with file_name.dot to properly save such a file.
          * @param conjunction the conjunction of general CLTLoc formulae to process.
