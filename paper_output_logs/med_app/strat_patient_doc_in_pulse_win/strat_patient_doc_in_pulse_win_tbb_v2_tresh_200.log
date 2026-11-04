@@ -1,0 +1,100 @@
+=== ITERATION 1 / 10 ===
+Mode:          TBB
+Total time:              729418 microseconds
+Total iterations:       19
+Total starting regions: 806
+Total stored regions:   1
+VICTORY
+Total time including region generation: 733368 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 2 / 10 ===
+Mode:          TBB
+Total time:              705851 microseconds
+Total iterations:       19
+Total starting regions: 806
+Total stored regions:   1
+VICTORY
+Total time including region generation: 710218 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 3 / 10 ===
+Mode:          TBB
+Total time:              709417 microseconds
+Total iterations:       19
+Total starting regions: 806
+Total stored regions:   1
+VICTORY
+Total time including region generation: 713764 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 4 / 10 ===
+Mode:          TBB
+Total time:              712954 microseconds
+Total iterations:       19
+Total starting regions: 806
+Total stored regions:   1
+VICTORY
+Total time including region generation: 716303 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 5 / 10 ===
+Mode:          TBB
+Total time:              711076 microseconds
+Total iterations:       19
+Total starting regions: 806
+Total stored regions:   1
+VICTORY
+Total time including region generation: 714051 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 6 / 10 ===
+Mode:          TBB
+Total time:              712822 microseconds
+Total iterations:       19
+Total starting regions: 806
+Total stored regions:   1
+VICTORY
+Total time including region generation: 716040 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 7 / 10 ===
+Mode:          TBB
+Total time:              719414 microseconds
+Total iterations:       19
+Total starting regions: 806
+Total stored regions:   1
+VICTORY
+Total time including region generation: 723737 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 8 / 10 ===
+Mode:          TBB
+Total time:              717988 microseconds
+Total iterations:       19
+Total starting regions: 806
+Total stored regions:   1
+VICTORY
+Total time including region generation: 721308 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 9 / 10 ===
+Mode:          TBB
+Total time:              738102 microseconds
+Total iterations:       19
+Total starting regions: 806
+Total stored regions:   1
+VICTORY
+Total time including region generation: 742486 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 10 / 10 ===
+Mode:          TBB
+Total time:              713566 microseconds
+Total iterations:       19
+Total starting regions: 806
+Total stored regions:   1
+VICTORY
+Total time including region generation: 717371 microseconds
+[EXIT CODE]: 0
+

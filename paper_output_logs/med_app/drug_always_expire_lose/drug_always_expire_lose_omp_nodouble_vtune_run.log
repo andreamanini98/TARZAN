@@ -1,0 +1,62 @@
+Elapsed Time: 0.239s
+    Paused Time: 0s
+Effective CPU Utilization: 7.4% (1.485 out of 20 logical CPUs)
+ | The metric value is low, which may signal a poor logical CPU cores
+ | utilization caused by load imbalance, threading runtime overhead, contended
+ | synchronization, or thread/process underutilization. Explore sub-metrics to
+ | estimate the efficiency of MPI and OpenMP parallelism or run the Locks and
+ | Waits analysis to identify parallel bottlenecks for other parallel runtimes.
+ |
+    OpenMP Analysis. Collection Time: 0.239
+        Serial Time (outside parallel regions): 0.046s (19.2%)
+         | Serial Time of your application is high. It directly impacts
+         | application Elapsed Time and scalability. Explore options for
+         | parallelization, algorithm or microarchitecture tuning of the serial
+         | part of the application.
+         |
+
+            Top Serial Hotspots (outside parallel regions)
+            Function                                                                                                                                                        Module                       Serial CPU Time
+            --------------------------------------------------------------------------------------------------------------------------------------------------------------  ---------------------------  ---------------
+            omp_get_max_threads                                                                                                                                             libomp.so                             0.010s
+            std::vector<std::vector<region::Region, std::allocator<region::Region>>, std::allocator<std::vector<region::Region, std::allocator<region::Region>>>>::~vector  drug_always_expire_lose_omp           0.010s
+            GOMP_parallel                                                                                                                                                   libomp.so                             0.010s
+    Total Thread Count: 20
+        Thread Oversubscription: 0s (0.0% of CPU Time)
+    Wait Time with poor CPU Utilization: 3.742s (100.0% of Wait Time)
+
+        Top Waiting Objects
+        Sync Object                                                                                       Wait Time with poor CPU Utilization  (% from Object Wait Time)(%)  Wait Count
+        ------------------------------------------------------------------------------------------------  -----------------------------------  ----------------------------  ----------
+        Condition Variable                                                                                                             1.881s                        100.0%          66
+        Condition Variable 0xba6cc681                                                                                                  1.355s                        100.0%          52
+        Condition Variable 0xf8def50e                                                                                                  0.324s                        100.0%          23
+        Condition Variable 0x87697afa                                                                                                  0.182s                        100.0%          15
+        Stream ../../../TARZAN/benchmarks_games/models/med_app/winning_conditions/safety0.txt 0x0b3e3bac                               0.000s                        100.0%           1
+        Stream ../../../TARZAN/benchmarks_games/models/med_app/arena/med_app.txt 0x6dda6059                                            0.000s                        100.0%           1
+    Spin and Overhead Time: 0.010s (2.8% of CPU Time)
+
+        Top Functions with Spin or Overhead Time
+        Function       Module     Spin and Overhead Time  (% from CPU Time)(%)
+        -------------  ---------  ----------------------  --------------------
+        GOMP_parallel  libomp.so                  0.010s                  2.8%
+Collection and Platform Info
+    Application Command Line: ./drug_always_expire_lose_omp 
+    Operating System: 7.2.11-arch1-1 DISTRIB_ID="Arch" DISTRIB_RELEASE="rolling" DISTRIB_DESCRIPTION="Arch Linux"
+    Computer Name: sbro
+    Result Size: 4.8 MB 
+    Collection start time: 18:30:30 26/10/2026 UTC
+    Collection stop time: 18:30:30 26/10/2026 UTC
+    Collector Type: User-mode sampling and tracing
+    CPU
+        Name: Intel(R) microarchitecture code named Raptorlake-P
+        Frequency: 2.995 GHz
+        Logical CPU Count: 20
+        Cache Allocation Technology
+            Level 2 capability: not detected
+            Level 3 capability: not detected
+
+If you want to skip descriptions of detected performance issues in the report,
+enter: vtune -report summary -report-knob show-issues=false -r <my_result_dir>.
+Alternatively, you may view the report in the csv format: vtune -report
+<report_name> -format=csv.

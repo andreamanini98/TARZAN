@@ -1,0 +1,158 @@
+<style type="text/css">
+#T_1c42d table {
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  width: 100%;
+}
+#T_1c42d th {
+  background-color: #263238;
+  color: white;
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #455a64;
+}
+#T_1c42d td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #cfd8dc;
+}
+#T_1c42d caption {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+#T_1c42d_row0_col0, #T_1c42d_row1_col1, #T_1c42d_row5_col0, #T_1c42d_row6_col1, #T_1c42d_row7_col1, #T_1c42d_row8_col0, #T_1c42d_row9_col0, #T_1c42d_row13_col1, #T_1c42d_row14_col1, #T_1c42d_row15_col1 {
+  background-color: rgba(46, 125, 50, 0.25);
+  color: black;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_1c42d_row2_col0 {
+  background-color: rgba(46, 125, 50, 0.69);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_1c42d_row3_col0 {
+  background-color: rgba(46, 125, 50, 0.84);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_1c42d_row4_col0 {
+  background-color: rgba(46, 125, 50, 0.61);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_1c42d_row10_col0 {
+  background-color: rgba(46, 125, 50, 0.62);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_1c42d_row11_col0 {
+  background-color: rgba(46, 125, 50, 0.76);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_1c42d_row12_col0 {
+  background-color: rgba(46, 125, 50, 0.57);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+</style>
+<table id="T_1c42d">
+  <caption>TARZAN Benchmark Report - Model: med_app (Average Execution Time in ms — Darker Green = Greater Margin)</caption>
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_1c42d_level0_col0" class="col_heading level0 col0" >omp_v2_notresh</th>
+      <th id="T_1c42d_level0_col1" class="col_heading level0 col1" >omp_v2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_1c42d_level0_row0" class="row_heading level0 row0" >drug_always_expire_lose</th>
+      <td id="T_1c42d_row0_col0" class="data row0 col0" >194.58 ms</td>
+      <td id="T_1c42d_row0_col1" class="data row0 col1" >208.29 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row1" class="row_heading level0 row1" >int_unreachable_lose</th>
+      <td id="T_1c42d_row1_col0" class="data row1 col0" >10.15 ms</td>
+      <td id="T_1c42d_row1_col1" class="data row1 col1" >9.94 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row2" class="row_heading level0 row2" >patient_doc_after_three_int_lose</th>
+      <td id="T_1c42d_row2_col0" class="data row2 col0" >263.99 ms</td>
+      <td id="T_1c42d_row2_col1" class="data row2 col1" >491.69 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row3" class="row_heading level0 row3" >patient_doc_after_three_int_time_win</th>
+      <td id="T_1c42d_row3_col0" class="data row3 col0" >16616.07 ms</td>
+      <td id="T_1c42d_row3_col1" class="data row3 col1" >37650.91 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row4" class="row_heading level0 row4" >patient_doc_in_pulse_win</th>
+      <td id="T_1c42d_row4_col0" class="data row4 col0" >310.31 ms</td>
+      <td id="T_1c42d_row4_col1" class="data row4 col1" >522.45 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row5" class="row_heading level0 row5" >patient_no_int_no_drug_win</th>
+      <td id="T_1c42d_row5_col0" class="data row5 col0" >158.48 ms</td>
+      <td id="T_1c42d_row5_col1" class="data row5 col1" >160.91 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row6" class="row_heading level0 row6" >single_patient_time_win</th>
+      <td id="T_1c42d_row6_col0" class="data row6 col0" >39861.39 ms</td>
+      <td id="T_1c42d_row6_col1" class="data row6 col1" >39717.88 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row7" class="row_heading level0 row7" >single_patient_win</th>
+      <td id="T_1c42d_row7_col0" class="data row7 col0" >382.44 ms</td>
+      <td id="T_1c42d_row7_col1" class="data row7 col1" >380.16 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row8" class="row_heading level0 row8" >strat_drug_always_expire_lose</th>
+      <td id="T_1c42d_row8_col0" class="data row8 col0" >195.51 ms</td>
+      <td id="T_1c42d_row8_col1" class="data row8 col1" >209.84 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row9" class="row_heading level0 row9" >strat_int_unreachable_lose</th>
+      <td id="T_1c42d_row9_col0" class="data row9 col0" >7.50 ms</td>
+      <td id="T_1c42d_row9_col1" class="data row9 col1" >7.61 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row10" class="row_heading level0 row10" >strat_patient_doc_after_three_int_lose</th>
+      <td id="T_1c42d_row10_col0" class="data row10 col0" >438.08 ms</td>
+      <td id="T_1c42d_row10_col1" class="data row10 col1" >746.96 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row11" class="row_heading level0 row11" >strat_patient_doc_after_three_int_time_win</th>
+      <td id="T_1c42d_row11_col0" class="data row11 col0" >33992.34 ms</td>
+      <td id="T_1c42d_row11_col1" class="data row11 col1" >68950.03 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row12" class="row_heading level0 row12" >strat_patient_doc_in_pulse_win</th>
+      <td id="T_1c42d_row12_col0" class="data row12 col0" >496.60 ms</td>
+      <td id="T_1c42d_row12_col1" class="data row12 col1" >802.51 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row13" class="row_heading level0 row13" >strat_patient_no_int_no_drug_win</th>
+      <td id="T_1c42d_row13_col0" class="data row13 col0" >272.15 ms</td>
+      <td id="T_1c42d_row13_col1" class="data row13 col1" >267.12 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row14" class="row_heading level0 row14" >strat_single_patient_time_win</th>
+      <td id="T_1c42d_row14_col0" class="data row14 col0" >61140.62 ms</td>
+      <td id="T_1c42d_row14_col1" class="data row14 col1" >60806.63 ms</td>
+    </tr>
+    <tr>
+      <th id="T_1c42d_level0_row15" class="row_heading level0 row15" >strat_single_patient_win</th>
+      <td id="T_1c42d_row15_col0" class="data row15 col0" >483.97 ms</td>
+      <td id="T_1c42d_row15_col1" class="data row15 col1" >474.70 ms</td>
+    </tr>
+  </tbody>
+</table>

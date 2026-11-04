@@ -1,0 +1,8 @@
+build/
+output/
+output_logs/
+ol_old/
+venv/
+.git/
+.gitignore
+*.log

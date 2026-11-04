@@ -10,8 +10,6 @@
 #include <iostream>
 #include <numeric>
 
-
-
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -37,15 +35,16 @@ static std::mutex strategyGraphMutex;
 // #define RTSARENA_DEBUG
 #define THROW_NESTEDCLTLOC_EXCEPTION
 
-// Threshold for enabling parallel execution (derived from manual experiments).
-#define PARALLEL_THRESHOLD 400
+// Experiement 
+#define PARALLEL_THRESHOLD 0
+#define DEBUG_MEMORY 0
 
 // Total number of iterations performed by fixed point algorithms.
 #define MAX_ITERATIONS 10000
 
 #define CSV_FILENAME "pi_analysis.csv"
 
-#define DEBUG_MEMORY 0
+#define PERFORMANCE_COMPARISON 1
 #if DEBUG_MEMORY
 #include <atomic>
 struct BatchMetrics {
@@ -56,6 +55,7 @@ struct BatchMetrics {
   size_t disc_preds;
   size_t delay_preds;
   size_t queue_cycles;
+  size_t active_th;
   long long duration_us;
 };
 
@@ -66,7 +66,7 @@ inline std::vector<BatchMetrics> metrics_log;
 void dumpMetricsToCSV(const std::string& filename) {
 #if DEBUG_MEMORY
   std::ofstream file(filename);
-  file << "Step,TotalRegions,ToProcessBytes,SetGBytes,DiscPreds,DelayPreds,QueueCycles,DurationUs\n";
+  file << "Step,TotalRegions,ToProcessBytes,SetGBytes,DiscPreds,DelayPreds,QueueCycles,ActiveThreads,DurationUs\n";
   for (const auto& m : metrics_log) {
     file << m.step << ","
          << m.total_regions << ","
@@ -75,6 +75,7 @@ void dumpMetricsToCSV(const std::string& filename) {
          << m.disc_preds << ","
          << m.delay_preds << ","
          << m.queue_cycles << ","
+         << m.active_th << ","
          << m.duration_us << "\n";
   }
   std::cout << "[SUCCESS] Metrics dump saved to " << filename << std::endl;
@@ -596,10 +597,16 @@ void region::RTSArena::piFilter(const regionSet &setG,
   auto start_time = std::chrono::high_resolution_clock::now();
 #endif // DEBUG_MEMORY
 
-  // ==============================================================================
-  // MODO TBB
-  // ==============================================================================
+size_t active_th = 0;
+// ==============================================================================
+// TBB
+// ==============================================================================
 #if defined(_TBB) 
+
+#if parallelThreshold > 0
+if(totalRegions >= parallelThreshold) {
+#endif
+
   oneapi::tbb::enumerable_thread_specific<std::vector<Region>> threadLocalRegions;
 
   oneapi::tbb::parallel_for(
@@ -609,10 +616,11 @@ void region::RTSArena::piFilter(const regionSet &setG,
       std::vector<Region>& currThreadLocRegions = threadLocalRegions.local();
 
       for (size_t i = range.begin(); i != range.end(); ++i) {
-
-      processRegionLogic(*toProcess[i], currThreadLocRegions);
+        processRegionLogic(*toProcess[i], currThreadLocRegions);
       }
       }, oneapi::tbb::auto_partitioner());
+
+  active_th = threadLocalRegions.size();
 
   for (const auto& localVec : threadLocalRegions) {
     for (const auto& reg : localVec) {
@@ -620,9 +628,29 @@ void region::RTSArena::piFilter(const regionSet &setG,
     }
   }
 
-  // ==============================================================================
-  // MODO OPENMP
-  // ==============================================================================
+#if parallelThreshold > 0
+} else {
+  active_th = 1;
+
+  std::vector<std::vector<Region>> threadLocalRegions(1);
+  threadLocalRegions[0].reserve(totalRegions * 2);
+
+  for (int i = 0; i < static_cast<int>(totalRegions); i++)
+  {
+    std::vector<Region>& currThreadLocRegions = threadLocalRegions[0];
+    const Region &currentRegion = *toProcess[i];
+
+    processRegionLogic(currentRegion, currThreadLocRegions);
+  }
+
+  mergeResults(threadLocalRegions, filteredRegions);
+}
+#endif
+
+
+// ==============================================================================
+// OPENMP
+// ==============================================================================
 #elif defined(_OPENMP)
   const size_t numThreads = omp_get_max_threads();
   const size_t estimatedSize = (totalRegions / numThreads) * 2; 
@@ -632,21 +660,37 @@ void region::RTSArena::piFilter(const regionSet &setG,
     vec.reserve(estimatedSize);
   }
 
-#pragma omp parallel for if(totalRegions >= parallelThreshold) schedule(dynamic) default(shared)
+  // Vettore booleano per tracciare quali thread partecipano effettivamente all'elaborazione
+  std::vector<char> threadActiveFlags(numThreads, 0);
+
+// Applica l'if() condizionale di OpenMP solo se il valore della macro è > 0
+#if parallelThreshold > 0
+  #pragma omp parallel for if(totalRegions >= parallelThreshold) schedule(dynamic) default(shared)
+#else
+  #pragma omp parallel for schedule(dynamic) default(shared)
+#endif
   for (int i = 0; i < static_cast<int>(totalRegions); i++)
   {
-    std::vector<Region>& currThreadLocRegions = threadLocalRegions[omp_get_thread_num()];
+    const int tid = omp_get_thread_num();
+    threadActiveFlags[tid] = 1;
+
+    std::vector<Region>& currThreadLocRegions = threadLocalRegions[tid];
     const Region &currentRegion = *toProcess[i];
 
     processRegionLogic(currentRegion, currThreadLocRegions);
   }
 
+  // Conteggio thread che hanno lavorato
+  active_th = std::count(threadActiveFlags.begin(), threadActiveFlags.end(), 1);
+
   mergeResults(threadLocalRegions, filteredRegions);
 
-  // ==============================================================================
-  // MODO SEQUENZIALE
-  // ==============================================================================
+// ==============================================================================
+// SEQ
+// ==============================================================================
 #else
+  active_th = 1;
+
   std::vector<std::vector<Region>> threadLocalRegions(1);
   threadLocalRegions[0].reserve(totalRegions * 2);
 
@@ -671,14 +715,15 @@ void region::RTSArena::piFilter(const regionSet &setG,
 
   // Salva in RAM (istantaneo)
   metrics_log.push_back({
-    callCounter,                           // Usiamo callCounter come step
+    callCounter,                           
     totalRegions, 
     totalBytes_toProcess, 
     totalBytes_setG,
     batch_disc_preds.load(std::memory_order_relaxed), 
     batch_delay_preds.load(std::memory_order_relaxed), 
     batch_queue_cycles.load(std::memory_order_relaxed), 
-    duration                               // Correzione qui!
+    active_th,
+    duration
   });
 #endif // DEBUG_MEMORY
 }
@@ -1182,6 +1227,24 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
 
   const int formulaeSize = static_cast<int>(formulae.size());
 
+#if PERFORMANCE_COMPARISON
+  // run sequentially
+
+  // Storage for valid region sets. At position i, the vector will contain the regions specified by formulae[i].
+  std::vector<regionSet> formulaRegionSets{};
+
+  for (int i = 0; i < formulaeSize; i++)
+  {
+    const std::vector<regionSet> formulaRegions = getRegionsFromGeneralCLTLocFormula(formulae[i]);
+
+    if (formulaRegions.size() != 1)
+      throw std::logic_error("Wrong size of unary formula!");
+
+    formulaRegionSets.push_back(formulaRegions.at(0));
+  }
+
+#else
+
   // Storage for valid region sets. At position i, the vector will contain the regions specified by formulae[i].
 #ifdef _OPENMP
   std::vector<regionSet> formulaRegionSets(formulaeSize);
@@ -1204,12 +1267,15 @@ inline bool region::RTSArena::solveGameWithAndNextConjunction(const std::vector<
 #endif
   }
 
+#endif
+
   // Starting the timer for measuring computation.
 #ifdef _OPENMP
   const auto start = omp_get_wtime();
 #else
   const auto start = std::chrono::high_resolution_clock::now();
 #endif
+
 
   // Defining the starting set of states used during computation (it corresponds to the set in the back of formulaRegionSets).
   regionSet setG = std::move(formulaRegionSets.back());

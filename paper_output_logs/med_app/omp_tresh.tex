@@ -1,0 +1,27 @@
+\begin{table}[htbp]
+\centering
+\caption{TARZAN Benchmark Report - Model: \texttt{med\_app} (Average Execution Time in ms)}
+\label{tab:med_app_benchmark}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Test / Mode} & \textbf{omp\_v2\_notresh} & \textbf{omp\_v2\_tresh\_100} & \textbf{omp\_v2\_tresh\_200} & \textbf{omp\_v2} \\
+\midrule
+\texttt{drug\_always\_expire\_lose} & 194.58 & \textbf{193.99} & 197.07 & 208.29 \\
+\texttt{int\_unreachable\_lose} & 10.15 & 9.98 & 12.02 & \textbf{9.94} \\
+\texttt{patient\_doc\_after\_three\_int\_lose} & \textbf{263.99} & 374.99 & 450.88 & 491.69 \\
+\texttt{patient\_doc\_after\_three\_int\_time\_win} & \textbf{16616.07} & 20353.98 & 37863.92 & 37650.91 \\
+\texttt{patient\_doc\_in\_pulse\_win} & \textbf{310.31} & 408.92 & 477.15 & 522.45 \\
+\texttt{patient\_no\_int\_no\_drug\_win} & \textbf{158.48} & 162.44 & 162.64 & 160.91 \\
+\texttt{single\_patient\_time\_win} & 39861.39 & \textbf{39585.84} & 40218.95 & 39717.88 \\
+\texttt{single\_patient\_win} & 382.44 & \textbf{377.68} & 386.65 & 380.16 \\
+\texttt{strat\_drug\_always\_expire\_lose} & 195.51 & 196.39 & \textbf{194.37} & 209.84 \\
+\texttt{strat\_int\_unreachable\_lose} & \textbf{7.50} & 7.61 & 7.56 & 7.61 \\
+\texttt{strat\_patient\_doc\_after\_three\_int\_lose} & \textbf{438.08} & 580.01 & 684.08 & 746.96 \\
+\texttt{strat\_patient\_doc\_after\_three\_int\_time\_win} & \textbf{33992.34} & 39003.34 & 69045.40 & 68950.03 \\
+\texttt{strat\_patient\_doc\_in\_pulse\_win} & \textbf{496.60} & 638.14 & 735.89 & 802.51 \\
+\texttt{strat\_patient\_no\_int\_no\_drug\_win} & 272.15 & \textbf{266.99} & 269.85 & 267.12 \\
+\texttt{strat\_single\_patient\_time\_win} & 61140.62 & \textbf{60245.82} & 61364.19 & 60806.63 \\
+\texttt{strat\_single\_patient\_win} & 483.97 & 481.86 & 485.74 & \textbf{474.70} \\
+\bottomrule
+\end{tabular}
+\end{table}

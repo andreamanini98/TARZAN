@@ -1,0 +1,71 @@
+% Require in LaTeX preamble: \usepackage{pgfplots}, \usepackage{tikz}
+\begin{figure*}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \pgfplotsset{every axis label/.append style={font=\large}, every tick label/.append style={font=\large}, title style={font=\Large\bfseries}}
+    % Panel 1: Duration per Step
+    \begin{axis}[
+      name=ax1,
+      width=0.95\textwidth, height=4.8cm,
+      title={Step-by-Step Deep Dive --- Test: \texttt{strat\_pc\_G\_win} (Execution Duration)},
+      ylabel={Duration (\mu s)},
+      grid=major, grid style={dashed,gray!30},
+      legend pos=north west, legend style={font=\small}
+    ]
+      \addplot[very thick, color=orange!80!black, mark=*] coordinates {(1, 813) (2, 277) (3, 284)};
+      \addlegendentry{TBB}
+      \addplot[very thick, color=blue!70!black, mark=*] coordinates {(1, 5965) (2, 232) (3, 288)};
+      \addlegendentry{OMP}
+      \addplot[very thick, color=gray!80!black, mark=*] coordinates {(1, 841) (2, 728) (3, 794)};
+      \addlegendentry{SEQ}
+    \end{axis}
+    % Panel 2: Active Threads per Step
+    \begin{axis}[
+      name=ax2, at={(ax1.below min energy point)}, anchor=above north point, yshift=-1.4cm,
+      width=0.95\textwidth, height=4.5cm,
+      title={2. Active Threads per Step},
+      ylabel={Active Threads},
+      grid=major, grid style={dashed,gray!30},
+      legend pos=north west, legend style={font=\small}
+    ]
+      \addplot[very thick, color=orange!80!black, mark=square*] coordinates {(1, 7) (2, 13) (3, 12)};
+      \addlegendentry{TBB}
+      \addplot[very thick, color=blue!70!black, mark=square*] coordinates {(1, 17) (2, 14) (3, 13)};
+      \addlegendentry{OMP}
+      \addplot[very thick, color=gray!80!black, mark=square*] coordinates {(1, 1) (2, 1) (3, 1)};
+      \addlegendentry{SEQ}
+    \end{axis}
+    % Panel 3: Workload Composition Stacked Area
+    \begin{axis}[
+      name=ax3, at={(ax2.below min energy point)}, anchor=above north point, yshift=-1.4cm,
+      width=0.95\textwidth, height=4.8cm,
+      title={3. Workload Composition per Step},
+      ylabel={Number of Regions},
+      grid=major, grid style={dashed,gray!30},
+      legend pos=north west, legend style={font=\small}
+    ]
+      \addplot[stack plots=y, area legend, fill=blue!40, draw=blue!70!black] coordinates {(1.0, 180.0) (2.0, 14.0) (3.0, 14.0)} \closedcycle;
+      \addlegendentry{Initial Regions (ToProcess)}
+      \addplot[stack plots=y, area legend, fill=green!40, draw=green!70!black] coordinates {(1.0, 268.0) (2.0, 102.0) (3.0, 102.0)} \closedcycle;
+      \addlegendentry{Discrete Predecessors}
+      \addplot[stack plots=y, area legend, fill=red!40, draw=red!70!black] coordinates {(1.0, 808.0) (2.0, 642.0) (3.0, 642.0)} \closedcycle;
+      \addlegendentry{Delay Predecessors}
+    \end{axis}
+    % Panel 4: Memory Sizes
+    \begin{axis}[
+      name=ax4, at={(ax3.below min energy point)}, anchor=above north point, yshift=-1.4cm,
+      width=0.95\textwidth, height=4.5cm,
+      title={4. Memory Footprint per Step},
+      xlabel={Batch Step (piFilter Call)}, ylabel={Bytes},
+      grid=major, grid style={dashed,gray!30},
+      legend pos=north west, legend style={font=\small}
+    ]
+      \addplot[very thick, color=purple!80!black, mark=triangle*] coordinates {(1.0, 49008.0) (2.0, 3768.0) (3.0, 3768.0)};
+      \addlegendentry{ToProcess Bytes}
+      \addplot[very thick, color=teal!80!black, mark=diamond*] coordinates {(1.0, 53432.0) (2.0, 5536.0) (3.0, 5536.0)};
+      \addlegendentry{SetG Bytes}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Step-by-step metrics timeline deep dive for test \texttt{strat\_pc\_G\_win}.}
+  \label{fig:timeline_strat_pc_g_win}
+\end{figure*}

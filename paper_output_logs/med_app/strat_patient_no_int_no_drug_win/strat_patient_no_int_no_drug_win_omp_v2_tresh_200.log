@@ -1,0 +1,100 @@
+=== ITERATION 1 / 10 ===
+Mode:          OpenMP
+Total time:             245661 microseconds
+Total iterations:       2
+Total starting regions: 12294
+Total stored regions:   858
+VICTORY
+Total time including region generation: 273064 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 2 / 10 ===
+Mode:          OpenMP
+Total time:             248321 microseconds
+Total iterations:       2
+Total starting regions: 12294
+Total stored regions:   858
+VICTORY
+Total time including region generation: 270916 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 3 / 10 ===
+Mode:          OpenMP
+Total time:             252278 microseconds
+Total iterations:       2
+Total starting regions: 12294
+Total stored regions:   858
+VICTORY
+Total time including region generation: 274677 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 4 / 10 ===
+Mode:          OpenMP
+Total time:             242304 microseconds
+Total iterations:       2
+Total starting regions: 12294
+Total stored regions:   858
+VICTORY
+Total time including region generation: 265731 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 5 / 10 ===
+Mode:          OpenMP
+Total time:             238564 microseconds
+Total iterations:       2
+Total starting regions: 12294
+Total stored regions:   858
+VICTORY
+Total time including region generation: 261550 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 6 / 10 ===
+Mode:          OpenMP
+Total time:             247259 microseconds
+Total iterations:       2
+Total starting regions: 12294
+Total stored regions:   858
+VICTORY
+Total time including region generation: 271036 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 7 / 10 ===
+Mode:          OpenMP
+Total time:             246949 microseconds
+Total iterations:       2
+Total starting regions: 12294
+Total stored regions:   858
+VICTORY
+Total time including region generation: 274957 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 8 / 10 ===
+Mode:          OpenMP
+Total time:             237818 microseconds
+Total iterations:       2
+Total starting regions: 12294
+Total stored regions:   858
+VICTORY
+Total time including region generation: 260992 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 9 / 10 ===
+Mode:          OpenMP
+Total time:             240342 microseconds
+Total iterations:       2
+Total starting regions: 12294
+Total stored regions:   858
+VICTORY
+Total time including region generation: 263231 microseconds
+[EXIT CODE]: 0
+
+=== ITERATION 10 / 10 ===
+Mode:          OpenMP
+Total time:             258949 microseconds
+Total iterations:       2
+Total starting regions: 12294
+Total stored regions:   858
+VICTORY
+Total time including region generation: 282373 microseconds
+[EXIT CODE]: 0
+

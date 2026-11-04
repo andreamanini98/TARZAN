@@ -8,6 +8,7 @@
 /doc/
 /build/
 /executables/
+/output_logs/
 
 # Compiled object files.
 *.o

@@ -1,0 +1,140 @@
+=== ITERATION 1 / 10 ===
+Mode:          TBB
+Total time:              1700 microseconds
+Total iterations:        2
+Total starting regions:  214
+Total regions in setPhi: 7936
+Total stored regions:    242
+LOSE
+Total time including region generation: 15517 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 1257704 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 2 / 10 ===
+Mode:          TBB
+Total time:              1392 microseconds
+Total iterations:        2
+Total starting regions:  214
+Total regions in setPhi: 7936
+Total stored regions:    242
+LOSE
+Total time including region generation: 15075 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 1257732 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 3 / 10 ===
+Mode:          TBB
+Total time:              1674 microseconds
+Total iterations:        2
+Total starting regions:  214
+Total regions in setPhi: 7936
+Total stored regions:    242
+LOSE
+Total time including region generation: 18419 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 1257760 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 4 / 10 ===
+Mode:          TBB
+Total time:              1711 microseconds
+Total iterations:        2
+Total starting regions:  214
+Total regions in setPhi: 7936
+Total stored regions:    242
+LOSE
+Total time including region generation: 17842 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 1257818 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 5 / 10 ===
+Mode:          TBB
+Total time:              1616 microseconds
+Total iterations:        2
+Total starting regions:  214
+Total regions in setPhi: 7936
+Total stored regions:    242
+LOSE
+Total time including region generation: 16605 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 1257846 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 6 / 10 ===
+Mode:          TBB
+Total time:              1719 microseconds
+Total iterations:        2
+Total starting regions:  214
+Total regions in setPhi: 7936
+Total stored regions:    242
+LOSE
+Total time including region generation: 17586 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 1257902 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 7 / 10 ===
+Mode:          TBB
+Total time:              1488 microseconds
+Total iterations:        2
+Total starting regions:  214
+Total regions in setPhi: 7936
+Total stored regions:    242
+LOSE
+Total time including region generation: 17554 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 1257931 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 8 / 10 ===
+Mode:          TBB
+Total time:              1844 microseconds
+Total iterations:        2
+Total starting regions:  214
+Total regions in setPhi: 7936
+Total stored regions:    242
+LOSE
+Total time including region generation: 16008 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 1257960 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 9 / 10 ===
+Mode:          TBB
+Total time:              1439 microseconds
+Total iterations:        2
+Total starting regions:  214
+Total regions in setPhi: 7936
+Total stored regions:    242
+LOSE
+Total time including region generation: 15246 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 1257987 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 10 / 10 ===
+Mode:          TBB
+Total time:              1562 microseconds
+Total iterations:        2
+Total starting regions:  214
+Total regions in setPhi: 7936
+Total stored regions:    242
+LOSE
+Total time including region generation: 16937 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 1258015 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+

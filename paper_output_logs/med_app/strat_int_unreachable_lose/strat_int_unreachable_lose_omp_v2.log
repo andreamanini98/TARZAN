@@ -1,0 +1,140 @@
+=== ITERATION 1 / 10 ===
+Mode:          OpenMP
+Total time:              6243.94 microseconds
+Total iterations:        1
+Total starting regions:  806
+Total regions in setPhi: 0
+Total stored regions:    806
+LOSE
+Total time including region generation: 8852.96 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 902563 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 2 / 10 ===
+Mode:          OpenMP
+Total time:              5285.98 microseconds
+Total iterations:        1
+Total starting regions:  806
+Total regions in setPhi: 0
+Total stored regions:    806
+LOSE
+Total time including region generation: 7138.97 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 902590 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 3 / 10 ===
+Mode:          OpenMP
+Total time:              5970.95 microseconds
+Total iterations:        1
+Total starting regions:  806
+Total regions in setPhi: 0
+Total stored regions:    806
+LOSE
+Total time including region generation: 7787.94 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 902619 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 4 / 10 ===
+Mode:          OpenMP
+Total time:              5928.99 microseconds
+Total iterations:        1
+Total starting regions:  806
+Total regions in setPhi: 0
+Total stored regions:    806
+LOSE
+Total time including region generation: 7792 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 902648 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 5 / 10 ===
+Mode:          OpenMP
+Total time:              5809.07 microseconds
+Total iterations:        1
+Total starting regions:  806
+Total regions in setPhi: 0
+Total stored regions:    806
+LOSE
+Total time including region generation: 7532.12 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 902675 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 6 / 10 ===
+Mode:          OpenMP
+Total time:              5713.94 microseconds
+Total iterations:        1
+Total starting regions:  806
+Total regions in setPhi: 0
+Total stored regions:    806
+LOSE
+Total time including region generation: 7408.14 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 902704 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 7 / 10 ===
+Mode:          OpenMP
+Total time:              5563.97 microseconds
+Total iterations:        1
+Total starting regions:  806
+Total regions in setPhi: 0
+Total stored regions:    806
+LOSE
+Total time including region generation: 7364.99 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 902733 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 8 / 10 ===
+Mode:          OpenMP
+Total time:              5544.9 microseconds
+Total iterations:        1
+Total starting regions:  806
+Total regions in setPhi: 0
+Total stored regions:    806
+LOSE
+Total time including region generation: 7264.85 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 902760 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 9 / 10 ===
+Mode:          OpenMP
+Total time:              5820.04 microseconds
+Total iterations:        1
+Total starting regions:  806
+Total regions in setPhi: 0
+Total stored regions:    806
+LOSE
+Total time including region generation: 7673.03 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 902788 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+
+=== ITERATION 10 / 10 ===
+Mode:          OpenMP
+Total time:              5560.16 microseconds
+Total iterations:        1
+Total starting regions:  806
+Total regions in setPhi: 0
+Total stored regions:    806
+LOSE
+Total time including region generation: 7323.03 microseconds
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  No winning controller strategy exists, hence the strategy graph cannot be computed!
+./entrypoint.sh: line 205: 902817 Aborted                    (core dumped) "${cmd[@]}"
+[EXIT CODE]: 134
+

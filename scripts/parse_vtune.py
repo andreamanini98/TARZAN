@@ -24,10 +24,14 @@ def parse_vtune_log(filepath):
     with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
         content = f.read()
 
-    # 1. Total Time
-    m_time = re.search(r"Total time including region generation:\s*([0-9\.eE\+\-]+)\s*microseconds", content)
-    if m_time:
-        data["Total Time (ms)"] = round(float(m_time.group(1)) / 1000.0, 2)
+    # 1. Total Time (Cerca prima 'Elapsed Time: X.XXXs' da VTune, altrimenti fall-back su microseconds di C++)
+    m_time_vtune = re.search(r"Elapsed Time:\s*([\d\.]+)s", content)
+    if m_time_vtune:
+        data["Total Time (ms)"] = round(float(m_time_vtune.group(1)) * 1000.0, 2)
+    else:
+        m_time_cpp = re.search(r"Total time including region generation:\s*([0-9\.eE\+\-]+)\s*microseconds", content)
+        if m_time_cpp:
+            data["Total Time (ms)"] = round(float(m_time_cpp.group(1)) / 1000.0, 2)
 
     # 2. Effective CPU Utilization
     m_cpu = re.search(r"Effective CPU Utilization:\s*([\d\.]+)%\s*\(([\d\.]+)\s*out of", content)

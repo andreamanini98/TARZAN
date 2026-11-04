@@ -1,0 +1,120 @@
+=== ITERATION 1 / 10 ===
+Mode:          OpenMP
+Total time:              7761 microseconds
+Total iterations:        5
+Total starting regions:  360
+Total regions in setPhi: 0
+Total stored regions:    384
+LOSE
+Total time including region generation: 8890.15 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 2 / 10 ===
+Mode:          OpenMP
+Total time:              7328.99 microseconds
+Total iterations:        5
+Total starting regions:  360
+Total regions in setPhi: 0
+Total stored regions:    384
+LOSE
+Total time including region generation: 8221.15 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 3 / 10 ===
+Mode:          OpenMP
+Total time:              8541.11 microseconds
+Total iterations:        5
+Total starting regions:  360
+Total regions in setPhi: 0
+Total stored regions:    384
+LOSE
+Total time including region generation: 9438.04 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 4 / 10 ===
+Mode:          OpenMP
+Total time:              5567.07 microseconds
+Total iterations:        5
+Total starting regions:  360
+Total regions in setPhi: 0
+Total stored regions:    384
+LOSE
+Total time including region generation: 6657.84 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 5 / 10 ===
+Mode:          OpenMP
+Total time:              8530.14 microseconds
+Total iterations:        5
+Total starting regions:  360
+Total regions in setPhi: 0
+Total stored regions:    384
+LOSE
+Total time including region generation: 9450.91 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 6 / 10 ===
+Mode:          OpenMP
+Total time:              6150.01 microseconds
+Total iterations:        5
+Total starting regions:  360
+Total regions in setPhi: 0
+Total stored regions:    384
+LOSE
+Total time including region generation: 6824.02 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 7 / 10 ===
+Mode:          OpenMP
+Total time:              7607.94 microseconds
+Total iterations:        5
+Total starting regions:  360
+Total regions in setPhi: 0
+Total stored regions:    384
+LOSE
+Total time including region generation: 8327.01 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 8 / 10 ===
+Mode:          OpenMP
+Total time:              7606.98 microseconds
+Total iterations:        5
+Total starting regions:  360
+Total regions in setPhi: 0
+Total stored regions:    384
+LOSE
+Total time including region generation: 8646.97 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 9 / 10 ===
+Mode:          OpenMP
+Total time:              6891.01 microseconds
+Total iterations:        5
+Total starting regions:  360
+Total regions in setPhi: 0
+Total stored regions:    384
+LOSE
+Total time including region generation: 7648.94 microseconds
+----- 
+[EXIT CODE]: 0
+
+=== ITERATION 10 / 10 ===
+Mode:          OpenMP
+Total time:              8107.9 microseconds
+Total iterations:        5
+Total starting regions:  360
+Total regions in setPhi: 0
+Total stored regions:    384
+LOSE
+Total time including region generation: 8951.9 microseconds
+----- 
+[EXIT CODE]: 0
+

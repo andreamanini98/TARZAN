@@ -1,0 +1,71 @@
+% Require in LaTeX preamble: \usepackage{pgfplots}, \usepackage{tikz}
+\begin{figure*}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \pgfplotsset{every axis label/.append style={font=\large}, every tick label/.append style={font=\large}, title style={font=\Large\bfseries}}
+    % Panel 1: Duration per Step
+    \begin{axis}[
+      name=ax1,
+      width=0.95\textwidth, height=4.8cm,
+      title={Step-by-Step Deep Dive --- Test: \texttt{pc\_F\_win} (Execution Duration)},
+      ylabel={Duration (\mu s)},
+      grid=major, grid style={dashed,gray!30},
+      legend pos=north west, legend style={font=\small}
+    ]
+      \addplot[very thick, color=orange!80!black, mark=*] coordinates {(1, 826) (2, 360) (3, 500) (4, 405) (5, 386) (6, 412) (7, 388)};
+      \addlegendentry{TBB}
+      \addplot[very thick, color=gray!80!black, mark=*] coordinates {(1, 1430) (2, 2035) (3, 2459) (4, 2529) (5, 2557) (6, 2647) (7, 2703)};
+      \addlegendentry{SEQ}
+      \addplot[very thick, color=blue!70!black, mark=*] coordinates {(1, 5342) (2, 361) (3, 433) (4, 476) (5, 422) (6, 425) (7, 372)};
+      \addlegendentry{OMP}
+    \end{axis}
+    % Panel 2: Active Threads per Step
+    \begin{axis}[
+      name=ax2, at={(ax1.below min energy point)}, anchor=above north point, yshift=-1.4cm,
+      width=0.95\textwidth, height=4.5cm,
+      title={2. Active Threads per Step},
+      ylabel={Active Threads},
+      grid=major, grid style={dashed,gray!30},
+      legend pos=north west, legend style={font=\small}
+    ]
+      \addplot[very thick, color=orange!80!black, mark=square*] coordinates {(1, 20) (2, 20) (3, 20) (4, 20) (5, 20) (6, 20) (7, 20)};
+      \addlegendentry{TBB}
+      \addplot[very thick, color=gray!80!black, mark=square*] coordinates {(1, 1) (2, 1) (3, 1) (4, 1) (5, 1) (6, 1) (7, 1)};
+      \addlegendentry{SEQ}
+      \addplot[very thick, color=blue!70!black, mark=square*] coordinates {(1, 19) (2, 20) (3, 20) (4, 20) (5, 20) (6, 20) (7, 20)};
+      \addlegendentry{OMP}
+    \end{axis}
+    % Panel 3: Workload Composition Stacked Area
+    \begin{axis}[
+      name=ax3, at={(ax2.below min energy point)}, anchor=above north point, yshift=-1.4cm,
+      width=0.95\textwidth, height=4.8cm,
+      title={3. Workload Composition per Step},
+      ylabel={Number of Regions},
+      grid=major, grid style={dashed,gray!30},
+      legend pos=north west, legend style={font=\small}
+    ]
+      \addplot[stack plots=y, area legend, fill=blue!40, draw=blue!70!black] coordinates {(1.0, 440.0) (2.0, 457.0) (3.0, 468.0) (4.0, 475.0) (5.0, 480.0) (6.0, 488.0) (7.0, 491.0)} \closedcycle;
+      \addlegendentry{Initial Regions (ToProcess)}
+      \addplot[stack plots=y, area legend, fill=green!40, draw=green!70!black] coordinates {(1.0, 660.0) (2.0, 794.0) (3.0, 944.0) (4.0, 998.0) (5.0, 1008.0) (6.0, 1044.0) (7.0, 1075.0)} \closedcycle;
+      \addlegendentry{Discrete Predecessors}
+      \addplot[stack plots=y, area legend, fill=red!40, draw=red!70!black] coordinates {(1.0, 3271.0) (2.0, 4525.0) (3.0, 5319.0) (4.0, 5559.0) (5.0, 5583.0) (6.0, 5653.0) (7.0, 5684.0)} \closedcycle;
+      \addlegendentry{Delay Predecessors}
+    \end{axis}
+    % Panel 4: Memory Sizes
+    \begin{axis}[
+      name=ax4, at={(ax3.below min energy point)}, anchor=above north point, yshift=-1.4cm,
+      width=0.95\textwidth, height=4.5cm,
+      title={4. Memory Footprint per Step},
+      xlabel={Batch Step (piFilter Call)}, ylabel={Bytes},
+      grid=major, grid style={dashed,gray!30},
+      legend pos=north west, legend style={font=\small}
+    ]
+      \addplot[very thick, color=purple!80!black, mark=triangle*] coordinates {(1.0, 120208.0) (2.0, 124760.0) (3.0, 127704.0) (4.0, 129576.0) (5.0, 130912.0) (6.0, 133104.0) (7.0, 133896.0)};
+      \addlegendentry{ToProcess Bytes}
+      \addplot[very thick, color=teal!80!black, mark=diamond*] coordinates {(1.0, 130984.0) (2.0, 135808.0) (3.0, 142816.0) (4.0, 144800.0) (5.0, 146216.0) (6.0, 148536.0) (7.0, 149376.0)};
+      \addlegendentry{SetG Bytes}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Step-by-step metrics timeline deep dive for test \texttt{pc\_F\_win}.}
+  \label{fig:timeline_pc_f_win}
+\end{figure*}

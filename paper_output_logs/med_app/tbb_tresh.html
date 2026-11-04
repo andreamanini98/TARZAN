@@ -1,0 +1,192 @@
+<style type="text/css">
+#T_cbfcc table {
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  width: 100%;
+}
+#T_cbfcc th {
+  background-color: #263238;
+  color: white;
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #455a64;
+}
+#T_cbfcc td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #cfd8dc;
+}
+#T_cbfcc caption {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+#T_cbfcc_row0_col2, #T_cbfcc_row1_col2, #T_cbfcc_row5_col0, #T_cbfcc_row6_col0, #T_cbfcc_row7_col1, #T_cbfcc_row8_col2, #T_cbfcc_row9_col3, #T_cbfcc_row13_col2, #T_cbfcc_row14_col0, #T_cbfcc_row15_col2 {
+  background-color: rgba(46, 125, 50, 0.25);
+  color: black;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_cbfcc_row2_col0 {
+  background-color: rgba(46, 125, 50, 0.58);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_cbfcc_row3_col0 {
+  background-color: rgba(46, 125, 50, 0.85);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_cbfcc_row4_col0 {
+  background-color: rgba(46, 125, 50, 0.52);
+  color: black;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_cbfcc_row10_col0 {
+  background-color: rgba(46, 125, 50, 0.53);
+  color: black;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_cbfcc_row11_col0 {
+  background-color: rgba(46, 125, 50, 0.79);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+#T_cbfcc_row12_col0 {
+  background-color: rgba(46, 125, 50, 0.49);
+  color: black;
+  font-weight: bold;
+  border: 2px solid #1b5e20;
+}
+</style>
+<table id="T_cbfcc">
+  <caption>TARZAN Benchmark Report - Model: med_app (Average Execution Time in ms — Darker Green = Greater Margin)</caption>
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_cbfcc_level0_col0" class="col_heading level0 col0" >tbb_v2</th>
+      <th id="T_cbfcc_level0_col1" class="col_heading level0 col1" >tbb_v2_tresh_100</th>
+      <th id="T_cbfcc_level0_col2" class="col_heading level0 col2" >tbb_v2_tresh_200</th>
+      <th id="T_cbfcc_level0_col3" class="col_heading level0 col3" >tbb_v2_tresh_400</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_cbfcc_level0_row0" class="row_heading level0 row0" >drug_always_expire_lose</th>
+      <td id="T_cbfcc_row0_col0" class="data row0 col0" >186.17 ms</td>
+      <td id="T_cbfcc_row0_col1" class="data row0 col1" >186.71 ms</td>
+      <td id="T_cbfcc_row0_col2" class="data row0 col2" >182.12 ms</td>
+      <td id="T_cbfcc_row0_col3" class="data row0 col3" >206.32 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row1" class="row_heading level0 row1" >int_unreachable_lose</th>
+      <td id="T_cbfcc_row1_col0" class="data row1 col0" >4.85 ms</td>
+      <td id="T_cbfcc_row1_col1" class="data row1 col1" >4.84 ms</td>
+      <td id="T_cbfcc_row1_col2" class="data row1 col2" >4.68 ms</td>
+      <td id="T_cbfcc_row1_col3" class="data row1 col3" >6.44 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row2" class="row_heading level0 row2" >patient_doc_after_three_int_lose</th>
+      <td id="T_cbfcc_row2_col0" class="data row2 col0" >265.59 ms</td>
+      <td id="T_cbfcc_row2_col1" class="data row2 col1" >443.74 ms</td>
+      <td id="T_cbfcc_row2_col2" class="data row2 col2" >434.55 ms</td>
+      <td id="T_cbfcc_row2_col3" class="data row2 col3" >497.30 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row3" class="row_heading level0 row3" >patient_doc_after_three_int_time_win</th>
+      <td id="T_cbfcc_row3_col0" class="data row3 col0" >16567.36 ms</td>
+      <td id="T_cbfcc_row3_col1" class="data row3 col1" >38256.35 ms</td>
+      <td id="T_cbfcc_row3_col2" class="data row3 col2" >38105.45 ms</td>
+      <td id="T_cbfcc_row3_col3" class="data row3 col3" >38560.56 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row4" class="row_heading level0 row4" >patient_doc_in_pulse_win</th>
+      <td id="T_cbfcc_row4_col0" class="data row4 col0" >307.71 ms</td>
+      <td id="T_cbfcc_row4_col1" class="data row4 col1" >470.52 ms</td>
+      <td id="T_cbfcc_row4_col2" class="data row4 col2" >470.62 ms</td>
+      <td id="T_cbfcc_row4_col3" class="data row4 col3" >521.05 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row5" class="row_heading level0 row5" >patient_no_int_no_drug_win</th>
+      <td id="T_cbfcc_row5_col0" class="data row5 col0" >152.22 ms</td>
+      <td id="T_cbfcc_row5_col1" class="data row5 col1" >153.37 ms</td>
+      <td id="T_cbfcc_row5_col2" class="data row5 col2" >154.12 ms</td>
+      <td id="T_cbfcc_row5_col3" class="data row5 col3" >157.23 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row6" class="row_heading level0 row6" >single_patient_time_win</th>
+      <td id="T_cbfcc_row6_col0" class="data row6 col0" >43610.03 ms</td>
+      <td id="T_cbfcc_row6_col1" class="data row6 col1" >44235.81 ms</td>
+      <td id="T_cbfcc_row6_col2" class="data row6 col2" >44110.22 ms</td>
+      <td id="T_cbfcc_row6_col3" class="data row6 col3" >44925.45 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row7" class="row_heading level0 row7" >single_patient_win</th>
+      <td id="T_cbfcc_row7_col0" class="data row7 col0" >388.16 ms</td>
+      <td id="T_cbfcc_row7_col1" class="data row7 col1" >387.47 ms</td>
+      <td id="T_cbfcc_row7_col2" class="data row7 col2" >388.62 ms</td>
+      <td id="T_cbfcc_row7_col3" class="data row7 col3" >393.57 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row8" class="row_heading level0 row8" >strat_drug_always_expire_lose</th>
+      <td id="T_cbfcc_row8_col0" class="data row8 col0" >189.93 ms</td>
+      <td id="T_cbfcc_row8_col1" class="data row8 col1" >188.83 ms</td>
+      <td id="T_cbfcc_row8_col2" class="data row8 col2" >187.57 ms</td>
+      <td id="T_cbfcc_row8_col3" class="data row8 col3" >206.54 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row9" class="row_heading level0 row9" >strat_int_unreachable_lose</th>
+      <td id="T_cbfcc_row9_col0" class="data row9 col0" >3.14 ms</td>
+      <td id="T_cbfcc_row9_col1" class="data row9 col1" >3.28 ms</td>
+      <td id="T_cbfcc_row9_col2" class="data row9 col2" >3.25 ms</td>
+      <td id="T_cbfcc_row9_col3" class="data row9 col3" >3.12 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row10" class="row_heading level0 row10" >strat_patient_doc_after_three_int_lose</th>
+      <td id="T_cbfcc_row10_col0" class="data row10 col0" >428.73 ms</td>
+      <td id="T_cbfcc_row10_col1" class="data row10 col1" >671.04 ms</td>
+      <td id="T_cbfcc_row10_col2" class="data row10 col2" >661.12 ms</td>
+      <td id="T_cbfcc_row10_col3" class="data row10 col3" >744.58 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row11" class="row_heading level0 row11" >strat_patient_doc_after_three_int_time_win</th>
+      <td id="T_cbfcc_row11_col0" class="data row11 col0" >30602.30 ms</td>
+      <td id="T_cbfcc_row11_col1" class="data row11 col1" >64823.01 ms</td>
+      <td id="T_cbfcc_row11_col2" class="data row11 col2" >64801.72 ms</td>
+      <td id="T_cbfcc_row11_col3" class="data row11 col3" >65874.71 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row12" class="row_heading level0 row12" >strat_patient_doc_in_pulse_win</th>
+      <td id="T_cbfcc_row12_col0" class="data row12 col0" >486.60 ms</td>
+      <td id="T_cbfcc_row12_col1" class="data row12 col1" >725.79 ms</td>
+      <td id="T_cbfcc_row12_col2" class="data row12 col2" >720.86 ms</td>
+      <td id="T_cbfcc_row12_col3" class="data row12 col3" >796.58 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row13" class="row_heading level0 row13" >strat_patient_no_int_no_drug_win</th>
+      <td id="T_cbfcc_row13_col0" class="data row13 col0" >262.67 ms</td>
+      <td id="T_cbfcc_row13_col1" class="data row13 col1" >262.68 ms</td>
+      <td id="T_cbfcc_row13_col2" class="data row13 col2" >262.05 ms</td>
+      <td id="T_cbfcc_row13_col3" class="data row13 col3" >264.46 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row14" class="row_heading level0 row14" >strat_single_patient_time_win</th>
+      <td id="T_cbfcc_row14_col0" class="data row14 col0" >64878.04 ms</td>
+      <td id="T_cbfcc_row14_col1" class="data row14 col1" >65468.42 ms</td>
+      <td id="T_cbfcc_row14_col2" class="data row14 col2" >65951.41 ms</td>
+      <td id="T_cbfcc_row14_col3" class="data row14 col3" >66258.32 ms</td>
+    </tr>
+    <tr>
+      <th id="T_cbfcc_level0_row15" class="row_heading level0 row15" >strat_single_patient_win</th>
+      <td id="T_cbfcc_row15_col0" class="data row15 col0" >475.63 ms</td>
+      <td id="T_cbfcc_row15_col1" class="data row15 col1" >474.63 ms</td>
+      <td id="T_cbfcc_row15_col2" class="data row15 col2" >474.55 ms</td>
+      <td id="T_cbfcc_row15_col3" class="data row15 col3" >483.59 ms</td>
+    </tr>
+  </tbody>
+</table>

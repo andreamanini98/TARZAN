@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>VTune Profiling Report - production_cell</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f8; color: #333; }
+h1 { text-align: center; color: #263238; margin-bottom: 30px; }
+.test-card { background: white; padding: 20px; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid #cfd8dc; }
+.test-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #263238; padding-bottom: 10px; margin-bottom: 15px; }
+.test-title { font-size: 20px; font-weight: bold; color: #263238; }
+.winner-badge { background-color: #2e7d32; color: white; padding: 6px 14px; font-weight: bold; border-radius: 20px; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th { background-color: #263238; color: white; padding: 10px; text-align: center; border: 1px solid #455a64; }
+td { padding: 8px; text-align: center; border: 1px solid #cfd8dc; color: black; }
+.best-row { background-color: rgba(46, 125, 50, 0.15); font-weight: bold; }
+</style>
+</head>
+<body>
+<h1>VTune Profiling Analysis - Model: <span style='color: #00838f;'>production_cell</span></h1>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: pc_andX_win</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (80.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>80.00</td>
+<td>3.8%</td>
+<td>0.75</td>
+<td>20</td>
+<td>0.182</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: pc_F_lose</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (76.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>76.00</td>
+<td>5.9%</td>
+<td>1.19</td>
+<td>20</td>
+<td>0.094</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: pc_F_win</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (88.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>88.00</td>
+<td>4.5%</td>
+<td>0.90</td>
+<td>20</td>
+<td>0.251</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: pc_G_lose</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (76.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>76.00</td>
+<td>4.0%</td>
+<td>0.79</td>
+<td>20</td>
+<td>0.116</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: pc_G_win</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (57.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>57.00</td>
+<td>3.5%</td>
+<td>0.71</td>
+<td>16</td>
+<td>0.037</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: pc_XU_implication</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (70.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>70.00</td>
+<td>4.3%</td>
+<td>0.86</td>
+<td>20</td>
+<td>0.067</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: pc_XU_win_f1</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (111.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>111.00</td>
+<td>22.5%</td>
+<td>4.49</td>
+<td>20</td>
+<td>0.369</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: pc_XU_win_f2</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (50.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>50.00</td>
+<td>4.0%</td>
+<td>0.80</td>
+<td>1</td>
+<td>0.002</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: strat_pc_andX_win</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (78.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>78.00</td>
+<td>3.2%</td>
+<td>0.64</td>
+<td>20</td>
+<td>0.337</td>
+<td>0.010</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: strat_pc_F_lose</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (70.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>70.00</td>
+<td>2.9%</td>
+<td>0.57</td>
+<td>20</td>
+<td>0.156</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: strat_pc_F_win</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (70.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>70.00</td>
+<td>3.6%</td>
+<td>0.71</td>
+<td>20</td>
+<td>0.166</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: strat_pc_G_lose</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (56.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>56.00</td>
+<td>3.6%</td>
+<td>0.71</td>
+<td>20</td>
+<td>0.063</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: strat_pc_G_win</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (66.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>66.00</td>
+<td>3.0%</td>
+<td>0.61</td>
+<td>20</td>
+<td>0.065</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: strat_pc_XU_implication</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (85.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>85.00</td>
+<td>3.5%</td>
+<td>0.71</td>
+<td>20</td>
+<td>0.181</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: strat_pc_XU_win_f1</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (133.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>133.00</td>
+<td>18.9%</td>
+<td>3.77</td>
+<td>20</td>
+<td>0.612</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="test-card">
+<div class="test-header">
+<div class="test-title">TEST: strat_pc_XU_win_f2</div>
+<div class="winner-badge">🏆 WINNER: TBB_V2 (45.00 ms)</div>
+</div>
+<table>
+<thead><tr>
+<th>Mode</th><th>Total Time (ms)</th><th>CPU Util (%)</th><th>CPUs Active</th><th>Threads</th><th>Wait Time (s)</th><th>Spin Time (s)</th>
+</tr></thead>
+<tbody>
+<tr class="best-row">
+<td><strong>TBB_V2</strong></td>
+<td>45.00</td>
+<td>4.4%</td>
+<td>0.88</td>
+<td>1</td>
+<td>0.002</td>
+<td>0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</body></html>

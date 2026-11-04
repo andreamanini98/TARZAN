@@ -1,0 +1,54 @@
+Elapsed Time: 0.318s
+    Paused Time: 0s
+Effective CPU Utilization: 11.0% (2.203 out of 20 logical CPUs)
+ | The metric value is low, which may signal a poor logical CPU cores
+ | utilization caused by load imbalance, threading runtime overhead, contended
+ | synchronization, or thread/process underutilization. Explore sub-metrics to
+ | estimate the efficiency of MPI and OpenMP parallelism or run the Locks and
+ | Waits analysis to identify parallel bottlenecks for other parallel runtimes.
+ |
+    OpenMP Analysis. Collection Time: 0.318
+        Serial Time (outside parallel regions): 0.039s (12.3%)
+
+            Top Serial Hotspots (outside parallel regions)
+            Function                                                                                                                                                        Module                                Serial CPU Time
+            --------------------------------------------------------------------------------------------------------------------------------------------------------------  ------------------------------------  ---------------
+            std::vector<std::vector<region::Region, std::allocator<region::Region>>, std::allocator<std::vector<region::Region, std::allocator<region::Region>>>>::~vector  patient_doc_after_three_int_lose_omp           0.010s
+    Total Thread Count: 20
+        Thread Oversubscription: 0s (0.0% of CPU Time)
+    Wait Time with poor CPU Utilization: 4.922s (100.0% of Wait Time)
+
+        Top Waiting Objects
+        Sync Object                    Wait Time with poor CPU Utilization  (% from Object Wait Time)(%)  Wait Count
+        -----------------------------  -----------------------------------  ----------------------------  ----------
+        Condition Variable                                          2.239s                        100.0%         139
+        Condition Variable 0xba6cc681                               2.002s                        100.0%         123
+        Condition Variable 0xf8def50e                               0.492s                        100.0%          60
+        Condition Variable 0xc38d7647                               0.190s                        100.0%          26
+        Stream 0xd9dd8ffd                                           0.000s                        100.0%           1
+        [Others]                                                    0.000s                        100.0%           2
+    Spin and Overhead Time: 0s (0.0% of CPU Time)
+
+        Top Functions with Spin or Overhead Time
+        Function  Module  Spin and Overhead Time  (% from CPU Time)(%)
+        --------  ------  ----------------------  --------------------
+Collection and Platform Info
+    Application Command Line: ./patient_doc_after_three_int_lose_omp 
+    Operating System: 7.2.11-arch1-1 DISTRIB_ID="Arch" DISTRIB_RELEASE="rolling" DISTRIB_DESCRIPTION="Arch Linux"
+    Computer Name: sbro
+    Result Size: 5.0 MB 
+    Collection start time: 18:31:12 26/10/2026 UTC
+    Collection stop time: 18:31:12 26/10/2026 UTC
+    Collector Type: User-mode sampling and tracing
+    CPU
+        Name: Intel(R) microarchitecture code named Raptorlake-P
+        Frequency: 2.995 GHz
+        Logical CPU Count: 20
+        Cache Allocation Technology
+            Level 2 capability: not detected
+            Level 3 capability: not detected
+
+If you want to skip descriptions of detected performance issues in the report,
+enter: vtune -report summary -report-knob show-issues=false -r <my_result_dir>.
+Alternatively, you may view the report in the csv format: vtune -report
+<report_name> -format=csv.

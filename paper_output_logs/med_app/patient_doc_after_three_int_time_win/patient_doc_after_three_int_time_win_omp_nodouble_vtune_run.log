@@ -1,0 +1,64 @@
+Elapsed Time: 17.725s
+    Paused Time: 0s
+Effective CPU Utilization: 75.5% (15.109 out of 20 logical CPUs)
+ | The metric value is low, which may signal a poor logical CPU cores
+ | utilization caused by load imbalance, threading runtime overhead, contended
+ | synchronization, or thread/process underutilization. Explore sub-metrics to
+ | estimate the efficiency of MPI and OpenMP parallelism or run the Locks and
+ | Waits analysis to identify parallel bottlenecks for other parallel runtimes.
+ |
+    OpenMP Analysis. Collection Time: 17.725
+        Serial Time (outside parallel regions): 2.639s (14.9%)
+
+            Top Serial Hotspots (outside parallel regions)
+            Function                                                                                                                                                                                                                                                                                                                                                                               Module                                    Serial CPU Time
+            -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  ----------------------------------------  ---------------
+            std::deque<boost::dynamic_bitset<unsigned long, std::allocator<unsigned long>>, std::allocator<boost::dynamic_bitset<unsigned long, std::allocator<unsigned long>>>>::deque                                                                                                                                                                                                            patient_doc_after_three_int_time_win_omp           0.491s
+            std::vector<std::vector<region::Region, std::allocator<region::Region>>, std::allocator<std::vector<region::Region, std::allocator<region::Region>>>>::~vector                                                                                                                                                                                                                         patient_doc_after_three_int_time_win_omp           0.380s
+            std::vector<std::unordered_set<region::Region, region::RegionHash, std::equal_to<region::Region>, std::allocator<region::Region>>, std::allocator<std::unordered_set<region::Region, region::RegionHash, std::equal_to<region::Region>, std::allocator<region::Region>>>>::~vector                                                                                                     patient_doc_after_three_int_time_win_omp           0.250s
+            std::_Hashtable<region::Region, region::Region, std::allocator<region::Region>, std::__detail::_Identity, std::equal_to<region::Region>, region::RegionHash, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<(bool)1, (bool)1, (bool)1>>::_M_emplace_uniq<region::Region const&>.isra.0  patient_doc_after_three_int_time_win_omp           0.239s
+            boost::hash_combine<std::vector<unsigned long, std::allocator<unsigned long>>>.isra.0                                                                                                                                                                                                                                                                                                  patient_doc_after_three_int_time_win_omp           0.150s
+            [Others]                                                                                                                                                                                                                                                                                                                                                                               N/A                                                1.070s
+        Parallel Region Time: 15.086s (85.1%)
+            Estimated Ideal Time: 13.549s (76.4%)
+            OpenMP Potential Gain: 1.537s (8.7%)
+    Total Thread Count: 20
+        Thread Oversubscription: 0s (0.0% of CPU Time)
+    Wait Time with poor CPU Utilization: 55.004s (99.1% of Wait Time)
+
+        Top Waiting Objects
+        Sync Object                                                                                         Wait Time with poor CPU Utilization  (% from Object Wait Time)(%)  Wait Count
+        --------------------------------------------------------------------------------------------------  -----------------------------------  ----------------------------  ----------
+        Condition Variable                                                                                                              34.132s                         99.0%         404
+        Condition Variable 0xba6cc681                                                                                                   20.201s                         99.2%         214
+        Condition Variable 0xa39c8fea                                                                                                    0.667s                        100.0%          44
+        Mutex 0x39900223                                                                                                                 0.004s                        100.0%           5
+        Stream ../../../TARZAN/benchmarks_games/models/med_app/winning_conditions/and_next2.txt 0x20a3b5a2                               0.000s                        100.0%           1
+        [Others]                                                                                                                         0.000s                        100.0%           2
+    Spin and Overhead Time: 0.040s (0.0% of CPU Time)
+
+        Top Functions with Spin or Overhead Time
+        Function             Module     Spin and Overhead Time  (% from CPU Time)(%)
+        -------------------  ---------  ----------------------  --------------------
+        [OpenMP dispatcher]  libomp.so                  0.020s                  0.0%
+        func@0x90d10         libomp.so                  0.020s                  0.0%
+Collection and Platform Info
+    Application Command Line: ./patient_doc_after_three_int_time_win_omp 
+    Operating System: 7.2.11-arch1-1 DISTRIB_ID="Arch" DISTRIB_RELEASE="rolling" DISTRIB_DESCRIPTION="Arch Linux"
+    Computer Name: sbro
+    Result Size: 17.2 MB 
+    Collection start time: 18:31:30 26/10/2026 UTC
+    Collection stop time: 18:31:48 26/10/2026 UTC
+    Collector Type: User-mode sampling and tracing
+    CPU
+        Name: Intel(R) microarchitecture code named Raptorlake-P
+        Frequency: 2.995 GHz
+        Logical CPU Count: 20
+        Cache Allocation Technology
+            Level 2 capability: not detected
+            Level 3 capability: not detected
+
+If you want to skip descriptions of detected performance issues in the report,
+enter: vtune -report summary -report-knob show-issues=false -r <my_result_dir>.
+Alternatively, you may view the report in the csv format: vtune -report
+<report_name> -format=csv.

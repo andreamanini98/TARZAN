@@ -1,0 +1,48 @@
+Elapsed Time: 0.387s
+    Paused Time: 0s
+Effective CPU Utilization: 22.3% (4.465 out of 20 logical CPUs)
+ | The metric value is low, which may signal a poor logical CPU cores
+ | utilization caused by load imbalance, threading runtime overhead, contended
+ | synchronization, or thread/process underutilization. Explore sub-metrics to
+ | estimate the efficiency of MPI and OpenMP parallelism or run the Locks and
+ | Waits analysis to identify parallel bottlenecks for other parallel runtimes.
+ |
+    Total Thread Count: 20
+        Thread Oversubscription: 0s (0.0% of CPU Time)
+    Wait Time with poor CPU Utilization: 3.962s (100.0% of Wait Time)
+
+        Top Waiting Objects
+        Sync Object        Wait Time with poor CPU Utilization  (% from Object Wait Time)(%)  Wait Count
+        -----------------  -----------------------------------  ----------------------------  ----------
+        Futex 0x1a78c8c8                                2.053s                        100.0%         242
+        Futex                                           1.304s                        100.0%         159
+        Mutex 0xe066e513                                0.480s                        100.0%       4,008
+        Futex 0x03b39cd0                                0.122s                        100.0%          28
+        Stream 0x569ac9b3                               0.003s                        100.0%           1
+        [Others]                                        0.001s                        100.0%          26
+    Spin and Overhead Time: 0.010s (0.6% of CPU Time)
+
+        Top Functions with Spin or Overhead Time
+        Function                          Module        Spin and Overhead Time  (% from CPU Time)(%)
+        --------------------------------  ------------  ----------------------  --------------------
+        tbb::detail::r1::prolonged_pause  libtbb.so.12                  0.010s                  0.6%
+Collection and Platform Info
+    Application Command Line: ./strat_patient_no_int_no_drug_win_tbb 
+    Operating System: 7.2.11-arch1-1 DISTRIB_ID="Arch" DISTRIB_RELEASE="rolling" DISTRIB_DESCRIPTION="Arch Linux"
+    Computer Name: sbro
+    Result Size: 7.3 MB 
+    Collection start time: 15:41:57 26/10/2026 UTC
+    Collection stop time: 15:41:58 26/10/2026 UTC
+    Collector Type: User-mode sampling and tracing
+    CPU
+        Name: Intel(R) microarchitecture code named Raptorlake-P
+        Frequency: 2.995 GHz
+        Logical CPU Count: 20
+        Cache Allocation Technology
+            Level 2 capability: not detected
+            Level 3 capability: not detected
+
+If you want to skip descriptions of detected performance issues in the report,
+enter: vtune -report summary -report-knob show-issues=false -r <my_result_dir>.
+Alternatively, you may view the report in the csv format: vtune -report
+<report_name> -format=csv.
