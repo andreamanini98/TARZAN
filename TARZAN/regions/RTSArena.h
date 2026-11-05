@@ -427,7 +427,7 @@ namespace region
                       bool skipIfSourceIsInSetG);
 
         /**
-         * @brief Computes the discrete successors which are reachable in a single step of a given set of state regions
+         * @brief Computes the discrete successors which are reachable in a single step from a given set of state regions
          * as described in the paper.
          *
          * @param setC set of state regions to be reached.

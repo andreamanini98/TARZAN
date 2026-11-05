@@ -750,64 +750,80 @@ regionSet region::RTSArena::regionSetIntersection(const regionSet &firstSet, con
     return resultSet;
 }
 
+
 regionSet region::RTSArena::gammaOperator(const regionSet &setC, const std::vector<RegionPtr> &toProcess) const
 {
-    regionSet validSuccessors{};
+    regionSet validSuccessors{}, localSuccessors{};
 
-    for (const auto &regionToProcess: toProcess)
+    #pragma omp parallel if(toProcess.size() >= PARALLEL_THRESHOLD) default(shared) private(localSuccessors)
     {
-        // Getting the current region and analyzing its outcoming transitions.
-        const Region &currentRegion = *regionToProcess;
 
-        const std::vector<transition> &currTransitions = outTransitions[currentRegion.getLocation()];
-
-        // Initializing the Boolean flag used to detect the last region to process
-        bool lastReg = false;
-
-        // Iterating transition by transition to scan all their actions
-        for (const auto &currTrans: currTransitions)
+        #pragma omp for schedule(dynamic)
+        for (int i = 0; i < static_cast<int>(toProcess.size()); i++) // NOLINT(modernize-loop-convert)
         {
-            // Since a region may have multiple delay successors, a deque to process each delay successor is created.
-            // Since reg itself must be processed as well, it is added to delaySuccessorsToProcess.
-            std::queue<Region> delaySuccessorsToProcess{};
-            delaySuccessorsToProcess.push(currentRegion);
+            // Getting the current region and analyzing its outcoming transitions.
+            const Region &currentRegion = *toProcess[i];
 
-            lastReg = false;
+            const std::vector<transition> &currTransitions = outTransitions[currentRegion.getLocation()];
 
-            // Processing each delay successor according to the definition of the gamma operator as given in the paper.
-            while (!delaySuccessorsToProcess.empty())
+            // Initializing the Boolean flag used to detect the last region to process
+            bool lastReg = false;
+
+            // Iterating transition by transition to scan all their actions
+            for (const auto &currTrans: currTransitions)
             {
-                const Region stateReg = delaySuccessorsToProcess.front();
-                delaySuccessorsToProcess.pop();
+                // Since a region may have multiple delay successors, a deque to process each delay successor is created.
+                // Since reg itself must be processed as well, it is added to delaySuccessorsToProcess.
+                std::queue<Region> delaySuccessorsToProcess{};
+                delaySuccessorsToProcess.push(currentRegion);
 
-                if (!regionToBeSkipped(stateReg, setC))
-                    validSuccessors.insert(stateReg);
+                lastReg = false;
 
-                // Collecting every discrete successor to be later compared with all states in setC.
-                const std::vector<Region> discSuccs = stateReg.getImmediateDiscreteSuccessors({ currTrans }, clocksIndices, locationsToInt, false);
-
-                // Processing each discrete successor, checking also if its delay successor can be inserted in setC.
-                for (const auto &reg: discSuccs)
+                // Processing each delay successor according to the definition of the gamma operator as given in the paper.
+                while (!delaySuccessorsToProcess.empty())
                 {
-                    // Checking whether a region that is the destination of a move must be skipped or not.
-                    if (regionToBeSkipped(reg, setC))
-                        continue;
+                    const Region stateReg = delaySuccessorsToProcess.front();
+                    delaySuccessorsToProcess.pop();
 
-                    validSuccessors.insert(reg);
+                    if (!regionToBeSkipped(stateReg, setC))
+                        localSuccessors.insert(stateReg);
+
+                    // Collecting every discrete successor to be later compared with all states in setC.
+                    const std::vector<Region> discSuccs = stateReg.getImmediateDiscreteSuccessors({ currTrans }, clocksIndices, locationsToInt, false);
+
+                    // Processing each discrete successor, checking also if its delay successor can be inserted in setC.
+                    for (const auto &reg: discSuccs)
+                    {
+                        // Checking whether a region that is the destination of a move must be skipped or not.
+                        if (regionToBeSkipped(reg, setC))
+                            continue;
+
+                        localSuccessors.insert(reg);
+                    }
+
+                    const Region delaySucc = stateReg.getImmediateDelaySuccessor(maxConstants);
+
+                    if (!lastReg)
+                    {
+                        delaySuccessorsToProcess.push(delaySucc);
+                    }
+
+                    // If an unbounded region has been reached, it must be detected. If not, this loop runs indefinitely.
+                    if (delaySucc.getBounded().empty() && delaySucc.getX0().none())
+                        lastReg = true;
                 }
-
-                const Region delaySucc = stateReg.getImmediateDelaySuccessor(maxConstants);
-
-                if (!lastReg)
-                {
-                    delaySuccessorsToProcess.push(delaySucc);
-                }
-
-                // If an unbounded region has been reached, it must be detected. If not, this loop runs indefinitely.
-                if (delaySucc.getBounded().empty() && delaySucc.getX0().none())
-                    lastReg = true;
             }
         }
+
+#ifdef _OPENMP
+        #pragma omp critical (merging)
+        {
+            validSuccessors.merge(localSuccessors);
+        }
+#else
+        validSuccessors.merge(localSuccessors);
+#endif
+
     }
 
     return validSuccessors;
