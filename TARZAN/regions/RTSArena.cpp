@@ -647,7 +647,8 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
     setW = regionSetIntersection(initialRegionsSet, setG);
 
     // Applying the victory check to detect any winning initial region earlier
-    bool alreadyReachable = std::ranges::any_of(initialRegions, [&setW](const auto &region) { return setW.contains(region); });
+    bool alreadyReachable = std::ranges::any_of(initialRegions,
+        [&setW](const auto &region) { return setW.contains(region); });
 
     // Initializing toProcess with the initial regions of setC
     toProcess.reserve(setC.size());
