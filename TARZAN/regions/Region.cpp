@@ -552,6 +552,18 @@ inline void handleConstraintOperator(const int clockIndex,
 
     // Here we directly put maxConstant + 1 when needed, as required by the algorithm in our paper.
     // See for parallelism the file ast.cpp, satisfaction of clock guards, to see how the fractional part of clocks is dealt with.
+    // TODO: notInX0 (case GT) and notFractionalPart (case LE) are set from the *merged* interval
+    //       (interval.first / interval.second), not from comparingConstant. With multiple constraints
+    //       on the same clock, this depends on their order and can wrongly discard predecessors:
+    //         - x >= 3 processed before x > 2: notInX0[x] = 3, so x = 3.0 is excluded although it
+    //           satisfies both constraints;
+    //         - x < 4 processed before x <= 5: notFractionalPart[x] = 3, so x is forced into x0 when
+    //           assigned 3, excluding valuations in (3, 4).
+    //       Possible fix: only set the flag when the current constraint is the binding bound, i.e.,
+    //         case GT: if (comparingConstant == interval.first)  notInX0[clockIndex] = comparingConstant;
+    //         case LE: if (comparingConstant == interval.second) notFractionalPart[clockIndex] = comparingConstant;
+    //       A stale value left by an earlier, looser constraint is harmless, since it lies outside the
+    //       final interval and is never generated as an integer value.
     switch (constraintOperator)
     {
         case GT:
