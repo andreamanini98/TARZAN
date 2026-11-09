@@ -2,83 +2,129 @@
 
 This artifact reproduces the experimental evaluation presented in the paper.
 
-## Hardware Requirements
-- **CPU**: x86_64 multi-core processor (benchmarked on Intel i9-13900H).
-- **RAM**: Minimum 16 GB (32 GB recommended).
-  - *Note on RAM constraints:* On systems with 16 GB of RAM and high logical thread counts (e.g., 20 threads), it is recommended to limit the Docker build parallel jobs by passing `--build-arg BUILD_JOBS=15` to prevent C++ linker out-of-memory errors during compilation.
+## Requirements
+
+- **CPU**: x86_64 or ARM64 multi-core processor (paper results were measured on an Intel i9-13900H, x86_64).
+- **RAM**: minimum 16 GB (32 GB recommended).
+- **Disk**: ~10 GB free.
+- **Software**: Docker (with BuildKit).
+
+> Timings in the paper were measured natively on x86_64. Results obtained on ARM or under emulation (QEMU) are not representative.
 
 ---
 
-## Step 1: Kick-the-tires Phase (~2 minutes)
-To verify that the container builds and runs properly:
+## Step 0: Get the Docker image
+
+### Option A: Pre-built image (recommended)
+
+Two archives are provided, one per architecture:
+
+| Architecture | File | Loaded as |
+|---|---|---|
+| x86_64 | `tarzan-artifact-x86_64.tar.gz` | `tarzan-artifact:amd64` |
+| ARM64 (e.g. Apple Silicon) | `tarzan-artifact-arm64.tar.gz` | `tarzan-artifact:arm64` |
+
+Load the archive matching your machine and tag it as `tarzan-artifact`:
 
 ```bash
-# Build the Docker image (limiting to 15 build jobs if running on 16GB RAM)
-sudo docker build -f artifact/Dockerfile --build-arg BUILD_JOBS=15 -t tarzan-artifact . 
+# x86_64
+docker load -i tarzan-artifact-x86_64.tar.gz
+docker tag tarzan-artifact:amd64 tarzan-artifact:latest
 
-# Run quick verification
-sudo docker run --rm tarzan-artifact kick-the-tires
+# ARM64
+docker load -i tarzan-artifact-arm64.tar.gz
+docker tag tarzan-artifact:arm64 tarzan-artifact:latest
+```
+
+All following commands use the `tarzan-artifact` name.
+
+### Option B: Build from source
+
+Run from the **project root** (the Dockerfile is in `artifact/`, but the build context is the root):
+
+```bash
+docker build -f artifact/Dockerfile -t tarzan-artifact .
+```
+
+The image is based on Ubuntu 24.04 and compiles Boost 1.90.0 from source, so the first build is slow (~15-30 min). Later builds reuse the cached Boost layer.
+
+On machines with 16 GB of RAM, limit parallel jobs to avoid linker out-of-memory errors:
+
+```bash
+docker build -f artifact/Dockerfile --build-arg BUILD_JOBS=15 -t tarzan-artifact .
 ```
 
 ---
 
-## Step 2: Full Reproduction (~30-60 minutes)
-To generate the complete set of experimental tables and metrics, mounting local volumes to preserve output logs on the host machine:
+## Step 1: Kick-the-tires (~1 minute)
+
+Verify that the container runs correctly:
 
 ```bash
-sudo docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact full
+docker run --rm tarzan-artifact kick-the-tires
 ```
 
-The generated LaTeX and HTML tables and aggregated summary reports will be saved directly into `./output_logs/`.
+## Step 2: Full reproduction (~60-240 minutes)
+
+Generate the complete set of tables and metrics. The output directory is mounted so results are preserved on the host:
+
+```bash
+docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact full
+```
+
+LaTeX and HTML tables and aggregated summary reports are saved in `./output_logs/`.
 
 ---
 
-## Compile-time Configuration Flags
+## Compile-time configuration flags
 
-Certain core behaviors and optimization parameters of TARZAN are controlled via C++ preprocessor macros defined at compile time in the `TARZAN/regions/RTSArena.cpp` file:
+Some behaviors are controlled by C++ macros defined in `TARZAN/regions/RTSArena.cpp`:
 
-- `PARALLEL_THRESHOLD`: Defines the minimum region batch size ($N$) required to trigger parallel loop execution.
-- `DEBUG_MEMORY`: Enables fine-grained step-by-step metric logging (active thread counts, queue cycles, and exact memory byte sizes per `piFilter` invocation). When enabled, a CSV file detailing execution metrics will be generated for every test run.
+- `PARALLEL_THRESHOLD`: minimum region batch size ($N$) required to trigger parallel loop execution.
+- `DEBUG_MEMORY`: enables fine-grained metric logging (active threads, queue cycles, exact memory sizes per `piFilter` invocation). When enabled, a CSV file with execution metrics is generated for every test run.
 
-> **Note on Re-compilation:**  
-> Modifying any of these compile-time macros in the source code or via CMake arguments requires rebuilding the C++ executable. You can trigger a rebuild inside the container:
-> 
-> ```bash
-> sudo docker build -f artifact/Dockerfile -t tarzan-artifact . 
-> ```
+Changing these macros requires rebuilding the image (Option B). The Boost layer is cached and is not recompiled.
 
 ---
 
-## Advanced Usage & Customizing `run_artifact.sh`
+## Advanced usage
 
-The coordinator wrapper script `artifact/run_artifact.sh` wraps the root entrypoint (`/tarzan/entrypoint.sh`), which supports various execution modes and options.
+`artifact/run_artifact.sh` wraps the root entrypoint `/tarzan/entrypoint.sh`, which supports the following options:
 
-### Original Entrypoint (`entrypoint.sh`) Options
 ```text
 Usage: /tarzan/entrypoint.sh <--seq|--omp|--tbb> <file_or_folder_path> [options]
 
 Modes:
-  --seq                Runs Sequential version (No OpenMP, No TBB)
-  --omp                Runs OpenMP version
-  --tbb                Runs TBB version
+  --seq                Sequential version (no OpenMP, no TBB)
+  --omp                OpenMP version
+  --tbb                TBB version
 
-Benchmark Options:
-  -r, --repeats NUM    Number of times to repeat each test (default: 1)
+Benchmark options:
+  -r, --repeats NUM    Repeat each test NUM times (default: 1)
   -s, --sleep SEC      Fixed sleep time in seconds (default: 0)
   --min-sleep SEC      Lower bound for dynamic cooldown based on run time
   --max-sleep SEC      Upper bound for dynamic cooldown based on run time
-  -f, --file-output    Save outputs to 'output_logs/<model_name>/<base_name>/<log_name>.[EXT]'
-  -t, --tag STR        Append a tag to log name (e.g., 'dynamic' -> _omp_dynamic.log)
+  -f, --file-output    Save outputs to output_logs/<model_name>/<base_name>/<log_name>.[EXT]
+  -t, --tag STR        Append a tag to the log name (e.g. 'dynamic' -> _omp_dynamic.log)
   -i, --ignore-errors  Continue batch execution on exception/crash
   -k, --skip-existing  Skip tests that already have an output log
 ```
 
-### Hot-reloading `run_artifact.sh` (Without Rebuilding)
-If you wish to modify execution logic in `run_artifact.sh` (such as tweaking benchmark parameters or mode execution), you can test changes instantly by bind-mounting the script at runtime without rebuilding the Docker container:
+### Editing `run_artifact.sh` without rebuilding
+
+Bind-mount the script at runtime:
 
 ```bash
-sudo docker run --rm \
+docker run --rm \
   -v $(pwd)/artifact/run_artifact.sh:/tarzan/artifact/run_artifact.sh \
   -v $(pwd)/output_logs:/tarzan/output_logs \
   tarzan-artifact full
 ```
+
+---
+
+## Troubleshooting
+
+- **Linker out-of-memory during build**: lower `--build-arg BUILD_JOBS=N` (e.g. 8).
+- **`exec format error`**: the loaded image does not match your CPU architecture; use the archive for your machine.
+- **`Unable to find image 'tarzan-artifact:latest'`**: you skipped the `docker tag` step after `docker load`.

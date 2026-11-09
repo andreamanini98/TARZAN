@@ -52,3 +52,6 @@ out.txt
 
 graphs-test
 test_script.sh
+
+*.tar.gz
+*.tar
