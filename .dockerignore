@@ -6,3 +6,8 @@ venv/
 .git/
 .gitignore
 *.log
+*.tar
+*.tar.gz
+paper_output_logs/
+compile_commands.json
+executables/

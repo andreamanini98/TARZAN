@@ -37,6 +37,15 @@ RUN set -eux; \
     ldconfig; \
     cd /; rm -rf /tmp/boost*
 
+RUN set -eux; \
+    for libdir in /usr/lib/x86_64-linux-gnu /usr/lib/aarch64-linux-gnu /usr/lib; do \
+        if [ -d "$libdir" ]; then \
+            find "$libdir" -name "libomp.so.*" -exec ln -sf {} "$libdir/libomp.so" \; 2>/dev/null || true; \
+        fi \
+    done; \
+    echo "/usr/local/lib" > /etc/ld.so.conf.d/usr-local.conf; \
+    ldconfig
+
 WORKDIR /tarzan
 COPY . /tarzan
 RUN chmod +x /tarzan/entrypoint.sh /tarzan/artifact/run_artifact.sh
@@ -55,5 +64,6 @@ RUN set -eux; \
 ENV ROOT_DIR=/tarzan
 ENV ENTRYPOINT=/tarzan/entrypoint.sh
 ENV GAMES_DIR=/tarzan/executables/games_executables
+ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/lib/x86_64-linux-gnu:/usr/lib/aarch64-linux-gnu:$LD_LIBRARY_PATH
 
 ENTRYPOINT ["/tarzan/artifact/run_artifact.sh"]

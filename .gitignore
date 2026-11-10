@@ -9,6 +9,7 @@
 /build/
 /executables/
 /output_logs/
+/venv/
 
 # Compiled object files.
 *.o

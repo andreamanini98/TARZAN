@@ -38,9 +38,7 @@ if [ "$MODE" = "kick-the-tires" ]; then
     echo "=================================================="
     echo " Generating aggregated reports... "
     echo "=================================================="
-    for model in "${MODELLI[@]}"; do
-      python3 "$ROOT_DIR/scripts/analyze.py" "autoclave_sterilization_system" -f both || true
-    done
+    python3 "$ROOT_DIR/scripts/analyze.py" "autoclave_sterilization_system" -f both || true
 
 
   elif [ "$MODE" = "full" ]; then

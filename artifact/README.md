@@ -76,6 +76,44 @@ LaTeX and HTML tables and aggregated summary reports are saved in `./output_logs
 
 ---
 
+## Reproduced tables
+
+The full reproduction (Step 2) generates **one table per model**. Each row is a test of the model, and the columns report the average execution time of each implementation:
+
+| Column | Description |
+|---|---|
+| `seq` | Sequential baseline (no OpenMP, no TBB) |
+| `omp` | Parallel version based on OpenMP |
+| `tbb` | Parallel version based on Intel TBB |
+
+If extra variants were run with a tag (`-t`, e.g. `omp_dynamic`, `tbb_treshold50`), they appear as additional columns after `seq`, `omp` and `tbb`.
+
+Tables are written inside each model's log folder, in both HTML (quick inspection) and LaTeX (paper-ready, `booktabs`):
+
+```text
+output_logs/<model_name>/
+├── <base_name>/<log_name>.log     # raw log of each run
+├── benchmark_summary.html         # styled table
+└── benchmark_summary.tex          # LaTeX table
+```
+
+The tables are produced by `scripts/parse_benchmark.py`. To regenerate or customize them for a model without rerunning the benchmarks:
+
+```bash
+python3 scripts/parse_benchmark.py <model_name> -f both
+python3 scripts/parse_benchmark.py <model_name> -c seq omp tbb -f latex -o my_report
+```
+
+The script also prints a summary to the terminal, with the winner and speedup for each test.
+
+### Reference tables from the paper
+
+The folder `paper_output_logs/` contains exactly the reference tables reported in the paper. After the full reproduction, compare `output_logs/<model_name>/benchmark_summary.*` with the corresponding files in `paper_output_logs/`.
+
+## Interpreting the results
+
+---
+
 ## Compile-time configuration flags
 
 Some behaviors are controlled by C++ macros defined in `TARZAN/regions/RTSArena.cpp`:
