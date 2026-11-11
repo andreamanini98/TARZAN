@@ -36,6 +36,9 @@ docker load -i tarzan-artifact-arm64.tar.gz
 docker tag tarzan-artifact:arm64 tarzan-artifact:latest
 ```
 
+> [!NOTE]
+> **macOS users:** Safari may automatically decompress the `.gz` archive after download, leaving a file named `tarzan-artifact-arm64.tar`. In that case, drop the `.gz` from the command: `docker load -i tarzan-artifact-arm64.tar`. `docker load` accepts both compressed and uncompressed archives.
+
 All following commands use the `tarzan-artifact` name.
 
 
@@ -67,6 +70,113 @@ docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact full -
 
 ---
 
+## Container modes
+
+The image entrypoint is `artifact/run_artifact.sh`. The first argument after the image name selects the mode:
+
+```text
+docker run [docker options] tarzan-artifact [mode] [args ...]
+```
+
+| Mode | Syntax | What it does |
+|---|---|---|
+| `kick-the-tires` | `kick-the-tires [flags ...]` | Quick check (default when no mode is given) |
+| `full` | `full [flags ...]` | Full reproduction of all models |
+| `paper-logs` | `paper-logs [file]` | Browse the reference data shipped in the image |
+| `rebuild` | `rebuild <threshold> [jobs] [mode [args ...]]` | Recompile with a different `PARALLEL_THRESHOLD`, then optionally run a mode |
+| _direct_ | `<--seq\|--omp\|--tbb> <path> [flags ...]` | Call `entrypoint.sh` directly |
+
+### `kick-the-tires`
+
+Runs `seq`, `omp` and `tbb` once on `autoclave_sterilization_system`, then generates its summary table. Default flags: `-f -i`.
+
+```bash
+docker run --rm tarzan-artifact kick-the-tires
+docker run --rm tarzan-artifact            # same thing
+```
+
+Mount `output_logs/` (as in Step 2) if you want to keep the logs.
+
+### `full`
+
+Runs `seq`, `omp` and `tbb` on every model (see [Models](#models)), then generates one summary table per model. Default flags: `-f -i -r 10 --min-sleep 1 --max-sleep 10`.
+
+```bash
+docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact full
+```
+
+For both `kick-the-tires` and `full`, any flag after the mode is appended to the defaults and overrides them (e.g. `full -r 3 -t mytag`). See [Advanced usage](#advanced-usage) for the list of flags.
+
+### `paper-logs`
+
+Reads `paper_output_logs/` inside the image, without running anything.
+
+```bash
+# List every CSV/PNG file
+docker run --rm tarzan-artifact paper-logs
+
+# Print a CSV as an aligned table (path relative to paper_output_logs/)
+docker run --rm tarzan-artifact paper-logs med_app/drug_always_expire_lose/metrics_drug_always_expire_lose_omp.csv
+
+# Print any other text file (e.g. a LaTeX table)
+docker run --rm tarzan-artifact paper-logs med_app/results.tex
+```
+
+To open images, copy the folder to the host as shown in [Browsing the reference data](#browsing-the-reference-data-inside-the-image).
+
+### `rebuild`
+
+Recompiles the executables with a new `PARALLEL_THRESHOLD` and then runs the given mode, if any.
+
+- `<threshold>`: non-negative integer, the minimum region batch size that triggers parallel execution.
+- `[jobs]`: number of parallel compile jobs (default: `nproc`). Lower it if the linker runs out of memory.
+- `[mode [args ...]]`: any of the modes above, with its flags.
+
+```bash
+# Threshold 50, 8 compile jobs, then the full reproduction tagged as thr50
+docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact rebuild 50 8 full -t thr50
+
+# Threshold 50, default jobs, then kick-the-tires
+docker run --rm tarzan-artifact rebuild 50 kick-the-tires
+```
+
+With `--rm` the rebuilt binaries are lost when the container exits, so chain the mode in the same command. Always pass a tag (`-t`) so the results do not overwrite the baseline; see [Compile-time configuration](#compile-time-configuration-parallel_threshold).
+
+### Direct call to `entrypoint.sh`
+
+Any first argument that is not one of the modes above is passed straight to `/tarzan/entrypoint.sh`. Use this to run one variant on one model or test folder:
+
+```bash
+docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact \
+  --tbb executables/games_executables/production_cell -f -i -r 5
+```
+
+No default flags are added in this mode, so pass `-f` to save the logs. No summary table is generated either; build it afterwards with `scripts/analyze.py` (see [Reproduced tables](#reproduced-tables)).
+
+---
+
+## Models
+
+The benchmarked models live in `executables/games_executables/` inside the image. Use these names as `<model_name>` in the commands of this README:
+
+| Model name | Run by |
+|---|---|
+| `autoclave_sterilization_system` | `kick-the-tires`, `full` |
+| `synth_reactor` | `full` |
+| `production_cell` | `full` |
+| `med_app` | `full` |
+
+To run a single model instead of all of them, call the entrypoint directly with a variant (`--seq`, `--omp` or `--tbb`) and the model path:
+
+```bash
+docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact \
+  --omp executables/games_executables/med_app -f -i -r 10
+```
+
+Repeat it for each variant you need, then regenerate the table with `python3 scripts/analyze.py med_app -f both` (see [Reproduced tables](#reproduced-tables)).
+
+---
+
 ## Reproduced tables
 
 The full reproduction (Step 2) generates **one table per model**. Each row is a test of the model, and the columns report the average execution time of each implementation:
@@ -91,8 +201,8 @@ output_logs/<model_name>/
 The tables are produced by `scripts/analyze.py`. To regenerate or customize them for a model without rerunning the benchmarks:
 
 ```bash
-python3 scripts/parse_benchmark.py <model_name> -f both
-python3 scripts/parse_benchmark.py <model_name> -c seq omp tbb -f latex -o my_report
+python3 scripts/analyze.py <model_name> -f both
+python3 scripts/analyze.py <model_name> -c seq omp tbb -f latex -o my_report
 ```
 
 The script also prints a summary to the terminal, with the winner and speedup for each test.
@@ -101,9 +211,21 @@ The script also prints a summary to the terminal, with the winner and speedup fo
 
 The folder `paper_output_logs/` contains exactly the reference tables reported in the paper. After the full reproduction, compare `output_logs/<model_name>/benchmark_summary.*` with the corresponding files in `paper_output_logs/`.
 
+How each table of the paper relates to the artifact:
+
+| Paper table | Source in `paper_output_logs/` | How to reproduce |
+|---|---|---|
+| Table 2 (execution times) | `<model_name>/results.tex` of every model, combined into one table | `full` (one `benchmark_summary.*` per model) |
+| Table 3 (threshold comparison) | — | `rebuild` with each threshold, see [Compile-time configuration](#compile-time-configuration-parallel_threshold) |
+| Table 4 (per-iteration metrics) | `<model_name>/<test>/metrics_<test>_<variant>.csv` | Not reproducible with the artifact build: precomputed only (see below) |
+
 ### Browsing the reference data inside the image
 
 `paper_output_logs/` also contains per-iteration metrics (`metrics_*.csv`) and OMP vs TBB comparison plots (`*.png`). They are shipped inside the image, so no host checkout is needed.
+
+These metrics were produced with the internal `DEBUG_MEMORY` build flag, which logs fine-grained data for every `piFilter` invocation (active threads, queue cycles, exact memory sizes). The flag is disabled in the artifact build because it slows execution; all the data it generates for the paper's experiments is already precomputed in `paper_output_logs/` and can be browsed as shown below.
+
+Table 4 of the paper reports the data of one `production_cell` test, taken from these CSV files (`paper_output_logs/production_cell/<test>/metrics_<test>_<variant>.csv`).
 
 **In the terminal** (CSV and text files):
 
@@ -128,14 +250,9 @@ open paper_output_logs/med_app/patient_doc_in_pulse_win/batch_timeline_plot.png 
 
 `docker cp` creates the files as your user, so no `sudo` is needed to edit or delete them.
 
-## Compile-time configuration flags
+## Compile-time configuration: `PARALLEL_THRESHOLD`
 
-Some behaviors are controlled by C++ macros defined in `TARZAN/regions/RTSArena.cpp`:
-
-- `PARALLEL_THRESHOLD`: minimum region batch size ($N$) required to trigger parallel loop execution.
-- `DEBUG_MEMORY`: enables fine-grained metric logging (active threads, queue cycles, exact memory sizes per `piFilter` invocation). When enabled, a CSV file with execution metrics is generated for every test run.
-
-`PARALLEL_THRESHOLD` is a CMake cache variable (default `0`), so it can be set without editing the source:
+`PARALLEL_THRESHOLD` (C++ macro in `TARZAN/regions/RTSArena.cpp`) is the minimum region batch size ($N$) required to trigger parallel loop execution. It is a CMake cache variable (default `0`), so it can be set without editing the source:
 
 ```bash
 # At image build time
@@ -150,7 +267,15 @@ docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact rebuil
 
 The `rebuild` command recompiles the executables (jobs default to `nproc`) and then runs the given mode, if any. With `--rm` the rebuilt binaries are discarded when the container exits, so chain the mode in the same command, or drop `--rm` and `docker commit` the container to keep them.
 
-Changing `DEBUG_MEMORY` requires rebuilding the image (Option B). The Boost layer is cached and is not recompiled.
+### Table 3 of the paper
+
+Table 3 compares the parallel versions under different values of `PARALLEL_THRESHOLD`. To obtain it, recompile with each threshold and rerun `full` with a different tag into the same `output_logs/` folder: each tag becomes a separate column of the model's `benchmark_summary.*`, next to the untagged baseline.
+
+```bash
+for thr in 100 200 400; do
+  docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact rebuild $thr full -t thr$thr
+done
+```
 
 ---
 
