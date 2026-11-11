@@ -79,6 +79,11 @@ set(ABSL_PROPAGATE_CXX_STD ON)
 set(ABSL_ENABLE_INSTALL ON)
 FetchContent_MakeAvailable(abseil-cpp)
 
+# Minimum region batch size required to trigger parallel loops in RTSArena.cpp.
+set(PARALLEL_THRESHOLD 0 CACHE STRING "Minimum region batch size to trigger parallel loop execution.")
+add_compile_definitions(PARALLEL_THRESHOLD=${PARALLEL_THRESHOLD})
+message(STATUS "PARALLEL_THRESHOLD = ${PARALLEL_THRESHOLD}")
+
 # Public dependencies shared across library and executables to avoid undefined symbol errors.
 set(COMMON_TARZAN_PUB_LIBS 
     Boost::headers 

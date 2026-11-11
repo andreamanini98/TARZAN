@@ -15,7 +15,7 @@ This artifact reproduces the experimental evaluation presented in the paper.
 
 ## Step 0: Get the Docker image
 
-### Option A: Pre-built image (recommended)
+### Pre-built image
 
 Two archives are provided, one per architecture:
 
@@ -38,23 +38,6 @@ docker tag tarzan-artifact:arm64 tarzan-artifact:latest
 
 All following commands use the `tarzan-artifact` name.
 
-### Option B: Build from source
-
-Run from the **project root** (the Dockerfile is in `artifact/`, but the build context is the root):
-
-```bash
-docker build -f artifact/Dockerfile -t tarzan-artifact .
-```
-
-The image is based on Ubuntu 24.04 and compiles Boost 1.90.0 from source, so the first build is slow (~15-30 min). Later builds reuse the cached Boost layer.
-
-On machines with 16 GB of RAM, limit parallel jobs to avoid linker out-of-memory errors:
-
-```bash
-docker build -f artifact/Dockerfile --build-arg BUILD_JOBS=15 -t tarzan-artifact .
-```
-
----
 
 ## Step 1: Kick-the-tires (~1 minute)
 
@@ -73,6 +56,14 @@ docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact full
 ```
 
 LaTeX and HTML tables and aggregated summary reports are saved in `./output_logs/`.
+
+### Passing extra flags to `kick-the-tires` and `full`
+
+Any flag written after the mode is forwarded to `entrypoint.sh` for every run (see [Advanced usage](#advanced-usage) for the full list). Flags given here override the defaults of the mode, e.g. `-r 3` replaces the `-r 10` of `full`:
+
+```bash
+docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact full -t mytag -r 3
+```
 
 ---
 
@@ -97,7 +88,7 @@ output_logs/<model_name>/
 └── benchmark_summary.tex          # LaTeX table
 ```
 
-The tables are produced by `scripts/parse_benchmark.py`. To regenerate or customize them for a model without rerunning the benchmarks:
+The tables are produced by `scripts/analyze.py`. To regenerate or customize them for a model without rerunning the benchmarks:
 
 ```bash
 python3 scripts/parse_benchmark.py <model_name> -f both
@@ -110,9 +101,32 @@ The script also prints a summary to the terminal, with the winner and speedup fo
 
 The folder `paper_output_logs/` contains exactly the reference tables reported in the paper. After the full reproduction, compare `output_logs/<model_name>/benchmark_summary.*` with the corresponding files in `paper_output_logs/`.
 
-## Interpreting the results
+### Browsing the reference data inside the image
 
----
+`paper_output_logs/` also contains per-iteration metrics (`metrics_*.csv`) and OMP vs TBB comparison plots (`*.png`). They are shipped inside the image, so no host checkout is needed.
+
+**In the terminal** (CSV and text files):
+
+```bash
+# List all CSV/PNG files
+docker run --rm tarzan-artifact paper-logs
+
+# Print a CSV as an aligned table (path relative to paper_output_logs/)
+docker run --rm tarzan-artifact paper-logs med_app/drug_always_expire_lose/metrics_drug_always_expire_lose_omp.csv
+```
+
+**With your own programs** (images, spreadsheets): copy the folder from the image to the host, then open the files with any viewer:
+
+```bash
+docker create --name tarzan-tmp tarzan-artifact
+docker cp tarzan-tmp:/tarzan/paper_output_logs ./paper_output_logs
+docker rm tarzan-tmp
+
+xdg-open paper_output_logs/med_app/patient_doc_in_pulse_win/batch_timeline_plot.png # Linux
+open paper_output_logs/med_app/patient_doc_in_pulse_win/batch_timeline_plot.png  # macOS
+```
+
+`docker cp` creates the files as your user, so no `sudo` is needed to edit or delete them.
 
 ## Compile-time configuration flags
 
@@ -121,7 +135,22 @@ Some behaviors are controlled by C++ macros defined in `TARZAN/regions/RTSArena.
 - `PARALLEL_THRESHOLD`: minimum region batch size ($N$) required to trigger parallel loop execution.
 - `DEBUG_MEMORY`: enables fine-grained metric logging (active threads, queue cycles, exact memory sizes per `piFilter` invocation). When enabled, a CSV file with execution metrics is generated for every test run.
 
-Changing these macros requires rebuilding the image (Option B). The Boost layer is cached and is not recompiled.
+`PARALLEL_THRESHOLD` is a CMake cache variable (default `0`), so it can be set without editing the source:
+
+```bash
+# At image build time
+docker build -f artifact/Dockerfile --build-arg PARALLEL_THRESHOLD=50 -t tarzan-artifact .
+
+# Inside an existing image: rebuild <threshold> [jobs] [mode [flags ...]]
+docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact rebuild 50 8 full -t thr50
+```
+
+> [!IMPORTANT]
+> **Always pass a tag (`-t`) when running with a non-default threshold.** Without a tag, logs are written as `<test>_seq.log`, `<test>_omp.log`, `<test>_tbb.log` and **overwrite** the results of any earlier run in `output_logs/`. With `-t thr50` they are saved as `<test>_omp_thr50.log`, etc., and appear as separate columns (`omp_thr50`, `tbb_thr50`, ...) in the summary tables, next to the untagged baseline.
+
+The `rebuild` command recompiles the executables (jobs default to `nproc`) and then runs the given mode, if any. With `--rm` the rebuilt binaries are discarded when the container exits, so chain the mode in the same command, or drop `--rm` and `docker commit` the container to keep them.
+
+Changing `DEBUG_MEMORY` requires rebuilding the image (Option B). The Boost layer is cached and is not recompiled.
 
 ---
 

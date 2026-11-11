@@ -2,6 +2,7 @@ FROM ubuntu:24.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG BUILD_JOBS=0
+ARG PARALLEL_THRESHOLD=0
 ARG BOOST_VERSION=1.92.0
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -48,7 +49,7 @@ RUN set -eux; \
 
 WORKDIR /tarzan
 COPY . /tarzan
-RUN chmod +x /tarzan/entrypoint.sh /tarzan/artifact/run_artifact.sh
+RUN chmod +x /tarzan/entrypoint.sh /tarzan/artifact/run_artifact.sh /tarzan/artifact/rebuild.sh
 
 RUN set -eux; \
     JOBS=$([ "${BUILD_JOBS}" -le 0 ] && nproc || echo "${BUILD_JOBS}"); \
@@ -58,6 +59,7 @@ RUN set -eux; \
           -DENABLE_APPIMAGE=ON \
           -DENABLE_OPTIMIZATION=ON \
           -DCMAKE_PREFIX_PATH=/usr/local \
+          -DPARALLEL_THRESHOLD="${PARALLEL_THRESHOLD}" \
           ..; \
     make -j"${JOBS}"
 

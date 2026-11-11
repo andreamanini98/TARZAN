@@ -36,7 +36,10 @@ static std::mutex strategyGraphMutex;
 #define THROW_NESTEDCLTLOC_EXCEPTION
 
 // Experiement 
+// Set via CMake: -DPARALLEL_THRESHOLD=<N>
+#ifndef PARALLEL_THRESHOLD
 #define PARALLEL_THRESHOLD 0
+#endif
 #define DEBUG_MEMORY 0
 
 // Total number of iterations performed by fixed point algorithms.
