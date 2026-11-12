@@ -9,7 +9,10 @@ This artifact reproduces the experimental evaluation presented in the paper.
 - **Disk**: ~10 GB free.
 - **Software**: Docker (with BuildKit).
 
+> [!NOTE]
 > Timings in the paper were measured natively on x86_64. Results obtained on ARM or under emulation (QEMU) are not representative.
+> Notably, the performance of parallel runtimes may vary depending on their corresponding version, as experienced in our own tests when building the images.
+> However, the results and the claims of the paper remain unaffected.
 
 ---
 
