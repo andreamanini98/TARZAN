@@ -151,7 +151,7 @@ docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact \
   --tbb executables/games_executables/production_cell -f -i -r 5
 ```
 
-No default flags are added in this mode, so pass `-f` to save the logs. No summary table is generated either; build it afterwards with `scripts/analyze.py` (see [Reproduced tables](#reproduced-tables)).
+No default flags are added in this mode, so pass `-f` to save the logs. No summary table is generated either; build it afterwards with `scripts/analyze.py` (see [Running the tools without `run_artifact.sh`](#running-the-tools-without-run_artifactsh)).
 
 ---
 
@@ -173,7 +173,7 @@ docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs tarzan-artifact \
   --omp executables/games_executables/med_app -f -i -r 10
 ```
 
-Repeat it for each variant you need, then regenerate the table with `python3 scripts/analyze.py med_app -f both` (see [Reproduced tables](#reproduced-tables)).
+Repeat it for each variant you need, then regenerate the table with `scripts/analyze.py` (see [Running the tools without `run_artifact.sh`](#running-the-tools-without-run_artifactsh)).
 
 ---
 
@@ -198,7 +198,7 @@ output_logs/<model_name>/
 └── benchmark_summary.tex          # LaTeX table
 ```
 
-The tables are produced by `scripts/analyze.py`. To regenerate or customize them for a model without rerunning the benchmarks:
+The tables are produced by `scripts/analyze.py`. To regenerate or customize them for a model without rerunning the benchmarks (inside the container, see [Running the tools without `run_artifact.sh`](#running-the-tools-without-run_artifactsh)):
 
 ```bash
 python3 scripts/analyze.py <model_name> -f both
@@ -300,6 +300,48 @@ Benchmark options:
   -t, --tag STR        Append a tag to the log name (e.g. 'dynamic' -> _omp_dynamic.log)
   -i, --ignore-errors  Continue batch execution on exception/crash
   -k, --skip-existing  Skip tests that already have an output log
+```
+
+### Running the tools without `run_artifact.sh`
+
+The image entrypoint is `run_artifact.sh`, but every tool in the image can be called directly by overriding it with Docker's `--entrypoint` flag. The working directory is `/tarzan`, so the relative paths of this README work as is. Mount `output_logs/` so that logs and tables are kept on the host.
+
+**`entrypoint.sh`** (one variant on one model or test folder):
+
+```bash
+docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs \
+  --entrypoint /tarzan/entrypoint.sh tarzan-artifact \
+  --omp executables/games_executables/med_app -f -i -r 10
+
+# Show all options
+docker run --rm --entrypoint /tarzan/entrypoint.sh tarzan-artifact --help
+```
+
+**`scripts/analyze.py`** (rebuild the tables from the logs already in `output_logs/`, without rerunning the benchmarks):
+
+```bash
+docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs \
+  --entrypoint python3 tarzan-artifact \
+  scripts/analyze.py med_app -f both
+
+docker run --rm -v $(pwd)/output_logs:/tarzan/output_logs \
+  --entrypoint python3 tarzan-artifact \
+  scripts/analyze.py med_app -c seq omp tbb -f latex -o my_report
+```
+
+**`artifact/rebuild.sh`** (recompile only, see [Compile-time configuration](#compile-time-configuration-parallel_threshold)). With `--rm` the new binaries are discarded on exit, so use it from the interactive shell below.
+
+**Interactive shell**, to chain several commands in the same container (for example, rebuild and then run without losing the new binaries):
+
+```bash
+docker run --rm -it -v $(pwd)/output_logs:/tarzan/output_logs \
+  --entrypoint bash tarzan-artifact
+
+# then, inside the container:
+artifact/rebuild.sh 50 8
+./entrypoint.sh --tbb executables/games_executables/production_cell -f -i -r 5 -t thr50
+python3 scripts/analyze.py production_cell -f both
+exit
 ```
 
 ### Editing `run_artifact.sh` without rebuilding
