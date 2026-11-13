@@ -4,6 +4,46 @@
 #include "TARZAN/headers/library.h"
 #include "TARZAN/regions/RTSArena.h"
 
+static exploration_approach getReachabilityApproach(const int argc, char* argv[])
+{
+    // Selecting the reachability approach according to the flag argument "forward_reachability=true/false"
+    exploration_approach reachabilityApproach = BACKWARD;
+
+    if (argc >= 3 && argv[3] != nullptr)
+    {
+        std::cout << "\nAdditional parameters inserted." << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
+
+    if (argc >= 2 && std::string(argv[1]) == "--forward_reachability")
+    {
+        auto param = (argv[2] != nullptr) ? std::string(argv[2]) : "error";
+
+        if (param == "true")
+        {
+            reachabilityApproach = FORWARD;
+        }
+        else
+        {
+            if (param == "false")
+                reachabilityApproach = BACKWARD;
+            else
+            {
+                std::cout << "\nReachability approach is undefined." << std::endl;
+                std::exit(EXIT_FAILURE);
+            }
+        }
+    }
+    else
+    {
+        if (argc >= 2)
+        {
+            std::cout << "\nReachability approach parameter is misspelled." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    return reachabilityApproach;
+}
 
 int main(const int argc, char* argv[])
 {
@@ -21,44 +61,7 @@ int main(const int argc, char* argv[])
     if (startingRegions.size() > 1)
         std::exit(EXIT_FAILURE);
 
-    // Selecting the reachability approach according to the flag argument "forward_reachability=true/false"
-    exploration_approach reachabilityApproach = BACKWARD;
-
-    if (argv[3] != nullptr)
-    {
-        std::cout << "\nAdditional parameters inserted." << std::endl;
-        std::exit(EXIT_FAILURE);
-    }
-
-    if (argc >= 2 && std::string(argv[1]) == "--forward_reachability")
-    {
-        auto param = (argv[2] != nullptr) ? std::string(argv[2]) : "error";
-
-        if (param == "true")
-        {
-            reachabilityApproach = FORWARD;
-        }
-        else
-        {
-            if (param == "false")
-            reachabilityApproach = BACKWARD;
-            else
-            {
-                std::cout << "\nReachability approach is undefined." << std::endl;
-                std::exit(EXIT_FAILURE);
-            }
-        }
-    }
-    else
-    {
-        if (argc >= 2)
-        {
-            std::cout << "\nReachability approach parameter is misspelled." << std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-    }
-
-    if (rts.solveTimedCLTLocGame(phi, reachabilityApproach))
+    if (rts.solveTimedCLTLocGame(phi, getReachabilityApproach(argc, argv)))
         std::cout << "-----" << std::endl;
     else
         std::cout << "----- " << std::endl;
