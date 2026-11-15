@@ -10,9 +10,12 @@ echo "Benchmark Summary for forward reachability games is running."
 echo ""
 echo ""
 
-./generate_forward_reach_benchmark.sh
-
 PROJECT_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+
+rm -rf "$PROJECT_ROOT/output/forward_reachability_benchmark"
+mkdir "$PROJECT_ROOT/output/forward_reachability_benchmark"
+
+./generate_forward_reach_benchmark.sh
 
 echo "Benchmark Summary saved in folder $PROJECT_ROOT/output/forward_reachability_benchmark!"
 echo ""
