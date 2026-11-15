@@ -4,8 +4,8 @@
 
 echo "Benchmark Summary for forward reachability games is running."
 
-./run_games_tests.sh 5 production_cell_hybrid
-./run_games_tests.sh 5 shopping_stocks
+./run_forward_reach_games_tests.sh 5 production_cell_hybrid
+./run_forward_reach_games_tests.sh 5 shopping_stocks
 
 echo ""
 echo ""

@@ -29,8 +29,6 @@ This file contains a comprehensive summary of benchmark results from a single ve
 Results are organized by:
   - Experiment
   - Sub-experiment (specific instance)
-
-Generated on: $(date)
 ===============================================================================
 
 EOF
@@ -71,7 +69,7 @@ EOF
     # Get all sub-experiments (result files) for this experiment.
     sub_experiments=()
 
-    for dir in "$TARZAN_DIR/$experiment" "$TCHECKER_DIR/$experiment" "$UPPAAL_DIR/$experiment"; do
+    for dir in "$TARZAN_DIR/$experiment"; do
         if [[ -d "$dir" ]]; then
             for result_file in "$dir"/*.txt; do
                 if [[ -f "$result_file" ]]; then
@@ -113,12 +111,14 @@ EOF
                 grep "ERROR:" "$tarzan_file" >> "$SUMMARY_FILE"
             else
                 # Extract key metrics.
-                num_regions=$(grep "Number of regions:" "$tarzan_file" | awk '{print $NF}')
+                num_regions=$(grep "Total stored regions:" "$tarzan_file" | awk '{print $NF}')
+                num_regions_start=$(grep "Total starting regions:" "$tarzan_file" | awk '{print $NF}')
+                num_regions_=$(grep "Total stored regions:" "$tarzan_file" | awk '{print $NF}')
                 total_time=$(grep "Total time" "$tarzan_file" | awk '{print $(NF-1), $NF}')
-                goal_status=$(grep "Goal status:" "$tarzan_file" | awk '{print $NF}')
+                goal_status=$(grep -E '(VICTORY|LOSE)' "$tarzan_file" | awk '{print $NF}')
                 peak_memory_mb=$(grep "Peak Memory (RSS):" "$tarzan_file" | awk '{print $4, $5}')
                 peak_memory_bytes=$(grep "Peak Memory (bytes):" "$tarzan_file" | awk '{print $NF}')
-                exec_time=$(grep "Total Execution Time:" "$tarzan_file" | grep -v "averaged" | awk '{print $4, $5, $6, $7}')
+                exec_time=$(grep "Total time including region generation:" "$tarzan_file" | grep -v "averaged" | awk '{print $4, $5, $6, $7}')
                 status=$(grep "Status:" "$tarzan_file" | sed 's/Status: //')
 
                 cat >> "$SUMMARY_FILE" << EOF
