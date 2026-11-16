@@ -17,6 +17,15 @@ mkdir "$PROJECT_ROOT/output/forward_reachability_benchmark"
 
 ./generate_forward_reach_benchmark.sh
 
+echo ""
 echo "Benchmark Summary saved in folder $PROJECT_ROOT/output/forward_reachability_benchmark!"
 echo ""
 echo "Stopping the benchmark generation"
+
+echo "Producing the LaTeX Tables to represent the Result from Forward Reachability Games"
+echo ""
+
+python3 create_latex_tables_from_benchmark.py
+
+echo ""
+echo "Benchmark Summary Tables created!"
