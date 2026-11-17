@@ -11,7 +11,7 @@ import re
 import sys
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 
 class BenchmarkResult:
@@ -19,7 +19,11 @@ class BenchmarkResult:
 
     def __init__(self):
         # TARZAN fields
-        self.num_regions: Optional[str] = None
+        self.num_starting_regions: Optional[str] = None
+        self.num_returned_regions: Optional[str] = None
+        self.num_regions_C: Optional[str] = None
+        self.num_regions_W: Optional[str] = None
+        self.num_regions_C_and_W: Optional[str] = None
         self.total_time: Optional[str] = None
         self.goal_status: Optional[str] = None
         self.peak_memory: Optional[str] = None
@@ -89,22 +93,30 @@ def parse_benchmark_summary(file_path: str) -> List[Experiment]:
             # Parse data fields
             elif current_result and not current_result.timeout:
                 # TARZAN fields
-                if "Number of regions:" in line:
-                    current_result.num_regions = line.split("Number of regions:")[1].strip()
+                if "Number of starting regions:" in line:
+                    current_result.num_starting_regions = line.split("Number of starting regions:")[1].strip()
+                elif "Number of returned regions (G):" in line:
+                    current_result.num_returned_regions = line.split("Number of returned regions (G):")[1].strip()
+                elif "Number of regions (C):" in line:
+                    current_result.num_regions_C = line.split("Number of regions (C):")[1].strip()
+                elif "Number of regions (W):" in line:
+                    current_result.num_regions_W = line.split("Number of regions (W):")[1].strip()
+                elif "Number of regions (C + W):" in line:
+                    current_result.num_regions_C_and_W = line.split("Number of regions (C + W):")[1].strip()
                 elif "Total time:" in line and "exec" not in line.lower():
                     time_str = line.split("Total time:")[1].strip()
                     # Extract just the numeric value in seconds
-                    match = re.search(r'([\d.]+)\s*s', time_str)
+                    match = re.search(r'([\d.]+)\s*(microseconds|milliseconds|seconds|s)\b', time_str)
                     if match:
                         current_result.total_time = match.group(1)
                 elif "Total exec time:" in line and current_tool == "TARZAN":
                     exec_str = line.split("Total exec time:")[1].strip()
                     # Extract the time value (could be in ms or s format)
-                    match = re.search(r'([\d.]+)\s*ms', exec_str)
+                    match = re.search(r'([\d.]+)\s*(microseconds|milliseconds|seconds|s)\b', exec_str)
                     if match:
                         current_result.exec_time = match.group(1)
                     else:
-                        match = re.search(r'([\d.]+)\s*s', exec_str)
+                        match = re.search(r'([\d.]+)\s*(microseconds|milliseconds|seconds|s)\b', exec_str)
                         if match:
                             # Convert seconds to milliseconds
                             current_result.exec_time = str(float(match.group(1)) * 1000)
@@ -242,10 +254,14 @@ def generate_latex_table(experiment: Experiment) -> str:
                     exec_time_s = "---"
             tarzan_data.append(exec_time_s)
             tarzan_data.append(format_value(sub_exp.result.peak_memory, "---"))
-            tarzan_data.append(format_value(sub_exp.result.num_regions, "---"))
+            tarzan_data.append(sub_exp.result.num_returned_regions)
+            tarzan_data.append(sub_exp.result.num_regions_C)
+            tarzan_data.append(sub_exp.result.num_regions_W)
+            tarzan_data.append(sub_exp.result.num_regions_C_and_W)
+            tarzan_data.append(sub_exp.result.goal_status)
 
         # Format the row
-        latex.append(f"{n}  & {' & '.join(tarzan_data)} \\\\")
+        latex.append(f"{n + str(row_idx)}  & {' & '.join(tarzan_data)} \\\\")
 
     # Table footer
     latex.append(r"\bottomrule")
@@ -324,6 +340,7 @@ def compile_latex_to_pdf(tex_file: Path, output_dir: Path) -> bool:
                 cwd=output_dir,
                 capture_output=True,
                 text=True,
+                errors="replace",
                 timeout=60
             )
 
@@ -335,8 +352,10 @@ def compile_latex_to_pdf(tex_file: Path, output_dir: Path) -> bool:
                 else:
                     return False
 
-        except subprocess.TimeoutExpired:
+        except subprocess.TimeoutExpired as e:
             print(f"Error: pdflatex compilation timed out")
+            if e.stdout:
+                print(e.stdout.decode("utf-8", errors="replace") if isinstance(e.stdout, bytes) else e.stdout)
             return False
         except Exception as e:
             print(f"Error during PDF compilation: {e}")
@@ -415,23 +434,23 @@ def main():
     print(f"Total tables generated: {len(experiments)}")
 
     # Compile to PDF
-    pdf_success = compile_latex_to_pdf(complete_doc_file, output_dir)
-
-    if pdf_success:
-        print(f"\n{'='*60}")
-        print("SUCCESS: All files generated successfully!")
-        print(f"{'='*60}")
-        print(f"Tables only: {tables_file}")
-        print(f"Full document: {complete_doc_file}")
-        print(f"PDF: {output_dir / 'benchmark_results.pdf'}")
-    else:
-        print(f"\n{'='*60}")
-        print("LaTeX files generated successfully (PDF compilation failed or skipped)")
-        print(f"{'='*60}")
-        print(f"Tables only: {tables_file}")
-        print(f"Full document: {complete_doc_file}")
-        print("\nYou can manually compile the PDF using:")
-        print(f"  cd {output_dir} && pdflatex {complete_doc_file}.tex")
+    # pdf_success = compile_latex_to_pdf(complete_doc_file, output_dir)
+    #
+    # if pdf_success:
+    #     print(f"\n{'=' * 60}")
+    #     print("SUCCESS: All files generated successfully!")
+    #     print(f"{'=' * 60}")
+    #     print(f"Tables only: {tables_file}")
+    #     print(f"Full document: {complete_doc_file}")
+    #     print(f"PDF: {output_dir / 'benchmark_results.pdf'}")
+    # else:
+    #     print(f"\n{'=' * 60}")
+    #     print("LaTeX files generated successfully (PDF compilation failed or skipped)")
+    #     print(f"{'=' * 60}")
+    #     print(f"Tables only: {tables_file}")
+    #     print(f"Full document: {complete_doc_file}")
+    #     print("\nYou can manually compile the PDF using:")
+    #     print(f"  cd {output_dir} && pdflatex {complete_doc_file}")
 
 
 if __name__ == "__main__":
