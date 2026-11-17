@@ -212,15 +212,22 @@ def generate_latex_table(experiment: Experiment) -> str:
     latex.append(r"\label{tab:" + experiment.name + r"}")
     latex.append(r"\resizebox{\textwidth}{!}{")
     latex.append(r"\begin{tabular}{%")
-    latex.append(r"    c|rrrr|rrrr|rrrr")
+    latex.append(r"    c|rrrrrrrrrr")
     latex.append(r"}")
     latex.append(r"\toprule")
 
     # Header row 1: Column names
+    #latex.append(r"\multirow{2}{*}{\textbf{N°}}")
     latex.append(r"  & \multicolumn{1}{c}{\textbf{VT}}")
     latex.append(r"  & \multicolumn{1}{c}{\textbf{ET}}")
     latex.append(r"  & \multicolumn{1}{c}{\textbf{Mem}}")
-    latex.append(r"  & \multicolumn{1}{c|}{\textbf{Regions}}")
+    latex.append(r"  & \multicolumn{1}{c|}{\textbf{\#Iterations}}")
+    latex.append(r"  & \multicolumn{1}{c|}{\textbf{$S_\varphi$}}")
+    latex.append(r"  & \multicolumn{1}{c|}{\textbf{$G$}}")
+    latex.append(r"  & \multicolumn{1}{c|}{\textbf{$C$}}")
+    latex.append(r"  & \multicolumn{1}{c|}{\textbf{$W$}}")
+    latex.append(r"  & \multicolumn{1}{c|}{\textbf{Tot Regions}}")
+    latex.append(r"  & \multicolumn{1}{c|}{\textbf{Goal Status}}")
     latex.append(r"\midrule")
 
     # Data rows
@@ -238,10 +245,10 @@ def generate_latex_table(experiment: Experiment) -> str:
         # TARZAN columns
         if sub_exp.result.timeout:
             # TARZAN timeout: TO in VT/ET, --- elsewhere
-            tarzan_data = ["TO", "TO", "---", "---"]
+            tarzan_data = ["TO", "TO", "---", "---", "---", "---", "---", "---", "---", "---"]
         elif sub_exp.result.failed:
             # TARZAN failure (OOM): --- in VT/ET, OOM in Mem, --- in Regions
-            tarzan_data = ["---", "---", "OOM", "---"]
+            tarzan_data = ["---", "---", "OOM", "---", "---", "---", "---", "---", "---", "---"]
         else:
             tarzan_data.append(format_time_value(sub_exp.result.total_time, "---"))
             # Convert exec time from ms to seconds if available
@@ -254,14 +261,18 @@ def generate_latex_table(experiment: Experiment) -> str:
                     exec_time_s = "---"
             tarzan_data.append(exec_time_s)
             tarzan_data.append(format_value(sub_exp.result.peak_memory, "---"))
+            tarzan_data.append("---")
+            tarzan_data.append("---")
             tarzan_data.append(sub_exp.result.num_returned_regions)
             tarzan_data.append(sub_exp.result.num_regions_C)
             tarzan_data.append(sub_exp.result.num_regions_W)
+            #tarzan_data.append(sub_exp.result.num_regions_C_and_W + sub_exp.result.num_returned_regions)
             tarzan_data.append(sub_exp.result.num_regions_C_and_W)
+            tarzan_data.append("---")
             tarzan_data.append(sub_exp.result.goal_status)
 
         # Format the row
-        latex.append(f"{n + str(row_idx)}  & {' & '.join(tarzan_data)} \\\\")
+        latex.append(f"{' & '.join(tarzan_data)} \\\\")
 
     # Table footer
     latex.append(r"\bottomrule")
