@@ -111,30 +111,34 @@ EOF
                 grep "ERROR:" "$tarzan_file" >> "$SUMMARY_FILE"
             else
                 # Extract key metrics.
-                num_regions=$(grep "Total stored regions (setG):" "$tarzan_file" | awk '{print $NF}')
+                num_regions_setPhi=$(grep "Total regions in setPhi:" "$tarzan_file" | awk '{print $NF}')
+                num_regions_setG=$(grep "Total stored regions:" "$tarzan_file" | awk '{print $NF}')
+                num_regions_setG_forward=$(grep "Total regions in setG:" "$tarzan_file" | awk '{print $NF}')
                 num_regions_start=$(grep "Total starting regions:" "$tarzan_file" | awk '{print $NF}')
                 num_regions_setC=$(grep "Total stored regions (setC):" "$tarzan_file" | awk '{print $NF}')
                 num_regions_setW=$(grep "Total stored regions (setW):" "$tarzan_file" | awk '{print $NF}')
                 num_regions_setC_and_W=$(grep "Total stored regions (setW + setC):" "$tarzan_file" | awk '{print $NF}')
                 total_time=$(grep "Total time:" "$tarzan_file" | awk '{print $(NF-1), $NF}')
+                num_iterations=$(grep "Total iterations:" "$tarzan_file" | awk '{print $NF}')
                 goal_status=$(grep -E '(VICTORY|LOSE)' "$tarzan_file" | awk '{print $NF}')
                 peak_memory_mb=$(grep "Peak Memory (RSS):" "$tarzan_file" | awk '{print $4, $5}')
-                peak_memory_bytes=$(grep "Peak Memory (bytes):" "$tarzan_file" | awk '{print $NF}')
+                #peak_memory_bytes=$(grep "Peak Memory (bytes):" "$tarzan_file" | awk '{print $NF}')
                 exec_time=$(grep "Total time including region generation:" "$tarzan_file" | awk '{print $(NF-1), $NF}')
-                status=$(grep "Status:" "$tarzan_file" | sed 's/Status: //')
+                #status=$(grep "Status:" "$tarzan_file" | sed 's/Status: //')
 
                 cat >> "$SUMMARY_FILE" << EOF
   Number of starting regions:    ${num_regions_start:-N/A}
-  Number of returned regions (G):    ${num_regions:-N/A}
+  Number of regions (Sphi):    ${num_regions_setPhi:-N/A}
+  Number of regions (G):    ${num_regions_setG:-${num_regions_setG_forward:-N/A}}
   Number of regions (C):    ${num_regions_setC:-N/A}
   Number of regions (W):    ${num_regions_setW:-N/A}
   Number of regions (C + W):    ${num_regions_setC_and_W:-N/A}
+  Total Computed Regions:       ${num_regions_setG:-${num_regions_setC_and_W:-N/A}}
   Total time:           ${total_time:-N/A}
+  Num iterations:     ${num_iterations:-N/A}
   Goal status:          ${goal_status:-N/A}
   Peak memory:          ${peak_memory_mb:-N/A}
-  Peak memory (bytes):  ${peak_memory_bytes:-N/A}
   Total exec time:      ${exec_time:-N/A}
-  Status:               ${status:-N/A}
 EOF
             fi
             echo "" >> "$SUMMARY_FILE"

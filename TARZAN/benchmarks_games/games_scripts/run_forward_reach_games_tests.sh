@@ -106,6 +106,7 @@ for executable in *; do
         sum_iterations=0
         sum_starting_regions=0
         sum_set_phi=0
+        sum_set_G=0
         sum_stored_regions=0
         sum_stored_regions_in_C=0
         sum_stored_regions_in_W=0
@@ -170,6 +171,9 @@ for executable in *; do
             val=$(grep "Total regions in setPhi:" "$TEMP_OUTPUT_FILE" | awk '{print $NF}')
             [[ -n "$val" ]] && sum_set_phi=$(echo "$sum_set_phi + $val" | bc)
 
+            val=$(grep "Total regions in setG:" "$TEMP_OUTPUT_FILE" | awk '{print $NF}')
+            [[ -n "$val" ]] && sum_set_G=$(echo "$sum_set_G + $val" | bc)
+
             val=$(grep "Total stored regions:" "$TEMP_OUTPUT_FILE" | awk '{print $NF}')
             [[ -n "$val" ]] && sum_stored_regions=$(echo "$sum_stored_regions + $val" | bc)
 
@@ -212,6 +216,7 @@ for executable in *; do
             avg_iterations=$(echo "scale=0; $sum_iterations / $successful_runs" | bc)
             avg_starting_regions=$(echo "scale=0; $sum_starting_regions / $successful_runs" | bc)
             avg_set_phi=$(echo "scale=0; $sum_set_phi / $successful_runs" | bc)
+            avg_set_G=$(echo "scale=0; $sum_set_G / $successful_runs" | bc)
             avg_stored_regions=$(echo "scale=0; $sum_stored_regions / $successful_runs" | bc)
             avg_stored_regions_in_C=$(echo "scale=0; $sum_stored_regions_in_C / $successful_runs" | bc)
             avg_stored_regions_in_W=$(echo "scale=0; $sum_stored_regions_in_W / $successful_runs" | bc)
@@ -227,7 +232,10 @@ for executable in *; do
                 echo "Total iterations:        $avg_iterations"
                 echo "Total starting regions:  $avg_starting_regions"
                 echo "Total regions in setPhi: $avg_set_phi"
-                if [ $avg_stored_regions -gt 0 ]; then echo "Total stored regions (setG):    $avg_stored_regions"
+                #echo "Total stored regions:    $avg_stored_regions"
+                #echo "Total regions in setG:    $avg_set_G"
+                if [ $avg_stored_regions -gt 0 ]; then echo "Total stored regions:    $avg_stored_regions"
+                elif [ $avg_set_G -gt 0 ]; then echo "Total regions in setG:    $avg_set_G"
                 fi
 
                 if [ $avg_stored_regions_in_C -gt 0 ]; then echo "Total stored regions (setC):    $avg_stored_regions_in_C"

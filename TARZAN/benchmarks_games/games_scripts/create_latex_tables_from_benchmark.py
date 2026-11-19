@@ -20,11 +20,14 @@ class BenchmarkResult:
     def __init__(self):
         # TARZAN fields
         self.num_starting_regions: Optional[str] = None
-        self.num_returned_regions: Optional[str] = None
+        self.num_regions_Sphi: Optional[str] = None
+        self.num_regions_G: Optional[str] = None
         self.num_regions_C: Optional[str] = None
         self.num_regions_W: Optional[str] = None
         self.num_regions_C_and_W: Optional[str] = None
         self.total_time: Optional[str] = None
+        self.total_regions: Optional[str] = None
+        self.num_iterations: Optional[str] = None
         self.goal_status: Optional[str] = None
         self.peak_memory: Optional[str] = None
         self.exec_time: Optional[str] = None
@@ -95,8 +98,10 @@ def parse_benchmark_summary(file_path: str) -> List[Experiment]:
                 # TARZAN fields
                 if "Number of starting regions:" in line:
                     current_result.num_starting_regions = line.split("Number of starting regions:")[1].strip()
-                elif "Number of returned regions (G):" in line:
-                    current_result.num_returned_regions = line.split("Number of returned regions (G):")[1].strip()
+                elif "Number of regions (Sphi):" in line:
+                    current_result.num_regions_Sphi = line.split("Number of regions (Sphi):")[1].strip()
+                elif "Number of regions (G):" in line:
+                    current_result.num_regions_G = line.split("Number of regions (G):")[1].strip()
                 elif "Number of regions (C):" in line:
                     current_result.num_regions_C = line.split("Number of regions (C):")[1].strip()
                 elif "Number of regions (W):" in line:
@@ -122,6 +127,10 @@ def parse_benchmark_summary(file_path: str) -> List[Experiment]:
                             current_result.exec_time = str(float(match.group(1)) * 1000)
                 elif "Goal status:" in line:
                     current_result.goal_status = line.split("Goal status:")[1].strip()
+                elif "Num iterations:" in line:
+                    current_result.num_iterations = line.split("Num iterations:")[1].strip()
+                elif "Total Computed Regions:" in line:
+                    current_result.total_regions = line.split("Total Computed Regions:")[1].strip()
                 elif "Peak memory:" in line and "bytes" not in line:
                     mem_str = line.split("Peak memory:")[1].strip()
                     # Extract just the MB value
@@ -150,6 +159,7 @@ def format_time_value(value: Optional[str], default: str = "KO") -> str:
         # Truncate to 3 decimal places without rounding
         # Multiply by 1000, truncate to integer, divide by 1000
         import math
+        time_val = time_val / float(pow(10, 6))
         truncated = math.floor(time_val * 1000) / 1000
 
         # If truncated value is 0.000 (or original was less than 0.001), show epsilon
@@ -159,6 +169,15 @@ def format_time_value(value: Optional[str], default: str = "KO") -> str:
         return f"{truncated:.3f}"
     except ValueError:
         return default
+
+def format_name(instance_name: str) -> str:
+    match = re.search(r'_', instance_name)
+    if match:
+        formatted_name = re.sub(r'_', r'\\_\\hspace{0pt}', instance_name)
+        return formatted_name
+    else:
+        return instance_name
+
 
 
 def extract_n_from_instance(instance_name: str) -> str:
@@ -206,28 +225,41 @@ def generate_latex_table(experiment: Experiment) -> str:
     latex.append(r"\setlength{\belowrulesep}{1pt}")
     latex.append(r"{\renewcommand{\arraystretch}{0.95}")
     latex.append(r"{\setlength{\tabcolsep}{3.25pt}")
-    latex.append(r"\begin{table}[t]")
+    latex.append(r"\begin{table}[H]")
     latex.append(r"\centering")
     latex.append(r"\caption{Benchmark results for \texttt{" + experiment.name.replace("_", r"\_") + r"}}")
     latex.append(r"\label{tab:" + experiment.name + r"}")
-    latex.append(r"\resizebox{\textwidth}{!}{")
-    latex.append(r"\begin{tabular}{%")
-    latex.append(r"    c|rrrrrrrrrr")
+    latex.append(r"\scriptsize")
+    latex.append(r"\begin{tabular}{")
+    latex.append(r"    |p{3cm}|c|c|c|c|c|c|c|c|c|c|")
     latex.append(r"}")
     latex.append(r"\toprule")
 
     # Header row 1: Column names
     #latex.append(r"\multirow{2}{*}{\textbf{N°}}")
-    latex.append(r"  & \multicolumn{1}{c}{\textbf{VT}}")
-    latex.append(r"  & \multicolumn{1}{c}{\textbf{ET}}")
-    latex.append(r"  & \multicolumn{1}{c}{\textbf{Mem}}")
-    latex.append(r"  & \multicolumn{1}{c|}{\textbf{\#Iterations}}")
-    latex.append(r"  & \multicolumn{1}{c|}{\textbf{$S_\varphi$}}")
-    latex.append(r"  & \multicolumn{1}{c|}{\textbf{$G$}}")
-    latex.append(r"  & \multicolumn{1}{c|}{\textbf{$C$}}")
-    latex.append(r"  & \multicolumn{1}{c|}{\textbf{$W$}}")
-    latex.append(r"  & \multicolumn{1}{c|}{\textbf{Tot Regions}}")
-    latex.append(r"  & \multicolumn{1}{c|}{\textbf{Goal Status}}")
+    # latex.append(r"  & \multicolumn{1}{c}{\textbf{VT}}")
+    # latex.append(r"  & \multicolumn{1}{c}{\textbf{ET}}")
+    # latex.append(r"  & \multicolumn{1}{c}{\textbf{Mem (MB)}}")
+    # latex.append(r"  & \multicolumn{1}{c|}{\textbf{\#Iterations}}")
+    # latex.append(r"  & \multicolumn{1}{c|}{\textbf{$S_\varphi$}}")
+    # latex.append(r"  & \multicolumn{1}{c|}{\textbf{$G$}}")
+    # latex.append(r"  & \multicolumn{1}{c|}{\textbf{$C$}}")
+    # latex.append(r"  & \multicolumn{1}{c|}{\textbf{$W$}}")
+    # latex.append(r"  & \multicolumn{1}{c|}{\textbf{Tot Regions}}")
+    # latex.append(r"  & \multicolumn{1}{c|}{\textbf{Goal Status}}")
+
+    latex.append(r" \textbf{Test Name}")
+    latex.append(r" & \textbf{VT (s)}")
+    latex.append(r" & \textbf{ET (s)}")
+    latex.append(r" & \textbf{Mem (MB)}")
+    latex.append(r" & \textbf{\#Iterations}")
+    latex.append(r" & \textbf{$S_\varphi$}")
+    latex.append(r" & \textbf{$G$}")
+    latex.append(r" & \textbf{$C$}")
+    latex.append(r" & \textbf{$W$}")
+    latex.append(r" & \textbf{Tot Regions}")
+    latex.append(r" & \textbf{Goal Status} \\")
+
     latex.append(r"\midrule")
 
     # Data rows
@@ -250,25 +282,26 @@ def generate_latex_table(experiment: Experiment) -> str:
             # TARZAN failure (OOM): --- in VT/ET, OOM in Mem, --- in Regions
             tarzan_data = ["---", "---", "OOM", "---", "---", "---", "---", "---", "---", "---"]
         else:
+            tarzan_data.append(format_name(sub_exp.name))
             tarzan_data.append(format_time_value(sub_exp.result.total_time, "---"))
             # Convert exec time from ms to seconds if available
-            exec_time_s = "---"
-            if sub_exp.result.exec_time:
-                try:
-                    # Convert from ms to seconds, then format
-                    exec_time_s = format_time_value(str(float(sub_exp.result.exec_time) / 1000), "---")
-                except:
-                    exec_time_s = "---"
-            tarzan_data.append(exec_time_s)
+            # exec_time_s = "---"
+            # if sub_exp.result.exec_time:
+            #     try:
+            #         # Convert from ms to seconds, then format
+            #         exec_time_s = format_time_value(str(float(sub_exp.result.exec_time) / 1000), "---")
+            #     except:
+            #         exec_time_s = "---"
+            tarzan_data.append(format_time_value(sub_exp.result.exec_time, "---"))
             tarzan_data.append(format_value(sub_exp.result.peak_memory, "---"))
-            tarzan_data.append("---")
-            tarzan_data.append("---")
-            tarzan_data.append(sub_exp.result.num_returned_regions)
-            tarzan_data.append(sub_exp.result.num_regions_C)
-            tarzan_data.append(sub_exp.result.num_regions_W)
-            #tarzan_data.append(sub_exp.result.num_regions_C_and_W + sub_exp.result.num_returned_regions)
-            tarzan_data.append(sub_exp.result.num_regions_C_and_W)
-            tarzan_data.append("---")
+            tarzan_data.append(format_value(sub_exp.result.num_iterations, "---"))
+            tarzan_data.append(format_value(sub_exp.result.num_regions_Sphi, "---"))
+            tarzan_data.append(format_value(sub_exp.result.num_regions_G, "---"))
+            tarzan_data.append(format_value(sub_exp.result.num_regions_C, "---"))
+            tarzan_data.append(format_value(sub_exp.result.num_regions_W, "---"))
+            #tarzan_data.append(format_value(sub_exp.result.num_regions_C_and_W, "---"))
+            tarzan_data.append(format_value(sub_exp.result.total_regions, "---"))
+            #tarzan_data.append("---")
             tarzan_data.append(sub_exp.result.goal_status)
 
         # Format the row
@@ -277,7 +310,6 @@ def generate_latex_table(experiment: Experiment) -> str:
     # Table footer
     latex.append(r"\bottomrule")
     latex.append(r"\end{tabular}")
-    latex.append(r"}")
     latex.append(r"\end{table}")
     latex.append(r"}")
     latex.append(r"}")

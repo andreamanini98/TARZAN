@@ -726,6 +726,7 @@ bool region::RTSArena::forwardReachabilityForTCGs(const regionSet &setPhi, const
     std::cout << "Total iterations:        " << currentIteration << std::endl;
     std::cout << "Total starting regions:  " << totalStartingRegions << std::endl;
     std::cout << "Total regions in setPhi: " << setPhi.size() << std::endl;
+    std::cout << "Total regions in setG: "   << setG.size() << std::endl;
     std::cout << "Total stored regions (setC):    " << setC.size() << std::endl;
     std::cout << "Total stored regions (setW):    " << setW.size() << std::endl;
     std::cout << "Total stored regions (setW + setC):    " << setW.size() + setC.size() << std::endl;
