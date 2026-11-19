@@ -15,7 +15,7 @@ int main()
 
     const std::vector<std::unordered_set<region::Region, region::RegionHash>> startingRegions = rts.getRegionsFromGeneralCLTLocFormula(phi);
 
-    rts.strategyGraphToDot("../../../output/strategy_graphs/g2.dot", phi, FORWARD);
+    rts.strategyGraphToDot("../../../output/strategy_graphs/production_cell_hybrid/pc_F_win_fr.dot", phi, FORWARD);
 
     return 0;
 }
