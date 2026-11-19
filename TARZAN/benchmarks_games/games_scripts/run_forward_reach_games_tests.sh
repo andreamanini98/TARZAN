@@ -29,6 +29,7 @@ fi
 
 # Define directories (resolve to absolute paths before any cd).
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SOURCE_FILES_DIR="${SCRIPT_DIR}/../games_executables/${BENCHMARK_DIRECTORY_NAME}"
 EXECUTABLES_DIR="${SCRIPT_DIR}/../../../executables/games_executables/${BENCHMARK_DIRECTORY_NAME}"
 OUTPUT_DIR="${SCRIPT_DIR}/../../../output/games_tarzan_results/${BENCHMARK_DIRECTORY_NAME}"
 
@@ -61,11 +62,52 @@ rm -rf "${OUTPUT_DIR:?}"/*
 # Create output directory if it doesn't exist.
 mkdir -p "$OUTPUT_DIR"
 
+#Check if source files directory exists
+if [ ! -d "$SOURCE_FILES_DIR" ]; then
+    echo "Error: Source files directory does not exist: $SOURCE_FILES_DIR"
+    exit 1
+fi
+
 # Check if executables directory exists.
 if [ ! -d "$EXECUTABLES_DIR" ]; then
     echo "Error: Executables directory does not exist: $EXECUTABLES_DIR"
     exit 1
 fi
+
+# Change to source files directory
+cd "$SOURCE_FILES_DIR" || exit 1
+
+#Find and compile all source files
+echo "Compiling source files from: $SOURCE_FILES_DIR"
+echo "Executables will be saved to: $EXECUTABLES_DIR"
+echo "----------------------------------------"
+
+for source_file in *; do
+    if [ -f "$source_file" ]; then
+      # Compiling the source files to refresh the executables
+
+      echo "Compiling: $source_file"
+
+      #g++ "$source_file" -Wall -Wextra -Wpedantic -o "${source_file::-4}"
+
+      PROJECT_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+      BUILD_DIR="$PROJECT_ROOT/cmake-build-debug"
+
+      target_name="${source_file%????}"
+
+      cmake --build "$BUILD_DIR" --target $target_name -j
+
+      exit_code=$?
+
+      if [ $exit_code -ne 0 ]; then
+          echo "  Warning: Compilation for source file $source_file failed with exit code $exit_code"
+          exit 1
+      fi
+
+    fi
+
+    echo ""
+done
 
 # Change to executables directory.
 cd "$EXECUTABLES_DIR" || exit 1
