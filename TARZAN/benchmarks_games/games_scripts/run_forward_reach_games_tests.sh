@@ -32,6 +32,8 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SOURCE_FILES_DIR="${SCRIPT_DIR}/../games_executables/${BENCHMARK_DIRECTORY_NAME}"
 EXECUTABLES_DIR="${SCRIPT_DIR}/../../../executables/games_executables/${BENCHMARK_DIRECTORY_NAME}"
 OUTPUT_DIR="${SCRIPT_DIR}/../../../output/games_tarzan_results/${BENCHMARK_DIRECTORY_NAME}"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
+BUILD_DIR="$PROJECT_ROOT/cmake-build-debug"
 
 # Detect OS and set appropriate /usr/bin/time options.
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -62,6 +64,15 @@ rm -rf "${OUTPUT_DIR:?}"/*
 # Create output directory if it doesn't exist.
 mkdir -p "$OUTPUT_DIR"
 
+
+# Clear the executables directory before execution.
+echo "Clearing executables directory: $EXECUTABLES_DIR"
+rm -rf "${EXECUTABLES_DIR:?}"/*
+
+# Create output directory if it doesn't exist.
+mkdir -p "$EXECUTABLES_DIR"
+
+
 #Check if source files directory exists
 if [ ! -d "$SOURCE_FILES_DIR" ]; then
     echo "Error: Source files directory does not exist: $SOURCE_FILES_DIR"
@@ -87,11 +98,6 @@ for source_file in *; do
       # Compiling the source files to refresh the executables
 
       echo "Compiling: $source_file"
-
-      #g++ "$source_file" -Wall -Wextra -Wpedantic -o "${source_file::-4}"
-
-      PROJECT_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
-      BUILD_DIR="$PROJECT_ROOT/cmake-build-debug"
 
       target_name="${source_file%????}"
 

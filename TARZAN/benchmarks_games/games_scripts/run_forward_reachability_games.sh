@@ -12,13 +12,13 @@ echo ""
 
 PROJECT_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 
-rm -rf "$PROJECT_ROOT/output/forward_reachability_benchmark"
-mkdir "$PROJECT_ROOT/output/forward_reachability_benchmark"
+rm -rf "${PROJECT_ROOT}/output/forward_reachability_benchmark"
+mkdir "${PROJECT_ROOT}/output/forward_reachability_benchmark"
 
 ./generate_forward_reach_benchmark.sh
 
 echo ""
-echo "Benchmark Summary saved in folder $PROJECT_ROOT/output/forward_reachability_benchmark!"
+echo "Benchmark Summary saved in folder ${PROJECT_ROOT}/output/forward_reachability_benchmark!"
 echo ""
 echo "Stopping the benchmark generation"
 
