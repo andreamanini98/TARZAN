@@ -405,6 +405,45 @@ if (GAMES_EXECUTABLES)
     endforeach ()
 endif ()
 
+
+# Collect all .cpp files from games_executables/production_cell_hybrid/completed_examples directory.
+file(GLOB GAMES_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks_games/games_executables/production_cell_hybrid/completed_examples/*.cpp)
+
+# Create games executables in executables/games_executables/production_cell_hybrid/completed_examples subdirectory.
+if (GAMES_EXECUTABLES)
+    foreach (source IN LISTS GAMES_EXECUTABLES)
+        get_filename_component(executable_name ${source} NAME_WE)
+        add_executable(${executable_name} ${source})
+
+        # Targeting the source with libraries.
+        target_link_libraries(${executable_name} PRIVATE TARZAN)
+
+        # Set output directory to executables/games_executable/production_cell_hybrid/completed_examples.
+        set_target_properties(${executable_name} PROPERTIES
+                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/games_executables/production_cell_hybrid/completed_examples)
+    endforeach ()
+endif ()
+
+
+# Collect all .cpp files from games_executables/production_cell_hybrid/strategy_graphs_examples directory.
+file(GLOB GAMES_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks_games/games_executables/production_cell_hybrid/strategy_graphs_examples/*.cpp)
+
+# Create games executables in executables/games_executables/production_cell_hybrid/strategy_graphs_examples subdirectory.
+if (GAMES_EXECUTABLES)
+    foreach (source IN LISTS GAMES_EXECUTABLES)
+        get_filename_component(executable_name ${source} NAME_WE)
+        add_executable(${executable_name} ${source})
+
+        # Targeting the source with libraries.
+        target_link_libraries(${executable_name} PRIVATE TARZAN)
+
+        # Set output directory to executables/games_executable/production_cell_hybrid/strategy_graphs_examples.
+        set_target_properties(${executable_name} PROPERTIES
+                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/games_executables/production_cell_hybrid/strategy_graphs_examples)
+    endforeach ()
+endif ()
+
+
 # Collect all .cpp files from games_executables/shopping_stocks directory.
 file(GLOB GAMES_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks_games/games_executables/shopping_stocks/*.cpp)
 
@@ -420,6 +459,63 @@ if (GAMES_EXECUTABLES)
         # Set output directory to executables/games_executable/shopping_stocks.
         set_target_properties(${executable_name} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/games_executables/shopping_stocks)
+    endforeach ()
+endif ()
+
+
+# Collect all .cpp files from games_executables/shopping_stocks/completed_examples directory.
+file(GLOB GAMES_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks_games/games_executables/shopping_stocks/completed_examples/*.cpp)
+
+# Create games executables in executables/games_executables/shopping_stocks/completed_examples subdirectory.
+if (GAMES_EXECUTABLES)
+    foreach (source IN LISTS GAMES_EXECUTABLES)
+        get_filename_component(executable_name ${source} NAME_WE)
+        add_executable(${executable_name} ${source})
+
+        # Targeting the source with libraries.
+        target_link_libraries(${executable_name} PRIVATE TARZAN)
+
+        # Set output directory to executables/games_executable/shopping_stocks/completed_examples.
+        set_target_properties(${executable_name} PROPERTIES
+                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/games_executables/shopping_stocks/completed_examples)
+    endforeach ()
+endif ()
+
+
+# Collect all .cpp files from games_executables/shopping_stocks/strategy_graphs_examples directory.
+file(GLOB GAMES_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks_games/games_executables/shopping_stocks/strategy_graphs_examples/*.cpp)
+
+# Create games executables in executables/games_executables/shopping_stocks/strategy_graphs_examples subdirectory.
+if (GAMES_EXECUTABLES)
+    foreach (source IN LISTS GAMES_EXECUTABLES)
+        get_filename_component(executable_name ${source} NAME_WE)
+        add_executable(${executable_name} ${source})
+
+        # Targeting the source with libraries.
+        target_link_libraries(${executable_name} PRIVATE TARZAN)
+
+        # Set output directory to executables/games_executable/shopping_stocks/strategy_graphs_examples.
+        set_target_properties(${executable_name} PROPERTIES
+                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/games_executables/shopping_stocks/strategy_graphs_examples)
+    endforeach ()
+endif ()
+
+
+# Collect all .cpp files from games_executables/shopping_stocks/legacy_examples directory.
+file(GLOB GAMES_EXECUTABLES ${CMAKE_CURRENT_SOURCE_DIR}/TARZAN/benchmarks_games/games_executables/shopping_stocks/legacy_examples/*.cpp)
+
+# Create games executables in executables/games_executables/shopping_stocks/legacy_examples subdirectory.
+if (GAMES_EXECUTABLES)
+    foreach (source IN LISTS GAMES_EXECUTABLES)
+        get_filename_component(executable_name ${source} NAME_WE)
+        add_executable(${executable_name} ${source})
+
+        # Targeting the source with libraries.
+        target_link_libraries(${executable_name} PRIVATE TARZAN)
+
+        # Set output directory to executables/games_executable/shopping_stocks/legacy_examples.
+        set_target_properties(${executable_name} PROPERTIES
+                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/executables/games_executables/shopping_stocks/legacy_examples)
     endforeach ()
 endif ()
 

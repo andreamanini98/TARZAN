@@ -47,10 +47,10 @@ static exploration_approach getReachabilityApproach(const int argc, char* argv[]
 
 int main(const int argc, char* argv[])
 {
-    const std::string arenaPath = "../../../TARZAN/benchmarks_games/models/shopping_stocks/arena/shopping_stocks.txt";
+    const std::string arenaPath = "../../../../TARZAN/benchmarks_games/models/shopping_stocks/arena/shopping_stocks.txt";
     const timed_automaton::ast::timedArena arena = TARZAN::parseTimedArena(arenaPath);
 
-    const std::string formulaPath = "../../../TARZAN/benchmarks_games/models/shopping_stocks/winning_conditions/reachability2.txt";
+    const std::string formulaPath = "../../../../TARZAN/benchmarks_games/models/shopping_stocks/winning_conditions/reachability2.txt";
     const cltloc::ast::generalCLTLocFormula phi = TARZAN::parseGeneralCLTLocFormula(formulaPath);
 
     region::RTSArena rts(arena, phi, false);
