@@ -126,6 +126,18 @@ EOF
                 exec_time=$(grep "Total time including region generation:" "$tarzan_file" | awk '{print $(NF-1), $NF}')
                 #status=$(grep "Status:" "$tarzan_file" | sed 's/Status: //')
 
+                echo ""
+                echo "$goal_status"
+                echo ""
+
+                if [[ "$goal_status" == "VICTORY" ]]; then
+                  goal_status="WIN"
+                fi
+
+                echo ""
+                echo "$goal_status"
+                echo ""
+
                 cat >> "$SUMMARY_FILE" << EOF
   Number of starting regions:    ${num_regions_start:-N/A}
   Number of regions (Sphi):    ${num_regions_setPhi:-N/A}

@@ -10,8 +10,14 @@ It also compiles the tables into a PDF for easy viewing.
 import re
 import sys
 import subprocess
+from enum import Enum
 from pathlib import Path
 from typing import List, Optional
+
+
+class ReachabilityApproach(Enum):
+    BACKWARD = "backward",
+    FORWARD = "forward"
 
 
 class BenchmarkResult:
@@ -43,6 +49,7 @@ class SubExperiment:
     def __init__(self, name: str):
         self.name = name
         self.result = BenchmarkResult()
+        self.reachApproach = ReachabilityApproach.BACKWARD
 
 
 class Experiment:
@@ -173,46 +180,34 @@ def format_time_value(value: Optional[str], default: str = "KO") -> str:
 def format_name(instance_name: str) -> str:
     match = re.search(r'_', instance_name)
     if match:
-        formatted_name = re.sub(r'_', r'\\_\\hspace{0pt}', instance_name)
+        #formatted_name = re.sub(r'_', r'\\_\\hspace{0pt}', instance_name)
+        formatted_name = re.sub(r'_', r'\_', instance_name)
         return formatted_name
     else:
         return instance_name
 
 
 
-def extract_n_from_instance(instance_name: str) -> str:
-    """Extract N value from instance name (e.g., 'flower_02' -> '2') and adjust with k_adj.txt."""
-    # Handle formats like "flower_02", "fischer_02", "latch", etc.
-    instance_match = re.search(r'_0*(\d+)$', instance_name)
+def extract_name_from_sub_exp(sub_exp: SubExperiment) -> str:
+    """Extract name from sub-experiment (e.g., 'med_app_backward' -> 'med_app')"""
+
+    pattern = r"^([a-zA-Z0-9_]+)_(backward|forward)$"
+
+    # Handles the fecthing of the sub exp name
+    instance_match = re.search(pattern, sub_exp.name)
     if instance_match:
-        n = int(instance_match.group(1))
-        # Extract base model name without the number suffix
-        base_model_name = re.sub(r'_0*\d+$', '', instance_name)
+        #name = instance_match.group(1)
+        first_name, second_name = instance_match.groups()
     else:
-        # For single instances without number (like "latch"), use "1"
-        # or extract any trailing number
-        num_match = re.search(r'\d+$', instance_name)
-        if num_match:
-            n = int(num_match.group(0))
-            base_model_name = re.sub(r'\d+$', '', instance_name)
-        else:
-            # Default to 1 if no number found
-            n = 1
-            base_model_name = instance_name
+        exit(1)
 
-    # Read k_adj.txt from the base model directory
-    # Use absolute path based on script location to work from any working directory
-    script_dir = Path(__file__).resolve().parent
-    k_adj_path = script_dir.parent / "models" / base_model_name / "k_adj.txt"
-    try:
-        with open(k_adj_path, 'r') as f:
-            k_adj = int(f.read().strip())
-        n += k_adj
-    except (FileNotFoundError, ValueError):
-        # If k_adj.txt doesn't exist or is invalid, just use n as is
-        pass
+    # Assigns the current reachability approach to the current Sub Experiment
+    if second_name == ReachabilityApproach.BACKWARD.name.lower():
+        sub_exp.reachApproach = ReachabilityApproach.BACKWARD
+    elif second_name == ReachabilityApproach.FORWARD.name.lower():
+        sub_exp.reachApproach = ReachabilityApproach.FORWARD
 
-    return str(n)
+    return first_name
 
 
 def generate_latex_table(experiment: Experiment) -> str:
@@ -231,7 +226,7 @@ def generate_latex_table(experiment: Experiment) -> str:
     latex.append(r"\label{tab:" + experiment.name + r"}")
     latex.append(r"\scriptsize")
     latex.append(r"\begin{tabular}{")
-    latex.append(r"    |p{3cm}|c|c|c|c|c|c|c|c|c|c|")
+    latex.append(r"    |c|c|c|c|c|c|c|c|c|c|c|")    #p{3cm}
     latex.append(r"}")
     latex.append(r"\toprule")
 
@@ -248,11 +243,11 @@ def generate_latex_table(experiment: Experiment) -> str:
     # latex.append(r"  & \multicolumn{1}{c|}{\textbf{Tot Regions}}")
     # latex.append(r"  & \multicolumn{1}{c|}{\textbf{Goal Status}}")
 
-    latex.append(r" \textbf{Test Name}")
+    latex.append(r" \textbf{Approach}")
     latex.append(r" & \textbf{VT (s)}")
     latex.append(r" & \textbf{ET (s)}")
     latex.append(r" & \textbf{Mem (MB)}")
-    latex.append(r" & \textbf{\#Iterations}")
+    latex.append(r" & \textbf{\#Iter}")
     latex.append(r" & \textbf{$S_\varphi$}")
     latex.append(r" & \textbf{$G$}")
     latex.append(r" & \textbf{$C$}")
@@ -262,14 +257,24 @@ def generate_latex_table(experiment: Experiment) -> str:
 
     latex.append(r"\midrule")
 
+    currentExp = ""
+
     # Data rows
     for row_idx, sub_exp in enumerate(experiment.sub_experiments):
+
+        exp_name = extract_name_from_sub_exp(sub_exp)
+
+        if exp_name != currentExp:
+            latex.append(r"  \multicolumn{11}{|c|}{\textbf{" + format_name(exp_name) + r"}} \\")
+            latex.append(r"\midrule")
+            currentExp = exp_name
+
         # Alternate row colors
         color = 'white' if row_idx % 2 == 0 else 'lightgray'
         latex.append(r"\rowcolor{" + color + r"}")
 
-        # Extract N from instance name
-        n = extract_n_from_instance(sub_exp.name)
+        statusColor = 'red' if sub_exp.result.goal_status == "LOSE" else 'green'
+        cellColor = statusColor + '!50!white' if sub_exp.reachApproach == ReachabilityApproach.BACKWARD else statusColor
 
         # Build row data
         tarzan_data = []
@@ -282,7 +287,7 @@ def generate_latex_table(experiment: Experiment) -> str:
             # TARZAN failure (OOM): --- in VT/ET, OOM in Mem, --- in Regions
             tarzan_data = ["---", "---", "OOM", "---", "---", "---", "---", "---", "---", "---"]
         else:
-            tarzan_data.append(format_name(sub_exp.name))
+            tarzan_data.append(r"\textit{" + format_name(str(sub_exp.reachApproach.name.lower())) + r"}")
             tarzan_data.append(format_time_value(sub_exp.result.total_time, "---"))
             # Convert exec time from ms to seconds if available
             # exec_time_s = "---"
@@ -302,10 +307,16 @@ def generate_latex_table(experiment: Experiment) -> str:
             #tarzan_data.append(format_value(sub_exp.result.num_regions_C_and_W, "---"))
             tarzan_data.append(format_value(sub_exp.result.total_regions, "---"))
             #tarzan_data.append("---")
-            tarzan_data.append(sub_exp.result.goal_status)
+            if sub_exp.result.goal_status is not None:
+                tarzan_data.append("\\cellcolor{" + cellColor + "} " + sub_exp.result.goal_status)
+            else:
+                tarzan_data.append("---")
 
         # Format the row
         latex.append(f"{' & '.join(tarzan_data)} \\\\")
+
+        if row_idx % 2 == 1:
+            latex.append(r"\midrule")
 
     # Table footer
     latex.append(r"\bottomrule")
