@@ -1,0 +1,1 @@
+$\lozenge (completed \wedge y \leq 35)$

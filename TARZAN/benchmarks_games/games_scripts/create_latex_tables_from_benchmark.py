@@ -11,6 +11,7 @@ import re
 import sys
 import subprocess
 from enum import Enum
+from os import fdopen
 from pathlib import Path
 from typing import List, Optional
 
@@ -209,6 +210,16 @@ def extract_name_from_sub_exp(sub_exp: SubExperiment) -> str:
 
     return first_name
 
+def find_formula(sub_exp_name : str) -> str:
+    if sub_exp_name != "":
+        filepath = "games_formulas/" + sub_exp_name + ".txt"
+        with open(filepath, "r", encoding="utf-8") as file:
+            formula = file.read()
+    else:
+        formula = ""
+
+    return formula
+
 
 def generate_latex_table(experiment: Experiment) -> str:
     """Generate a LaTeX table for a single experiment."""
@@ -264,8 +275,10 @@ def generate_latex_table(experiment: Experiment) -> str:
 
         exp_name = extract_name_from_sub_exp(sub_exp)
 
+        formula = find_formula(exp_name)
+
         if exp_name != currentExp:
-            latex.append(r"  \multicolumn{11}{|c|}{\textbf{" + format_name(exp_name) + r"}} \\")
+            latex.append(r"  \multicolumn{11}{|c|}{\textbf{" + format_name(exp_name) + r"}" + r" :: " + formula + r"} \\")
             latex.append(r"\midrule")
             currentExp = exp_name
 
@@ -274,7 +287,7 @@ def generate_latex_table(experiment: Experiment) -> str:
         latex.append(r"\rowcolor{" + color + r"}")
 
         statusColor = 'red' if sub_exp.result.goal_status == "LOSE" else 'green'
-        cellColor = statusColor + '!50!white' if sub_exp.reachApproach == ReachabilityApproach.BACKWARD else statusColor
+        cellColor = statusColor + '!20!white' if sub_exp.reachApproach == ReachabilityApproach.BACKWARD else statusColor
 
         # Build row data
         tarzan_data = []

@@ -1,0 +1,1 @@
+$\lozenge (depot \wedge 0 < y \leq 11) $
